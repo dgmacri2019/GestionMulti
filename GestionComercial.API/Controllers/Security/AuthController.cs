@@ -1,6 +1,8 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,24 +24,27 @@ namespace GestionComercial.API.Controllers.Security
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var token = await _authService.Authenticate(request.UserName, request.Password);
-            if (token == null)
+            LoginResponse resultLogin = await _authService.Authenticate(request.UserName, request.Password);
+            if (!resultLogin.Success)
+                return BadRequest(resultLogin.Message);
+            if (resultLogin.Success && resultLogin.Token == null)
                 return Unauthorized(new { message = "Invalid username or password" });
 
-            return Ok(new { token });
+            return Ok(new { resultLogin.Token });
         }
 
         [HttpPost("register")]
+        [Authorize(Roles = "Developer, Administrator")] // Solo admins pueden gestionar roles
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
-            var user = new User
+            User user = new User
             {
                 UserName = model.UserName,
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
             };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);

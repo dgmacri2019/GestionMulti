@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Masters.Security;
 using GestionComercial.Domain.Entities.Stock;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -26,7 +27,9 @@ namespace GestionComercial.Infrastructure.Persistence
         public DbSet<State> States { get; set; }
 
         //MASTER/SECURITY
-
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
 
         //STOCK
         public DbSet<Category> Categories { get; set; }
@@ -42,14 +45,39 @@ namespace GestionComercial.Infrastructure.Persistence
                 new IdentityRole { Id = "1", Name = "Developer", NormalizedName = "DEVELOPER" },
                 new IdentityRole { Id = "2", Name = "Administrator", NormalizedName = "ADMINISTRADOR" },
                 new IdentityRole { Id = "3", Name = "Supervisor", NormalizedName = "SUPERVISOR" },
-                new IdentityRole { Id = "4", Name = "Operator", NormalizedName = "OPERADOR" }
+                new IdentityRole { Id = "4", Name = "Operator", NormalizedName = "OPERADOR" },
+                new IdentityRole { Id = "5", Name = "Cashier", NormalizedName = "CAJERO" }
             );
 
+            // Configuración de la relación de RolePermission
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Role)
+                .WithMany() // IdentityRole no tiene propiedad de navegación por defecto
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configuración de la relación de UserPermission
+            modelBuilder.Entity<UserPermission>()
+                .HasOne(up => up.User)
+                .WithMany() // IdentityUser no tiene propiedad de navegación por defecto
+                .HasForeignKey(up => up.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserPermission>()
+                .HasOne(up => up.Permission)
+                .WithMany(p => p.UserPermissions)
+                .HasForeignKey(up => up.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             //PRECICION DE DECIMALES
-            modelBuilder.Entity<Tax>().Property(x => x.Rate).HasPrecision(18,2);
+            modelBuilder.Entity<Tax>().Property(x => x.Rate).HasPrecision(18, 2);
             modelBuilder.Entity<Product>().Property(x => x.Cost).HasPrecision(18, 4);
             modelBuilder.Entity<Product>().Property(x => x.MinimalStock).HasPrecision(18, 4);
             modelBuilder.Entity<Product>().Property(x => x.RealCost).HasPrecision(18, 4);
@@ -98,6 +126,11 @@ namespace GestionComercial.Infrastructure.Persistence
               .HasIndex(c => new { c.Name, c.StateId, c.AfipId })
               .IsUnique()
               .HasDatabaseName("State_Name_Index");
+
+             modelBuilder.Entity<Permission>()
+              .HasIndex(c => new { c.Name})
+              .IsUnique()
+              .HasDatabaseName("Permision_Name_Index");
 
 
         }

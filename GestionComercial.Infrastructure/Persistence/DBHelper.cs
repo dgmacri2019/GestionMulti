@@ -97,6 +97,12 @@ namespace GestionComercial.Infrastructure.Persistence
                     ex.InnerException.InnerException.Message.Contains("City_Name_Index"))
                 {
                     response.Message = "Esa localidad ya se encuentra registrada";
+                } 
+                else if (ex.InnerException != null &&
+                    ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Permision_Name_Index"))
+                {
+                    response.Message = "Ese nombre de permiso ya se encuentra registrado";
                 }
                 else if (ex.InnerException != null &&
                    ex.InnerException.InnerException != null &&
@@ -203,6 +209,12 @@ namespace GestionComercial.Infrastructure.Persistence
                     ex.InnerException.InnerException.Message.Contains("State_Name_Index"))
                 {
                     response.Message = "Esa provincia ya se encuentra registrada";
+                }
+                else if (ex.InnerException != null &&
+                    ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Permision_Name_Index"))
+                {
+                    response.Message = "Ese nombre de permiso ya se encuentra registrado";
                 }
                 else if (ex.InnerException != null &&
                    ex.InnerException.InnerException != null &&

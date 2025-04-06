@@ -1,7 +1,9 @@
-﻿namespace GestionComercial.Applications.Interfaces
+﻿using GestionComercial.Domain.Response;
+
+namespace GestionComercial.Applications.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> Authenticate(string username, string password);
+        Task<LoginResponse> Authenticate(string username, string password);
     }
 }

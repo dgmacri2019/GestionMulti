@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GestionComercial.Domain.Entities.Masters.Security;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionComercial.Domain.Entities.Masters
@@ -29,6 +31,8 @@ namespace GestionComercial.Domain.Entities.Masters
 
         public List<string> Roles { get; set; } = new List<string>();
 
-
+        public ICollection<UserPermission> UserPermissions { get; set; }
     }
+
 }
+
