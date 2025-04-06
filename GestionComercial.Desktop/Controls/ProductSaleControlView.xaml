@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="GestionComercial.Desktop.Controls.ProductSaleControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+    <UserControl.Resources>
+        <!-- Estilo para encabezados: centrados, en negrita, tanto horizontal como vertical -->
+        <Style x:Key="CenterBoldHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>        
+        
+        <!-- Estilo para el contenido de celdas centrado -->
+        <Style x:Key="CenteredTextStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- Estilo para el contenido de celdas alineado a la izquierda -->
+        <Style x:Key="LeftAlignedTextStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <DataGrid ItemsSource="{Binding Products}" AutoGenerateColumns="False"
+                  ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Código" Binding="{Binding Code}" Width="100"
+                                    ElementStyle="{StaticResource CenteredTextStyle}"/>
+                <DataGridTextColumn Header="Código de Barras" Binding="{Binding BarCode}" Width="140"
+                                    ElementStyle="{StaticResource CenteredTextStyle}"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="auto"
+                                    ElementStyle="{StaticResource LeftAlignedTextStyle}"/>
+                <DataGridTextColumn Header="Costo" Binding="{Binding Cost, StringFormat={}{0:C2}}" Width="100"
+                                    ElementStyle="{StaticResource CenteredTextStyle}"/>
+                <DataGridTemplateColumn Header="Listas de Precios" Width="250">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding PriceLists}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Description}" FontWeight="Bold"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Text=": " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding FinalPrice, StringFormat={}{0:C2}}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Text="  " HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
