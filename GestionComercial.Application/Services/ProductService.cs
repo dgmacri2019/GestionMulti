@@ -5,7 +5,6 @@ using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Immutable;
 
 namespace GestionComercial.Applications.Services
 {
@@ -33,6 +32,8 @@ namespace GestionComercial.Applications.Services
             return await _dBHelper.SaveChangesAsync(_context);
         }
 
+
+
         public GeneralResponse Delete(int id)
         {
             Product product = _context.Products.Find(id);
@@ -41,7 +42,7 @@ namespace GestionComercial.Applications.Services
                 _context.Products.Remove(product);
                 return _dBHelper.SaveChanges(_context);
             }
-            return new GeneralResponse { Success = false, Message = "Producto no encontrado" };
+            return new GeneralResponse { Success = false, Message = "Articulo no encontrado" };
         }
 
         public async Task<GeneralResponse> DeleteAsync(int id)
@@ -52,8 +53,10 @@ namespace GestionComercial.Applications.Services
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
-            return new GeneralResponse { Success = false, Message = "Producto no encontrado" };
+            return new GeneralResponse { Success = false, Message = "Articulo no encontrado" };
         }
+
+
 
         public IEnumerable<Product> GetAll()
         {
@@ -65,6 +68,8 @@ namespace GestionComercial.Applications.Services
             return await _context.Products.ToListAsync();
         }
 
+
+
         public Product GetById(int id)
         {
             return _context.Products.Find(id);
@@ -74,6 +79,8 @@ namespace GestionComercial.Applications.Services
         {
             return await _context.Products.FindAsync(id);
         }
+
+
 
         public GeneralResponse Update(Product product)
         {
@@ -87,10 +94,39 @@ namespace GestionComercial.Applications.Services
             return await _dBHelper.SaveChangesAsync(_context);
         }
 
+
+
+        public IEnumerable<ProductWithPricesDto> GetProductsWithPrices()
+        {
+            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
+            ICollection<PriceList> priceLists = _context.PriceLists.Where(pl => pl.IsEnabled && !pl.IsDeleted).ToList();
+            List<Product> products = _context.Products
+                //.Include(p => p.PriceLists)
+                .ToList();
+
+
+            IEnumerable<ProductWithPricesDto> result = products.Select(p => new ProductWithPricesDto
+            {
+                Id = p.Id,
+                Code = p.Code,
+                Description = p.Description,
+                Cost = p.Cost,
+                BarCode = p.BarCode,
+                PriceLists = priceLists.Select(pl => new PriceListItemDto
+                {
+                    Description = pl.Description,
+                    Utility = pl.Utility,
+                    FinalPrice = p.Cost + (p.Cost * pl.Utility / 100)
+                })/*.OrderBy(pl => pl.Utility)*/.ToList() // Ordenamos para que la lista 1 (utility=0) aparezca primero, luego las que ofrecen descuentos
+            });
+
+            return result;
+        }
+
         public async Task<IEnumerable<ProductWithPricesDto>> GetProductsWithPricesAsync()
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = _context.PriceLists.Where(pl =>pl.IsEnabled && !pl.IsDeleted).ToList();
+            ICollection<PriceList> priceLists = await _context.PriceLists.Where(pl => pl.IsEnabled && !pl.IsDeleted).ToListAsync();
             List<Product> products = await _context.Products
                 //.Include(p => p.PriceLists)
                 .ToListAsync();

@@ -1,11 +1,15 @@
-﻿namespace GestionComercial.Applications.Interfaces
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace GestionComercial.Applications.Interfaces
 {
     public interface IRoleService
     {
-        Task<bool> CreateRoleAsync(string roleName);
+        Task<bool> AddAsync(string roleName);
 
-        Task<bool> DeleteRoleAsync(string roleId);
+        Task<bool> DeleteAsync(string roleId);
 
-        List<string> GetRoles();
+        Task<List<IdentityRole>> GetAllAsync();
+        
+        List<IdentityRole> GetAll();
     }
 }

@@ -43,6 +43,7 @@ namespace GestionComercial.API.Controllers.Security
 
 
 
+
         [HttpPost("AddRolePermission")]
         public IActionResult AddRolePermission([FromBody] RolePermission rolePermission)
         {

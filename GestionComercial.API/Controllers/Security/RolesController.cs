@@ -17,28 +17,35 @@ namespace GestionComercial.API.Controllers.Security
         }
 
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateRole([FromBody] string roleName)
+        [HttpPost("AddAsync")]
+        public async Task<IActionResult> AddAsync([FromBody] string roleName)
         {
-            var result = await _roleService.CreateRoleAsync(roleName);
+            var result = await _roleService.AddAsync(roleName);
             if (!result) return BadRequest("Role already exists.");
             return Ok("Role created successfully.");
         }
 
 
-        [HttpDelete("delete/{roleId}")]
-        public async Task<IActionResult> DeleteRole(string roleId)
+        [HttpDelete("DeleteAsync/{roleId}")]
+        public async Task<IActionResult> DeleteAsync(string roleId)
         {
-            var result = await _roleService.DeleteRoleAsync(roleId);
+            var result = await _roleService.DeleteAsync(roleId);
             if (!result) return NotFound("Role not found.");
             return Ok("Role deleted successfully.");
         }
 
 
-        [HttpGet("list")]
-        public IActionResult GetRoles()
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
         {
-            return Ok(_roleService.GetRoles());
+            return Ok(_roleService.GetAll());
+        }
+
+        
+        [HttpGet("GetAllAsync")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            return Ok(await _roleService.GetAllAsync());
         }
     }
 }

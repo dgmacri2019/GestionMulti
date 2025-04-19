@@ -21,7 +21,8 @@ namespace GestionComercial.API.Controllers.Security
             _userManager = userManager;
         }
 
-        [HttpPost("login")]
+
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
             LoginResponse resultLogin = await _authService.Authenticate(request.UserName, request.Password);
@@ -33,7 +34,8 @@ namespace GestionComercial.API.Controllers.Security
             return Ok(new { resultLogin.Token });
         }
 
-        [HttpPost("register")]
+
+        [HttpPost("Register")]
         [Authorize(Roles = "Developer, Administrator")] // Solo admins pueden gestionar roles
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {

@@ -20,9 +20,10 @@ namespace GestionComercial.API.Controllers.Sales
             _userManager = userManager;
         }
 
-        // POST: api/sales/generarventa
-        [HttpPost("generarventa")]
-        public async Task<IActionResult> GenerarVenta()
+
+        // POST: api/sales/generatesaleasync
+        [HttpPost("GenerateSaleAsync")]
+        public async Task<IActionResult> GenerateSaleAsync()
         {
             // Aquí colocarías la lógica para generar una venta.
             // Por ejemplo: validar datos, crear la venta en la base de datos, etc.
@@ -33,12 +34,12 @@ namespace GestionComercial.API.Controllers.Sales
 
 
 
-        // POST: api/sales/anularventa
-        [HttpPost("anularventa")]
-        public async Task<IActionResult> AnularVenta()
+        // POST: api/sales/cancelsaleasync
+        [HttpPost("CancelSaleAsync")]
+        public async Task<IActionResult> CancelSaleAsync()
         {
             // Obtener el usuario autenticado.
-            var user = await _userManager.GetUserAsync(User);
+            IdentityUser? user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return Unauthorized();
@@ -46,13 +47,11 @@ namespace GestionComercial.API.Controllers.Sales
 
             // Si el usuario pertenece al rol "Cajero", debe contar con el permiso especial "anular_ventas".
             if (await _userManager.IsInRoleAsync(user, "Cajero"))
-            {
-                bool tienePermiso = IdentityUserExtensions.HasPermission(user, "anular_ventas", _context);
-                if (!tienePermiso)
-                {
+                if (!IdentityUserExtensions.HasPermission(user, "anular_ventas", _context))
                     return Forbid();
-                }
-            }
+
+
+
             // Para los roles Developer y Administrador se asume que tienen acceso total.
 
             // Aquí colocarías la lógica para anular una venta.

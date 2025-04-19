@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionComercial.Applications.Services
 {
@@ -14,7 +15,7 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        public async Task<bool> CreateRoleAsync(string roleName)
+        public async Task<bool> AddAsync(string roleName)
         {
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
@@ -24,9 +25,9 @@ namespace GestionComercial.Applications.Services
             return false; // El rol ya existe
         }
 
-        public async Task<bool> DeleteRoleAsync(string roleId)
+        public async Task<bool> DeleteAsync(string roleId)
         {
-            var role = await _roleManager.FindByIdAsync(roleId);
+            IdentityRole role = await _roleManager.FindByIdAsync(roleId);
             if (role != null)
             {
                 var result = await _roleManager.DeleteAsync(role);
@@ -35,9 +36,14 @@ namespace GestionComercial.Applications.Services
             return false;
         }
 
-        public List<string> GetRoles()
+        public async Task<List<IdentityRole>> GetAllAsync()
         {
-            return _roleManager.Roles.Select(r => r.Name).ToList();
+            return await _roleManager.Roles.ToListAsync();
+        }
+
+        public List<IdentityRole> GetAll()
+        {
+            return _roleManager.Roles.ToList();
         }
     }
 }
