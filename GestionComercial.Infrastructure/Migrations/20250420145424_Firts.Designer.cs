@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComercial.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250406223538_Initial-Create")]
-    partial class InitialCreate
+    [Migration("20250420145424_Firts")]
+    partial class Firts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,117 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasDatabaseName("Tax_Description_Index");
 
                     b.ToTable("Taxes");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Billing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CertPass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CommerceDataId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Concept")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("EmitInvoiceM")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ExpireCertificate")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ExpireCertificateText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasCertificate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PadronA5ExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PadronA5GenerationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PadronA5Sign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PadronA5Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PadronExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PadronGenerationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PadronSign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PadronToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SalePoint")
+                        .HasColumnType("int");
+
+                    b.Property<long>("UniqueId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("UsePadron")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("UseWSDL")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("WSDLExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("WSDLGenerationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WSDLSign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WSDLToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommerceDataId");
+
+                    b.ToTable("Billings");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.City", b =>
@@ -256,6 +367,123 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.CommerceData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ActivityStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Alias")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BusinessName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CBU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("CUIT")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FantasyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IIBB")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RegisterEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("ServiceEnable")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ServiceValidTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SystemVersionType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaxCondition")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("UseAccounting")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("WebSite")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CUIT")
+                        .IsUnique()
+                        .HasDatabaseName("CommerceData_Cuit_Index");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("CommerceDatas");
+                });
+
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Measure", b =>
                 {
                     b.Property<int>("Id")
@@ -303,6 +531,9 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ArticleId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -322,9 +553,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
@@ -338,7 +566,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ArticleId");
 
                     b.ToTable("PriceLists");
                 });
@@ -744,50 +972,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Product", b =>
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -904,7 +1089,50 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Articles");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1072,6 +1300,17 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Billing", b =>
+                {
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.CommerceData", "CommerceData")
+                        .WithMany("Billings")
+                        .HasForeignKey("CommerceDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommerceData");
+                });
+
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.City", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Masters.State", "State")
@@ -1102,11 +1341,30 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("State");
                 });
 
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.CommerceData", b =>
+                {
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("State");
+                });
+
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.PriceList", b =>
                 {
-                    b.HasOne("GestionComercial.Domain.Entities.Stock.Product", null)
+                    b.HasOne("GestionComercial.Domain.Entities.Stock.Article", null)
                         .WithMany("PriceLists")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ArticleId");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
@@ -1177,7 +1435,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasForeignKey("StateId");
                 });
 
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Product", b =>
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Stock.Category", "Category")
                         .WithMany("Products")
@@ -1267,6 +1525,11 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.CommerceData", b =>
+                {
+                    b.Navigation("Billings");
+                });
+
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Measure", b =>
                 {
                     b.Navigation("Products");
@@ -1291,14 +1554,14 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("UserPermissions");
                 });
 
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
+                {
+                    b.Navigation("PriceLists");
+                });
+
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Product", b =>
-                {
-                    b.Navigation("PriceLists");
                 });
 #pragma warning restore 612, 618
         }

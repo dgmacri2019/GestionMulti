@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GestionComercial.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Firts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -207,7 +207,7 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "Articles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -241,21 +241,21 @@ namespace GestionComercial.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Categories_CategoryId",
+                        name: "FK_Articles_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_Measures_MeasureId",
+                        name: "FK_Articles_Measures_MeasureId",
                         column: x => x.MeasureId,
                         principalTable: "Measures",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_Taxes_TaxId",
+                        name: "FK_Articles_Taxes_TaxId",
                         column: x => x.TaxId,
                         principalTable: "Taxes",
                         principalColumn: "Id",
@@ -301,6 +301,59 @@ namespace GestionComercial.Infrastructure.Migrations
                         column: x => x.StateId,
                         principalTable: "States",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommerceDatas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SystemVersionType = table.Column<int>(type: "int", nullable: false),
+                    BusinessName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FantasyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CUIT = table.Column<long>(type: "bigint", nullable: false),
+                    TaxCondition = table.Column<int>(type: "int", nullable: false),
+                    IIBB = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    ActivityStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WebSite = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CBU = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Alias = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegisterEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ServiceValidTo = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ServiceEnable = table.Column<bool>(type: "bit", nullable: false),
+                    UseAccounting = table.Column<bool>(type: "bit", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommerceDatas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommerceDatas_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommerceDatas_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -360,7 +413,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Utility = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    ArticleId = table.Column<int>(type: "int", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -372,9 +425,9 @@ namespace GestionComercial.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_PriceLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PriceLists_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
+                        name: "FK_PriceLists_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
                         principalColumn: "Id");
                 });
 
@@ -502,6 +555,53 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Billings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    HasCertificate = table.Column<bool>(type: "bit", nullable: false),
+                    CertPass = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UniqueId = table.Column<long>(type: "bigint", nullable: false),
+                    WSDLGenerationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    WSDLExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    WSDLSign = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WSDLToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UseWSDL = table.Column<bool>(type: "bit", nullable: false),
+                    PadronGenerationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PadronExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PadronSign = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UsePadron = table.Column<bool>(type: "bit", nullable: false),
+                    PadronToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PadronA5GenerationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PadronA5ExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PadronA5Sign = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PadronA5Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmitInvoiceM = table.Column<bool>(type: "bit", nullable: false),
+                    SalePoint = table.Column<int>(type: "int", nullable: false),
+                    Concept = table.Column<int>(type: "int", nullable: false),
+                    ExpireCertificate = table.Column<bool>(type: "bit", nullable: false),
+                    ExpireCertificateText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommerceDataId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Billings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Billings_CommerceDatas_CommerceDataId",
+                        column: x => x.CommerceDataId,
+                        principalTable: "CommerceDatas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Clients",
                 columns: table => new
                 {
@@ -568,6 +668,34 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Articles_CategoryId",
+                table: "Articles",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_MeasureId",
+                table: "Articles",
+                column: "MeasureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_TaxId",
+                table: "Articles",
+                column: "TaxId");
+
+            migrationBuilder.CreateIndex(
+                name: "Product_BarCode_Index",
+                table: "Articles",
+                column: "BarCode",
+                unique: true,
+                filter: "[BarCode] IS NOT NULL AND [BarCode] <> ''");
+
+            migrationBuilder.CreateIndex(
+                name: "Product_Code_Index",
+                table: "Articles",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -631,6 +759,11 @@ namespace GestionComercial.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Billings_CommerceDataId",
+                table: "Billings",
+                column: "CommerceDataId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cities_StateId",
                 table: "Cities",
                 column: "StateId");
@@ -652,43 +785,31 @@ namespace GestionComercial.Infrastructure.Migrations
                 column: "StateId");
 
             migrationBuilder.CreateIndex(
+                name: "CommerceData_Cuit_Index",
+                table: "CommerceDatas",
+                column: "CUIT",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommerceDatas_CityId",
+                table: "CommerceDatas",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommerceDatas_StateId",
+                table: "CommerceDatas",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "Permision_Name_Index",
                 table: "Permissions",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PriceLists_ProductId",
+                name: "IX_PriceLists_ArticleId",
                 table: "PriceLists",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_CategoryId",
-                table: "Products",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_MeasureId",
-                table: "Products",
-                column: "MeasureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_TaxId",
-                table: "Products",
-                column: "TaxId");
-
-            migrationBuilder.CreateIndex(
-                name: "Product_BarCode_Index",
-                table: "Products",
-                column: "BarCode",
-                unique: true,
-                filter: "[BarCode] IS NOT NULL AND [BarCode] <> ''");
-
-            migrationBuilder.CreateIndex(
-                name: "Product_Code_Index",
-                table: "Products",
-                column: "Code",
-                unique: true);
+                column: "ArticleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Providers_CityId",
@@ -757,6 +878,9 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Billings");
+
+            migrationBuilder.DropTable(
                 name: "Clients");
 
             migrationBuilder.DropTable(
@@ -767,6 +891,9 @@ namespace GestionComercial.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserPermissions");
+
+            migrationBuilder.DropTable(
+                name: "CommerceDatas");
 
             migrationBuilder.DropTable(
                 name: "PriceLists");
@@ -781,7 +908,7 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "Permissions");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Articles");
 
             migrationBuilder.DropTable(
                 name: "Cities");

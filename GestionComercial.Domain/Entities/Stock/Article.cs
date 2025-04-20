@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GestionComercial.Domain.Entities.Stock
 {
-    public class Product : CommonEntity
+    public class Article : CommonEntity
     {
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(20, ErrorMessage = "El campo {0} debe contener un máximo de {1} caracteres")]

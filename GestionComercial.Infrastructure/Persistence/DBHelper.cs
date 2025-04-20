@@ -58,6 +58,12 @@ namespace GestionComercial.Infrastructure.Persistence
                 }
                 else if (ex.InnerException != null &&
                     ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("CommerceData_Cuit_Index"))
+                {
+                    response.Message = "Ese número de CUIT ya se encuentra registrado";
+                } 
+                else if (ex.InnerException != null &&
+                    ex.InnerException.InnerException != null &&
                     ex.InnerException.InnerException.Message.Contains("Role_Name_Index"))
                 {
                     response.Message = "Ese nombre de rol ya se encuentra registrado";
@@ -179,6 +185,12 @@ namespace GestionComercial.Infrastructure.Persistence
                     ex.InnerException.InnerException.Message.Contains("Role_Name_Index"))
                 {
                     response.Message = "Ese nombre de rol ya se encuentra registrado";
+                }
+                else if (ex.InnerException != null &&
+                   ex.InnerException.InnerException != null &&
+                   ex.InnerException.InnerException.Message.Contains("CommerceData_Cuit_Index"))
+                {
+                    response.Message = "Ese número de CUIT ya se encuentra registrado";
                 }
                 else if (ex.InnerException != null &&
                     ex.InnerException.InnerException != null &&

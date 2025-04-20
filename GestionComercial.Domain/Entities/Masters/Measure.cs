@@ -13,6 +13,6 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Article> Products { get; set; }
     }
 }

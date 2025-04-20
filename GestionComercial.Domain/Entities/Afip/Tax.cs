@@ -25,7 +25,7 @@ namespace GestionComercial.Domain.Entities.Afip
 
 
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Article> Products { get; set; }
 
         //        public virtual ICollection<PurchaseDetail> PurcheaseDetails { get; set; }
 

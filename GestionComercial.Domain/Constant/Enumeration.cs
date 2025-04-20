@@ -94,5 +94,23 @@ namespace GestionComercial.Domain.Constant
 
         }
 
+        //Version del Sistema
+        public enum SystemVersionType
+        {
+            [Display(Name = "Ventas")]
+            Sale = 0X10,
+            [Display(Name = "Compras y Ventas")]
+            PurchaseSale = 0X11,
+            [Display(Name = "Compras")]
+            Purchase = 0X12,
+            [Display(Name = "Administración")]
+            Administration = 0X13,
+            [Display(Name = "Compras, Ventas y Administración")]
+            SalesPurchaseAdministration = 0X14,
+            [Display(Name = "Contabilidad")]
+            Accounting = 0X15,
+            [Display(Name = "Compras, Ventas, Administración y Contabilidad")]
+            SalesPurchaseAdministrationAccounting = 0X16
+        }
     }
 }

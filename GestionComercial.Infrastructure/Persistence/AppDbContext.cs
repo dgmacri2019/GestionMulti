@@ -19,8 +19,10 @@ namespace GestionComercial.Infrastructure.Persistence
 
 
         //MASTER
+        public DbSet<Billing> Billings { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Client> Clients { get; set; }
+        public DbSet<CommerceData> CommerceDatas { get; set; }
         public DbSet<Measure> Measures { get; set; }
         public DbSet<PriceList> PriceLists { get; set; }
         public DbSet<Provider> Providers { get; set; }
@@ -32,8 +34,9 @@ namespace GestionComercial.Infrastructure.Persistence
         public DbSet<UserPermission> UserPermissions { get; set; }
 
         //STOCK
+        public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Product> Products { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -78,12 +81,12 @@ namespace GestionComercial.Infrastructure.Persistence
 
             //PRECICION DE DECIMALES
             modelBuilder.Entity<Tax>().Property(x => x.Rate).HasPrecision(18, 2);
-            modelBuilder.Entity<Product>().Property(x => x.Cost).HasPrecision(18, 4);
-            modelBuilder.Entity<Product>().Property(x => x.MinimalStock).HasPrecision(18, 4);
-            modelBuilder.Entity<Product>().Property(x => x.RealCost).HasPrecision(18, 4);
-            modelBuilder.Entity<Product>().Property(x => x.Replacement).HasPrecision(18, 4);
-            modelBuilder.Entity<Product>().Property(x => x.Stock).HasPrecision(18, 4);
-            modelBuilder.Entity<Product>().Property(x => x.Umbral).HasPrecision(18, 4);
+            modelBuilder.Entity<Article>().Property(x => x.Cost).HasPrecision(18, 4);
+            modelBuilder.Entity<Article>().Property(x => x.MinimalStock).HasPrecision(18, 4);
+            modelBuilder.Entity<Article>().Property(x => x.RealCost).HasPrecision(18, 4);
+            modelBuilder.Entity<Article>().Property(x => x.Replacement).HasPrecision(18, 4);
+            modelBuilder.Entity<Article>().Property(x => x.Stock).HasPrecision(18, 4);
+            modelBuilder.Entity<Article>().Property(x => x.Umbral).HasPrecision(18, 4);
             modelBuilder.Entity<Client>().Property(x => x.Sold).HasPrecision(18, 4);
             modelBuilder.Entity<PriceList>().Property(x => x.Utility).HasPrecision(18, 4);
             modelBuilder.Entity<Provider>().Property(x => x.Sold).HasPrecision(18, 4);
@@ -91,10 +94,15 @@ namespace GestionComercial.Infrastructure.Persistence
 
 
             //INDEX
-            modelBuilder.Entity<Tax>()
-                .HasIndex(t => new { t.Description })
+            modelBuilder.Entity<CommerceData>()
+                .HasIndex(cd => new { cd.CUIT })
                 .IsUnique()
-                .HasDatabaseName("Tax_Description_Index");
+                .HasDatabaseName("CommerceData_Cuit_Index");
+
+            modelBuilder.Entity<Tax>()
+               .HasIndex(t => new { t.Description })
+               .IsUnique()
+               .HasDatabaseName("Tax_Description_Index");
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => new { u.UserName })
@@ -106,12 +114,12 @@ namespace GestionComercial.Infrastructure.Persistence
                 .IsUnique()
                 .HasDatabaseName("User_Email_Index");
 
-            modelBuilder.Entity<Product>()
+            modelBuilder.Entity<Article>()
                 .HasIndex(p => new { p.Code })
                 .IsUnique()
                 .HasDatabaseName("Product_Code_Index");
 
-            modelBuilder.Entity<Product>()
+            modelBuilder.Entity<Article>()
                .HasIndex(p => new { p.BarCode })
                .IsUnique()
                .HasDatabaseName("Product_BarCode_Index")
@@ -127,10 +135,10 @@ namespace GestionComercial.Infrastructure.Persistence
               .IsUnique()
               .HasDatabaseName("State_Name_Index");
 
-             modelBuilder.Entity<Permission>()
-              .HasIndex(c => new { c.Name})
-              .IsUnique()
-              .HasDatabaseName("Permision_Name_Index");
+            modelBuilder.Entity<Permission>()
+             .HasIndex(c => new { c.Name })
+             .IsUnique()
+             .HasDatabaseName("Permision_Name_Index");
 
 
         }

@@ -16,13 +16,13 @@ namespace GestionComercial.API.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync()
         {
             return Ok(await _userService.GetAllAsync());
         }
      
-        [HttpGet]
+        [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(_userService.GetAll());
@@ -30,7 +30,7 @@ namespace GestionComercial.API.Controllers
 
         
 
-        [HttpGet("{id}")]
+        [HttpGet("GetByIdAsync/{id}")]
         public async Task<IActionResult> GetByIdAsync(string id)
         {
             User user = await _userService.GetByIdAsync(id);
@@ -38,7 +38,7 @@ namespace GestionComercial.API.Controllers
             return Ok(user);
         }
         
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public IActionResult GetById(string id)
         {
             User user = _userService.GetById(id);
@@ -48,14 +48,14 @@ namespace GestionComercial.API.Controllers
 
 
        
-        [HttpPost]
+        [HttpPost("CreateAsync")]
         public async Task<IActionResult> CreateAsync(User user)
         {
             await _userService.AddAsync(user);
             return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
         }
         
-        [HttpPost]
+        [HttpPost("Create")]
         public IActionResult Create(User user)
         {
             _userService.Add(user);
@@ -64,7 +64,7 @@ namespace GestionComercial.API.Controllers
 
 
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateAsync/{id}")]
         public async Task<IActionResult> UpdateAsync(string id, User user)
         {
             if (id != user.Id) return BadRequest();
@@ -72,7 +72,7 @@ namespace GestionComercial.API.Controllers
             return NoContent();
         }
         
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public IActionResult Update(string id, User user)
         {
             if (id != user.Id) return BadRequest();
@@ -82,14 +82,14 @@ namespace GestionComercial.API.Controllers
 
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteAsync/{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
             await _userService.DeleteAsync(id);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public IActionResult Delete(string id)
         {
             _userService.Delete(id);
