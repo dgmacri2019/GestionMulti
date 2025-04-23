@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GestionComercial.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Firts : Migration
+    public partial class First : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -72,7 +72,8 @@ namespace GestionComercial.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    ModuleType = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -270,6 +271,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ChangePassword = table.Column<bool>(type: "bit", nullable: false),
+                    Enabled = table.Column<bool>(type: "bit", nullable: false),
                     Roles = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CityId = table.Column<int>(type: "int", nullable: true),
                     StateId = table.Column<int>(type: "int", nullable: true),
@@ -803,7 +805,7 @@ namespace GestionComercial.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "Permision_Name_Index",
                 table: "Permissions",
-                column: "Name",
+                columns: new[] { "Name", "ModuleType" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

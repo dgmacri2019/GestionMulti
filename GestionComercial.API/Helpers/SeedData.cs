@@ -1,6 +1,8 @@
 ﻿using ExcelDataReader;
+using GestionComercial.Domain.Constant;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Masters.Security;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
@@ -8,6 +10,7 @@ using GestionComercial.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Helpers
 {
@@ -22,18 +25,21 @@ namespace GestionComercial.API.Helpers
                 //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 GeneralResponse resultResponse = new GeneralResponse { Success = false };
 
-                string adminEmail = "macri.diego@gmail.com";
+                string developerEmail = "macri.diego@gmail.com";
+                string adminEmail = "admin@admin.com";
+                IdentityUser developerUser = await userManager.FindByEmailAsync(developerEmail);
                 IdentityUser adminUser = await userManager.FindByEmailAsync(adminEmail);
 
-                if (adminUser == null)
+                if (developerUser == null)
                 {
-                    User user = new User
+                    User user = new()
                     {
                         UserName = "dgmacri",
-                        Email = adminEmail,
+                        Email = developerEmail,
                         EmailConfirmed = true,
                         LastName = "MACRI",
                         FirstName = "Diego Gaston",
+                        Enabled = true
                     };
 
                     IdentityResult result = await userManager.CreateAsync(user, "@Diego248");
@@ -42,6 +48,28 @@ namespace GestionComercial.API.Helpers
                         await userManager.AddToRoleAsync(user, "DEVELOPER");
                     }
                 }
+
+                if (adminUser == null)
+                {
+                    User user = new()
+                    {
+                        UserName = "admin",
+                        Email = adminEmail,
+                        EmailConfirmed = true,
+                        LastName = "DEL SISTEMA",
+                        FirstName = "Administrador",
+                        Enabled = true
+                    };
+
+                    IdentityResult result = await userManager.CreateAsync(user, "@Admin123");
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, "ADMINISTRADOR");
+                    }
+                }
+
+
+
 
                 // Acá podés hacer seed a otras tablas también
                 AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -75,6 +103,10 @@ namespace GestionComercial.API.Helpers
                     if (!resultTaxes.Success)
                         return resultTaxes;
                 }
+                GeneralResponse resultPermisionInModules = await CheckPermisionInModulesAsync(dbContext);
+                if (!resultPermisionInModules.Success)
+                    return resultPermisionInModules;
+
                 resultResponse.Success = true;
                 return resultResponse;
 
@@ -84,6 +116,340 @@ namespace GestionComercial.API.Helpers
                 return new GeneralResponse { Success = false, Message = ex.Message };
             }
         }
+
+        private static async Task<GeneralResponse> CheckPermisionInModulesAsync(AppDbContext _context)
+        {
+            GeneralResponse result = new GeneralResponse { Success = false };
+
+            try
+            {
+                while (StaticCommon.ContextInUse)
+                    await Task.Delay(100);
+                StaticCommon.ContextInUse = true;
+
+                IdentityRole developerRole = await _context.Roles.FindAsync("1");
+                IdentityRole adminRole = await _context.Roles.FindAsync("2");
+                IdentityRole supervisorRole = await _context.Roles.FindAsync("3");
+                IdentityRole operatorRole = await _context.Roles.FindAsync("4");
+                IdentityRole cashierRole = await _context.Roles.FindAsync("5");
+                List<Permission> permissions = await _context.Permissions.ToListAsync();
+
+                foreach (ModuleType moduleType in Enum.GetValues(typeof(ModuleType)))
+                {
+                    string operationView = $"{EnumExtensionService.GetDisplayName(moduleType)}-Lectura";
+                    string operationAdd = $"{EnumExtensionService.GetDisplayName(moduleType)}-Agregar";
+                    string operationEdit = $"{EnumExtensionService.GetDisplayName(moduleType)}-Editar";
+                    string operationDelete = $"{EnumExtensionService.GetDisplayName(moduleType)}-Borrar";
+
+                    if (!permissions.Any(p => p.Name == operationView && p.ModuleType == moduleType))
+                    {
+                        Permission permission = new Permission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            ModuleType = moduleType,
+                            Name = operationView,
+                        };
+                        await _context.Permissions.AddAsync(permission);
+                        await _context.SaveChangesAsync();
+
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = developerRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = adminRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = supervisorRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = operatorRole.Id,
+                        });
+
+                        await _context.SaveChangesAsync();
+
+                        foreach (User user in await _context.Users.ToListAsync())
+                        {
+                            List<RolePermission> rolePermissions = await _context.RolePermissions
+                                .Where(rp => rp.RoleId == _context.UserRoles.Where(ur => ur.UserId == user.Id).FirstOrDefault().RoleId)
+                                .ToListAsync();
+
+                            foreach (RolePermission rolePermission in rolePermissions)
+                            {
+                                await _context.UserPermissions.AddAsync(new UserPermission
+                                {
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = "System",
+                                    IsDeleted = false,
+                                    IsEnabled = rolePermission.IsEnabled,
+                                    UserId = user.Id,
+                                    PermissionId = rolePermission.PermissionId,
+                                });
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+
+                    }
+                    if (!permissions.Any(p => p.Name == operationAdd && p.ModuleType == moduleType))
+                    {
+                        Permission permission = new Permission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            ModuleType = moduleType,
+                            Name = operationAdd,
+                        };
+                        await _context.Permissions.AddAsync(permission);
+                        await _context.SaveChangesAsync();
+
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = developerRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = adminRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = supervisorRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = operatorRole.Id,
+                        });
+                        await _context.SaveChangesAsync();
+
+                        foreach (User user in await _context.Users.ToListAsync())
+                        {
+                            List<RolePermission> rolePermissions = await _context.RolePermissions
+                                .Where(rp => rp.RoleId == _context.UserRoles.Where(ur => ur.UserId == user.Id).FirstOrDefault().RoleId)
+                                .ToListAsync();
+
+                            foreach (RolePermission rolePermission in rolePermissions)
+                            {
+                                await _context.UserPermissions.AddAsync(new UserPermission
+                                {
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = "System",
+                                    IsDeleted = false,
+                                    IsEnabled = rolePermission.IsEnabled,
+                                    UserId = user.Id,
+                                    PermissionId = rolePermission.PermissionId,
+                                });
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    if (!permissions.Any(p => p.Name == operationEdit && p.ModuleType == moduleType))
+                    {
+                        Permission permission = new Permission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            ModuleType = moduleType,
+                            Name = operationEdit,
+                        };
+                        await _context.Permissions.AddAsync(permission);
+                        await _context.SaveChangesAsync();
+
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = developerRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = adminRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = supervisorRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = false,
+                            PermissionId = permission.Id,
+                            RoleId = operatorRole.Id,
+                        });
+                        await _context.SaveChangesAsync();
+
+                        foreach (User user in await _context.Users.ToListAsync())
+                        {
+                            List<RolePermission> rolePermissions = await _context.RolePermissions
+                                .Where(rp => rp.RoleId == _context.UserRoles.Where(ur => ur.UserId == user.Id).FirstOrDefault().RoleId)
+                                .ToListAsync();
+
+                            foreach (RolePermission rolePermission in rolePermissions)
+                            {
+                                await _context.UserPermissions.AddAsync(new UserPermission
+                                {
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = "System",
+                                    IsDeleted = false,
+                                    IsEnabled = rolePermission.IsEnabled,
+                                    UserId = user.Id,
+                                    PermissionId = rolePermission.PermissionId,
+                                });
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    if (!permissions.Any(p => p.Name == operationDelete && p.ModuleType == moduleType))
+                    {
+                        Permission permission = new Permission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            ModuleType = moduleType,
+                            Name = operationDelete,
+                        };
+                        await _context.Permissions.AddAsync(permission);
+                        await _context.SaveChangesAsync();
+
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = developerRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = adminRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = false,
+                            PermissionId = permission.Id,
+                            RoleId = supervisorRole.Id,
+                        });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = false,
+                            PermissionId = permission.Id,
+                            RoleId = operatorRole.Id,
+                        });
+                        await _context.SaveChangesAsync();
+
+                        foreach (User user in await _context.Users.ToListAsync())
+                        {
+                            List<RolePermission> rolePermissions = await _context.RolePermissions
+                                .Where(rp => rp.RoleId == _context.UserRoles.Where(ur => ur.UserId == user.Id).FirstOrDefault().RoleId)
+                                .ToListAsync();
+
+                            foreach (RolePermission rolePermission in rolePermissions)
+                            {
+                                await _context.UserPermissions.AddAsync(new UserPermission
+                                {
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = "System",
+                                    IsDeleted = false,
+                                    IsEnabled = rolePermission.IsEnabled,
+                                    UserId = user.Id,
+                                    PermissionId = rolePermission.PermissionId,
+                                });
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                StaticCommon.ContextInUse = false;
+                result.Success = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                StaticCommon.ContextInUse = false;
+                result.Message = ex.Message;
+                return result;
+            }
+
+        }
+
 
         private static async Task<GeneralResponse> CreateTaxesAsync(AppDbContext _context)
         {
@@ -284,7 +650,7 @@ namespace GestionComercial.API.Helpers
                 StaticCommon.ContextInUse = false;
                 await _context.SaveChangesAsync();
 
-                result.Success = true; 
+                result.Success = true;
                 return result;
             }
             catch (Exception ex)

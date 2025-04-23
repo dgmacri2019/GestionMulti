@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComercial.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250420145424_Firts")]
-    partial class Firts
+    [Migration("20250423140646_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -709,9 +709,13 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ModuleType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -722,7 +726,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Name", "ModuleType")
                         .IsUnique()
                         .HasDatabaseName("Permision_Name_Index");
 
@@ -893,6 +897,9 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Enabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
@@ -1438,13 +1445,13 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Stock.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany("Articles")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GestionComercial.Domain.Entities.Masters.Measure", "Measure")
-                        .WithMany("Products")
+                        .WithMany("Articles")
                         .HasForeignKey("MeasureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1532,7 +1539,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Measure", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Articles");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.Permission", b =>
@@ -1561,7 +1568,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Articles");
                 });
 #pragma warning restore 612, 618
         }

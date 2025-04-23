@@ -3,6 +3,7 @@ using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace GestionComercial.Applications.Services
 {
@@ -21,7 +22,7 @@ namespace GestionComercial.Applications.Services
 
 
         public GeneralResponse Add(User user)
-        {
+        {           
             _context.Users.Add(user);
             return _dBHelper.SaveChanges(_context);
         }

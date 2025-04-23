@@ -89,7 +89,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        public virtual State State { get; set; }
+        public virtual State? State { get; set; }
 
         //public virtual ICollection<Purchase> Purcheases { get; set; }
     }

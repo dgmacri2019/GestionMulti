@@ -18,6 +18,6 @@ namespace GestionComercial.Domain.Entities.Stock
 
 
 
-        public virtual ICollection<Article> Products { get; set; }
+        public virtual ICollection<Article>? Articles { get; set; }
     }
 }

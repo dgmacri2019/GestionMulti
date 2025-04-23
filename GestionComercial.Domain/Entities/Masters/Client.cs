@@ -111,11 +111,14 @@ namespace GestionComercial.Domain.Entities.Masters
         public decimal Sold { get; set; }
 
 
+
+
+
         //public virtual City City { get; set; }
 
-        public virtual PriceList PriceList { get; set; }
+        public virtual PriceList? PriceList { get; set; }
 
-        public virtual State State { get; set; }
+        public virtual State? State { get; set; }
 
         //public virtual ICollection<Sale> Sales { get; set; }
 

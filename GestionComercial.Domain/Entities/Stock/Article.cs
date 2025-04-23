@@ -101,13 +101,13 @@ namespace GestionComercial.Domain.Entities.Stock
 
 
 
-        public virtual Tax Tax { get; set; }
+        public virtual Tax? Tax { get; set; }
 
-        public virtual Measure Measure { get; set; }
+        public virtual Measure? Measure { get; set; }
 
-        public virtual Category Category { get; set; }
+        public virtual Category? Category { get; set; }
 
-        public virtual ICollection<PriceList> PriceLists { get; set; }
+        public virtual ICollection<PriceList>? PriceLists { get; set; }
 
         //public virtual ICollection<SaleDetail> SaleDetails { get; set; }
 

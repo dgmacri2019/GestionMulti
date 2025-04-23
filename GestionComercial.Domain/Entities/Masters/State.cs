@@ -16,8 +16,8 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User>? Users { get; set; }
 
-        public virtual ICollection<Provider> Providers { get; set; }
+        public virtual ICollection<Provider>? Providers { get; set; }
     }
 }

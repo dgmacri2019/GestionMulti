@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters.Security;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionComercial.Domain.Entities.Masters
@@ -10,16 +9,24 @@ namespace GestionComercial.Domain.Entities.Masters
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(100, ErrorMessage = "El campo {0} no puede contener más de {1} caracteres")]
         [Display(Name = "Nombres")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(100, ErrorMessage = "El campo {0} no puede contener más de {1} caracteres")]
         [Display(Name = "Apellidos")]
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Cambiar Password?")]
         public bool ChangePassword { get; set; }
+
+        [Display(Name = "Habilitado?")]
+        public bool Enabled { get; set; }
+
+
+
+
+
 
         //[Required(ErrorMessage = "El campo {0} es requerido")]
         //[Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar el {0}")]
@@ -29,9 +36,9 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        public List<string> Roles { get; set; } = new List<string>();
+        public List<string> Roles { get; set; } = [];
 
-        public ICollection<UserPermission> UserPermissions { get; set; }
+        public ICollection<UserPermission>? UserPermissions { get; set; }
     }
 
 }

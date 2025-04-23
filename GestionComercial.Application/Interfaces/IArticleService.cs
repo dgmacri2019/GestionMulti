@@ -1,4 +1,4 @@
-﻿using GestionComercial.Domain.DTOs;
+﻿using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 
@@ -9,25 +9,25 @@ namespace GestionComercial.Applications.Interfaces
         Task<GeneralResponse> AddAsync(Article product);
         Task<GeneralResponse> UpdateAsync(Article product);
         Task<GeneralResponse> DeleteAsync(int id);
-        Task<IEnumerable<ProductWithPricesDto>> GetAllAsync(bool isEnabled, bool isDeleted);
-        Task<ProductWithPricesDto?> GetByIdAsync(int id);
-        Task<ProductWithPricesDto?> FindByCodeOrBarCodeAsync(string code);
-        Task<ProductWithPricesDto?> FindByBarCodeAsync(string barCode);
-        Task<IEnumerable<ProductWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted);
+        Task<IEnumerable<ArticleWithPricesDto>> GetAllAsync(bool isEnabled, bool isDeleted);
+        Task<ArticleWithPricesDto?> GetByIdAsync(int id);
+        Task<ArticleWithPricesDto?> FindByCodeOrBarCodeAsync(string code);
+        Task<ArticleWithPricesDto?> FindByBarCodeAsync(string barCode);
+        Task<IEnumerable<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted);
         Task<GeneralResponse> UpdatePricesAsync(IProgress<int> progress, int categoryId, int percentage);
-        Task<ProductResponse> GenerateNewBarCodeAsync();
+        Task<ArticleResponse> GenerateNewBarCodeAsync();
 
 
 
         GeneralResponse Add(Article product);
         GeneralResponse Update(Article product);
         GeneralResponse Delete(int id);
-        IEnumerable<ProductWithPricesDto> GetAll(bool isEnabled, bool isDeleted);
-        ProductWithPricesDto? GetById(int id);
-        ProductWithPricesDto? FindByCodeOrBarCode(string code);
-        ProductWithPricesDto? FindByBarCode(string barCode);
-        IEnumerable<ProductWithPricesDto> SearchToList(string description, bool isEnabled, bool isDeleted);
+        IEnumerable<ArticleWithPricesDto> GetAll(bool isEnabled, bool isDeleted);
+        ArticleWithPricesDto? GetById(int id);
+        ArticleWithPricesDto? FindByCodeOrBarCode(string code);
+        ArticleWithPricesDto? FindByBarCode(string barCode);
+        IEnumerable<ArticleWithPricesDto> SearchToList(string description, bool isEnabled, bool isDeleted);
         GeneralResponse UpdatePrices(IProgress<int> progress, int categoryId, int percentage);
-        ProductResponse GenerateNewBarCode();
+        ArticleResponse GenerateNewBarCode();
     }
 }

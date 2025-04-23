@@ -1,10 +1,12 @@
 using GestionComercial.API.Helpers;
+using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Services;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +37,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
+//builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 // Configurar JWT
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
 

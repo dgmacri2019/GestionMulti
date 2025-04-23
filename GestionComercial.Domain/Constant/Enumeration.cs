@@ -112,5 +112,45 @@ namespace GestionComercial.Domain.Constant
             [Display(Name = "Compras, Ventas, Administración y Contabilidad")]
             SalesPurchaseAdministrationAccounting = 0X16
         }
+
+        //Módulos del sistema
+        public enum ModuleType
+        {
+            [Display(Name = "Clientes")]
+            Clients = 1,
+            [Display(Name = "Proveedores")]
+            Providers = 2,
+            [Display(Name = "Articulos")]
+            Articles = 3,
+            [Display(Name = "Compras")]
+            Purchases = 4,
+            [Display(Name = "Ventas")]
+            Sales = 5,
+            [Display(Name = "Bancos")]
+            Banks = 6,
+            [Display(Name = "Reportes")]
+            Reports = 7,
+            [Display(Name = "Parametros")]
+            Parameters = 8,
+            [Display(Name = "Configuraciones")]
+            Settings = 9,
+            [Display(Name = "Cuentas Contables")]
+            Accounting = 10,
+            [Display(Name = "Listas de Precios")]
+            PriceList = 11,
+            [Display(Name = "Usuarios")]
+            Users = 12,
+            [Display(Name = "Ordenes de Compra")]
+            PurchaseOrders = 13,
+            [Display(Name = "Back Up")]
+            BackUp = 14,
+            [Display(Name = "Presupuestos")]
+            Budgets = 15,
+            [Display(Name = "Pagos y Cobranzas")]
+            Payments = 16,
+            [Display(Name = "Base de Datos")]
+            DataBase = 17,
+        }
+
     }
 }

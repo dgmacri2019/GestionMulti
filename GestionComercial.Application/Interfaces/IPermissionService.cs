@@ -63,5 +63,7 @@ namespace GestionComercial.Applications.Interfaces
         UserPermission GetUserPermissionById(int id);
 
 
+
+        Task<bool> UserHasPermissionAsync(string userId, string permission);
     }
 }

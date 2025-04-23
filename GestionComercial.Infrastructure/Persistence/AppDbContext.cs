@@ -136,7 +136,7 @@ namespace GestionComercial.Infrastructure.Persistence
               .HasDatabaseName("State_Name_Index");
 
             modelBuilder.Entity<Permission>()
-             .HasIndex(c => new { c.Name })
+             .HasIndex(c => new { c.Name, c.ModuleType })
              .IsUnique()
              .HasDatabaseName("Permision_Name_Index");
 

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GestionComercial.Domain\GestionComercial.Domain.csproj" />
     <ProjectReference Include="..\GestionComercial.Infrastructure\GestionComercial.Infrastructure.csproj" />
   </ItemGroup>

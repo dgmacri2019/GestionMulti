@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
@@ -64,7 +65,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public ProductWithPricesDto? FindByBarCode(string barCode)
+        public ArticleWithPricesDto? FindByBarCode(string barCode)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = _context.PriceLists
@@ -75,7 +76,7 @@ namespace GestionComercial.Applications.Services
             return product == null ? null : ToPriceDto(product, priceLists);
         }
 
-        public async Task<ProductWithPricesDto?> FindByBarCodeAsync(string barCode)
+        public async Task<ArticleWithPricesDto?> FindByBarCodeAsync(string barCode)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -88,7 +89,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public ProductWithPricesDto? FindByCodeOrBarCode(string code)
+        public ArticleWithPricesDto? FindByCodeOrBarCode(string code)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = _context.PriceLists
@@ -101,7 +102,7 @@ namespace GestionComercial.Applications.Services
             return product == null ? null : ToPriceDto(product, priceLists);
         }
 
-        public async Task<ProductWithPricesDto?> FindByCodeOrBarCodeAsync(string code)
+        public async Task<ArticleWithPricesDto?> FindByCodeOrBarCodeAsync(string code)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -116,7 +117,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public IEnumerable<ProductWithPricesDto> GetAll(bool isEnabled, bool isDeleted)
+        public IEnumerable<ArticleWithPricesDto> GetAll(bool isEnabled, bool isDeleted)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = _context.PriceLists
@@ -134,7 +135,7 @@ namespace GestionComercial.Applications.Services
             return ToListPriceDto(Articles, priceLists);
         }
 
-        public async Task<IEnumerable<ProductWithPricesDto>> GetAllAsync(bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<ArticleWithPricesDto>> GetAllAsync(bool isEnabled, bool isDeleted)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -153,7 +154,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public ProductWithPricesDto? GetById(int id)
+        public ArticleWithPricesDto? GetById(int id)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = _context.PriceLists
@@ -164,7 +165,7 @@ namespace GestionComercial.Applications.Services
             return product == null ? null : ToPriceDto(product, priceLists);
         }
 
-        public async Task<ProductWithPricesDto?> GetByIdAsync(int id)
+        public async Task<ArticleWithPricesDto?> GetByIdAsync(int id)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -178,7 +179,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public IEnumerable<ProductWithPricesDto> SearchToList(string description, bool isEnabled, bool isDeleted)
+        public IEnumerable<ArticleWithPricesDto> SearchToList(string description, bool isEnabled, bool isDeleted)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = _context.PriceLists
@@ -196,7 +197,7 @@ namespace GestionComercial.Applications.Services
             return ToListPriceDto(Articles, priceLists);
         }
 
-        public async Task<IEnumerable<ProductWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -346,7 +347,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public ProductResponse GenerateNewBarCode()
+        public ArticleResponse GenerateNewBarCode()
         {
             try
             {
@@ -361,7 +362,7 @@ namespace GestionComercial.Applications.Services
             Line0: string ean = "779";
                 ean += commerceCode;
                 if (cont == 5)
-                    return new ProductResponse
+                    return new ArticleResponse
                     {
                         Success = false,
                         Message = "Se ha superado la cantidad de intentos permitidos para general código de barras"
@@ -384,7 +385,7 @@ namespace GestionComercial.Applications.Services
                     StaticCommon.ContextInUse = false;
                     if (result)
                     {
-                        return new ProductResponse { BarCode = ean, Success = true };
+                        return new ArticleResponse { BarCode = ean, Success = true };
                     }
                     else
                     {
@@ -401,11 +402,11 @@ namespace GestionComercial.Applications.Services
             catch (Exception ex)
             {
                 StaticCommon.ContextInUse = false;
-                return new ProductResponse { Success = false, Message = ex.Message };
+                return new ArticleResponse { Success = false, Message = ex.Message };
             }
         }
 
-        public async Task<ProductResponse> GenerateNewBarCodeAsync()
+        public async Task<ArticleResponse> GenerateNewBarCodeAsync()
         {
             try
             {
@@ -420,7 +421,7 @@ namespace GestionComercial.Applications.Services
             Line0: string ean = "779";
                 ean += commerceCode;
                 if (cont == 5)
-                    return new ProductResponse
+                    return new ArticleResponse
                     {
                         Success = false,
                         Message = "Se ha superado la cantidad de intentos permitidos para general código de barras"
@@ -443,7 +444,7 @@ namespace GestionComercial.Applications.Services
                     StaticCommon.ContextInUse = false;
                     if (result)
                     {
-                        return new ProductResponse { BarCode = ean, Success = true };
+                        return new ArticleResponse { BarCode = ean, Success = true };
                     }
                     else
                     {
@@ -460,7 +461,7 @@ namespace GestionComercial.Applications.Services
             catch (Exception ex)
             {
                 StaticCommon.ContextInUse = false;
-                return new ProductResponse { Success = false, Message = ex.Message };
+                return new ArticleResponse { Success = false, Message = ex.Message };
             }
         }
 
@@ -469,7 +470,7 @@ namespace GestionComercial.Applications.Services
 
         #region Private Methods
 
-        private ProductWithPricesDto ToPriceDto(Article product, ICollection<PriceList> priceLists)
+        private ArticleWithPricesDto ToPriceDto(Article product, ICollection<PriceList> priceLists)
         {
             return new()
             {
@@ -491,9 +492,9 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        private IEnumerable<ProductWithPricesDto> ToListPriceDto(List<IGrouping<string, Article>> Articles, ICollection<PriceList> priceLists)
+        private IEnumerable<ArticleWithPricesDto> ToListPriceDto(List<IGrouping<string, Article>> Articles, ICollection<PriceList> priceLists)
         {
-            return Articles.SelectMany(group => group.Select(p => new ProductWithPricesDto
+            return Articles.SelectMany(group => group.Select(p => new ArticleWithPricesDto
             {
                 Id = p.Id,
                 Code = p.Code,

@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -67,5 +68,8 @@ namespace GestionComercial.Applications.Services
                 };
             }
         }
+
+
+        
     }
 }

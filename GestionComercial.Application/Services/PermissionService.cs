@@ -115,7 +115,7 @@ namespace GestionComercial.Applications.Services
 
         public IEnumerable<UserPermission> GetAllUserPermision()
         {
-           return _context.UserPermissions.ToList();
+            return _context.UserPermissions.ToList();
         }
 
         public async Task<IEnumerable<UserPermission>> GetAllUserPermisionAsync()
@@ -155,7 +155,7 @@ namespace GestionComercial.Applications.Services
 
         public GeneralResponse Update(Permission permission)
         {
-           _context.Entry(permission).State = EntityState.Modified;
+            _context.Entry(permission).State = EntityState.Modified;
             return _dBHelper.SaveChanges(_context);
         }
 
@@ -168,7 +168,7 @@ namespace GestionComercial.Applications.Services
         public GeneralResponse UpdateRolePermission(RolePermission rolePermission)
         {
             _context.Entry(rolePermission).State = EntityState.Modified;
-            return _dBHelper.SaveChanges(_context); 
+            return _dBHelper.SaveChanges(_context);
         }
 
         public async Task<GeneralResponse> UpdateRolePermissionAsync(RolePermission rolePermission)
@@ -179,7 +179,7 @@ namespace GestionComercial.Applications.Services
 
         public GeneralResponse UpdateUserPermission(UserPermission userPermission)
         {
-           _context.Entry(userPermission).State = EntityState.Modified;
+            _context.Entry(userPermission).State = EntityState.Modified;
             return _dBHelper.SaveChanges(_context);
         }
 
@@ -187,6 +187,13 @@ namespace GestionComercial.Applications.Services
         {
             _context.Entry(userPermission).State = EntityState.Modified;
             return await _dBHelper.SaveChangesAsync(_context);
+        }
+
+
+        public async Task<bool> UserHasPermissionAsync(string userId, string permission)
+        {
+            return await _context.UserPermissions
+                .AnyAsync(up => up.UserId == userId && up.Permission.Name == permission && up.IsEnabled && !up.IsDeleted);
         }
     }
 }
