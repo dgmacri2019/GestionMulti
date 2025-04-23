@@ -1,9 +1,7 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComercial.API.Controllers.Security
@@ -12,48 +10,25 @@ namespace GestionComercial.API.Controllers.Security
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly UserManager<User> _userManager;
+        private readonly IUserService _userService;
 
-        public AuthController(IAuthService authService, UserManager<User> userManager)
+        public AuthController(IUserService userService)
         {
-            _authService = authService;
-            _userManager = userManager;
+            _userService = userService;
         }
 
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        [HttpPost("LoginAsync")]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto request)
         {
-            LoginResponse resultLogin = await _authService.Authenticate(request.UserName, request.Password);
+            LoginResponse resultLogin = await _userService.LoginAsync(request.UserName, request.Password);
             if (!resultLogin.Success)
                 return BadRequest(resultLogin.Message);
             if (resultLogin.Success && resultLogin.Token == null)
-                return Unauthorized(new { message = "Invalid username or password" });
+                return Unauthorized(new { message = "Usuario o contraseña invalidos" });
 
             return Ok(new { resultLogin.Token });
-        }
-
-
-        [HttpPost("Register")]
-        [Authorize(Roles = "Developer, Administrator")] // Solo admins pueden gestionar roles
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
-        {
-            User user = new User
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-            };
-            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            await _userManager.AddToRoleAsync(user, model.Role);
-
-            return Ok(new { message = "User created successfully!" });
         }
     }
 }

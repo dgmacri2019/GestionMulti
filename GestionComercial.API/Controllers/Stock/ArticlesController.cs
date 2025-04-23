@@ -15,7 +15,6 @@ namespace GestionComercial.API.Controllers.Stock
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleService _artcicleService;
-        private static readonly string ControllerName = "Articulos-";
         public ArticlesController(IArticleService articleService)
         {
             _artcicleService = articleService;

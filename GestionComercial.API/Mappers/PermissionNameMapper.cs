@@ -8,6 +8,7 @@
             {
                 "Articles" => "Articulos",
                 "Clients" => "Clientes",
+                "Users" => "Usuarios",
                 _ => controller
             };
         }
@@ -17,7 +18,7 @@
             return action switch
             {
                 "Add" or "AddAsync" => "Agregar",
-                "Edit" or "EditAsync" or "Update" or "UpdateAsync" or "UpdatePrices" or "UpdatePricesAsync" or "GenerateNewBarCode" or "GenerateNewBarCodeAsync" => "Editar",
+                "Edit" or "EditAsync" or "Update" or "UpdateAsync" or "UpdatePrices" or "UpdatePricesAsync" or "GenerateNewBarCode" or "GenerateNewBarCodeAsync" or "ChangeRoleAsync" => "Editar",
                 "Delete" or "DeleteAsync" => "Eliminar",
                 "GetAll" or "GetAllAsync" or "GetById" or "GetByIdAsync" or "FindByBarCode" or "FindByBarCodeAsync"
                 or "FindByCodeOrBarCode" or "FindByCodeOrBarCodeAsync" or "SearchToList" or "SearchToListAsync" => "Lectura",

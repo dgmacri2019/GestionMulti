@@ -6,7 +6,7 @@ namespace GestionComercial.API.Controllers.Security
 {
     [Route("api/roles")]
     [ApiController]
-    [Authorize(Roles = "Developer, Administrator")] // Solo admins pueden gestionar roles
+    [Authorize(Roles = "Developer, Administrator")] // Solo Developers y Admins pueden gestionar roles
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;
@@ -21,8 +21,8 @@ namespace GestionComercial.API.Controllers.Security
         public async Task<IActionResult> AddAsync([FromBody] string roleName)
         {
             var result = await _roleService.AddAsync(roleName);
-            if (!result) return BadRequest("Role already exists.");
-            return Ok("Role created successfully.");
+            if (!result) return BadRequest("El Rol ya existe");
+            return Ok("Rol creado correctamente");
         }
 
 
@@ -30,8 +30,8 @@ namespace GestionComercial.API.Controllers.Security
         public async Task<IActionResult> DeleteAsync(string roleId)
         {
             var result = await _roleService.DeleteAsync(roleId);
-            if (!result) return NotFound("Role not found.");
-            return Ok("Role deleted successfully.");
+            if (!result) return NotFound("El Rol no existe");
+            return Ok("Rol borrado correctamente");
         }
 
 
