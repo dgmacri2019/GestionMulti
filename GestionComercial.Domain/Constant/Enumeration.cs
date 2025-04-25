@@ -150,6 +150,8 @@ namespace GestionComercial.Domain.Constant
             Payments = 16,
             [Display(Name = "Base de Datos")]
             DataBase = 17,
+            [Display(Name = "Permisos")]
+            Permission = 18,
         }
 
     }

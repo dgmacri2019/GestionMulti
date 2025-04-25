@@ -1,4 +1,5 @@
-﻿using GestionComercial.Applications.Interfaces;
+﻿using GestionComercial.API.Security;
+using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs;
 using GestionComercial.Domain.Entities.Masters.Security;
 using GestionComercial.Domain.Response;
@@ -9,7 +10,8 @@ namespace GestionComercial.API.Controllers.Security
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Developer, Administrator")] // Solo admins pueden gestionar roles
+    [Authorize]
+    [AuthorizePermission]
     public class PermissionsController : ControllerBase
     {
         private readonly IPermissionService _permissionService;

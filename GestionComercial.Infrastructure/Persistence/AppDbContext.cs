@@ -140,6 +140,11 @@ namespace GestionComercial.Infrastructure.Persistence
              .IsUnique()
              .HasDatabaseName("Permision_Name_Index");
 
+            modelBuilder.Entity<UserPermission>()
+             .HasIndex(up => new { up.UserId, up.PermissionId, up.IsDeleted, up.IsEnabled })
+             .IsUnique()
+             .HasDatabaseName("Permision_Name_Index");
+
 
         }
 

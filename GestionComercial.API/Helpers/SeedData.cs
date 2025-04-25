@@ -202,15 +202,19 @@ namespace GestionComercial.API.Helpers
 
                             foreach (RolePermission rolePermission in rolePermissions)
                             {
-                                await _context.UserPermissions.AddAsync(new UserPermission
-                                {
-                                    CreateDate = DateTime.Now,
-                                    CreateUser = "System",
-                                    IsDeleted = false,
-                                    IsEnabled = rolePermission.IsEnabled,
-                                    UserId = user.Id,
-                                    PermissionId = rolePermission.PermissionId,
-                                });
+                                UserPermission? userPermission = await _context.UserPermissions
+                                    .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                                    .FirstOrDefaultAsync();
+                                if (userPermission == null)
+                                    await _context.UserPermissions.AddAsync(new UserPermission
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = "System",
+                                        IsDeleted = false,
+                                        IsEnabled = rolePermission.IsEnabled,
+                                        UserId = user.Id,
+                                        PermissionId = rolePermission.PermissionId,
+                                    });
                             }
                             await _context.SaveChangesAsync();
                         }
@@ -276,15 +280,19 @@ namespace GestionComercial.API.Helpers
 
                             foreach (RolePermission rolePermission in rolePermissions)
                             {
-                                await _context.UserPermissions.AddAsync(new UserPermission
-                                {
-                                    CreateDate = DateTime.Now,
-                                    CreateUser = "System",
-                                    IsDeleted = false,
-                                    IsEnabled = rolePermission.IsEnabled,
-                                    UserId = user.Id,
-                                    PermissionId = rolePermission.PermissionId,
-                                });
+                                UserPermission? userPermission = await _context.UserPermissions
+                                    .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                                    .FirstOrDefaultAsync();
+                                if (userPermission == null)
+                                    await _context.UserPermissions.AddAsync(new UserPermission
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = "System",
+                                        IsDeleted = false,
+                                        IsEnabled = rolePermission.IsEnabled,
+                                        UserId = user.Id,
+                                        PermissionId = rolePermission.PermissionId,
+                                    });
                             }
                             await _context.SaveChangesAsync();
                         }
@@ -349,15 +357,19 @@ namespace GestionComercial.API.Helpers
 
                             foreach (RolePermission rolePermission in rolePermissions)
                             {
-                                await _context.UserPermissions.AddAsync(new UserPermission
-                                {
-                                    CreateDate = DateTime.Now,
-                                    CreateUser = "System",
-                                    IsDeleted = false,
-                                    IsEnabled = rolePermission.IsEnabled,
-                                    UserId = user.Id,
-                                    PermissionId = rolePermission.PermissionId,
-                                });
+                                UserPermission? userPermission = await _context.UserPermissions
+                                    .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                                    .FirstOrDefaultAsync();
+                                if (userPermission == null)
+                                    await _context.UserPermissions.AddAsync(new UserPermission
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = "System",
+                                        IsDeleted = false,
+                                        IsEnabled = rolePermission.IsEnabled,
+                                        UserId = user.Id,
+                                        PermissionId = rolePermission.PermissionId,
+                                    });
                             }
                             await _context.SaveChangesAsync();
                         }
@@ -422,15 +434,19 @@ namespace GestionComercial.API.Helpers
 
                             foreach (RolePermission rolePermission in rolePermissions)
                             {
-                                await _context.UserPermissions.AddAsync(new UserPermission
-                                {
-                                    CreateDate = DateTime.Now,
-                                    CreateUser = "System",
-                                    IsDeleted = false,
-                                    IsEnabled = rolePermission.IsEnabled,
-                                    UserId = user.Id,
-                                    PermissionId = rolePermission.PermissionId,
-                                });
+                                UserPermission? userPermission = await _context.UserPermissions
+                                    .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                                    .FirstOrDefaultAsync();
+                                if (userPermission == null)
+                                    await _context.UserPermissions.AddAsync(new UserPermission
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = "System",
+                                        IsDeleted = false,
+                                        IsEnabled = rolePermission.IsEnabled,
+                                        UserId = user.Id,
+                                        PermissionId = rolePermission.PermissionId,
+                                    });
                             }
                             await _context.SaveChangesAsync();
                         }
@@ -623,7 +639,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Categoria 1",
-                        Color = "FFFFFF",
+                        Color = "#FF5733",
                     },
                     new Category
                     {
@@ -632,7 +648,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Categoria 2",
-                        Color = "FFFFFF",
+                        Color = "#FFC773",
                     },
                     new Category
                     {
@@ -641,7 +657,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Categoria 3",
-                        Color = "FFFFFF",
+                        Color = "#4A7781",
                     },
                 ];
 

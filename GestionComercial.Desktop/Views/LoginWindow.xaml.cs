@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
-using System;
 using System.Windows;
 
 namespace GestionComercial.Desktop.Views
@@ -22,9 +21,11 @@ namespace GestionComercial.Desktop.Views
             string token = await _authService.LoginAsync(username, password);
 
             if (!string.IsNullOrWhiteSpace(token))
-            {               
-                App.UserName = TokenHelper.GetUsername(token); 
-                App.UserRole = TokenHelper.GetRole(token);     
+            {
+                App.UserName = TokenHelper.GetUsername(token);
+                App.UserRole = TokenHelper.GetRole(token);
+                App.AuthToken = TokenHelper.ExtractTokenValue(token);
+
                 // Abrir ventana principal y pasar el token
                 MainWindow main = new();
                 main.Show();

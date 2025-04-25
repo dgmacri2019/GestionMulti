@@ -26,8 +26,8 @@ namespace GestionComercial.API.Controllers.Security
         }
 
 
-        [HttpDelete("DeleteAsync/{roleId}")]
-        public async Task<IActionResult> DeleteAsync(string roleId)
+        [HttpPost("DeleteAsync")]
+        public async Task<IActionResult> DeleteAsync([FromBody] string roleId)
         {
             var result = await _roleService.DeleteAsync(roleId);
             if (!result) return NotFound("El Rol no existe");

@@ -17,7 +17,7 @@ namespace GestionComercial.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -818,9 +818,11 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.HasIndex("UserId");
-
                     b.HasIndex("UserId1");
+
+                    b.HasIndex("UserId", "PermissionId", "IsDeleted", "IsEnabled")
+                        .IsUnique()
+                        .HasDatabaseName("Permision_Name_Index");
 
                     b.ToTable("UserPermissions");
                 });

@@ -851,14 +851,15 @@ namespace GestionComercial.Infrastructure.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserPermissions_UserId",
-                table: "UserPermissions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserPermissions_UserId1",
                 table: "UserPermissions",
                 column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "Permision_Name_Index",
+                table: "UserPermissions",
+                columns: new[] { "UserId", "PermissionId", "IsDeleted", "IsEnabled" },
+                unique: true);
         }
 
         /// <inheritdoc />

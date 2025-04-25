@@ -500,6 +500,7 @@ namespace GestionComercial.Applications.Services
                 Code = p.Code,
                 Description = p.Description,
                 Category = p.Category.Description,
+                CategoryColor = p.Category.Color,
                 Cost = p.Cost,
                 BarCode = p.BarCode,
                 PriceLists = priceLists.Select(pl => new PriceListItemDto

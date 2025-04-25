@@ -16,7 +16,7 @@ namespace GestionComercial.Desktop.Services
 
         public async Task<string> LoginAsync(string username, string password)
         {
-            var response = await _client.PostAsJsonAsync("api/auth/login", new { username, password });
+            var response = await _client.PostAsJsonAsync("api/auth/LoginAsync", new { username, password });
 
             if (response.IsSuccessStatusCode)
             {

@@ -14,8 +14,8 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="14"/>
-        </Style>        
-        
+        </Style>
+
         <!-- Estilo para el contenido de celdas centrado -->
         <Style x:Key="CenteredTextStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -37,15 +37,70 @@
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Código" Binding="{Binding Code}" Width="100"
-                                    ElementStyle="{StaticResource CenteredTextStyle}"/>
-                <DataGridTextColumn Header="Código de Barras" Binding="{Binding BarCode}" Width="140"
-                                    ElementStyle="{StaticResource CenteredTextStyle}"/>
-                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="auto"
-                                    ElementStyle="{StaticResource LeftAlignedTextStyle}"/>
-                <DataGridTextColumn Header="Costo" Binding="{Binding Cost, StringFormat={}{0:C2}}" Width="100"
-                                    ElementStyle="{StaticResource CenteredTextStyle}"/>
-                <DataGridTemplateColumn Header="Listas de Precios" Width="250">
+                <DataGridTemplateColumn Header="Categoría" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding CategoryColor}" Padding="5" CornerRadius="4">
+                                <TextBlock Text="{Binding Category}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           TextAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Código" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding Code}" 
+                                           Style="{StaticResource CenteredTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Código Barra" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding BarCode}" 
+                                           Style="{StaticResource CenteredTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Descripción" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding Description}" 
+                                           Style="{StaticResource LeftAlignedTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                 <DataGridTemplateColumn Header="Costo" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding Cost, StringFormat={}{0:C2}}" 
+                                           Style="{StaticResource CenteredTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Listas de Precios" Width="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding PriceLists}">

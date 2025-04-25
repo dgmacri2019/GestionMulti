@@ -1,4 +1,4 @@
-﻿using GestionComercial.Desktop.ViewModels;
+﻿using GestionComercial.Desktop.ViewModels.Stock;
 using System.Windows.Controls;
 
 namespace GestionComercial.Desktop.Controls
@@ -11,7 +11,7 @@ namespace GestionComercial.Desktop.Controls
         public ProductSaleControlView()
         {
             InitializeComponent();
-            DataContext = new ProductListViewModel();
+            DataContext = new ArticleListViewModel();
         }
 
 

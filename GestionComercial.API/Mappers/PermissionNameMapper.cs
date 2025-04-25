@@ -9,6 +9,7 @@
                 "Articles" => "Articulos",
                 "Clients" => "Clientes",
                 "Users" => "Usuarios",
+                "Permissions" => "Permisos",
                 _ => controller
             };
         }
