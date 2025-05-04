@@ -9,25 +9,49 @@ namespace GestionComercial.Desktop.ViewModels.Stock
     {
         private readonly ArticlesApiService _articlesApiService;
 
-        public ObservableCollection<ArticleWithPricesDto> Products { get; set; } = new ObservableCollection<ArticleWithPricesDto>();
+        public ObservableCollection<ArticleWithPricesDto> Products { get; set; } = [];
 
-        public ICommand LoadProductsCommand { get; }
+        public ICommand? LoadProductsCommand { get; }
 
-        public ArticleListViewModel()
+        public ArticleListViewModel(bool isEnabled, bool isDeleted)
         {
             _articlesApiService = new ArticlesApiService();
             //LoadProductsCommand = new RelayCommand(async () => await LoadProductsAsync());
-            LoadProductsAsync();
+            GetAllArticlesAsync(isEnabled, isDeleted);
         }
 
-        public async Task LoadProductsAsync()
+        public ArticleListViewModel(string description, bool isEnabled, bool isDeleted)
         {
-            var products = await _articlesApiService.GetProductsWithPricesAsync();
+            _articlesApiService = new ArticlesApiService();
+            //LoadProductsCommand = new RelayCommand(async () => await LoadProductsAsync());
+            SearchAsync(description, isEnabled, isDeleted);
+        }
+
+        public async Task GetAllArticlesAsync(bool isEnabled, bool isDeleted)
+        {
+            List<ArticleWithPricesDto> products = await _articlesApiService.GetProductsWithPricesAsync(isEnabled, isDeleted);
             Products.Clear();
             foreach (var p in products)
             {
                 Products.Add(p);
             }
         }
+
+
+        public async Task<ObservableCollection<ArticleWithPricesDto>> SearchAsync(string description, bool isEnabled, bool isDeleted)
+        {
+            List<ArticleWithPricesDto> products = await _articlesApiService.SearchToListAsync(description, isEnabled, isDeleted);
+            Products.Clear();
+            foreach (var p in products)
+            {
+                Products.Add(p);
+            }
+
+            return Products;
+        }
+
+
+
+
     }
 }

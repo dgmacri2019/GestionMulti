@@ -15,6 +15,7 @@ namespace GestionComercial.Desktop.Views
 
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
+            lblError.Text = string.Empty;
             string username = txtUsername.Text;
             string password = txtPassword.Password;
 
@@ -31,10 +32,8 @@ namespace GestionComercial.Desktop.Views
                 main.Show();
                 this.Close();
             }
-            else
-            {
-                MessageBox.Show("Credenciales inválidas", "Login", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            else            
+                lblError.Text = "Credenciales inválidas";            
         }
     }
 }

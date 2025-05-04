@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Masters
@@ -88,10 +89,13 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
+        [JsonIgnore] 
         public virtual State? State { get; set; }
 
+        [JsonIgnore] 
         public virtual City? City { get; set; }
 
+        [JsonIgnore] 
         public ICollection<Billing>? Billings { get; set; }
 
     }

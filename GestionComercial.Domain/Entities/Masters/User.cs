@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.Masters.Security;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Masters
 {
@@ -38,6 +39,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
         public List<string> Roles { get; set; } = [];
 
+        [JsonIgnore] 
         public ICollection<UserPermission>? UserPermissions { get; set; }
     }
 

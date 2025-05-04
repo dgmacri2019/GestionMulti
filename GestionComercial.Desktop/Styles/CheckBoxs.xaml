@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    
+    <Style x:Key="CheckBox" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="DarkGray"/>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="DarkGray"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="LightCyan"/>
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
+
+
+    <Style x:Key="Test" TargetType="ContentControl">
+        <Setter Property="Background" Value="Aqua"/>
+    </Style>
+</ResourceDictionary>

@@ -110,7 +110,7 @@ namespace GestionComercial.API.Controllers.Stock
         [HttpPost("GetById")]
         public IActionResult GetById([FromBody] ArticleFilterDto filter)
         {
-            ArticleWithPricesDto? article = _artcicleService.GetById(filter.Id);
+            ArticleViewModel? article = _artcicleService.GetById(filter.Id);
             if (article == null)
                 return NotFound();
 
@@ -120,7 +120,7 @@ namespace GestionComercial.API.Controllers.Stock
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] ArticleFilterDto filter)
         {
-            ArticleWithPricesDto? article = await _artcicleService.GetByIdAsync(filter.Id);
+            ArticleViewModel? article = await _artcicleService.GetByIdAsync(filter.Id);
             if (article == null)
                 return NotFound();
 

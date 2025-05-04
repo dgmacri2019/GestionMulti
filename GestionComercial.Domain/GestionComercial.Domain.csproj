@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Security\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

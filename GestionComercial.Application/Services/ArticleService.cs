@@ -1,6 +1,6 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.DTOs;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
@@ -43,7 +43,7 @@ namespace GestionComercial.Applications.Services
 
         public GeneralResponse Delete(int id)
         {
-            Article product = _context.Articles.Find(id);
+            Article? product = _context.Articles.Find(id);
             if (product != null)
             {
                 _context.Articles.Remove(product);
@@ -54,7 +54,7 @@ namespace GestionComercial.Applications.Services
 
         public async Task<GeneralResponse> DeleteAsync(int id)
         {
-            Article product = await _context.Articles.FindAsync(id);
+            Article? product = await _context.Articles.FindAsync(id);
             if (product != null)
             {
                 _context.Articles.Remove(product);
@@ -154,27 +154,74 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public ArticleWithPricesDto? GetById(int id)
+        public ArticleViewModel? GetById(int id)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = _context.PriceLists
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToList();
-            Article? product = _context.Articles.Find(id);
+            ICollection<Tax> taxes = _context.Taxes
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToList();
+            ICollection<Measure> measures = _context.Measures
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToList();
+            ICollection<Category> categories = _context.Categories
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToList();
 
-            return product == null ? null : ToPriceDto(product, priceLists);
+            Article? article = _context.Articles
+                .Include(c => c.Category)
+                .Include(t => t.Tax)
+                .Include(m => m.Measure)
+                .Where(a => a.Id == id)
+                .FirstOrDefault();
+
+            taxes.Add(new Tax { Id = 0, Description = "Seleccione el I.V.A." });
+            measures.Add(new Measure { Id = 0, Description = "Seleccione la unidad de medida" });
+            categories.Add(new Category { Id = 0, Description = "Seleccione la categoría" });
+            return article == null ? null : ConverterHelper.ToArticleViewModel(article, taxes, measures, categories);
         }
 
-        public async Task<ArticleWithPricesDto?> GetByIdAsync(int id)
+        public async Task<ArticleViewModel?> GetByIdAsync(int id)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
+               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+               .ToListAsync();
+
+            ICollection<Tax> taxes = await _context.Taxes
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<Measure> measures = await _context.Measures
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Category> categories = await _context.Categories
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            taxes.Add(new Tax { Id = 0, Description = "Seleccione el I.V.A." });
+            measures.Add(new Measure { Id = 0, Description = "Seleccione la unidad de medida" });
+            categories.Add(new Category { Id = 0, Description = "Seleccione la categoría" });
 
-            Article? product = await _context.Articles.FindAsync(id);
+            if (id == 0)
+                return new ArticleViewModel
+                {
+                    Taxes = taxes,
+                    Measures = measures,
+                    Categories = categories,
+                    IsDeleted = false,
+                    IsEnabled = true,
+                    CreateDate = DateTime.Now,
+                };
 
-            return product == null ? null : ToPriceDto(product, priceLists);
+            Article? article = await _context.Articles
+                .Include(c => c.Category)
+                .Include(t => t.Tax)
+                .Include(m => m.Measure)
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+
+            return article == null ? null : ConverterHelper.ToArticleViewModel(article, taxes, measures, categories);
         }
 
 
@@ -189,7 +236,7 @@ namespace GestionComercial.Applications.Services
                  .Include(p => p.Tax)
                  .Include(m => m.Measure)
                  .Include(c => c.Category)
-                 .Where(c => c.IsDeleted == isDeleted && c.IsEnabled == isEnabled && (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description)))
+                 .Where(c => c.IsDeleted == isDeleted && c.IsEnabled == isEnabled && (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description) || c.BarCode.Contains(description)))
                  .GroupBy(c => c.Category.Description)
                  .ToList();
 
@@ -207,7 +254,7 @@ namespace GestionComercial.Applications.Services
                  .Include(p => p.Tax)
                  .Include(m => m.Measure)
                  .Include(c => c.Category)
-                 .Where(c => c.IsDeleted == isDeleted && c.IsEnabled == isEnabled && (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description)))
+                 .Where(c => c.IsDeleted == isDeleted && c.IsEnabled == isEnabled && (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description) || c.BarCode.Contains(description)))
                  .GroupBy(c => c.Category.Description)
                  .ToListAsync();
 
@@ -470,21 +517,41 @@ namespace GestionComercial.Applications.Services
 
         #region Private Methods
 
-        private ArticleWithPricesDto ToPriceDto(Article product, ICollection<PriceList> priceLists)
+        private ArticleWithPricesDto ToPriceDto(Article article, ICollection<PriceList> priceLists)
         {
             return new()
             {
-                Id = product.Id,
-                Code = product.Code,
-                Description = product.Description,
-                Category = product.Category.Description,
-                Cost = product.Cost,
-                BarCode = product.BarCode,
+                Id = article.Id,
+                Stock = article.Stock,
+                Code = article.Code,
+                Description = article.Description,
+                Category = article.Category.Description,
+                Cost = article.Cost,
+                Bonification = article.Bonification,
+                RealCost = article.RealCost,
+                PriceWithTax = article.PriceWithTaxes,
+                CategoryColor = article.Category.Color,
+                BarCode = article.BarCode,
+                TaxesPrice =
+                [
+                     new TaxePriceDto
+                     {
+                         Description = $"I.V.A. {article.Tax.Description}",
+                         Utility = article.Tax.Rate,
+                         Price = article.RealCost * article.Tax.Rate /100,
+                     },
+                     new TaxePriceDto
+                     {
+                         Description = string.Format("Impuestos internos {0}%", article.InternalTax),
+                         Utility =article.InternalTax,
+                         Price = article.RealCost * article.InternalTax /100,
+                     }
+                ],
                 PriceLists = priceLists.Select(pl => new PriceListItemDto
                 {
                     Description = pl.Description,
                     Utility = pl.Utility,
-                    FinalPrice = product.Cost + (product.Cost * pl.Utility / 100)
+                    FinalPrice = article.PriceWithTaxes + (article.PriceWithTaxes * pl.Utility / 100)
                 })
                 .OrderBy(pl => pl.Utility)
                 .ToList() // Ordenamos para que la lista 1 (utility=0) aparezca primero, luego las que ofrecen descuentos
@@ -494,20 +561,39 @@ namespace GestionComercial.Applications.Services
 
         private IEnumerable<ArticleWithPricesDto> ToListPriceDto(List<IGrouping<string, Article>> Articles, ICollection<PriceList> priceLists)
         {
-            return Articles.SelectMany(group => group.Select(p => new ArticleWithPricesDto
+            return Articles.SelectMany(group => group.Select(article => new ArticleWithPricesDto
             {
-                Id = p.Id,
-                Code = p.Code,
-                Description = p.Description,
-                Category = p.Category.Description,
-                CategoryColor = p.Category.Color,
-                Cost = p.Cost,
-                BarCode = p.BarCode,
+                Id = article.Id,
+                Stock = article.Stock,
+                Code = article.Code,
+                Description = article.Description,
+                Category = article.Category.Description,
+                CategoryColor = article.Category.Color,
+                PriceWithTax = article.PriceWithTaxes,
+                Cost = article.Cost,
+                Bonification = article.Bonification,
+                RealCost = article.RealCost,
+                BarCode = article.BarCode,
+                TaxesPrice =
+                [
+                     new TaxePriceDto
+                     {
+                         Description = $"I.V.A. {article.Tax.Description}",
+                         Utility = article.Tax.Rate,
+                         Price = article.RealCost * article.Tax.Rate /100,
+                     },
+                     new TaxePriceDto
+                     {
+                         Description = string.Format("Impuestos internos {0}%", article.InternalTax),
+                         Utility =article.InternalTax,
+                         Price = article.RealCost * article.InternalTax /100,
+                     }
+                ],
                 PriceLists = priceLists.Select(pl => new PriceListItemDto
                 {
                     Description = pl.Description,
                     Utility = pl.Utility,
-                    FinalPrice = p.Cost + (p.Cost * pl.Utility / 100)
+                    FinalPrice = article.PriceWithTaxes + (article.PriceWithTaxes * pl.Utility / 100)
                 })
                 .OrderBy(pl => pl.Utility)
                 .ToList()// Ordenamos para que la lista 1 (utility=0) aparezca primero, luego las que ofrecen descuentos

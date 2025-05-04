@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Afip
 {
@@ -25,6 +26,7 @@ namespace GestionComercial.Domain.Entities.Afip
 
 
 
+        [JsonIgnore] 
         public virtual ICollection<Article> Products { get; set; }
 
         //        public virtual ICollection<PurchaseDetail> PurcheaseDetails { get; set; }

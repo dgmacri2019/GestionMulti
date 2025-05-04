@@ -1,4 +1,6 @@
-﻿namespace GestionComercial.Domain.Entities.Masters.Security
+﻿using System.Text.Json.Serialization;
+
+namespace GestionComercial.Domain.Entities.Masters.Security
 {
     public class UserPermission : CommonEntity
     {
@@ -10,8 +12,10 @@
 
 
 
+        [JsonIgnore] 
         public virtual User? User { get; set; }
 
+        [JsonIgnore] 
         public virtual Permission? Permission { get; set; }
     }
 }

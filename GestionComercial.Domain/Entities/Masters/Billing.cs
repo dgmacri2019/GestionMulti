@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Masters
 {
@@ -80,6 +81,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
+        [JsonIgnore] 
         public virtual CommerceData? CommerceData { get; set; }
 
 

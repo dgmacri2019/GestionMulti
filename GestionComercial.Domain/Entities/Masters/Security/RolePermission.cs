@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Masters.Security
 {
@@ -12,8 +13,10 @@ namespace GestionComercial.Domain.Entities.Masters.Security
 
 
 
+        [JsonIgnore] 
         public virtual IdentityRole? Role { get; set; }
 
+        [JsonIgnore] 
         public virtual Permission? Permission { get; set; }
     }
 }

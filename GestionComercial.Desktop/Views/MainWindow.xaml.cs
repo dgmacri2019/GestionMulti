@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Controls;
+using GestionComercial.Desktop.Controls.Stock;
 using GestionComercial.Desktop.ViewModels;
 using System.Windows;
 
@@ -19,7 +20,7 @@ namespace GestionComercial.Desktop.Views
         {
             // Instanciar la vista de venta de productos.
             // Puede ser un UserControl o una Page; en este ejemplo, se llama ProductSaleView.
-            var productSaleView = new ProductSaleControlView();
+            var productSaleView = new ListAticlesWithSaleControlView();
 
             // Asignar la vista al ContentControl para que se muestre en el área blanca
             MainContent.Content = productSaleView;

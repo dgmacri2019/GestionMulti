@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Masters
 {
@@ -16,8 +17,10 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
+        [JsonIgnore] 
         public virtual ICollection<User>? Users { get; set; }
 
+        [JsonIgnore] 
         public virtual ICollection<Provider>? Providers { get; set; }
     }
 }

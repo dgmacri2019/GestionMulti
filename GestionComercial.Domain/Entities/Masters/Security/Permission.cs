@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Masters.Security
@@ -25,9 +26,11 @@ namespace GestionComercial.Domain.Entities.Masters.Security
 
 
         // Relación con RolePermission (muchos a muchos con Roles)
+        [JsonIgnore] 
         public virtual ICollection<RolePermission> RolePermissions { get; set; }
 
         // Relación con UserPermission (para permisos asignados directamente a un usuario)
+        [JsonIgnore] 
         public virtual ICollection<UserPermission> UserPermissions { get; set; }
     }
 }

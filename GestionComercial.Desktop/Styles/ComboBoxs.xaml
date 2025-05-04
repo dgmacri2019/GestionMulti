@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Style x:Key="CBContainer" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="DarkGray"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="DarkGray"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="LightCyan"/>
+            </Trigger>            
+        </Style.Triggers>
+        
+    </Style>
+
+
+
+
+    <Style x:Key="ComboBox" TargetType="ComboBox">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Margin" Value="0,0,0,0"/>
+        <Setter Property="Foreground" Value="#545454" />
+        <Style.Triggers>
+           <DataTrigger Binding="{Binding SelectedItem.Id, RelativeSource={RelativeSource Self}}" Value="0">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="Red"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+
+
+
+</ResourceDictionary>

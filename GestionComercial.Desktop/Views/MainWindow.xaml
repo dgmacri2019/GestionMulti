@@ -32,7 +32,8 @@
             <Button Content="Compras" Margin="5" Padding="5"/>
             <Button Content="Proveedores" Margin="5" Padding="5"/>
             <!-- Agregamos el Click para el botón Stock -->
-            <Button Content="Stock" Margin="5" Padding="5" Click="Stock_Click" Command="{Binding LoadProductsCommand}"/>
+            <Button Content="Stock" Margin="5" Padding="5" Click="Stock_Click" 
+                    Command="{Binding LoadProductsCommand}"/>
             <Button Content="Clientes" Margin="5" Padding="5"/>
             <Button Content="Administracion" Margin="5" Padding="5"/>
             <Button Content="Cerrar sesión" Margin="5" Padding="5" Command="{Binding LogoutCommand}"/>

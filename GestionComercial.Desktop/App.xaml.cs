@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Desktop.Views;
-using System.Configuration;
-using System.Data;
+using System.Globalization;
 using System.Windows;
 
 namespace GestionComercial.Desktop
@@ -16,7 +15,17 @@ namespace GestionComercial.Desktop
         public static string UserRole { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
-        {
+        {// Seteo la cultura a Argentina
+         // Seteo cultura a Argentina
+            var culture = new CultureInfo("es-AR");
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    System.Windows.Markup.XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
             base.OnStartup(e);
             var loginWindow = new LoginWindow();
             loginWindow.Show();

@@ -1,12 +1,15 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace GestionComercial.Domain.Entities.Stock
+namespace GestionComercial.Domain.DTOs.Stock
 {
-    public class Article : CommonEntity
+    public class ArticleViewModel
     {
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(20, ErrorMessage = "El campo {0} debe contener un máximo de {1} caracteres")]
         [Display(Name = "Código")]
@@ -29,7 +32,6 @@ namespace GestionComercial.Domain.Entities.Stock
 
         [Required(ErrorMessage = "El Campo {0} es requerido")]
         [Display(Name = "Bonificación / Recargo")]
-        [DisplayFormat(DataFormatString = "{0:P0}", ApplyFormatInEditMode = false)]
         [Range(-100, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public decimal Bonification { get; set; }
 
@@ -37,11 +39,6 @@ namespace GestionComercial.Domain.Entities.Stock
         [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
         //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public decimal RealCost { get; set; }
-
-        [Display(Name = "Precio con impuestos")]
-        [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
-        //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public decimal PriceWithTaxes => Tax != null ? RealCost + (RealCost * Tax.Rate / 100) + (RealCost * InternalTax /100) : 0;
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar un {0}")]
@@ -105,31 +102,33 @@ namespace GestionComercial.Domain.Entities.Stock
         [DataType(DataType.MultilineText)]
         public string? Remark { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Creado el")]
+        public DateTime CreateDate { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [MaxLength(100, ErrorMessage = "El campo {0} no puede contener más de {1} caracteres")]
+        [Display(Name = "Creado por")]
+        public string CreateUser { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Modificado el")]
+        public DateTime? UpdateDate { get; set; }
+
+        [MaxLength(100, ErrorMessage = "El campo {0} no puede contener más de {1} caracteres")]
+        [Display(Name = "Modificado por")]
+        public string? UpdateUser { get; set; }
+
+        [Display(Name = "Borrado?")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Habilitado?")]
+        public bool IsEnabled { get; set; }
 
 
-        [JsonIgnore] 
-        public virtual Tax? Tax { get; set; }
-
-        [JsonIgnore]
-        public virtual Measure? Measure { get; set; }
-
-        [JsonIgnore] 
-        public virtual Category? Category { get; set; }
-
-        [JsonIgnore] 
-        public virtual ICollection<PriceList>? PriceLists { get; set; }
-
-        //[JsonIgnore]
-        //public virtual ICollection<SaleDetail> SaleDetails { get; set; }
-
-        //[JsonIgnore]
-        //public virtual ICollection<SaleDetailTmp> SaleDetailTmps { get; set; }
-
-        //[JsonIgnore]
-        //public virtual ICollection<PurchaseDetail> PurcheaseDetails { get; set; }
-
-        //[JsonIgnore]
-        //public virtual ICollection<PurchaseDetailTmp> PurcheaseDetailTmps { get; set; }
-
+        public virtual ICollection<Tax> Taxes { get; set; }
+        public virtual ICollection<Measure> Measures { get; set; }
+        public virtual ICollection<Category> Categories { get; set; }
     }
 }
