@@ -30,11 +30,10 @@
         <StackPanel DockPanel.Dock="Left" Width="180" Background="#EEE">
             <Button Content="Ventas" Margin="5" Padding="5"/>
             <Button Content="Compras" Margin="5" Padding="5"/>
-            <Button Content="Proveedores" Margin="5" Padding="5"/>
+            <Button Content="Proveedores" Margin="5" Padding="5" Click="Provider_Click"/>
             <!-- Agregamos el Click para el botón Stock -->
-            <Button Content="Stock" Margin="5" Padding="5" Click="Stock_Click" 
-                    Command="{Binding LoadProductsCommand}"/>
-            <Button Content="Clientes" Margin="5" Padding="5"/>
+            <Button Content="Stock" Margin="5" Padding="5" Click="Stock_Click"/>
+            <Button Content="Clientes" Margin="5" Padding="5" Click="Client_Click"/>
             <Button Content="Administracion" Margin="5" Padding="5"/>
             <Button Content="Cerrar sesión" Margin="5" Padding="5" Command="{Binding LogoutCommand}"/>
         </StackPanel>

@@ -338,7 +338,7 @@ namespace GestionComercial.Applications.Services
         public async Task<GeneralResponse> UpdatePricesAsync(IProgress<int> progress, int categoryId, int percentage)
         {
             while (StaticCommon.ContextInUse)
-                Thread.Sleep(100);
+                await Task.Delay(50);
             StaticCommon.ContextInUse = true;
             using (var transacction = await _context.Database.BeginTransactionAsync())
             {

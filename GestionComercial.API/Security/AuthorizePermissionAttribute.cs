@@ -30,7 +30,7 @@ namespace GestionComercial.API.Security
 
             if (!result.Succeeded)
             {
-                context.Result = new ForbidResult();
+                context.Result = new UnauthorizedResult();
             }
         }
     }

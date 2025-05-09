@@ -23,8 +23,11 @@
                 <Setter Property="Language"
                         Value="es-AR" />
             </Style>
+
+            
             <helpers:NegativoAFondoConverter x:Key="NegativoAFondoConverter"/>
             <helpers:NegativoATextoConverter x:Key="NegativoATextoConverter"/>
+            <helpers:ValidationToEnabledConverter x:Key="ValidationToEnabledConverter"/>
         </ResourceDictionary>
         
     </Application.Resources>

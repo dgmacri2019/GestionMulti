@@ -4,17 +4,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GestionComercial.Desktop.Controls.Stock
+namespace GestionComercial.Desktop.Controls.Articles
 {
     /// <summary>
     /// Lógica de interacción para ProductSaleControlView.xaml
     /// </summary>
-    public partial class ListAticlesWithSaleControlView : UserControl
+    public partial class ListAticleControlView : UserControl
     {
         private bool Enabled = true;
         private bool Deleted = false;
 
-        public ListAticlesWithSaleControlView()
+        public ListAticleControlView()
         {
             InitializeComponent();
             btnEnables.Visibility = Visibility.Hidden;
@@ -39,12 +39,14 @@ namespace GestionComercial.Desktop.Controls.Stock
                 var ventana = new EditArticleControlView(article.Id);
                 ventana.ProductoActualizado += () =>
                 {
-                    DgArticles.DataContext = new ArticleListViewModel(Enabled, Deleted);
+                    DgArticles.DataContext = new ArticleListViewModel(SearchBox.Text, Enabled, Deleted);
                     DgArticles.Visibility = Visibility.Visible;
                     PanelSearch.Visibility = Visibility.Visible;
                     PanelEdicion.Content = null;
                     PanelEdicion.Visibility = Visibility.Hidden;
                     lblHeader.Content = "Artículos";
+                    if(!string.IsNullOrEmpty(SearchBox.Text))
+                        SearchBox.Focus();
                 };
 
                 PanelEdicion.Content = ventana;

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GestionComercial.Domain.Constant
 {
     public class Enumeration
-    { 
+    {
         // Tipo de documentos
         public enum DocumentType
         {
+            [Display(Name = "Seleccione el tipo de documento")]
+            Seleccione = 0,
+            
             [Display(Name = "CUIT")]
             CUIT = 80,
 
@@ -22,10 +20,10 @@ namespace GestionComercial.Domain.Constant
             DNI = 96,
 
             [Display(Name = "Pasaporte")]
-            Passport = 94,
+            Pasaporte = 94,
 
             [Display(Name = "Otro")]
-            Other = 99,
+            Otro = 99,
 
         }
 
@@ -33,13 +31,13 @@ namespace GestionComercial.Domain.Constant
         public enum TaxCondition
         {
             [Display(Name = "Seleccione el tipo de contrinuyente")]
-            Select = 100,
+            Seleccione = 0,
             [Display(Name = "Responsable Inscripto")]
-            IvaInscripto = 101,
+            Iva_Inscripto = 101,
             [Display(Name = "Consumidor Final")]
-            ConsumidorFinal = 102,
+            Consumidor_Final = 102,
             [Display(Name = "Exento")]
-            IvaExento = 103,
+            Iva_Exento = 103,
             [Display(Name = "Responsable Monotributo")]
             Monotributo = 104
         }
@@ -48,23 +46,23 @@ namespace GestionComercial.Domain.Constant
         public enum SaleCondition
         {
             [Display(Name = "Seleccione la Forma de Pago")]
-            Select = 0,
+            Seleccione = 0,
             //[Display(Name = "Sin Cargo")]
             //SinCargo = 1,
             [Display(Name = "Cuenta Corriente")]
-            CtaCte = 2,
+            Cuenta_Corriente = 2,
             [Display(Name = "Cheque")]
             Cheque = 3,
             [Display(Name = "Efectivo Pesos")]
-            EfectivoPeso = 4,
+            Efectivo_Peso = 4,
             [Display(Name = "Efectivo Dolar")]
-            EfectivoDolar = 17,
+            Efectivo_Dolar = 17,
             [Display(Name = "Efectivo Real")]
-            EfectivoReal = 18,
+            Efectivo_Real = 18,
             [Display(Name = "Efectivo Euro")]
-            EfectivoEuro = 19,
+            Efectivo_Euro = 19,
             [Display(Name = "Efectivo Otro")]
-            EfectivoOtro = 20,
+            Efectivo_Otro = 20,
             [Display(Name = "Transferencia Bancaria")]
             Deposito = 5,
             [Display(Name = "Tarjeta de Débito")]
@@ -72,25 +70,25 @@ namespace GestionComercial.Domain.Constant
             [Display(Name = "Tarjeta de Crédito")]
             Credito = 7,
             [Display(Name = "Mercado Pago Transferencia")]
-            MercadoPagoTransf = 8,
+            Mercado_Pago_Transfencia = 8,
             [Display(Name = "Mercado Pago QR Crédito")]
-            MercadoPagoQRCred = 9,
+            MercadoPago_QR_Credito = 9,
             [Display(Name = "Mercado Pago QR Débito")]
-            MercadoPagoQRDebit = 10,
+            MercadoPago_QR_Debito = 10,
             [Display(Name = "Mercado Pago QR Dinero Cuenta")]
-            MercadoPagoQRCta = 11,
+            MercadoPago_QR_Dinero_Cuenta = 11,
             [Display(Name = "Mercado Pago Point Crédito")]
-            MercadoPagoCredit = 12,
+            MercadoPago_Credito = 12,
             [Display(Name = "Mercado Pago Point Débito")]
-            MercadoPagoDebit = 13,
+            MercadoPago_Debito = 13,
             [Display(Name = "Mercado Pago On-Line")]
-            MercadoPagoOnLine = 14,
+            MercadoPago_OnLine = 14,
             [Display(Name = "Mercado Pago Link Pago")]
-            MercadoPagoLink = 15,
+            MercadoPago_Link_Pago = 15,
             [Display(Name = "Mercado Pago Otro")]
-            MercadoPagoOter = 16,
+            MercadoPago_Otro = 16,
             [Display(Name = "Multiple Metodos de pago")]
-            MultipleMethod = 21,
+            Multiples_Metodos = 21,
 
         }
 
