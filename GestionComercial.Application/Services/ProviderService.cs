@@ -41,8 +41,7 @@ namespace GestionComercial.Applications.Services
 
         public async Task<IEnumerable<ProviderViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
         {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            List<Provider> providers = await _context.Providers
+             List<Provider> providers = await _context.Providers
                   .Include(c => c.State)
                   .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                   .ToListAsync();

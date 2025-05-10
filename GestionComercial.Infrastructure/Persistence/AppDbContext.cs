@@ -1,6 +1,12 @@
-﻿using GestionComercial.Domain.Entities.Afip;
+﻿using GestionComercial.Domain.Entities.AccountingBook;
+using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.BoxAndBank;
+using GestionComercial.Domain.Entities.Budget;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Entities.Masters.Security;
+using GestionComercial.Domain.Entities.Purchases;
+using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -14,8 +20,48 @@ namespace GestionComercial.Infrastructure.Persistence
 
         /* --------Agregar DbSets para cada entidad --------- */
 
+        //ACCOUNTING BOOK
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountingSeat> AccountingSeats { get; set; }
+        public DbSet<AccountingSeatDetail> AccountingSeatDetails { get; set; }
+        public DbSet<AccountType> AccountTypes { get; set; }
+        public DbSet<AccountVinculation> AccountVinculations { get; set; }
+
+
         //AFIP
+        public DbSet<CbteType> CbteTypes { get; set; }
+        public DbSet<Concept> Concepts { get; set; }
+        public DbSet<IvaCondition> IvaConditions { get; set; }
+        public DbSet<Optional> Optionals { get; set; }
         public DbSet<Tax> Taxes { get; set; }
+        public DbSet<Tribute> Tributes { get; set; }
+        public DbSet<TypeDocument> TypeDocuments { get; set; }
+
+
+        //BOX AND BANK
+        public DbSet<Acreditation> Acreditations { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<BankParameter> BankParameters { get; set; }
+        public DbSet<Box> Boxes { get; set; }
+        public DbSet<Debitation> Debitations { get; set; }
+
+
+        //BUDGET
+        public DbSet<Budget> Budgets { get; set; }
+        public DbSet<BudgetDetail> BudgetDetails { get; set; }
+        public DbSet<BudgetDetailTmp> BudgetDetailTmps { get; set; }
+
+
+        //MASTER/CONFIGURATION
+        public DbSet<EmailParameter> EmailParameters { get; set; }
+        public DbSet<GeneralParameter> GeneralParameters { get; set; }
+        public DbSet<PrinterParameter> PrinterParameters { get; set; }
+
+
+        //MASTER/SECURITY
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
 
 
         //MASTER
@@ -27,11 +73,31 @@ namespace GestionComercial.Infrastructure.Persistence
         public DbSet<PriceList> PriceLists { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<State> States { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
 
-        //MASTER/SECURITY
-        public DbSet<Permission> Permissions { get; set; }
-        public DbSet<RolePermission> RolePermissions { get; set; }
-        public DbSet<UserPermission> UserPermissions { get; set; }
+
+        //PURCHASE
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<PurchaseDetail> PurchaseDetails { get; set; }
+        public DbSet<PurchaseDetailTmp> PurchaseDetailTmps { get; set; }
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
+        public DbSet<PurchaseOrderDetailTmp> PurchaseOrderDetailTmps { get; set; }
+        public DbSet<PurchasePayMetodDetail> PurchasePayMetodDetails { get; set; }
+
+
+        //SALE
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<ReservationDetail> ReservationDetails { get; set; }
+        public DbSet<ReservationDetailTmp> ReservationDetailTmps { get; set; }
+        public DbSet<ReservationPayMetodDetail> ReservationPayMetodDetails { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+        public DbSet<SaleDetail> SaleDetails { get; set; }
+        public DbSet<SaleDetailTmp> SaleDetailTmps { get; set; }
+        public DbSet<SalePayMetodDetail> SalePayMetodDetails { get; set; }
+
 
         //STOCK
         public DbSet<Article> Articles { get; set; }
@@ -94,6 +160,55 @@ namespace GestionComercial.Infrastructure.Persistence
 
 
             //INDEX
+            modelBuilder.Entity<Account>()
+                .HasIndex(a => new
+                {
+                    a.AccountGroupNumber,
+                    a.AccountSubGroupNumber1,
+                    a.AccountSubGroupNumber2,
+                    a.AccountSubGroupNumber3,
+                    a.AccountSubGroupNumber4,
+                    a.AccountSubGroupNumber5
+                })
+                .IsUnique()
+                .HasDatabaseName("Account_AccountNumber_Index");
+
+            modelBuilder.Entity<AccountingSeat>()
+                .HasIndex(a => new
+
+                {
+                    a.AccountingSeatNumber,
+                    a.AccountingSeatYear
+                })
+                .IsUnique()
+                .HasDatabaseName("Accounting_SeatNumber_Index");
+
+            modelBuilder.Entity<AccountVinculation>()
+               .HasIndex(av => new
+
+               {
+                   av.AccountId,
+                   av.VinculatedAccountId
+               })
+               .IsUnique()
+               .HasDatabaseName("AccountVinculation_AccountId_ViculatedAccountId_Index");
+
+            modelBuilder.Entity<BankParameter>()
+              .HasIndex(bp => new
+
+              {
+                  bp.BankId,
+                  bp.SaleCondition,
+              })
+              .IsUnique()
+              .HasDatabaseName("Bank_SaleCondition_Index");
+
+
+            modelBuilder.Entity<Purchase>()
+            .HasIndex(p => new { p.ProviderId, p.BillNumber, p.BillPoint })
+            .IsUnique()
+            .HasDatabaseName("BillNumber_Provider_Index");
+
             modelBuilder.Entity<CommerceData>()
                 .HasIndex(cd => new { cd.CUIT })
                 .IsUnique()

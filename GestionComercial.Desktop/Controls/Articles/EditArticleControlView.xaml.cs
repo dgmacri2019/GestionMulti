@@ -63,10 +63,6 @@ namespace GestionComercial.Desktop.Controls.Articles
             lblError.MaxWidth = this.ActualWidth;
         }
 
-
-
-
-
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             ProductoActualizado?.Invoke(); // para notificar a la vista principal
@@ -111,7 +107,6 @@ namespace GestionComercial.Desktop.Controls.Articles
             btnAdd.IsEnabled = true;
         }
 
-
         private void txtCost_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (txtCost.IsFocused && ValidatorHelper.IsNumeric(txtCost.Text))
@@ -124,6 +119,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                 txtRealCost.Text = string.Format("{0:C4}", value);
             }
         }
+      
         private void txtCost_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             string textoIngresado = e.Text;
@@ -134,10 +130,12 @@ namespace GestionComercial.Desktop.Controls.Articles
                 result = true;
             e.Handled = result;
         }
+    
         private void txtCost_LostFocus(object sender, RoutedEventArgs e)
         {
             txtCost.Text = txtCost.Text.Replace(".", ",");
         }
+  
         private void txtCost_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -145,7 +143,6 @@ namespace GestionComercial.Desktop.Controls.Articles
                 //e.Handled = true;
             }
         }
-
 
         private void txtBonification_TextChanged(object sender, TextChangedEventArgs e)
         {

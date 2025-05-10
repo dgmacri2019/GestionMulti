@@ -11,6 +11,7 @@
                 "Users" => "Usuarios",
                 "Providers" => "Proveedores",
                 "Permissions" => "Permisos",
+                "PriceLists" => "Lista de Precios",
                 _ => controller
             };
         }

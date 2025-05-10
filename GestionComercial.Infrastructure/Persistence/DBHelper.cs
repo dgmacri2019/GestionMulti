@@ -110,6 +110,36 @@ namespace GestionComercial.Infrastructure.Persistence
                 {
                     response.Message = "Ese nombre de permiso ya se encuentra registrado";
                 }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Account_AccountNumber_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Account_AccountNumber_Index"))
+                {
+                    response.Message = "Esa cuanta ya se encuentra registrada";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("BillNumber_Provider_Index")) ||
+                  ex.InnerException != null && ex.InnerException.InnerException != null &&
+                   ex.InnerException.InnerException.Message.Contains("BillNumber_Provider_Index"))
+                {
+                    response.Message = "Ese número de factura ya se encuentra registrada para el mismo proveedor";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Accounting_SeatNumber_Index")) ||
+                  ex.InnerException != null && ex.InnerException.InnerException != null &&
+                   ex.InnerException.InnerException.Message.Contains("Accounting_SeatNumber_Index"))
+                {
+                    response.Message = "Ese número de asiento contable ya se encuentra registrado para el año ingresado";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("AccountVinculation_AccountId_ViculatedAccountId_Index")) ||
+                  ex.InnerException != null && ex.InnerException.InnerException != null &&
+                   ex.InnerException.InnerException.Message.Contains("AccountVinculation_AccountId_ViculatedAccountId_Index"))
+                {
+                    response.Message = "Esa vinculación de cuentas ya se encuentra realizada";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Bank_SaleCondition_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Bank_SaleCondition_Index"))
+                {
+                    response.Message = "Ese Banco ya se encuentra vinculado a esa condición de venta";
+                }
                 else if ((ex.InnerException != null && ex.InnerException.Message.Contains("_Index")) ||
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
                    ex.InnerException.InnerException.Message.Contains("_Index"))

@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Clients;
+using GestionComercial.Desktop.Controls.PriceLists;
 using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.ViewModels;
 using System.Windows;
@@ -42,6 +43,11 @@ namespace GestionComercial.Desktop.Views
 
             // Asignar la vista al ContentControl para que se muestre en el área blanca
             MainContent.Content = providerView;
+        }
+                
+        private void PriceList_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new ListPriceListControlView();
         }
     }
 }

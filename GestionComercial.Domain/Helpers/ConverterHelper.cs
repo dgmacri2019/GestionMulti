@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Constant;
 using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
@@ -86,7 +87,6 @@ namespace GestionComercial.Domain.Helpers
         }
 
         #endregion
-
 
         #region Clients
 
@@ -212,12 +212,12 @@ namespace GestionComercial.Domain.Helpers
                 StateId = providerViewModel.StateId,
                 TaxCondition = providerViewModel.TaxCondition,
                 UpdateDate = providerViewModel.UpdateDate,
-                UpdateUser = providerViewModel.UpdateUser,                 
+                UpdateUser = providerViewModel.UpdateUser,
             };
         }
 
-        public static ProviderViewModel? ToProviderViewModel(Provider provider, ICollection<State> states, 
-            ObservableCollection<SaleCondition> saleConditions, ObservableCollection<TaxCondition> taxConditions, 
+        public static ProviderViewModel? ToProviderViewModel(Provider provider, ICollection<State> states,
+            ObservableCollection<SaleCondition> saleConditions, ObservableCollection<TaxCondition> taxConditions,
             ObservableCollection<DocumentType> documentTypes)
         {
             return new ProviderViewModel
@@ -228,7 +228,7 @@ namespace GestionComercial.Domain.Helpers
                 DocumentNumber = provider.DocumentNumber,
                 DocumentType = provider.DocumentType,
                 DocumentTypes = documentTypes,
-                 Email = provider.Email,
+                Email = provider.Email,
                 FantasyName = provider.FantasyName,
                 Id = provider.Id,
                 LastPuchase = provider.LastPuchase,
@@ -253,6 +253,42 @@ namespace GestionComercial.Domain.Helpers
                 IsEnabled = provider.IsEnabled,
                 IsDeleted = provider.IsDeleted,
                 State = provider.State.Name,
+            };
+        }
+
+        #endregion
+
+        #region PriceList
+
+        public static PriceList ToPriceList(PriceListViewModel priceListViewModel, bool isNew)
+        {
+            return new PriceList
+            {
+                Id = isNew ? 0 : priceListViewModel.Id,
+                CreateDate = priceListViewModel.CreateDate,
+                Description = priceListViewModel.Description,
+                CreateUser = priceListViewModel.CreateUser,
+                IsDeleted = priceListViewModel.IsDeleted,
+                IsEnabled = priceListViewModel.IsEnabled,
+                UpdateDate = priceListViewModel.UpdateDate,
+                UpdateUser = priceListViewModel.UpdateUser,
+                Utility = priceListViewModel.Utility,
+            };
+        }
+
+        public static PriceListViewModel ToPriceListViewModel(PriceList priceList)
+        {
+            return new PriceListViewModel
+            {
+                CreateDate = priceList.CreateDate,
+                Description = priceList.Description,
+                CreateUser = priceList.CreateUser,
+                Id = priceList.Id,
+                IsDeleted = priceList.IsDeleted,
+                IsEnabled = priceList.IsEnabled,
+                UpdateDate = priceList.UpdateDate,
+                UpdateUser = priceList.UpdateUser,
+                Utility = priceList.Utility,
             };
         }
 

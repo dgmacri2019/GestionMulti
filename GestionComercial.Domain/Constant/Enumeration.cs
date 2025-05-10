@@ -150,6 +150,71 @@ namespace GestionComercial.Domain.Constant
             DataBase = 17,
             [Display(Name = "Permisos")]
             Permission = 18,
+            [Display(Name = "Lista de Precios")]
+            PriceLists = 19,
+        }
+
+
+        // Tipo de factura a emitir
+        public enum VaucherType
+        {
+
+            [Display(Name = "Factura A")]
+            FacturaA = 1,
+
+            [Display(Name = "Nota de Débito A")]
+            NotaDebitoA = 2,
+
+            [Display(Name = "Nota de Crédito A")]
+            NotaCridtoA = 3,
+
+            [Display(Name = "Recibo A")]
+            ReciboA = 4,
+
+            [Display(Name = "Nota de Venta al Contado A")]
+            NotaContadoA = 5,
+
+            [Display(Name = "Factura B")]
+            FacturaB = 6,
+
+            [Display(Name = "Nota de Débito B")]
+            NotaDebitoB = 7,
+
+            [Display(Name = "Nota de Crédito B")]
+            NotaCridtoB = 8,
+
+            [Display(Name = "Recibo B")]
+            ReciboB = 9,
+
+            [Display(Name = "Nota de Venta al Contado B")]
+            NotaContadoB = 10,
+
+            [Display(Name = "Factura C")]
+            FacturaC = 11,
+
+            [Display(Name = "Nota de Débito C")]
+            NotaDebitoC = 12,
+
+            [Display(Name = "Nota de Crédito C")]
+            NotaCridtoC = 13,
+
+            [Display(Name = "Recibo C")]
+            ReciboC = 15,
+
+            [Display(Name = "Factura M")]
+            FacturaM = 51,
+
+            [Display(Name = "Nota de Débito M")]
+            NotaDebitoM = 52,
+
+            [Display(Name = "Nota de Crédito M")]
+            NotaCridtoM = 53,
+
+            [Display(Name = "Recibo M")]
+            ReciboM = 54,
+
+            [Display(Name = "Presupuesto")]
+            Presupuesto = 999,
         }
 
     }

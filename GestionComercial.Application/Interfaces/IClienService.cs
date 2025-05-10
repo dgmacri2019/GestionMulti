@@ -12,7 +12,5 @@ namespace GestionComercial.Applications.Interfaces
         Task<IEnumerable<ClientViewModel>> GetAllAsync(bool isEnabled, bool isDeleted);
         Task<IEnumerable<ClientViewModel>> SearchToListAsync(string name, bool isEnabled, bool isDeleted);
         Task<ClientViewModel?> GetByIdAsync(int id, bool isEnabled, bool isDeleted);
-
-
     }
 }

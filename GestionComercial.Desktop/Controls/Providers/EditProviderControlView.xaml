@@ -204,9 +204,7 @@
                       UpdateSourceTrigger="PropertyChanged" 
                       ValidatesOnDataErrors="True" 
                       NotifyOnValidationError="True">
-                        <Binding.ValidationRules>
-                            <local1:EmailValidationRule />
-                        </Binding.ValidationRules>
+                        
                     </Binding>
                 </TextBox.Text>
             </TextBox>
