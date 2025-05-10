@@ -21,9 +21,9 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
         public decimal Sold { get; set; }
         public Enumeration.SaleCondition SaleCondition { get; set; }
 
-
         [Display(Name = "Cuanta Contable")]
         public int AccountId { get; set; }
+
 
 
         public virtual Account Account { get; set; }

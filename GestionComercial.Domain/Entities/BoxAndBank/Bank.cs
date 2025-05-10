@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.Entities.Masters;
+﻿using GestionComercial.Domain.Entities.AccountingBook;
+using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionComercial.Domain.Entities.BoxAndBank
@@ -74,7 +75,7 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
 
 
-        //public virtual Account Account { get; set; }
+        public virtual Account Account { get; set; }
 
         public virtual State State { get; set; }
 
