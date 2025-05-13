@@ -12,21 +12,31 @@
                 "Providers" => "Proveedores",
                 "Permissions" => "Permisos",
                 "PriceLists" => "Lista de Precios",
+                "Banks" => "Bancos",
                 _ => controller
             };
         }
 
         public static string MapAction(string action)
         {
-            return action switch
-            {
-                "Add" or "AddAsync" => "Agregar",
-                "Edit" or "EditAsync" or "Update" or "UpdateAsync" or "UpdatePrices" or "UpdatePricesAsync" or "GenerateNewBarCode" or "GenerateNewBarCodeAsync" or "ChangeRoleAsync" => "Editar",
-                "Delete" or "DeleteAsync" => "Eliminar",
-                "GetAll" or "GetAllAsync" or "GetById" or "GetByIdAsync" or "FindByBarCode" or "FindByBarCodeAsync"
-                or "FindByCodeOrBarCode" or "FindByCodeOrBarCodeAsync" or "SearchToList" or "SearchToListAsync" => "Lectura",
-                _ => action
-            };
+            if (string.IsNullOrWhiteSpace(action))
+                return action;
+
+            action = action.ToLowerInvariant();
+
+            if (action.Contains("add"))
+                return "Agregar";
+
+            if (action.Contains("edit") || action.Contains("update"))
+                return "Editar";
+
+            if (action.Contains("delete"))
+                return "Eliminar";
+
+            if (action.Contains("get") || action.Contains("find") || action.Contains("search"))
+                return "Lectura";
+
+            return action;
         }
     }
 }

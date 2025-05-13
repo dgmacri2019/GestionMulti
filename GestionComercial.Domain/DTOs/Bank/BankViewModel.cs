@@ -1,12 +1,37 @@
 ﻿using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace GestionComercial.Domain.Entities.BoxAndBank
+namespace GestionComercial.Domain.DTOs.Bank
 {
-    public class Bank : CommonEntity
+    public class BankViewModel
     {
+        public int Id { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Creado el")]
+        public DateTime CreateDate { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [MaxLength(100, ErrorMessage = "El campo {0} no puede contener más de {1} caracteres")]
+        [Display(Name = "Creado por")]
+        public string CreateUser { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Modificado el")]
+        public DateTime? UpdateDate { get; set; }
+
+        [MaxLength(100, ErrorMessage = "El campo {0} no puede contener más de {1} caracteres")]
+        [Display(Name = "Modificado por")]
+        public string? UpdateUser { get; set; }
+
+        [Display(Name = "Borrado?")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Habilitado?")]
+        public bool IsEnabled { get; set; }
+        
         [MaxLength(300, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [Display(Name = "Nombre")]
         public string BankName { get; set; }
@@ -75,20 +100,8 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
         public int AccountId { get; set; }
 
 
+        public ICollection<Account> Accounts { get; set; }
 
-        [JsonIgnore] 
-        public virtual Account? Account { get; set; }
-
-        [JsonIgnore] 
-        public virtual State? State { get; set; }
-
-        [JsonIgnore] 
-        public virtual ICollection<BankParameter> BankParameters { get; set; } = [];
-        
-        [JsonIgnore] 
-        public virtual ICollection<Acreditation> Acreditations { get; set; } = [];
-
-        [JsonIgnore]
-        public virtual ICollection<Debitation> Debitations { get; set; } = [];
+        public ICollection<State> States { get; set; }
     }
 }

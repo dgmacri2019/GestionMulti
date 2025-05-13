@@ -1,7 +1,7 @@
-﻿using GestionComercial.Domain.Constant;
-using GestionComercial.Domain.Entities.AccountingBook;
+﻿using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.BoxAndBank
 {
@@ -19,13 +19,13 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
         [Display(Name = "Saldo")]
         public decimal Sold { get; set; }
-        public Enumeration.SaleCondition SaleCondition { get; set; }
+        public SaleCondition SaleCondition { get; set; }
 
         [Display(Name = "Cuanta Contable")]
         public int AccountId { get; set; }
 
 
 
-        public virtual Account Account { get; set; }
+        public virtual Account? Account { get; set; }
     }
 }

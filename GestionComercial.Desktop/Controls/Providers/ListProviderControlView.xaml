@@ -91,7 +91,8 @@
         <DataGrid x:Name="DgProviders"
                   Grid.Row="2" 
                   ItemsSource="{Binding Providers}" 
-                  AutoGenerateColumns="False"
+                  AutoGenerateColumns="False"                  
+                  CanUserAddRows="False"
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
@@ -101,7 +102,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding BusinessName}" 
-                            Style="{StaticResource CenteredTextStyle}">
+                            Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>
@@ -113,7 +114,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding FantasyName}" 
-                            Style="{StaticResource CenteredTextStyle}">
+                            Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>

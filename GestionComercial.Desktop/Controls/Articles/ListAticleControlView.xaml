@@ -88,7 +88,8 @@
         <DataGrid x:Name="DgArticles"
                   Grid.Row="2" 
                   ItemsSource="{Binding Products}" 
-                  AutoGenerateColumns="False"
+                  AutoGenerateColumns="False"                  
+                  CanUserAddRows="False"
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">

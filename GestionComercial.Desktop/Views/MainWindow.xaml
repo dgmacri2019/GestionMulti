@@ -33,7 +33,8 @@
             <Button Content="Proveedores" Margin="5" Padding="5" Click="Provider_Click"/>
             <Button Content="Stock" Margin="5" Padding="5" Click="Stock_Click"/>
             <Button Content="Clientes" Margin="5" Padding="5" Click="Client_Click"/>
-            <Button Content="Lista de Precios" Margin="5" Padding="5" Click="PriceList_Click" />
+            <Button Content="Lista de Precios" Margin="5" Padding="5" Click="PriceList_Click" /> 
+            <Button Content="Bancos" Margin="5" Padding="5" Click="Bank_Click" />
             <Button Content="Cerrar sesión" Margin="5" Padding="5" Command="{Binding LogoutCommand}"/>
         </StackPanel>
 

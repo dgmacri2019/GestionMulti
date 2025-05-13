@@ -1,9 +1,11 @@
 ﻿using GestionComercial.Domain.Constant;
+using GestionComercial.Domain.DTOs.Bank;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 using System.Collections.ObjectModel;
@@ -289,6 +291,60 @@ namespace GestionComercial.Domain.Helpers
                 UpdateDate = priceList.UpdateDate,
                 UpdateUser = priceList.UpdateUser,
                 Utility = priceList.Utility,
+            };
+        }
+
+        #endregion
+
+        #region Bank And Box
+
+        public static Bank ToBank(BankViewModel bankViewModel, bool isNew)
+        {
+            return new Bank
+            {
+                Id = isNew ? 0 : bankViewModel.Id,
+                CreateDate = bankViewModel.CreateDate,
+                CreateUser = bankViewModel.CreateUser,
+                IsDeleted = bankViewModel.IsDeleted,
+                IsEnabled = bankViewModel.IsEnabled,
+                UpdateDate = bankViewModel.UpdateDate,
+                UpdateUser = bankViewModel.UpdateUser,
+                AccountId = bankViewModel.AccountId,
+                AccountNumber = bankViewModel.AccountNumber,
+                Address = bankViewModel.Address,
+                Alias = bankViewModel.Alias,
+                BankName = bankViewModel.BankName,
+                CBU = bankViewModel.CBU,
+                City = bankViewModel.City,
+                Email = bankViewModel.Email,
+                FromCredit = bankViewModel.FromCredit,
+                FromDebit = bankViewModel.FromDebit,
+                Phone = bankViewModel.Phone,
+                Phone1 = bankViewModel.Phone1,
+                PostalCode = bankViewModel.PostalCode,
+                Sold = bankViewModel.Sold,
+                StateId = bankViewModel.StateId,
+                WebSite = bankViewModel.WebSite
+            };
+        }
+
+        public static Box ToBox(BoxViewModel boxViewModel, bool isNew)
+        {
+            return new Box
+            {
+                Id = isNew ? 0 : boxViewModel.Id,
+                CreateDate = boxViewModel.CreateDate,
+                CreateUser = boxViewModel.CreateUser,
+                IsDeleted = boxViewModel.IsDeleted,
+                IsEnabled = boxViewModel.IsEnabled,
+                UpdateDate = boxViewModel.UpdateDate,
+                UpdateUser = boxViewModel.UpdateUser,
+                AccountId = boxViewModel.AccountId,
+                BoxName = boxViewModel.BoxName,
+                FromCredit = boxViewModel.FromCredit,
+                FromDebit = boxViewModel.FromDebit,
+                SaleCondition = boxViewModel.SaleCondition,
+                Sold = boxViewModel.Sold,
             };
         }
 

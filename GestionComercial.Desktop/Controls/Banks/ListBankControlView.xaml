@@ -1,0 +1,195 @@
+﻿<UserControl x:Class="GestionComercial.Desktop.Controls.Banks.ListBankControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Banks"
+             mc:Ignorable="d"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             Background="LightGray">
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
+        <Grid.RowDefinitions>
+            <!-- Fila 0: Texto y botones -->
+            <RowDefinition Height="auto"/>
+            <!-- Fila 1: barra de búsqueda -->
+            <RowDefinition Height="auto"/>
+            <!-- Fila 2: DataGrid -->
+            <RowDefinition Height="*"/>
+            <!-- Fila 3: Add/Edit -->
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="PanelHeader" Orientation="Horizontal" HorizontalAlignment="Center"  Grid.Row="0" Margin="0,0,50,8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!-- Fila 0: Texto y botones -->
+                    <RowDefinition Height="auto"/>
+                    <!-- Fila 1: barra de búsqueda -->
+                    <RowDefinition Height="auto"/>
+                    <!-- Fila 2: DataGrid -->
+                    <RowDefinition Height="auto"/>
+                    <!-- Fila 3: Add/Edit -->
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label 
+                    x:Name="lblHeader" 
+                    Grid.Row="0"
+                    Grid.ColumnSpan="3"
+                    Content="Cajas y Bancos" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource lblHeader}"
+                    Foreground="#C74CE6"/>
+
+                <Button 
+                    x:Name="btnAddBank"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Content="Nuevo Banco"
+                    Margin="0,5,0,0"
+                    Style="{StaticResource BtnArticles}" 
+                    Click="btnAddbank_Click"/>
+
+                <Button 
+                    x:Name="btnAddBox"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Content="Nueva Caja"
+                    Margin="0,5,0,0" 
+                    Style="{StaticResource BtnArticles}"
+                    Click="btnAddBox_Click"/>
+
+            </Grid>
+        </StackPanel>
+
+        <!--<StackPanel x:Name="PanelSearch" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0,0,50,8">
+            <TextBlock Text="Buscar:" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBox x:Name="SearchBox"
+         Style="{StaticResource TextBoxSearch}"
+         Width="250"
+         VerticalAlignment="Center"                     
+         ToolTip="Ingresa nombre, razón social o cuit"
+         TextChanged="SearchBox_TextChanged"/>
+        </StackPanel>-->
+
+        <DataGrid x:Name="DgBoxAndBanks"
+                  Grid.Row="2" 
+                  ColumnHeaderHeight="50"
+                  ItemsSource="{Binding BoxAndBanks}" 
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Nombre" Width="400">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding BankName}" 
+                                           Style="{StaticResource LeftAlignedTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Por Debitar" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border 
+                            Background="{Binding FromDebit, Converter={StaticResource NegativoAFondoConverter}}">
+                                <TextBlock Text="{Binding FromDebit, StringFormat={}{0:C2}}" 
+                                       Style="{StaticResource CenteredTextStyle}"
+                                       Foreground="{Binding FromDebit, Converter={StaticResource NegativoATextoConverter}}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Por Acreditar" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border 
+                            Background="{Binding FromCredit, Converter={StaticResource NegativoAFondoConverter}}">
+                                <TextBlock Text="{Binding FromCredit, StringFormat={}{0:C2}}" 
+                                       Style="{StaticResource CenteredTextStyle}"
+                                       Foreground="{Binding FromCredit, Converter={StaticResource NegativoATextoConverter}}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Saldo" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding Sold, Converter={StaticResource NegativoAFondoConverter}}">
+                                <TextBlock Text="{Binding Sold, StringFormat={}{0:C2}}" 
+                                           Style="{StaticResource CenteredTextStyle}"
+                                           Foreground="{Binding Sold, Converter={StaticResource NegativoATextoConverter}}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="110">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock TextAlignment="Center">
+                            <Run Text="Acreditaciones"/>
+                            <LineBreak/>
+                            <Run Text="Disponibles"/>
+                        </TextBlock>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button 
+                                x:Name="btnActritations"
+                                Click="btnActritations_Click" 
+                                Width="32" Height="32"
+                                ToolTip="Ver acreditaciones disponibles"
+                                Background="Transparent" BorderThickness="0">
+                                <Image Source="/Images/Details.png" Stretch="Uniform"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn 
+                    Header="Débitos" 
+                    Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button 
+                                x:Name="btnDebitations"
+                                Click="btnDebitations_Click" 
+                                Width="32" Height="32"
+                                ToolTip="Ver acreditaciones disponibles"
+                                Background="Transparent" BorderThickness="0">
+                                <Image Source="/Images/Details.ico" Stretch="Uniform"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
+            </DataGrid.Columns>
+        </DataGrid>
+        <!-- Contenedor para el control de edición -->
+        <ContentControl x:Name="PanelEdicion" Grid.Row="1" Style="{StaticResource Test }"/>
+
+
+    </Grid>
+</UserControl>

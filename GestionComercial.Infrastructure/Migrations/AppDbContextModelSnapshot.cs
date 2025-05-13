@@ -92,7 +92,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("Account_AccountNumber_Index");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.AccountingBook.AccountType", b =>
@@ -140,7 +140,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccountTypes");
+                    b.ToTable("AccountTypes", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.AccountingBook.AccountVinculation", b =>
@@ -184,7 +184,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("AccountVinculation_AccountId_ViculatedAccountId_Index");
 
-                    b.ToTable("AccountVinculations");
+                    b.ToTable("AccountVinculations", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.AccountingBook.AccountingSeat", b =>
@@ -244,7 +244,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("Accounting_SeatNumber_Index");
 
-                    b.ToTable("AccountingSeats");
+                    b.ToTable("AccountingSeats", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.AccountingBook.AccountingSeatDetail", b =>
@@ -310,7 +310,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("AccountingSeatId");
 
-                    b.ToTable("AccountingSeatDetails");
+                    b.ToTable("AccountingSeatDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.CbteType", b =>
@@ -351,7 +351,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CbteTypes");
+                    b.ToTable("CbteTypes", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.Concept", b =>
@@ -392,7 +392,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Concepts");
+                    b.ToTable("Concepts", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.IvaCondition", b =>
@@ -437,7 +437,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IvaConditions");
+                    b.ToTable("IvaConditions", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.Optional", b =>
@@ -479,7 +479,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Optionals");
+                    b.ToTable("Optionals", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.Tax", b =>
@@ -531,7 +531,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("Tax_Description_Index");
 
-                    b.ToTable("Taxes");
+                    b.ToTable("Taxes", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.Tribute", b =>
@@ -572,7 +572,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tributes");
+                    b.ToTable("Tributes", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.TypeDocument", b =>
@@ -613,7 +613,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TypeDocuments");
+                    b.ToTable("TypeDocuments", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Acreditation", b =>
@@ -674,7 +674,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("SaleId");
 
-                    b.ToTable("Acreditations");
+                    b.ToTable("Acreditations", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Bank", b =>
@@ -780,7 +780,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("Banks");
+                    b.ToTable("Banks", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.BankParameter", b =>
@@ -833,7 +833,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("Bank_SaleCondition_Index");
 
-                    b.ToTable("BankParameters");
+                    b.ToTable("BankParameters", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Box", b =>
@@ -889,7 +889,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Boxes");
+                    b.ToTable("Boxes", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Debitation", b =>
@@ -948,7 +948,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("PurchaseId");
 
-                    b.ToTable("Debitations");
+                    b.ToTable("Debitations", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Budget.Budget", b =>
@@ -1038,7 +1038,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("Budgets");
+                    b.ToTable("Budgets", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Budget.BudgetDetail", b =>
@@ -1116,7 +1116,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("BudgetDetails");
+                    b.ToTable("BudgetDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Budget.BudgetDetailTmp", b =>
@@ -1197,7 +1197,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("BudgetDetailTmps");
+                    b.ToTable("BudgetDetailTmps", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Billing", b =>
@@ -1308,7 +1308,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("CommerceDataId");
 
-                    b.ToTable("Billings");
+                    b.ToTable("Billings", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.City", b =>
@@ -1359,7 +1359,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("State_Name_Index");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Client", b =>
@@ -1487,7 +1487,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.CommerceData", b =>
@@ -1604,7 +1604,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("CommerceDatas");
+                    b.ToTable("CommerceDatas", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Configuration.EmailParameter", b =>
@@ -1664,7 +1664,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailParameters");
+                    b.ToTable("EmailParameters", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Configuration.GeneralParameter", b =>
@@ -1714,7 +1714,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GeneralParameters");
+                    b.ToTable("GeneralParameters", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Configuration.PrinterParameter", b =>
@@ -1842,7 +1842,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrinterParameters");
+                    b.ToTable("PrinterParameters", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Measure", b =>
@@ -1881,7 +1881,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Measures");
+                    b.ToTable("Measures", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.PriceList", b =>
@@ -1929,7 +1929,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.ToTable("PriceLists");
+                    b.ToTable("PriceLists", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
@@ -2045,7 +2045,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("Providers");
+                    b.ToTable("Providers", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.Permission", b =>
@@ -2091,7 +2091,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("Permision_Name_Index");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.RolePermission", b =>
@@ -2136,7 +2136,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.UserPermission", b =>
@@ -2188,7 +2188,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("Permision_Name_Index");
 
-                    b.ToTable("UserPermissions");
+                    b.ToTable("UserPermissions", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.State", b =>
@@ -2234,7 +2234,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("State_Name_Index");
 
-                    b.ToTable("States");
+                    b.ToTable("States", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.User", b =>
@@ -2397,7 +2397,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("Warehouses");
+                    b.ToTable("Warehouses", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.Purchase", b =>
@@ -2483,7 +2483,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("BillNumber_Provider_Index");
 
-                    b.ToTable("Purchases");
+                    b.ToTable("Purchases", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseDetail", b =>
@@ -2558,7 +2558,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("PurchaseDetails");
+                    b.ToTable("PurchaseDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseDetailTmp", b =>
@@ -2625,7 +2625,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("PurchaseDetailTmps");
+                    b.ToTable("PurchaseDetailTmps", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseOrder", b =>
@@ -2700,7 +2700,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("PurchaseOrders");
+                    b.ToTable("PurchaseOrders", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseOrderDetail", b =>
@@ -2766,7 +2766,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("PurchaseOrderDetails");
+                    b.ToTable("PurchaseOrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseOrderDetailTmp", b =>
@@ -2827,7 +2827,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("PurchaseOrderDetailTmps");
+                    b.ToTable("PurchaseOrderDetailTmps", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchasePayMetodDetail", b =>
@@ -2872,7 +2872,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("PurchaseId");
 
-                    b.ToTable("PurchasePayMetodDetails");
+                    b.ToTable("PurchasePayMetodDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.Invoice", b =>
@@ -2985,7 +2985,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("SaleId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.InvoiceDetail", b =>
@@ -3033,7 +3033,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("InvoiceDetails");
+                    b.ToTable("InvoiceDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.Reservation", b =>
@@ -3134,7 +3134,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("SaleId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.ReservationDetail", b =>
@@ -3212,7 +3212,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("ReservationDetails");
+                    b.ToTable("ReservationDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.ReservationDetailTmp", b =>
@@ -3293,7 +3293,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("ReservationDetailTmps");
+                    b.ToTable("ReservationDetailTmps", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.ReservationPayMetodDetail", b =>
@@ -3338,7 +3338,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ReservationId");
 
-                    b.ToTable("ReservationPayMetodDetails");
+                    b.ToTable("ReservationPayMetodDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.Sale", b =>
@@ -3434,7 +3434,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("Sales");
+                    b.ToTable("Sales", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetail", b =>
@@ -3512,7 +3512,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("SaleDetails");
+                    b.ToTable("SaleDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetailTmp", b =>
@@ -3593,7 +3593,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("SaleDetailTmps");
+                    b.ToTable("SaleDetailTmps", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SalePayMetodDetail", b =>
@@ -3638,7 +3638,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("SaleId");
 
-                    b.ToTable("SalePayMetodDetails");
+                    b.ToTable("SalePayMetodDetails", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
@@ -3758,7 +3758,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>
@@ -3801,7 +3801,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

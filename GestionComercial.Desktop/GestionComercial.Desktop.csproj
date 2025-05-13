@@ -13,6 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Images\Details.ico" />
+    <None Remove="Images\Details.png" />
+    <None Remove="Images\Select.ico" />
+    <None Remove="Images\Select.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +28,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GestionComercial.API\GestionComercial.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Details.ico" />
+    <Resource Include="Images\Details.png" />
+    <Resource Include="Images\Select.ico" />
+    <Resource Include="Images\Select.png" />
   </ItemGroup>
 
 </Project>

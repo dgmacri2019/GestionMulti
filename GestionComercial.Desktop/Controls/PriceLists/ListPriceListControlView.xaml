@@ -87,19 +87,20 @@
         </StackPanel>
 
         <DataGrid x:Name="DgPriceLists"
-              Grid.Row="2" 
-              ItemsSource="{Binding PriceLists}" 
-              AutoGenerateColumns="False"
-              ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
-              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-              MouseDoubleClick="DataGrid_MouseDoubleClick">
+                  Grid.Row="2" 
+                  ItemsSource="{Binding PriceLists}" 
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Descripción" Width="400">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding Description}" 
-                                           Style="{StaticResource CenteredTextStyle}">
+                                           Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>

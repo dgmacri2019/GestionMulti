@@ -1,5 +1,4 @@
-﻿using GestionComercial.Domain.DTOs.Helpers;
-using GestionComercial.Domain.DTOs.Stock;
+﻿using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Masters;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -154,7 +153,7 @@ namespace GestionComercial.Domain.DTOs.Client
         [Display(Name = "Provincia")]
         public string State { get; set; }
 
-         [Display(Name = "Lista de precios")]
+        [Display(Name = "Lista de precios")]
         public string PriceList { get; set; }
 
 

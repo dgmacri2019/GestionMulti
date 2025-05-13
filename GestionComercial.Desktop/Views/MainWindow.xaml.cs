@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Controls.Articles;
+using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
 using GestionComercial.Desktop.Controls.PriceLists;
 using GestionComercial.Desktop.Controls.Providers;
@@ -48,6 +49,11 @@ namespace GestionComercial.Desktop.Views
         private void PriceList_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new ListPriceListControlView();
+        }
+
+        private void Bank_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new ListBankControlView();
         }
     }
 }
