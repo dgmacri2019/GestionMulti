@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="/Styles/ComboBoxs.xaml"/>
                 <ResourceDictionary Source="/Styles/CheckBoxs.xaml"/>
                 <ResourceDictionary Source="/Styles/Labels.xaml"/>
+                <ResourceDictionary Source="/Styles/ToggleButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type FrameworkElement}">
                 <Setter Property="Language"

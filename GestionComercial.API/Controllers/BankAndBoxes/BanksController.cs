@@ -1,5 +1,6 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Services;
 using GestionComercial.Domain.DTOs.Bank;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Response;
@@ -16,10 +17,13 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
     public class BanksController : ControllerBase
     {
         private readonly IBankService _bankService;
+        private readonly IMasterService _masterService;
 
-        public BanksController(IBankService bankService)
+
+        public BanksController(IBankService bankService, IMasterService masterService)
         {
             _bankService = bankService;
+            _masterService = masterService;
         }
 
 
@@ -27,7 +31,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("AddAcreditationAsync")]
         public async Task<IActionResult> AddAcreditationAsync([FromBody] Acreditation acreditation)
         {
-            GeneralResponse resultAdd = await _bankService.AddAcreditationAsync(acreditation);
+            GeneralResponse resultAdd = await _masterService.AddAsync(acreditation);
             return resultAdd.Success ?
                 Ok("Acreditación creada correctamente")
                 :
@@ -37,7 +41,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("AddBankAsync")]
         public async Task<IActionResult> AddBankAsync([FromBody] Bank bank)
         {
-            GeneralResponse resultAdd = await _bankService.AddBankAsync(bank);
+            GeneralResponse resultAdd = await _masterService.AddAsync(bank);
             return resultAdd.Success ?
                 Ok("Banco creado correctamente")
                 :
@@ -47,7 +51,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("AddBankParamerAsync")]
         public async Task<IActionResult> AddBankParamerAsync([FromBody] BankParameter bankParameter)
         {
-            GeneralResponse resultAdd = await _bankService.AddBankParamerAsync(bankParameter);
+            GeneralResponse resultAdd = await _masterService.AddAsync(bankParameter);
             return resultAdd.Success ?
                 Ok("Parametro bancario creado correctamente")
                 :
@@ -57,7 +61,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("AddBoxAsync")]
         public async Task<IActionResult> AddBoxAsync([FromBody] Box box)
         {
-            GeneralResponse resultAdd = await _bankService.AddBoxAsync(box);
+            GeneralResponse resultAdd = await _masterService.AddAsync(box);
             return resultAdd.Success ?
                 Ok("Caja creada correctamente")
                 :
@@ -67,7 +71,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("AddDebitationAsync")]
         public async Task<IActionResult> AddDebitationAsync([FromBody] Debitation debitation)
         {
-            GeneralResponse resultAdd = await _bankService.AddDebitationAsync(debitation);
+            GeneralResponse resultAdd = await _masterService.AddAsync(debitation);
             return resultAdd.Success ?
                 Ok("Débito creado correctamente")
                 :
@@ -79,7 +83,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("UpdateAcreditationAsync")]
         public async Task<IActionResult> UpdateAcreditationAsync([FromBody] Acreditation acreditation)
         {
-            GeneralResponse resultAdd = await _bankService.UpdateAcreditationAsync(acreditation);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(acreditation);
             return resultAdd.Success ?
                 Ok("Acreditación modificada correctamente")
                 :
@@ -88,8 +92,8 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
 
         [HttpPost("UpdateBankAsync")]
         public async Task<IActionResult> UpdateBankAsync([FromBody] Bank bank)
-        {  
-            GeneralResponse resultAdd = await _bankService.UpdateBankAsync(bank);
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(bank);
             return resultAdd.Success ?
                 Ok("Banco modificado correctamente")
                 :
@@ -99,7 +103,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("UpdateBankParamerAsync")]
         public async Task<IActionResult> UpdateBankParamerAsync([FromBody] BankParameter bankParameter)
         {
-            GeneralResponse resultAdd = await _bankService.UpdateBankParamerAsync(bankParameter);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(bankParameter);
             return resultAdd.Success ?
                 Ok("Parametro bancario modificado correctamente")
                 :
@@ -109,7 +113,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("UpdateBoxAsync")]
         public async Task<IActionResult> UpdateBoxAsync([FromBody] Box box)
         {
-            GeneralResponse resultAdd = await _bankService.UpdateBoxAsync(box);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(box);
             return resultAdd.Success ?
                 Ok("Caja modificada correctamente")
                 :
@@ -119,7 +123,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("UpdateDebitationAsync")]
         public async Task<IActionResult> UpdateDebitationAsync([FromBody] Debitation debitation)
         {
-            GeneralResponse resultAdd = await _bankService.UpdateDebitationAsync(debitation);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(debitation);
             return resultAdd.Success ?
                 Ok("Débito modificado correctamente")
                 :

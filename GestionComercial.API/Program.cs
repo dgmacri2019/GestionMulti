@@ -41,6 +41,7 @@ builder.Services.AddScoped<IClienService, ClienService>();
 builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<IPriceListService, PriceListService>();
 builder.Services.AddScoped<IBankService, BankService>();
+builder.Services.AddScoped<IMasterService, MasterService>();
 
 //builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();

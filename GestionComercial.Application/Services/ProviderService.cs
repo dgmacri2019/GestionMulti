@@ -22,12 +22,7 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        public async Task<GeneralResponse> AddAsync(Provider provider)
-        {
-            _context.Providers.Add(provider);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
+       
         public async Task<GeneralResponse> DeleteAsync(int id)
         {
             Provider? provider = await _context.Providers.FindAsync(id);
@@ -108,12 +103,7 @@ namespace GestionComercial.Applications.Services
             return ToProviderViewModelList(providers);
         }
 
-        public async Task<GeneralResponse> UpdateAsync(Provider provider)
-        {
-            _context.Providers.Update(provider);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
+       
 
 
 

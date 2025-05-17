@@ -15,17 +15,19 @@ namespace GestionComercial.API.Controllers.Clients
     public class ClientsController : ControllerBase
     {
         private readonly IClienService _clienService;
+        private readonly IMasterService _masterService;
 
-        public ClientsController(IClienService clienService)
+        public ClientsController(IClienService clienService, IMasterService masterService)
         {
             _clienService = clienService;
+            _masterService = masterService;
         }
 
 
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Client client)
         {
-            GeneralResponse resultAdd = await _clienService.AddAsync(client);
+            GeneralResponse resultAdd = await _masterService.AddAsync(client);
             return resultAdd.Success ?
                 Ok("Cliente creado correctamente")
                 :
@@ -36,7 +38,7 @@ namespace GestionComercial.API.Controllers.Clients
         [HttpPost("UpdateAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] Client client)
         {
-            GeneralResponse resultAdd = await _clienService.UpdateAsync(client);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(client);
             return resultAdd.Success ?
                 Ok("Cliente actualizado correctamente")
                 :

@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionComercial.Desktop.Views"
+        xmlns:local1="clr-namespace:GestionComercial.Domain.DTOs.Menu;assembly=GestionComercial.Domain"
         mc:Ignorable="d"
         Title="Sistema de Gestión Comercial"
         Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
-         WindowState="Maximized">
+         WindowState="Maximized" Loaded="Window_Loaded">
 
     <DockPanel>
         <!-- Header -->
@@ -26,7 +27,96 @@
                        HorizontalAlignment="Right"/>
         </StackPanel>
 
+        <TreeView x:Name="NavigationTree"
+                  SelectedItemChanged="NavigationTree_SelectedItemChanged"
+                  Background="LightGray"
+                  Foreground="Black"
+                  BorderThickness="0"
+                  Padding="10"
+                  Width="300">
+            <TreeView.Resources>
+
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="Foreground" Value="#606060"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="FontWeight" Value="DemiBold"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TreeViewItem">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <ToggleButton x:Name="Expander"
+                                                  ClickMode="Press"
+                                                  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Style="{StaticResource  ExpandCollapseToggleStyle}"
+                                                  Visibility="Visible" 
+                                                  Width="18" Height="18"
+                                                  Margin="4"/>
+                                    <!--Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"-->
+
+
+                                    <Border x:Name="Bd"
+                                            Grid.Column="1"
+                                            Background="Transparent"
+                                            Padding="4"
+                                            SnapsToDevicePixels="True">
+                                        <ContentPresenter x:Name="PART_Header"
+                                                          ContentSource="Header"
+                                                          HorizontalAlignment="Left"/>
+                                    </Border>
+
+                                    <ItemsPresenter x:Name="ItemsHost"
+                                        Grid.Row="1"
+                                        Grid.Column="1"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="Transparent"/>
+                                         </Trigger>
+                                    <Trigger Property="IsExpanded" Value="False">
+                                        <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                                    </Trigger>
+                                    <Trigger Property="HasItems" Value="False">
+                                        <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="DarkGray"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>               
+            </TreeView.Resources>
+        
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate  DataType="{x:Type local1:MenuItemModel}" ItemsSource="{Binding Children}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,0,5,0"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Title}" Style="{StaticResource CambioColor}"/>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
         <!-- Menu lateral -->
+        <!--
         <StackPanel DockPanel.Dock="Left" Width="180" Background="#EEE">
             <Button Content="Ventas" Margin="5" Padding="5"/>
             <Button Content="Compras" Margin="5" Padding="5"/>
@@ -37,7 +127,7 @@
             <Button Content="Bancos" Margin="5" Padding="5" Click="Bank_Click" />
             <Button Content="Cerrar sesión" Margin="5" Padding="5" Command="{Binding LogoutCommand}"/>
         </StackPanel>
-
+-->
         <!-- StatusBar -->
         <StatusBar DockPanel.Dock="Bottom" Background="#F3F3F3">
             <StatusBarItem>

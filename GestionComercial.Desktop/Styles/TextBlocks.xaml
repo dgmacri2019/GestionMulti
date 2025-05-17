@@ -26,5 +26,16 @@
 
     </Style>
 
+    <Style x:Key="CambioColor" TargetType="TextBlock">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#008080"/>
+                <Setter Property="FontSize" Value="15"/>
+            </Trigger> 
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Foreground" Value="#606060"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
 </ResourceDictionary>

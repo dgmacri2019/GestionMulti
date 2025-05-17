@@ -25,12 +25,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        public async Task<GeneralResponse> AddAsync(Client client)
-        {
-            _context.Clients.Add(client);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
         public async Task<GeneralResponse> DeleteAsync(int id)
         {
             Client? client = await _context.Clients.FindAsync(id);
@@ -132,13 +126,7 @@ namespace GestionComercial.Applications.Services
             return ToClientViewModelAndPriceList(clients, priceLists);
         }
 
-        public async Task<GeneralResponse> UpdateAsync(Client client)
-        {
-            _context.Clients.Update(client);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-
+      
 
 
 

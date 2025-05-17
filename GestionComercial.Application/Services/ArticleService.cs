@@ -27,31 +27,6 @@ namespace GestionComercial.Applications.Services
         #endregion
 
 
-        public GeneralResponse Add(Article product)
-        {
-            _context.Articles.Add(product);
-            return _dBHelper.SaveChanges(_context);
-        }
-
-        public async Task<GeneralResponse> AddAsync(Article product)
-        {
-            _context.Articles.Add(product);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-
-
-        public GeneralResponse Delete(int id)
-        {
-            Article? product = _context.Articles.Find(id);
-            if (product != null)
-            {
-                _context.Articles.Remove(product);
-                return _dBHelper.SaveChanges(_context);
-            }
-            return new GeneralResponse { Success = false, Message = "Articulo no encontrado" };
-        }
-
         public async Task<GeneralResponse> DeleteAsync(int id)
         {
             Article? product = await _context.Articles.FindAsync(id);
@@ -65,17 +40,6 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public ArticleWithPricesDto? FindByBarCode(string barCode)
-        {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = _context.PriceLists
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            Article? product = _context.Articles.Where(p => p.BarCode == barCode).FirstOrDefault();
-
-            return product == null ? null : ToPriceDto(product, priceLists);
-        }
-
         public async Task<ArticleWithPricesDto?> FindByBarCodeAsync(string barCode)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
@@ -88,19 +52,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-
-        public ArticleWithPricesDto? FindByCodeOrBarCode(string code)
-        {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = _context.PriceLists
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            Article? product = string.IsNullOrEmpty(code) ? null : _context.Articles
-                .Where(p => p.Code == code || p.BarCode == code)
-                .FirstOrDefault();
-
-            return product == null ? null : ToPriceDto(product, priceLists);
-        }
 
         public async Task<ArticleWithPricesDto?> FindByCodeOrBarCodeAsync(string code)
         {
@@ -116,24 +67,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-
-        public IEnumerable<ArticleWithPricesDto> GetAll(bool isEnabled, bool isDeleted)
-        {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = _context.PriceLists
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            List<IGrouping<string, Article>> Articles = _context.Articles
-                 .Include(p => p.Tax)
-                 .Include(m => m.Measure)
-                 .Include(c => c.Category)
-                 .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-                 .GroupBy(c => c.Category.Description)
-                 .ToList();
-
-
-            return ToListPriceDto(Articles, priceLists);
-        }
 
         public async Task<IEnumerable<ArticleWithPricesDto>> GetAllAsync(bool isEnabled, bool isDeleted)
         {
@@ -153,35 +86,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-
-        public ArticleViewModel? GetById(int id)
-        {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = _context.PriceLists
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            ICollection<Tax> taxes = _context.Taxes
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            ICollection<Measure> measures = _context.Measures
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            ICollection<Category> categories = _context.Categories
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-
-            Article? article = _context.Articles
-                .Include(c => c.Category)
-                .Include(t => t.Tax)
-                .Include(m => m.Measure)
-                .Where(a => a.Id == id)
-                .FirstOrDefault();
-
-            taxes.Add(new Tax { Id = 0, Description = "Seleccione el I.V.A." });
-            measures.Add(new Measure { Id = 0, Description = "Seleccione la unidad de medida" });
-            categories.Add(new Category { Id = 0, Description = "Seleccione la categoría" });
-            return article == null ? null : ConverterHelper.ToArticleViewModel(article, taxes, measures, categories);
-        }
 
         public async Task<ArticleViewModel?> GetByIdAsync(int id)
         {
@@ -226,24 +130,6 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public IEnumerable<ArticleWithPricesDto> SearchToList(string description, bool isEnabled, bool isDeleted)
-        {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = _context.PriceLists
-                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                .ToList();
-            List<IGrouping<string, Article>> Articles = _context.Articles
-                 .Include(p => p.Tax)
-                 .Include(m => m.Measure)
-                 .Include(c => c.Category)
-                 .Where(c => c.IsDeleted == isDeleted && c.IsEnabled == isEnabled && (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description) || c.BarCode.Contains(description)))
-                 .GroupBy(c => c.Category.Description)
-                 .ToList();
-
-
-            return ToListPriceDto(Articles, priceLists);
-        }
-
         public async Task<IEnumerable<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
@@ -262,78 +148,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-
-        public GeneralResponse Update(Article product)
-        {
-            _context.Articles.Update(product);
-            return _dBHelper.SaveChanges(_context);
-        }
-
-        public async Task<GeneralResponse> UpdateAsync(Article product)
-        {
-            _context.Articles.Update(product);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-
-
-        public GeneralResponse UpdatePrices(IProgress<int> progress, int categoryId, int percentage)
-        {
-            while (StaticCommon.ContextInUse)
-                Thread.Sleep(100);
-            StaticCommon.ContextInUse = true;
-            using (var transacction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-
-                    List<Article> Articles = categoryId == 0 ?
-                          _context.Articles.ToList()
-                           :
-                           _context.Articles.Where(p => p.CategoryId == categoryId).ToList();
-
-                    StaticCommon.ContextInUse = false;
-                    int totalItems = Articles.Count(); // Número total de elementos a actualizar
-                    int itemsProcessed = 0;
-
-                    foreach (Article product in Articles)
-                    {
-                        product.Cost += (product.Cost * percentage / 100);
-                        product.RealCost = product.Cost + (product.Cost * product.Bonification / 100);
-                        _context.Entry(product).State = EntityState.Modified;
-
-                        GeneralResponse resultUpdate = _dBHelper.SaveChanges(_context);
-                        if (!resultUpdate.Success)
-                        {
-                            transacction.Rollback();
-                            return resultUpdate;
-                        }
-                        itemsProcessed++;
-                        double percentageReturn = (itemsProcessed / (double)totalItems) * 100;
-                        progress.Report((int)percentageReturn);
-                    }
-
-                    transacction.Commit();
-                    return new GeneralResponse
-                    {
-                        Success = true,
-                    };
-                }
-                catch (Exception ex)
-                {
-                    transacction.Rollback();
-                    return new GeneralResponse
-                    {
-                        Message = ex.Message,
-                        Success = false,
-                    };
-                }
-                finally
-                {
-                    StaticCommon.ContextInUse = false;
-                }
-            }
-        }
 
         public async Task<GeneralResponse> UpdatePricesAsync(IProgress<int> progress, int categoryId, int percentage)
         {
@@ -393,65 +207,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-
-        public ArticleResponse GenerateNewBarCode()
-        {
-            try
-            {
-                string commerceCode = string.Empty;
-                if (StaticCommerceData.CommerceData.CUIT.ToString().Length == 11)
-                    commerceCode = StaticCommerceData.CommerceData.CUIT.ToString().Substring(6, 4);
-                else if (StaticCommerceData.CommerceData.CUIT.ToString().Length == 8)
-                    commerceCode = StaticCommerceData.CommerceData.CUIT.ToString().Substring(4, 4);
-                else
-                    commerceCode = "9898";
-                int cont = 0;
-            Line0: string ean = "779";
-                ean += commerceCode;
-                if (cont == 5)
-                    return new ArticleResponse
-                    {
-                        Success = false,
-                        Message = "Se ha superado la cantidad de intentos permitidos para general código de barras"
-                    };
-                int code = RandomGeneratorHelper.RandomNumber(1, 99999);
-                ean += code.ToString();
-                int controlDigit = CalculateBarCodeDigitControl(ean);
-                if (controlDigit == -1)
-                {
-                    cont++;
-                    goto Line0;
-                }
-                ean += controlDigit.ToString();
-                if (ean.Length == 13)
-                {
-                    while (StaticCommon.ContextInUse)
-                        Thread.Sleep(100);
-                    StaticCommon.ContextInUse = true;
-                    bool result = _context.Articles.Where(p => p.BarCode == ean).FirstOrDefault() == null;
-                    StaticCommon.ContextInUse = false;
-                    if (result)
-                    {
-                        return new ArticleResponse { BarCode = ean, Success = true };
-                    }
-                    else
-                    {
-                        cont++;
-                        goto Line0;
-                    }
-                }
-                else
-                {
-                    cont++;
-                    goto Line0;
-                }
-            }
-            catch (Exception ex)
-            {
-                StaticCommon.ContextInUse = false;
-                return new ArticleResponse { Success = false, Message = ex.Message };
-            }
-        }
 
         public async Task<ArticleResponse> GenerateNewBarCodeAsync()
         {

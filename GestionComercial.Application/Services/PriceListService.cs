@@ -21,11 +21,6 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        public async Task<GeneralResponse> AddAsync(PriceList priceList)
-        {
-            _context.PriceLists.Add(priceList);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
 
         public async Task<GeneralResponse> DeleteAsync(int id)
         {
@@ -80,13 +75,6 @@ namespace GestionComercial.Applications.Services
 
             return ToPriceListViewModelList(priceLists);
         }
-
-        public async Task<GeneralResponse> UpdateAsync(PriceList priceList)
-        {
-            _context.PriceLists.Update(priceList);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
 
 
         private IEnumerable<PriceListViewModel> ToPriceListViewModelList(List<PriceList> priceLists)

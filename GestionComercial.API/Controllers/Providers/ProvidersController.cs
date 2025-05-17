@@ -15,17 +15,20 @@ namespace GestionComercial.API.Controllers.Providers
     public class ProvidersController : ControllerBase
     {
         private readonly IProviderService _providerService;
+        private readonly IMasterService _masterService;
 
-        public ProvidersController(IProviderService providerService)
+
+        public ProvidersController(IProviderService providerService, IMasterService masterService)
         {
             _providerService = providerService;
+            _masterService = masterService;
         }
 
 
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Provider provider)
         {
-            GeneralResponse resultAdd = await _providerService.AddAsync(provider);
+            GeneralResponse resultAdd = await _masterService.AddAsync(provider);
             return resultAdd.Success ?
                 Ok("Proveedor creado correctamente")
                 :
@@ -36,7 +39,7 @@ namespace GestionComercial.API.Controllers.Providers
         [HttpPost("UpdateAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] Provider provider)
         {
-            GeneralResponse resultAdd = await _providerService.UpdateAsync(provider);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(provider);
             return resultAdd.Success ?
                 Ok("Proveedor actualizado correctamente")
                 :

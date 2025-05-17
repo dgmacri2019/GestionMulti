@@ -26,36 +26,6 @@ namespace GestionComercial.Applications.Services
         #endregion
 
 
-        public async Task<GeneralResponse> AddAcreditationAsync(Acreditation acreditation)
-        {
-            _context.Acreditations.Add(acreditation);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> AddBankAsync(Bank bank)
-        {
-            _context.Banks.Add(bank);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> AddBankParamerAsync(BankParameter bankParameter)
-        {
-            _context.BankParameters.Add(bankParameter);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> AddBoxAsync(Box box)
-        {
-            _context.Boxes.Add(box);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> AddDebitationAsync(Debitation debitation)
-        {
-            _context.Debitations.Add(debitation);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
         public Task<GeneralResponse> DeleteAcreditationAsync(int id)
         {
             throw new NotImplementedException();
@@ -238,36 +208,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public async Task<GeneralResponse> UpdateAcreditationAsync(Acreditation acreditation)
-        {
-            _context.Acreditations.Update(acreditation);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> UpdateBankAsync(Bank bank)
-        {
-            _context.Banks.Update(bank);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> UpdateBankParamerAsync(BankParameter bankParameter)
-        {
-            _context.BankParameters.Update(bankParameter);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> UpdateBoxAsync(Box box)
-        {
-            _context.Boxes.Update(box);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
-        public async Task<GeneralResponse> UpdateDebitationAsync(Debitation debitation)
-        {
-            _context.Debitations.Update(debitation);
-            return await _dBHelper.SaveChangesAsync(_context);
-        }
-
+       
 
     }
 }

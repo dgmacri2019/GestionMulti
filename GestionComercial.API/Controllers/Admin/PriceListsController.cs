@@ -15,11 +15,13 @@ namespace GestionComercial.API.Controllers.Admin
     public class PriceListsController : ControllerBase
     {
         private readonly IPriceListService _priceListService;
+        private readonly IMasterService _masterService;
 
 
-        public PriceListsController(IPriceListService priceListService)
+        public PriceListsController(IPriceListService priceListService, IMasterService masterService)
         {
             _priceListService = priceListService;
+            _masterService = masterService;
         }
 
 
@@ -29,7 +31,7 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] PriceList priceList)
         {
-            GeneralResponse resultAdd = await _priceListService.AddAsync(priceList);
+            GeneralResponse resultAdd = await _masterService.AddAsync(priceList);
             return resultAdd.Success ?
                 Ok("Lista de precios creada correctamente")
                 :
@@ -40,7 +42,7 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("UpdateAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] PriceList priceList)
         {
-            GeneralResponse resultAdd = await _priceListService.UpdateAsync(priceList);
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(priceList);
             return resultAdd.Success ?
                 Ok("Lista de precios actualizada correctamente")
                 :
