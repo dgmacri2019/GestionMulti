@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GestionComercial.Domain.Entities.Purchases;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
@@ -93,6 +94,7 @@ namespace GestionComercial.Domain.Entities.Masters
         [JsonIgnore] 
         public virtual State? State { get; set; }
 
-        //public virtual ICollection<Purchase> Purcheases { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<Purchase>? Purcheases { get; set; }
     }
 }

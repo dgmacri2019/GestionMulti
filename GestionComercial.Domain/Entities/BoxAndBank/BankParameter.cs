@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.BoxAndBank
@@ -36,7 +37,9 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
         public int DebitationDay { get; set; }
 
 
-        public virtual Bank Bank { get; set; }
+
+        [JsonIgnore] 
+        public virtual Bank? Bank { get; set; }
 
     }
 }

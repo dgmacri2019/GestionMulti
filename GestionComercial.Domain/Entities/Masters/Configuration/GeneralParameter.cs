@@ -11,7 +11,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
         public bool ProductBarCodeWeight { get; set; }
 
         [Display(Name = "Dígito Identificador Pesables")]
-        public string WeightIdentificator { get; set; }
+        public string? WeightIdentificator { get; set; }
 
         [Display(Name = "Días de validez del presupuesto")]
         public int BudgetValidDays { get; set; }

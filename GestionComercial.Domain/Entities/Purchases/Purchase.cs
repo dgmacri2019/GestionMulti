@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Constant;
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Purchases
@@ -89,10 +90,13 @@ namespace GestionComercial.Domain.Entities.Purchases
 
 
 
-        public virtual Provider Provider { get; set; }
+        [JsonIgnore] 
+        public virtual Provider? Provider { get; set; }
 
-        public virtual ICollection<PurchaseDetail> PurcheaseDetails { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<PurchaseDetail>? PurcheaseDetails { get; set; }
 
-        //public virtual ICollection<PurcheaseDetailTmp> PurcheaseDetailTmps { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<PurchaseDetailTmp>? PurchaseDetailTmps { get; set; }
     }
 }

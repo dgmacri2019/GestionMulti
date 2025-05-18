@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Budget
@@ -56,10 +57,12 @@ namespace GestionComercial.Domain.Entities.Budget
 
 
 
-        public virtual Client Client { get; set; }
+        [JsonIgnore] 
+        public virtual Client? Client { get; set; }
 
 
-        public virtual ICollection<BudgetDetail> BudgetDetails { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<BudgetDetail>? BudgetDetails { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Sales
@@ -21,11 +22,11 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public string InvoiceDate { get; set; }
 
-        public string ServDesde { get; set; }
+        public string? ServDesde { get; set; }
 
-        public string ServHasta { get; set; }
+        public string? ServHasta { get; set; }
 
-        public string VtoPago { get; set; }
+        public string? VtoPago { get; set; }
 
         public int DocType { get; set; }
 
@@ -39,15 +40,15 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public double ImpTotalIVA { get; set; }
 
-        public string CBU { get; set; }
+        public string? CBU { get; set; }
 
-        public string Alias { get; set; }
+        public string? Alias { get; set; }
 
-        public string CAE { get; set; }
+        public string? CAE { get; set; }
 
-        public string FechaVtoCAE { get; set; }
+        public string? FechaVtoCAE { get; set; }
 
-        public string FechaProceso { get; set; }
+        public string? FechaProceso { get; set; }
 
         public double Ajust => ImpTotal - (ImpNeto + ImpTotalIVA);
 
@@ -55,10 +56,14 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        public ICollection<InvoiceDetail> InvoiceDetails { get; set; }
 
-        public virtual Client Client { get; set; }
+        [JsonIgnore] 
+        public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
 
-        public virtual Sale Sale { get; set; }
+        [JsonIgnore] 
+        public virtual Client? Client { get; set; }
+
+        [JsonIgnore] 
+        public virtual Sale? Sale { get; set; }
     }
 }

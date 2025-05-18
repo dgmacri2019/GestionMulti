@@ -1,4 +1,4 @@
-﻿namespace GestionComercial.Domain.DTOs.Bank
+﻿namespace GestionComercial.Domain.DTOs.Banks
 {
     public class BankAndBoxViewModel
     {

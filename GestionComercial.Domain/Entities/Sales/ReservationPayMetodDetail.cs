@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Sales
@@ -11,6 +12,9 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public decimal Value { get; set; }
 
-        public virtual Reservation Reservation { get; set; }
+
+
+        [JsonIgnore] 
+        public virtual Reservation? Reservation { get; set; }
     }
 }

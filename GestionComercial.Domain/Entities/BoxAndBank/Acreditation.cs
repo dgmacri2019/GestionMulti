@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.BoxAndBank
 {
@@ -35,9 +36,11 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
 
 
-        public virtual Bank Bank { get; set; }
+        [JsonIgnore] 
+        public virtual Bank? Bank { get; set; }
 
-        public virtual Sale Sale { get; set; }
+        [JsonIgnore] 
+        public virtual Sale? Sale { get; set; }
 
     }
 }

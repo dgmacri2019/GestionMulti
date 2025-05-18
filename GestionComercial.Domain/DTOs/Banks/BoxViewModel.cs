@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using static GestionComercial.Domain.Constant.Enumeration;
 
-namespace GestionComercial.Domain.DTOs.Bank
+namespace GestionComercial.Domain.DTOs.Banks
 {
     public class BoxViewModel
     {

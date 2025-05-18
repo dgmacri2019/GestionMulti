@@ -1,5 +1,5 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.DTOs.Bank;
+using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
@@ -103,8 +103,6 @@ namespace GestionComercial.Applications.Services
                 };
             }
         }
-
-
         public async Task<BoxViewModel?> GetBoxByIdAsync(int id)
         {
             if (id == 0)
@@ -208,7 +206,97 @@ namespace GestionComercial.Applications.Services
 
 
 
-       
 
+
+        public async Task<IEnumerable<BankParameterViewModel>> SearchBankParameterToListAsync(string name, bool isEnabled, bool isDeleted)
+        {
+            List<BankParameterViewModel> bankParameterViewModels = [];
+
+            while (StaticCommon.ContextInUse)
+                await Task.Delay(100);
+            StaticCommon.ContextInUse = true;
+
+            List<Bank> banks = await _context.Banks.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync();
+
+            List<BankParameter> bankParameters = string.IsNullOrEmpty(name) ?
+                await _context.BankParameters
+                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted)
+                .Include(s => s.Bank)
+                .ToListAsync()
+                :
+                await _context.BankParameters
+                .Include(s => s.Bank)
+                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted && b.Bank.BankName.Contains(name))
+                .ToListAsync();
+
+            StaticCommon.ContextInUse = false;
+
+
+            return ToBankParameterViewModelList(bankParameters, banks);
+        }
+
+        public async Task<BankParameterViewModel?> GetBankParameterByIdAsync(int id)
+        {
+            if (id == 0)
+                return new BankParameterViewModel
+                {
+                    IsDeleted = false,
+                    IsEnabled = true,
+                    CreateDate = DateTime.Now,
+                    Banks = await _context.Banks.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
+                    SaleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))],
+                };
+            else
+            {
+                BankParameter? bankParameter = await _context.BankParameters
+                 .Where(b => b.Id == id)
+                 .Include(a => a.Bank)
+                 .FirstOrDefaultAsync();
+                return new BankParameterViewModel
+                {
+                    Banks = await _context.Banks.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
+                    CreateDate = bankParameter.CreateDate,
+                    CreateUser = bankParameter.CreateUser,
+                    Id = bankParameter.Id,
+                    IsDeleted = bankParameter.IsDeleted,
+                    IsEnabled = bankParameter.IsEnabled,
+                    UpdateDate = bankParameter.UpdateDate,
+                    UpdateUser = bankParameter.UpdateUser,
+                    SaleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))],
+                    AcreditationDay = bankParameter.AcreditationDay,
+                    BankId = bankParameter.BankId,
+                    DebitationDay = bankParameter.DebitationDay,
+                    Rate = bankParameter.Rate,
+                    SaleCondition = bankParameter.SaleCondition,
+                    BankName = bankParameter.Bank.BankName,
+                };
+            }
+        }
+
+
+
+
+
+        private IEnumerable<BankParameterViewModel> ToBankParameterViewModelList(List<BankParameter> bankParameters, List<Bank> banks)
+        {
+            return bankParameters.Select(provider => new BankParameterViewModel
+            {
+                Id = provider.Id,
+                SaleCondition = provider.SaleCondition,
+                CreateDate = provider.CreateDate,
+                CreateUser = provider.CreateUser,
+                UpdateDate = provider.UpdateDate,
+                UpdateUser = provider.UpdateUser,
+                IsDeleted = provider.IsDeleted,
+                IsEnabled = provider.IsEnabled,
+                Banks = banks,
+                BankName = banks.Where(b => b.Id == provider.BankId).FirstOrDefault().BankName,
+                SaleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))],
+                AcreditationDay = provider.AcreditationDay,
+                BankId = provider.BankId,
+                DebitationDay = provider.DebitationDay,
+                Rate = provider.Rate,
+            });
+        }
     }
 }

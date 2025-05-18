@@ -1,5 +1,7 @@
-﻿using GestionComercial.Domain.Entities.Masters;
+﻿using GestionComercial.Domain.Entities.BoxAndBank;
+using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.AccountingBook
 {
@@ -81,12 +83,17 @@ namespace GestionComercial.Domain.Entities.AccountingBook
         }
 
 
-        //public virtual ICollection<Box> Boxes { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<Box>? Boxes { get; set; }
 
-        //public virtual ICollection<Bank> Banks { get; set; }
 
-        public virtual ICollection<AccountVinculation> AccountVinculations { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<Bank>? Banks { get; set; }
 
-        public virtual AccountType AccountType { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<AccountVinculation>? AccountVinculations { get; set; }
+
+        [JsonIgnore]
+        public virtual AccountType? AccountType { get; set; }
     }
 }

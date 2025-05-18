@@ -1,4 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Purchases;
+using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -27,14 +29,18 @@ namespace GestionComercial.Domain.Entities.Afip
 
 
         [JsonIgnore] 
-        public virtual ICollection<Article> Products { get; set; }
+        public virtual ICollection<Article>? Products { get; set; }
 
-        //        public virtual ICollection<PurchaseDetail> PurcheaseDetails { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<PurchaseDetail>? PurcheaseDetails { get; set; }
 
-        //      public virtual ICollection<PurchaseDetailTmp> PurcheaseDetailTmps { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<PurchaseDetailTmp>? PurcheaseDetailTmps { get; set; }
 
-        //    public virtual ICollection<SaleDetailTmp> SaleDetailTmps { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<SaleDetailTmp>? SaleDetailTmps { get; set; }
 
-        //  public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<SaleDetail>? SaleDetails { get; set; }
     }
 }

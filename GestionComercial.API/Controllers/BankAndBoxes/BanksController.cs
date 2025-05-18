@@ -1,12 +1,10 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
-using GestionComercial.Applications.Services;
-using GestionComercial.Domain.DTOs.Bank;
+using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace GestionComercial.API.Controllers.BankAndBoxes
 {
@@ -100,8 +98,8 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
                 BadRequest(resultAdd.Message);
         }
 
-        [HttpPost("UpdateBankParamerAsync")]
-        public async Task<IActionResult> UpdateBankParamerAsync([FromBody] BankParameter bankParameter)
+        [HttpPost("UpdateBankParameterAsync")]
+        public async Task<IActionResult> UpdateBankParameterAsync([FromBody] BankParameter bankParameter)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(bankParameter);
             return resultAdd.Success ?
@@ -163,6 +161,25 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         }
 
 
+        [HttpPost("SearchBankParameterToListAsync")]
+        public async Task<IActionResult> SearchBankParameterToListAsync([FromBody] BankFilterDto filter)
+        {
+            IEnumerable<BankParameterViewModel> result = await _bankService.SearchBankParameterToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpPost("GetBankParameterByIdAsync")]
+        public async Task<IActionResult> GetBankParameterByIdAsync([FromBody] BankFilterDto filter)
+        {
+            BankParameterViewModel? result = await _bankService.GetBankParameterByIdAsync(filter.Id);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
 
 
     }

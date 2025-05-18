@@ -2,6 +2,7 @@
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Purchases
 {
@@ -39,11 +40,14 @@ namespace GestionComercial.Domain.Entities.Purchases
 
 
 
-        public virtual Article Article { get; set; }
+        [JsonIgnore] 
+        public virtual Article? Article { get; set; }
 
-        public virtual Tax Tax { get; set; }
+        [JsonIgnore] 
+        public virtual Tax? Tax { get; set; }
 
-        public virtual Purchase Purchease { get; set; }
+        [JsonIgnore] 
+        public virtual Purchase? Purchease { get; set; }
 
     }
 }

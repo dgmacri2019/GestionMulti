@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Budget
 {
@@ -33,10 +34,13 @@ namespace GestionComercial.Domain.Entities.Budget
 
 
 
-        public virtual Article Article { get; set; }
+        [JsonIgnore] 
+        public virtual Article? Article { get; set; }
 
-        public virtual Tax Tax { get; set; }
+        [JsonIgnore] 
+        public virtual Tax? Tax { get; set; }
 
-        public virtual Budget Budget { get; set; }
+        [JsonIgnore] 
+        public virtual Budget? Budget { get; set; }
     }
 }

@@ -33,20 +33,20 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
         [Display(Name = "Teléfono / Fax")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Display(Name = "Teléfono / Fax")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
-        public string Phone1 { get; set; }
+        public string? Phone1 { get; set; }
 
         [Display(Name = "E-Mail")]
         [MaxLength(100, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Display(Name = "Sitio Web")]
         [MaxLength(100, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
-        public string WebSite { get; set; }
+        public string? WebSite { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Número de cuenta")]
@@ -59,7 +59,7 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
         public string CBU { get; set; }
 
         [Display(Name = "Alias")]
-        public string Alias { get; set; }
+        public string? Alias { get; set; }
 
         [Display(Name = "Por Debitar")]
         public decimal FromDebit { get; set; }

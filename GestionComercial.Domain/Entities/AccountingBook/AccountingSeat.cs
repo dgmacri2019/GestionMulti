@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.AccountingBook
 {
@@ -47,6 +48,7 @@ namespace GestionComercial.Domain.Entities.AccountingBook
         public string AccountingSeatNumberString => string.Format("{0}/{1}", AccountingSeatNumber, Date.Year);
 
 
-        public virtual ICollection<AccountingSeatDetail> AccountingSeatDetails { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<AccountingSeatDetail>? AccountingSeatDetails { get; set; }
     }
 }

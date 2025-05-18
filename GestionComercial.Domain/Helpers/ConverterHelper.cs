@@ -1,5 +1,5 @@
 ﻿using GestionComercial.Domain.Constant;
-using GestionComercial.Domain.DTOs.Bank;
+using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
@@ -345,6 +345,25 @@ namespace GestionComercial.Domain.Helpers
                 FromDebit = boxViewModel.FromDebit,
                 SaleCondition = boxViewModel.SaleCondition,
                 Sold = boxViewModel.Sold,
+            };
+        }
+
+        public static BankParameter ToBankParameter(BankParameterViewModel bankParameterViewModel, bool isNew)
+        {
+            return new BankParameter
+            {
+                Id = isNew ? 0 : bankParameterViewModel.Id,
+                AcreditationDay = bankParameterViewModel.AcreditationDay,
+                BankId = bankParameterViewModel.BankId,
+                CreateDate = bankParameterViewModel.CreateDate,
+                CreateUser = bankParameterViewModel.CreateUser,
+                IsDeleted = bankParameterViewModel.IsDeleted,
+                IsEnabled = bankParameterViewModel.IsEnabled,
+                UpdateDate = bankParameterViewModel.UpdateDate,
+                UpdateUser = bankParameterViewModel.UpdateUser,
+                DebitationDay = bankParameterViewModel.DebitationDay,
+                Rate = bankParameterViewModel.Rate,
+                SaleCondition = bankParameterViewModel.SaleCondition,                 
             };
         }
 

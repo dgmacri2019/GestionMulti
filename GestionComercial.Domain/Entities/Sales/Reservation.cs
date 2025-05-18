@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Sales
@@ -64,14 +65,19 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        public virtual Client Client { get; set; }
+        [JsonIgnore] 
+        public virtual Client? Client { get; set; }
 
-        public virtual Sale Sale { get; set; }
+        [JsonIgnore] 
+        public virtual Sale? Sale { get; set; }
 
-        public virtual ICollection<ReservationDetail> ReservationDetails { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<ReservationDetail>? ReservationDetails { get; set; }
 
-        public virtual ICollection<ReservationPayMetodDetail> ReservationPayMetodDetails { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<ReservationPayMetodDetail>? ReservationPayMetodDetails { get; set; }
 
-        public virtual ICollection<Acreditation> Acreditations { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<Acreditation>? Acreditations { get; set; }
     }
 }

@@ -4,14 +4,13 @@ using System.Collections.ObjectModel;
 
 namespace GestionComercial.Desktop.ViewModels.Bank
 {
-    internal class BoxAndBankListViewModel
+    internal class BankParameterListViewModel
     {
         private readonly BanksApiService _bankApiService;
 
-        public ObservableCollection<BankAndBoxViewModel> BoxAndBanks { get; set; } = [];
+        public ObservableCollection<BankParameterViewModel> BankParameters { get; set; } = [];
 
-
-        public BoxAndBankListViewModel(string name, bool isEnabled, bool isDeleted)
+        public BankParameterListViewModel(string name, bool isEnabled, bool isDeleted)
         {
             _bankApiService = new BanksApiService();
             SearchAsync(name, isEnabled, isDeleted);
@@ -21,11 +20,11 @@ namespace GestionComercial.Desktop.ViewModels.Bank
         {
             try
             {
-                List<BankAndBoxViewModel> model = await _bankApiService.SearchAsync(name, isEnabled, isDeleted);
-                BoxAndBanks.Clear();
+                List<BankParameterViewModel> model = await _bankApiService.SearchBankParameterAsync(name, isEnabled, isDeleted);
+                BankParameters.Clear();
                 foreach (var p in model)
                 {
-                    BoxAndBanks.Add(p);
+                    BankParameters.Add(p);
                 }
             }
             catch (Exception ex)

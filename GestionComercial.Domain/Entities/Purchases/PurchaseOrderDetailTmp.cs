@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Purchases
 {
@@ -29,8 +30,10 @@ namespace GestionComercial.Domain.Entities.Purchases
 
 
 
-        public virtual Provider Provider { get; set; }
+        [JsonIgnore] 
+        public virtual Provider? Provider { get; set; }
 
-        public virtual Article Article { get; set; }
+        [JsonIgnore] 
+        public virtual Article? Article { get; set; }
     }
 }

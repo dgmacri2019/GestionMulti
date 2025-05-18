@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.AccountingBook
 {
@@ -19,6 +20,9 @@ namespace GestionComercial.Domain.Entities.AccountingBook
         [Display(Name = "Es Patrimonio Neto")]
         public bool IsNetHeritage { get; set; }
 
-        public virtual ICollection<Account> Accounts { get; set; }
+        
+        
+        [JsonIgnore] 
+        public virtual ICollection<Account>? Accounts { get; set; }
     }
 }

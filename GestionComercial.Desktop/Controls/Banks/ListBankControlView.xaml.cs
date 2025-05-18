@@ -1,5 +1,5 @@
 ﻿using GestionComercial.Desktop.ViewModels.Bank;
-using GestionComercial.Domain.DTOs.Bank;
+using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using System.Windows;
 using System.Windows.Controls;

@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Purchases
@@ -13,6 +14,7 @@ namespace GestionComercial.Domain.Entities.Purchases
 
 
 
-        public virtual Purchase Purchase { get; set; }
+        [JsonIgnore] 
+        public virtual Purchase? Purchase { get; set; }
     }
 }

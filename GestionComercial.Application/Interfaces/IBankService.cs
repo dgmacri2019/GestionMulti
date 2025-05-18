@@ -1,4 +1,4 @@
-﻿using GestionComercial.Domain.DTOs.Bank;
+﻿using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Response;
 
 namespace GestionComercial.Applications.Interfaces
@@ -22,7 +22,7 @@ namespace GestionComercial.Applications.Interfaces
 
 
 
-        Task<BankViewModel?> GetBankByIdAsync(int id);
+        Task<BankViewModel?> GetBankByIdAsync(int id);       
         Task<IEnumerable<BankAndBoxViewModel>> SearchBankAndBoxToListAsync(string name, bool isEnabled, bool isDeleted);
         Task<BoxViewModel?> GetBoxByIdAsync(int id);
 
@@ -30,7 +30,8 @@ namespace GestionComercial.Applications.Interfaces
 
 
 
-
+        Task<BankParameterViewModel?> GetBankParameterByIdAsync(int id);
+        Task<IEnumerable<BankParameterViewModel>> SearchBankParameterToListAsync(string name, bool isEnabled, bool isDeleted);
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿using GestionComercial.Desktop.Services;
-using GestionComercial.Domain.DTOs.Bank;
+using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;

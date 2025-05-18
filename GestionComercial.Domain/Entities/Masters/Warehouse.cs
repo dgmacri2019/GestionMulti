@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Masters
 {
@@ -13,7 +14,7 @@ namespace GestionComercial.Domain.Entities.Masters
         [MaxLength(20, ErrorMessage = "El campo {0} debe contener un máximo de {1} caracteres")]
         [Display(Name = "Teléfono")]
         [DataType(DataType.PhoneNumber)]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Dirección")]
@@ -31,6 +32,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        public virtual State State { get; set; }
+        [JsonIgnore] 
+        public virtual State? State { get; set; }
     }
 }

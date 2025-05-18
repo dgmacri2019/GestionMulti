@@ -5,7 +5,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
     public class PrinterParameter : CommonEntity
     {
         [Display(Name = "Impresora de Facturas")]
-        public string InvoicePrinter { get; set; }
+        public string? InvoicePrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Facturas")]
         public int MaxWidthInvoicePrinter { get; set; }
@@ -17,7 +17,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         [Display(Name = "Impresora de Remitos")]
-        public string RemitPrinter { get; set; }
+        public string? RemitPrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Remitos")]
         public int MaxWidthRemitPrinter { get; set; }
@@ -29,7 +29,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         [Display(Name = "Impresora de Presupuestos")]
-        public string BudgetPrinter { get; set; }
+        public string? BudgetPrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Presupuestos")]
         public int MaxWidthBudgetPrinter { get; set; }
@@ -41,7 +41,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         [Display(Name = "Impresora de Pedidos")]
-        public string OrderPrinter { get; set; }
+        public string? OrderPrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Pedidos")]
         public int MaxWidthOrderPrinter { get; set; }
@@ -53,7 +53,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         [Display(Name = "Impresora de Códigos de Barra")]
-        public string BarCodePrinter { get; set; }
+        public string? BarCodePrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Códigos de Barra")]
         public int MaxWidthBarCodePrinter { get; set; }
@@ -65,7 +65,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         [Display(Name = "Impresora de Ticket de Cambio")]
-        public string TicketChangePrinter { get; set; }
+        public string? TicketChangePrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Ticket de Cambio")]
         public int MaxWidthTicketChangePrinter { get; set; }
@@ -77,7 +77,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         [Display(Name = "Impresora de ")]
-        public string SalePrinter { get; set; }
+        public string? SalePrinter { get; set; }
 
         [Display(Name = "Ancho Maximo Impresora de Ventas")]
         public int MaxWidthSalePrinter { get; set; }
@@ -99,6 +99,8 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
         public bool EnablePrintSale { get; set; }
 
 
+        public string? ComputerName { get; set; }
+        public string? SalePoint { get; set; }
 
     }
 }

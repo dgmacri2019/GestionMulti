@@ -1,5 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
-using GestionComercial.Domain.DTOs.Bank;
+using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Response;
 using System.Net.Http;
@@ -162,6 +162,96 @@ namespace GestionComercial.Desktop.Services
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/Banks/UpdateBoxAsync", box);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+
+        internal async Task<List<BankParameterViewModel>> SearchBankParameterAsync(string name, bool isEnabled, bool isDeleted)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/banks/SearchBankParameterToListAsync", new
+            {
+                Name = name,
+                IsDeleted = isDeleted,
+                IsEnabled = isEnabled,
+            });
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                return JsonSerializer.Deserialize<List<BankParameterViewModel>>(jsonResponse, options);
+
+            }
+            else
+            {
+                // Manejo de error
+                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                return null;
+            }
+        }
+
+        internal async Task<BankAndBoxResponse> GetBankParameterByIdAsync(int bankParameterId, bool isEnabled, bool isDeleted)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/banks/GetBankParameterByIdAsync", new
+            {
+                Id = bankParameterId,
+                IsDeleted = isDeleted,
+                IsEnabled = isEnabled,
+            });
+
+            JsonSerializerOptions options = new()
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+                return new BankAndBoxResponse
+                {
+                    BankParameterViewModel = JsonSerializer.Deserialize<BankParameterViewModel>(jsonResponse, options),
+                    Success = true,
+                };
+            else
+                return new BankAndBoxResponse
+                {
+                    Success = false,
+                    Message = $"Error: {response.StatusCode}\n{jsonResponse}",
+                };
+        }
+
+        internal async Task<GeneralResponse> AddBankParameterAsync(BankParameter bankParameter)
+        {
+
+            var response = await _httpClient.PostAsJsonAsync("api/Banks/AddBankParameterAsync", bankParameter);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+        internal async Task<GeneralResponse> UpdateBankParameterAsync(BankParameter bankParameter)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/Banks/UpdateBankParameterAsync", bankParameter);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {

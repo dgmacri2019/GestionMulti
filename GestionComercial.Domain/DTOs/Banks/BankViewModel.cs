@@ -2,7 +2,7 @@
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
 
-namespace GestionComercial.Domain.DTOs.Bank
+namespace GestionComercial.Domain.DTOs.Banks
 {
     public class BankViewModel
     {

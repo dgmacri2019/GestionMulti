@@ -4,6 +4,7 @@ using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComercial.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250518170702_fix3")]
+    partial class fix3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -698,6 +701,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Alias")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankName")
@@ -724,6 +728,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -740,10 +745,12 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone1")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -766,6 +773,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("WebSite")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -1704,6 +1712,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("WeightIdentificator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1720,12 +1729,11 @@ namespace GestionComercial.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BarCodePrinter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BudgetPrinter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ComputerName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateDate")
@@ -1758,6 +1766,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("InvoicePrinter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -1788,18 +1797,19 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OrderPrinter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RemitPrinter")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SalePoint")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SalePrinter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TicketChangePrinter")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -2596,17 +2606,11 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PurchaseId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SubTotal")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("TaxId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalItem")
                         .HasColumnType("decimal(18,2)");
@@ -2623,10 +2627,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasIndex("ArticleId");
 
                     b.HasIndex("ProviderId");
-
-                    b.HasIndex("PurchaseId");
-
-                    b.HasIndex("TaxId");
 
                     b.ToTable("PurchaseDetailTmps");
                 });
@@ -2887,12 +2887,15 @@ namespace GestionComercial.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Alias")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CAE")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CBU")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ClientId")
@@ -2922,9 +2925,11 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FechaProceso")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FechaVtoCAE")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ImpNeto")
@@ -2956,9 +2961,11 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ServDesde")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServHasta")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TaxCondition")
@@ -2972,6 +2979,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("VtoPago")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -4023,7 +4031,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Bank", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.AccountingBook.Account", "Account")
-                        .WithMany("Banks")
+                        .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4053,7 +4061,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Box", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.AccountingBook.Account", "Account")
-                        .WithMany("Boxes")
+                        .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4294,7 +4302,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.Purchase", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Masters.Provider", "Provider")
-                        .WithMany("Purcheases")
+                        .WithMany()
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4305,7 +4313,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseDetail", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Stock.Article", "Article")
-                        .WithMany("PurcheaseDetails")
+                        .WithMany()
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4317,7 +4325,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("GestionComercial.Domain.Entities.Afip.Tax", "Tax")
-                        .WithMany("PurcheaseDetails")
+                        .WithMany()
                         .HasForeignKey("TaxId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4332,7 +4340,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseDetailTmp", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Stock.Article", "Article")
-                        .WithMany("PurcheaseDetailTmps")
+                        .WithMany()
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4342,14 +4350,6 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("GestionComercial.Domain.Entities.Purchases.Purchase", null)
-                        .WithMany("PurchaseDetailTmps")
-                        .HasForeignKey("PurchaseId");
-
-                    b.HasOne("GestionComercial.Domain.Entities.Afip.Tax", null)
-                        .WithMany("PurcheaseDetailTmps")
-                        .HasForeignKey("TaxId");
 
                     b.Navigation("Article");
 
@@ -4552,7 +4552,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetail", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Stock.Article", "Article")
-                        .WithMany("SaleDetails")
+                        .WithMany()
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4564,7 +4564,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("GestionComercial.Domain.Entities.Afip.Tax", "Tax")
-                        .WithMany("SaleDetails")
+                        .WithMany()
                         .HasForeignKey("TaxId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4579,7 +4579,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetailTmp", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Stock.Article", "Article")
-                        .WithMany("SaleDetailTmps")
+                        .WithMany()
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4591,7 +4591,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("GestionComercial.Domain.Entities.Afip.Tax", "Tax")
-                        .WithMany("SaleDetailTmps")
+                        .WithMany()
                         .HasForeignKey("TaxId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4695,10 +4695,6 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.AccountingBook.Account", b =>
                 {
                     b.Navigation("AccountVinculations");
-
-                    b.Navigation("Banks");
-
-                    b.Navigation("Boxes");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.AccountingBook.AccountType", b =>
@@ -4714,14 +4710,6 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Afip.Tax", b =>
                 {
                     b.Navigation("Products");
-
-                    b.Navigation("PurcheaseDetailTmps");
-
-                    b.Navigation("PurcheaseDetails");
-
-                    b.Navigation("SaleDetailTmps");
-
-                    b.Navigation("SaleDetails");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Bank", b =>
@@ -4755,11 +4743,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("Articles");
                 });
 
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
-                {
-                    b.Navigation("Purcheases");
-                });
-
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -4781,8 +4764,6 @@ namespace GestionComercial.Infrastructure.Migrations
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.Purchase", b =>
                 {
-                    b.Navigation("PurchaseDetailTmps");
-
                     b.Navigation("PurcheaseDetails");
                 });
 
@@ -4817,14 +4798,6 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
                 {
                     b.Navigation("PriceLists");
-
-                    b.Navigation("PurcheaseDetailTmps");
-
-                    b.Navigation("PurcheaseDetails");
-
-                    b.Navigation("SaleDetailTmps");
-
-                    b.Navigation("SaleDetails");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>

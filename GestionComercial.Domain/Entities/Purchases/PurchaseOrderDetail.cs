@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace GestionComercial.Domain.Entities.Purchases
@@ -35,10 +36,13 @@ namespace GestionComercial.Domain.Entities.Purchases
 
 
 
-        public virtual Article Article { get; set; }
+        [JsonIgnore] 
+        public virtual Article? Article { get; set; }
 
-        public virtual PurchaseOrder PurcheaseOrder { get; set; }
+        [JsonIgnore]
+        public virtual PurchaseOrder? PurcheaseOrder { get; set; }
 
-        public virtual Tax Tax { get; set; }
+        [JsonIgnore]
+        public virtual Tax? Tax { get; set; }
     }
 }

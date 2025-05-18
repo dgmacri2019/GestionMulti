@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace GestionComercial.Domain.Entities.Purchases
@@ -49,9 +50,11 @@ namespace GestionComercial.Domain.Entities.Purchases
 
 
 
-        public virtual ICollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<PurchaseOrderDetail>? PurchaseOrderDetails { get; set; }
 
-        public virtual Provider Provider { get; set; }
+        [JsonIgnore] 
+        public virtual Provider? Provider { get; set; }
 
     }
 }

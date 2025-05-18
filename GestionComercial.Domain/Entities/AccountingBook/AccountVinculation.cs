@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.AccountingBook
 {
@@ -16,6 +17,7 @@ namespace GestionComercial.Domain.Entities.AccountingBook
 
 
 
-        public virtual Account Account { get; set; }
+        [JsonIgnore] 
+        public virtual Account? Account { get; set; }
     }
 }
