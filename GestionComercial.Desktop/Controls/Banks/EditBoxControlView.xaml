@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Banks"             
              xmlns:local1="clr-namespace:GestionComercial.Desktop.Helpers"
              mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1460"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
              x:Name="miUserControl" 
              Loaded="miUserControl_Loaded"
              Background="LightGray">

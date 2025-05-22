@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Controls.Articles;
+﻿using GestionComercial.Desktop.Controls.Accounts;
+using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
 using GestionComercial.Desktop.Controls.PriceLists;
@@ -105,6 +106,16 @@ namespace GestionComercial.Desktop.Views
                         new MenuItemModel { Title = "Parametros de acreditación", Icon = "/Images/Bank 32.png", Tag = "Banks_Parameter" },
                     }
                 },
+                new MenuItemModel
+                {
+                    Title = "Cuentas Contables",
+                    Icon = "/Images/Acounting Book 32.png",
+                    Children = new List<MenuItemModel>
+                    {
+                        new MenuItemModel { Title = "Tipos de cuenta", Icon = "/Images/Acounting Book 32.png", Tag = "AccountTypes" },
+                        new MenuItemModel { Title = "Cuentas", Icon = "/Images/Acounting Book 32.png", Tag = "Accounts" },
+                    }
+                },
 
                 new MenuItemModel
                 {
@@ -149,6 +160,9 @@ namespace GestionComercial.Desktop.Views
                         break;
                     case "PriceLists":
                         MainContent.Content = new ListPriceListControlView();
+                        break;
+                    case "Accounts":
+                        MainContent.Content = new ListAccountControlView();
                         break;
                     case "LogOut":
                         LogOut();

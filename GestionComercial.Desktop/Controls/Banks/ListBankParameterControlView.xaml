@@ -58,7 +58,8 @@
                     Content="Nuevo Parametro"
                     Margin="0,5,0,0"
                     Style="{StaticResource BtnArticles}" 
-                    Click="btnAddParameter_Click"/>
+                    Click="btnAddParameter_Click"
+                    Visibility="Hidden"/>
 
                 <!--<Button 
                     x:Name="btnAddBox"

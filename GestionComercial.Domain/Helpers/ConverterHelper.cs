@@ -1,9 +1,11 @@
 ﻿using GestionComercial.Domain.Constant;
+using GestionComercial.Domain.DTOs.Accounts;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
@@ -367,6 +369,39 @@ namespace GestionComercial.Domain.Helpers
             };
         }
 
+
         #endregion
+
+
+        #region Accounting Books
+
+        public static AccountViewModel ToAccountViewModel(Account account)
+        {
+            return new AccountViewModel
+            {
+                Id = account.Id,
+                Description = account.Description,
+                Name = account.Name,
+                CreateDate = account.CreateDate,
+                CreateUser = account.CreateUser,
+                UpdateDate = account.UpdateDate,
+                UpdateUser = account.UpdateUser,
+                IsDeleted = account.IsDeleted,
+                IsEnabled = account.IsEnabled,
+                AccountGroupNumber = account.AccountGroupNumber,
+                AccountSubGroupNumber1 = account.AccountSubGroupNumber1,
+                AccountSubGroupNumber2 = account.AccountSubGroupNumber2,
+                AccountSubGroupNumber3 = account.AccountSubGroupNumber3,
+                AccountSubGroupNumber4 = account.AccountSubGroupNumber4,
+                AccountSubGroupNumber5 = account.AccountSubGroupNumber5,
+                AccountTypeId = account.AccountTypeId,
+                IsReference = account.IsReference,
+                IsFirstLevel = account.AccountSubGroupNumber1 == 0 && account.AccountSubGroupNumber2 == 0 && account.AccountSubGroupNumber3 == 0 &&
+                account.AccountSubGroupNumber4 == 0 && account.AccountSubGroupNumber5 == 0,                
+            };
+        }
+
+        #endregion
+
     }
 }

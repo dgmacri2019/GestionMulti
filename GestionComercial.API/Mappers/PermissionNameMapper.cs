@@ -13,6 +13,7 @@
                 "Permissions" => "Permisos",
                 "PriceLists" => "Lista de Precios",
                 "Banks" => "Bancos",
+                "Accounts" => "Cuentas Contables",
                 _ => controller
             };
         }
