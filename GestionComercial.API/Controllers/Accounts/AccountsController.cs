@@ -24,8 +24,8 @@ namespace GestionComercial.API.Controllers.Accounts
         }
 
 
-        [HttpPost("AddAsync")]
-        public async Task<IActionResult> AddAsync([FromBody] Account account)
+        [HttpPost("AddAccountAsync")]
+        public async Task<IActionResult> AddAccountAsync([FromBody] Account account)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(account);
             return resultAdd.Success ?
@@ -35,8 +35,8 @@ namespace GestionComercial.API.Controllers.Accounts
         }
 
 
-        [HttpPost("UpdateAsync")]
-        public async Task<IActionResult> UpdateAsync([FromBody] Account account)
+        [HttpPost("UpdateAccountAsync")]
+        public async Task<IActionResult> UpdateAccountAsync([FromBody] Account account)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(account);
             return resultAdd.Success ?
@@ -49,27 +49,81 @@ namespace GestionComercial.API.Controllers.Accounts
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync([FromBody] AccountFilterDto filter)
         {
-            IEnumerable<AccountViewModel> articles = await _accountService.GetAllAsync(filter.IsEnabled, filter.IsDeleted, filter.All);
-            return Ok(articles);
+            IEnumerable<AccountViewModel> accounts = await _accountService.GetAllAsync(filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accounts);
         }
 
 
         [HttpPost("SearchToListAsync")]
         public async Task<IActionResult> SearchToListAsync([FromBody] AccountFilterDto filter)
         {
-            IEnumerable<AccountViewModel> articles = await _accountService.SearchToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
-            return Ok(articles);
+            IEnumerable<AccountViewModel> accounts = await _accountService.SearchToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
+            return Ok(accounts);
         }
 
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] AccountFilterDto filter)
         {
-            AccountViewModel? article = await _accountService.GetByIdAsync(filter.Id);
-            if (article == null)
+            AccountViewModel? account = await _accountService.GetByIdAsync(filter.Id);
+            if (account == null)
                 return NotFound();
 
-            return Ok(article);
+            return Ok(account);
         }
+
+
+        [HttpPost("GetAllAccountTypesAsync")]
+        public async Task<IActionResult> GetAllAccountTypesAsync([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<AccountType> accountTypes = await _accountService.GetAllAccountTypesAsync(filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accountTypes);
+        }
+
+        [HttpPost("GetAllAccountsAsync")]
+        public async Task<IActionResult> GetAllAccountsAsync([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<Account> accounts = await _accountService.GetAllAccountsAsync(filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accounts);
+        }
+
+        [HttpPost("GetAccountGroup1Async")]
+        public async Task<IActionResult> GetAccountGroup1Async([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<Account> accounts = await _accountService.GetAccountGroup1Async(filter.AccountType, filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accounts);
+        }
+
+        [HttpPost("GetAccountGroup2Async")]
+        public async Task<IActionResult> GetAccountGroup2Async([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<Account> accounts = await _accountService.GetAccountGroup2Async(filter.AccountType, filter.AccountGroup1, filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accounts);
+        }
+
+        [HttpPost("GetAccountGroup3Async")]
+        public async Task<IActionResult> GetAccountGroup3Async([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<Account> accounts = await _accountService.GetAccountGroup3Async(filter.AccountType, filter.AccountGroup1, filter.AccountGroup2, filter.IsEnabled,
+                filter.IsDeleted, filter.All);
+            return Ok(accounts);
+        }
+
+        [HttpPost("GetAccountGroup4Async")]
+        public async Task<IActionResult> GetAccountGroup4Async([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<Account> accounts = await _accountService.GetAccountGroup4Async(filter.AccountType, filter.AccountGroup1, filter.AccountGroup2, filter.AccountGroup3,
+                filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accounts);
+        }
+
+        [HttpPost("GetAccountGroup5Async")]
+        public async Task<IActionResult> GetAccountGroup5Async([FromBody] AccountFilterDto filter)
+        {
+            IEnumerable<Account> accounts = await _accountService.GetAccountGroup5Async(filter.AccountType, filter.AccountGroup1, filter.AccountGroup2, filter.AccountGroup3,
+                filter.AccountGroup4, filter.IsEnabled, filter.IsDeleted, filter.All);
+            return Ok(accounts);
+        }
+
 
     }
 }

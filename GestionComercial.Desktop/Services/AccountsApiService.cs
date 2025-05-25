@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.Accounts;
-using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.Entities.AccountingBook;
+using GestionComercial.Domain.Response;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -85,7 +86,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<AccountViewModel> GetByIdAsync(int id)
+        internal async Task<AccountResponse> GetByIdAsync(int id)
         {
             // Llama al endpoint y deserializa la respuesta
 
@@ -101,13 +102,97 @@ namespace GestionComercial.Desktop.Services
             var jsonResponse = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
-                return JsonSerializer.Deserialize<AccountViewModel>(jsonResponse, options);
-            else
-                return new AccountViewModel
+                return new AccountResponse
                 {
-                    Id = 0
+                    AccountViewModel = JsonSerializer.Deserialize<AccountViewModel>(jsonResponse, options),
+                    Success = true,
+                };
+            else
+                return new AccountResponse
+                {
+                    Success = false,
+                    Message = $"Error: {response.StatusCode}\n{jsonResponse}",
                 };
         }
 
+        internal async Task<List<AccountType>> GetAllAccountTypesAsync(bool isEnabled, bool isDeleted, bool all)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/accounts/GetAllAccountTypesAsync", new
+            {
+                IsDeleted = isDeleted,
+                IsEnabled = isEnabled,
+                All = all
+            });
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                return JsonSerializer.Deserialize<List<AccountType>>(jsonResponse, options);
+            }
+            else
+            {
+                // Manejo de error
+                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                return null;
+            }
+        }
+
+        internal async Task<List<Account>> GetAllAccountAsync(bool isEnabled, bool isDeleted, bool all)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/accounts/GetAllAccountsAsync", new
+            {
+                IsDeleted = isDeleted,
+                IsEnabled = isEnabled,
+                All = all
+            });
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                return JsonSerializer.Deserialize<List<Account>>(jsonResponse, options);
+            }
+            else
+            {
+                // Manejo de error
+                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                return null;
+            }
+        }
+
+        internal async Task<GeneralResponse> UpdateAsync(Account account)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/accounts/UpdateAccountAsync", account);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+        internal async Task<GeneralResponse> AddAsync(Account account)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/accounts/AddAccountAsync", account);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
     }
 }

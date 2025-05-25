@@ -365,7 +365,7 @@ namespace GestionComercial.Domain.Helpers
                 UpdateUser = bankParameterViewModel.UpdateUser,
                 DebitationDay = bankParameterViewModel.DebitationDay,
                 Rate = bankParameterViewModel.Rate,
-                SaleCondition = bankParameterViewModel.SaleCondition,                 
+                SaleCondition = bankParameterViewModel.SaleCondition,
             };
         }
 
@@ -397,7 +397,31 @@ namespace GestionComercial.Domain.Helpers
                 AccountTypeId = account.AccountTypeId,
                 IsReference = account.IsReference,
                 IsFirstLevel = account.AccountSubGroupNumber1 == 0 && account.AccountSubGroupNumber2 == 0 && account.AccountSubGroupNumber3 == 0 &&
-                account.AccountSubGroupNumber4 == 0 && account.AccountSubGroupNumber5 == 0,                
+                account.AccountSubGroupNumber4 == 0 && account.AccountSubGroupNumber5 == 0,
+            };
+        }
+
+        public static Account ToAccount(AccountViewModel accountViewModel, bool isNew)
+        {
+            return new Account
+            {
+                Id = isNew ? 0 : accountViewModel.Id,
+                AccountGroupNumber = accountViewModel.AccountGroupNumber,
+                AccountSubGroupNumber1 = accountViewModel.AccountSubGroupNumber1,
+                AccountSubGroupNumber2 = accountViewModel.AccountSubGroupNumber2,
+                AccountSubGroupNumber3 = accountViewModel.AccountSubGroupNumber3,
+                AccountSubGroupNumber4 = accountViewModel.AccountSubGroupNumber4,
+                AccountSubGroupNumber5 = accountViewModel.AccountSubGroupNumber5,
+                AccountTypeId = accountViewModel.AccountTypeId,
+                IsReference = accountViewModel.IsReference,
+                CreateDate = accountViewModel.CreateDate,
+                CreateUser = accountViewModel.CreateUser,
+                Description = accountViewModel.Description,
+                IsDeleted = accountViewModel.IsDeleted,
+                IsEnabled = accountViewModel.IsEnabled,
+                Name = accountViewModel.Name,
+                UpdateDate = accountViewModel.UpdateDate,
+                UpdateUser = accountViewModel.UpdateUser,
             };
         }
 

@@ -134,5 +134,56 @@ namespace GestionComercial.Desktop.Controls.Accounts
         {
             await CargarArbolAsync();
         }
+
+        private void TreeCuentas_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is DependencyObject source)
+            {
+                var treeViewItem = ItemsControl.ContainerFromElement(TreeCuentas, source) as TreeViewItem;
+                if (treeViewItem != null && treeViewItem.DataContext is AccountViewModel cuenta)
+                {
+                    TreeCuentas.Visibility = Visibility.Hidden;
+                    Comentario.Visibility = Visibility.Hidden;
+                    TreeCuentas.DataContext = null;
+                    PanelEdicion.Visibility = Visibility.Visible;
+                    btnAddAccount.Visibility = Visibility.Hidden;
+                    lblHeader.Content = "Editar cuenta contable";
+                    var ventana = new EditAccountControlView(cuenta.Id);
+                    ventana.CuentaActualizada += () =>
+                    {
+                        CargarArbolAsync();
+                        TreeCuentas.Visibility = Visibility.Visible;
+                        Comentario.Visibility = Visibility.Visible;
+                        PanelEdicion.Content = null;
+                        PanelEdicion.Visibility = Visibility.Hidden;
+                        btnAddAccount.Visibility = Visibility.Visible;
+                        lblHeader.Content = "Cuentas contables";
+                    };
+                    PanelEdicion.Content = ventana;
+                }
+            }
+        }
+
+        private void btnAddAccount_Click(object sender, RoutedEventArgs e)
+        {
+            TreeCuentas.Visibility = Visibility.Hidden;
+            Comentario.Visibility = Visibility.Hidden;
+            TreeCuentas.Items.Clear(); 
+            PanelEdicion.Visibility = Visibility.Visible;
+            btnAddAccount.Visibility = Visibility.Hidden;
+            lblHeader.Content = "Editar cuenta contable";
+            var ventana = new EditAccountControlView(0);
+            ventana.CuentaActualizada += () =>
+            {
+                CargarArbolAsync();
+                TreeCuentas.Visibility = Visibility.Visible;
+                Comentario.Visibility = Visibility.Visible;
+                PanelEdicion.Content = null;
+                PanelEdicion.Visibility = Visibility.Hidden;
+                btnAddAccount.Visibility = Visibility.Visible;
+                lblHeader.Content = "Cuentas contables";
+            };
+            PanelEdicion.Content = ventana;
+        }
     }
 }

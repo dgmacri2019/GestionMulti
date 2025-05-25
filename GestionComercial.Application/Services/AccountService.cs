@@ -19,8 +19,8 @@ namespace GestionComercial.Applications.Services
             _dBHelper = new DBHelper();
         }
 
-        #endregion
 
+        #endregion
 
 
 
@@ -55,8 +55,6 @@ namespace GestionComercial.Applications.Services
             return ToAccountViewModelList(accounts, accountTypes);
         }
 
-
-
         public async Task<AccountViewModel?> GetByIdAsync(int id)
         {
             if (id == 0)
@@ -73,8 +71,6 @@ namespace GestionComercial.Applications.Services
 
             return account == null ? null : ConverterHelper.ToAccountViewModel(account);
         }
-
-
 
         public async Task<IEnumerable<AccountViewModel>> SearchToListAsync(string name, bool isEnabled, bool isDeleted)
         {
@@ -107,13 +103,180 @@ namespace GestionComercial.Applications.Services
             return ToAccountViewModelList(accounts, accountTypes);
         }
 
+        public async Task<IEnumerable<AccountType>> GetAllAccountTypesAsync(bool isEnabled, bool isDeleted, bool all)
+        {
+            List<AccountType> accountTypes =
+            [
+                new AccountType
+                {
+                    Id = 0,
+                    Name = "Seleccione el tipo de cuenta",
+                },
+            ];
+
+            accountTypes.AddRange(all ?
+                await _context.AccountTypes
+                .ToListAsync()
+                :
+                await _context.AccountTypes
+                .Where(ac => ac.IsEnabled == isEnabled && ac.IsDeleted == isDeleted)
+                .ToListAsync());
+            return accountTypes;
+        }
+
+        public async Task<IEnumerable<Account>> GetAllAccountsAsync(bool isEnabled, bool isDeleted, bool all)
+        {
+            List<Account> accounts =
+            [
+                new Account
+                {
+                    Id = 0,
+                    Name = "Seleccione la cuenta",
+                }
+,
+            ];
+            accounts.AddRange(all ?
+                await _context.Accounts
+                .ToListAsync()
+                :
+                await _context.Accounts
+                .Where(ac => ac.IsEnabled == isEnabled && ac.IsDeleted == isDeleted)
+                .ToListAsync());
+            return accounts;
+        }
+
+        public async Task<IEnumerable<Account>> GetAccountGroup1Async(int accountType, bool isEnabled, bool isDeleted, bool all)
+        {
+            List<Account> accounts =
+            [
+                new Account
+                {
+                    Id = 0,
+                    Name = "Seleccione la SubCuenta 1",
+                }
+,
+            ];
+            accounts.AddRange(all ?
+                await _context.Accounts
+                .Where(a => a.AccountGroupNumber == accountType)
+                .ToListAsync()
+                :
+                await _context.Accounts
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType)
+                .ToListAsync());
+            return accounts;
+        }
+
+        public async Task<IEnumerable<Account>> GetAccountGroup2Async(int accountType, int accountGroup1, bool isEnabled, bool isDeleted, bool all)
+        {
+            List<Account> accounts = 
+            [
+                new Account
+                {
+                    Id = 0,
+                    Name = "Seleccione la SubCuenta 2",
+                }
+,
+            ];
+            accounts.AddRange(all ?
+                await _context.Accounts
+                .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1)
+                .ToListAsync()
+                :
+                await _context.Accounts
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1)
+                .ToListAsync());
+            return accounts;
+        }
+
+        public async Task<IEnumerable<Account>> GetAccountGroup3Async(int accountType, int accountGroup1, int accountGroup2, bool isEnabled, bool isDeleted, bool all)
+        {
+            List<Account> accounts =
+            [
+                new Account
+                {
+                    Id = 0,
+                    Name = "Seleccione la SubCuenta 3",
+                }
+,
+            ];
+            accounts.AddRange(all ?
+                await _context.Accounts
+                .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+                && a.AccountSubGroupNumber2 == accountGroup2)
+                .ToListAsync()
+                :
+                await _context.Accounts
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+                && a.AccountSubGroupNumber2 == accountGroup2)
+                .ToListAsync());
+            return accounts;
+        }
+
+        public async Task<IEnumerable<Account>> GetAccountGroup4Async(int accountType, int accountGroup1, int accountGroup2, int accountGroup3, bool isEnabled, bool isDeleted,
+            bool all)
+        {
+            List<Account> accounts =
+            [
+                new Account
+                {
+                    Id = 0,
+                    Name = "Seleccione la SubCuenta 4",
+                }
+,
+            ];
+            accounts.AddRange(all ?
+                await _context.Accounts
+               .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+               && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3)
+               .ToListAsync()
+                :
+                await _context.Accounts
+               .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+               && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3)
+               .ToListAsync());
+            return accounts;
+        }
+
+        public async Task<IEnumerable<Account>> GetAccountGroup5Async(int accountType, int accountGroup1, int accountGroup2, int accountGroup3, int accountGroup4,
+            bool isEnabled, bool isDeleted, bool all)
+        {
+            List<Account> accounts =
+            [
+                new Account
+                {
+                    Id = 0,
+                    Name = "Seleccione la SubCuenta 5",
+                }
+,
+            ];
+            accounts.AddRange(all ?
+                await _context.Accounts
+              .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+              && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3 && a.AccountSubGroupNumber4 == accountGroup4)
+              .ToListAsync()
+                :
+                await _context.Accounts
+              .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+              && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3 && a.AccountSubGroupNumber4 == accountGroup4)
+              .ToListAsync());
+            return accounts;
+        }
+
+
+
+
+
+
+
+
+
+
 
 
         private IEnumerable<AccountViewModel> ToAccountViewModelList(List<Account> accounts, List<AccountType> accountTypes)
         {
-
-            IEnumerable<AccountViewModel> raiz = new List<AccountViewModel>();
-            var x = accountTypes.Select(group => new AccountViewModel
+            return accountTypes.Select(group => new AccountViewModel
             {
                 AccountTypeId = group.Id,
                 Name = group.Name,
@@ -162,114 +325,6 @@ namespace GestionComercial.Applications.Services
                         }).ToList(),
                     }).ToList(),
                 }).ToList(),
-            });
-
-            return x;
-            //foreach (var cuenta in accounts)
-            //{
-            //    // Nivel 0 - Grupo principal
-            //    var grupo = raiz.FirstOrDefault(x => x.Name == cuenta.AccountGroupNumber.ToString());
-            //    //var grupo = raiz.FirstOrDefault(x => x.Name == cuenta.Name);
-            //    if (grupo == null)
-            //    {
-            //        grupo = new AccountViewModel
-            //        {
-            //            Name = cuenta.Name,
-            //            Description = cuenta.Description,
-            //            IsFirstLevel = true
-            //        };
-            //        raiz.Add(grupo);
-            //    }
-
-            //    // Nivel 1
-            //    var sub1 = grupo.Children.FirstOrDefault(x => x.Name == cuenta.AccountSubGroupNumber1.ToString());
-            //    if (sub1 == null)
-            //    {
-            //        sub1 = new AccountViewModel
-            //        {
-            //            Name = cuenta.Name,
-            //            Description = cuenta.Description
-            //        };
-            //        grupo.Children.Add(sub1);
-            //    }
-
-            //    // Nivel 2
-            //    var sub2 = sub1.Children.FirstOrDefault(x => x.Name == cuenta.AccountSubGroupNumber2.ToString());
-            //    if (sub2 == null)
-            //    {
-            //        sub2 = new AccountViewModel
-            //        {
-            //            Name = cuenta.Name,
-            //            Description = cuenta.Description
-            //        };
-            //        sub1.Children.Add(sub2);
-            //    }
-
-            //    // Nivel 3
-            //    var sub3 = sub2.Children.FirstOrDefault(x => x.Name == cuenta.AccountSubGroupNumber3.ToString());
-            //    if (sub3 == null)
-            //    {
-            //        sub3 = new AccountViewModel
-            //        {
-            //            Name = cuenta.Name,
-            //            Description = cuenta.Description
-            //        };
-            //        sub2.Children.Add(sub3);
-            //    }
-
-            //    // Nivel 4
-            //    var sub4 = sub3.Children.FirstOrDefault(x => x.Name == cuenta.AccountSubGroupNumber4.ToString());
-            //    if (sub4 == null)
-            //    {
-            //        sub4 = new AccountViewModel
-            //        {
-            //            Name = cuenta.Name,
-            //            Description = cuenta.Description
-            //        };
-            //        sub3.Children.Add(sub4);
-            //    }
-
-            //    // Nivel 5 (Cuenta final)
-            //    var sub5 = sub4.Children.FirstOrDefault(x => x.Name == cuenta.AccountSubGroupNumber5.ToString());
-            //    if (sub5 == null)
-            //    {
-            //        sub5 = new AccountViewModel
-            //        {
-            //            Name = cuenta.Name, // Mostramos el nombre completo de la cuenta final
-            //            Description = cuenta.Description
-            //        };
-            //        sub4.Children.Add(sub5);
-            //    }
-            //}
-
-            return raiz;
-
-
-
-
-
-
-            return accounts.Select(account => new AccountViewModel
-            {
-                Id = account.Id,
-                Description = account.Description,
-                Name = account.Name,
-                CreateDate = account.CreateDate,
-                CreateUser = account.CreateUser,
-                UpdateDate = account.UpdateDate,
-                UpdateUser = account.UpdateUser,
-                IsDeleted = account.IsDeleted,
-                IsEnabled = account.IsEnabled,
-                AccountGroupNumber = account.AccountGroupNumber,
-                AccountSubGroupNumber1 = account.AccountSubGroupNumber1,
-                AccountSubGroupNumber2 = account.AccountSubGroupNumber2,
-                AccountSubGroupNumber3 = account.AccountSubGroupNumber3,
-                AccountSubGroupNumber4 = account.AccountSubGroupNumber4,
-                AccountSubGroupNumber5 = account.AccountSubGroupNumber5,
-                AccountTypeId = account.AccountTypeId,
-                IsReference = account.IsReference,
-                IsFirstLevel = account.AccountSubGroupNumber1 == 0 && account.AccountSubGroupNumber2 == 0 && account.AccountSubGroupNumber3 == 0 &&
-                account.AccountSubGroupNumber4 == 0 && account.AccountSubGroupNumber5 == 0,
             });
         }
     }

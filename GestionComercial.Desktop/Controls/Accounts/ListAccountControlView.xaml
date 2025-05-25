@@ -11,17 +11,73 @@
 
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
+        <StackPanel x:Name="PanelHeader" Orientation="Horizontal" HorizontalAlignment="Center" 
+                    Grid.Row="0"  Grid.ColumnSpan="2"
+                    Margin="0,0,50,8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!-- Fila 0: Texto y botones -->
+                    <RowDefinition Height="auto"/>
+                    <!-- Fila 1: barra de búsqueda -->
+                    <RowDefinition Height="auto"/>
+                    <!-- Fila 2: DataGrid -->
+                    <RowDefinition Height="auto"/>
+                    <!-- Fila 3: Add/Edit -->
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
 
+                <Label 
+              x:Name="lblHeader" 
+              Grid.Row="0" 
+              Grid.ColumnSpan="3"
+              Content="Cuentas contables" 
+              VerticalAlignment="Center" 
+              HorizontalAlignment="Center"
+              Style="{StaticResource lblHeader}"
+              Foreground="#C74CE6"/>
+
+                <Button 
+              x:Name="btnAddAccount"
+              Grid.Row="1"
+              Grid.Column="0"
+              HorizontalAlignment="Right"
+              Content="Nueva Cuenta"
+              Margin="0,5,0,0"
+              Style="{StaticResource BtnArticles}" 
+              Click="btnAddAccount_Click"/>
+
+                <!--<Button 
+              x:Name="btnAddBox"
+              Grid.Row="1"
+              Grid.Column="1"
+              HorizontalAlignment="Right"
+              Content="Nueva Caja"
+              Margin="0,5,0,0" 
+              Style="{StaticResource BtnArticles}"
+              Click="btnAddBox_Click"/>-->
+
+            </Grid>
+        </StackPanel>
         <!-- TreeView de cuentas -->
         <TreeView x:Name="TreeCuentas"
+                  Grid.Row="1"
                   Grid.Column="0"
                   MouseMove="TreeView_MouseMove"
                   SelectedItemChanged="TreeView_SelectedItemChanged"
-                  FontSize="14">
+                  FontSize="14" MouseDoubleClick="TreeCuentas_MouseDoubleClick">
             <TreeView.Resources>
 
                 <Style TargetType="TreeViewItem">
@@ -92,12 +148,15 @@
         </TreeView>
 
         <!-- Cuadro de descripción -->
-        <Border Grid.Column="1" BorderThickness="1" BorderBrush="Gray" Padding="10" Background="#FFEFEFEF">
+        <Border x:Name="Comentario" Grid.Column="1" Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Padding="10" Background="#FFEFEFEF">
             <TextBlock x:Name="DescripcionTextBlock"
                        Text="Pasá el mouse por una cuenta para ver su descripción"
                        TextWrapping="Wrap"
                        Style="{StaticResource BlueBold24}" />
         </Border>
+
+        <!-- Contenedor para el control de edición -->
+        <ContentControl x:Name="PanelEdicion" Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource Test }"/>
     </Grid>
 
 </UserControl>
