@@ -33,7 +33,7 @@ namespace GestionComercial.Applications.Services
             List<Account> accounts = all ?
                 await _context.Accounts
                 //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-                .OrderBy(c => c.AccountGroupNumber)
+                .OrderBy(c => c.AccountTypeId)
                 .ThenBy(c => c.AccountSubGroupNumber1)
                 .ThenBy(c => c.AccountSubGroupNumber2)
                 .ThenBy(c => c.AccountSubGroupNumber3)
@@ -43,7 +43,7 @@ namespace GestionComercial.Applications.Services
                 :
                 await _context.Accounts
                 .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-                .OrderBy(c => c.AccountGroupNumber)
+                .OrderBy(c => c.AccountTypeId)
                 .ThenBy(c => c.AccountSubGroupNumber1)
                 .ThenBy(c => c.AccountSubGroupNumber2)
                 .ThenBy(c => c.AccountSubGroupNumber3)
@@ -81,7 +81,7 @@ namespace GestionComercial.Applications.Services
             List<Account> accounts = string.IsNullOrEmpty(name) ?
               await _context.Accounts
                .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-               .OrderBy(c => c.AccountGroupNumber)
+               .OrderBy(c => c.AccountTypeId)
                .ThenBy(c => c.AccountSubGroupNumber1)
                .ThenBy(c => c.AccountSubGroupNumber2)
                .ThenBy(c => c.AccountSubGroupNumber3)
@@ -91,7 +91,7 @@ namespace GestionComercial.Applications.Services
               :
               await _context.Accounts
                .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted && (p.Name.Contains(name)))
-               .OrderBy(c => c.AccountGroupNumber)
+               .OrderBy(c => c.AccountTypeId)
                .ThenBy(c => c.AccountSubGroupNumber1)
                .ThenBy(c => c.AccountSubGroupNumber2)
                .ThenBy(c => c.AccountSubGroupNumber3)
@@ -158,11 +158,11 @@ namespace GestionComercial.Applications.Services
             ];
             accounts.AddRange(all ?
                 await _context.Accounts
-                .Where(a => a.AccountGroupNumber == accountType)
+                .Where(a => a.AccountTypeId == accountType)
                 .ToListAsync()
                 :
                 await _context.Accounts
-                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType)
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountTypeId == accountType)
                 .ToListAsync());
             return accounts;
         }
@@ -180,11 +180,11 @@ namespace GestionComercial.Applications.Services
             ];
             accounts.AddRange(all ?
                 await _context.Accounts
-                .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1)
+                .Where(a => a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1)
                 .ToListAsync()
                 :
                 await _context.Accounts
-                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1)
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1)
                 .ToListAsync());
             return accounts;
         }
@@ -202,12 +202,12 @@ namespace GestionComercial.Applications.Services
             ];
             accounts.AddRange(all ?
                 await _context.Accounts
-                .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+                .Where(a => a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1
                 && a.AccountSubGroupNumber2 == accountGroup2)
                 .ToListAsync()
                 :
                 await _context.Accounts
-                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1
                 && a.AccountSubGroupNumber2 == accountGroup2)
                 .ToListAsync());
             return accounts;
@@ -227,12 +227,12 @@ namespace GestionComercial.Applications.Services
             ];
             accounts.AddRange(all ?
                 await _context.Accounts
-               .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+               .Where(a => a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1
                && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3)
                .ToListAsync()
                 :
                 await _context.Accounts
-               .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+               .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1
                && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3)
                .ToListAsync());
             return accounts;
@@ -252,12 +252,12 @@ namespace GestionComercial.Applications.Services
             ];
             accounts.AddRange(all ?
                 await _context.Accounts
-              .Where(a => a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+              .Where(a => a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1
               && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3 && a.AccountSubGroupNumber4 == accountGroup4)
               .ToListAsync()
                 :
                 await _context.Accounts
-              .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountGroupNumber == accountType && a.AccountSubGroupNumber1 == accountGroup1
+              .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted && a.AccountTypeId == accountType && a.AccountSubGroupNumber1 == accountGroup1
               && a.AccountSubGroupNumber2 == accountGroup2 && a.AccountSubGroupNumber3 == accountGroup3 && a.AccountSubGroupNumber4 == accountGroup4)
               .ToListAsync());
             return accounts;
@@ -278,20 +278,23 @@ namespace GestionComercial.Applications.Services
         {
             return accountTypes.Select(group => new AccountViewModel
             {
+                Id= group.Id,
                 AccountTypeId = group.Id,
                 Name = group.Name,
                 Description = group.Name,
                 IsFirstLevel = true,
-                AccountGroupNumber = group.Id,
+                //AccountGroupNumber = group.Id,
                 Children = accounts.Where(a => a.AccountTypeId == group.Id && a.AccountSubGroupNumber2 == 0 && a.AccountSubGroupNumber2 == 0 && a.AccountSubGroupNumber3 == 0
                 && a.AccountSubGroupNumber4 == 0 && a.AccountSubGroupNumber5 == 0).Select(group1 => new AccountViewModel //grupo 1
                 {
+                    Id= group1.Id,
                     Name = group1.Name,
                     Description = group1.Description,
                     IsFirstLevel = false,
                     Children = accounts.Where(a => a.AccountTypeId == group.Id && a.AccountSubGroupNumber1 == group1.AccountSubGroupNumber1 && a.AccountSubGroupNumber2 != 0
                     && a.AccountSubGroupNumber3 == 0 && a.AccountSubGroupNumber4 == 0 && a.AccountSubGroupNumber5 == 0).Select(group2 => new AccountViewModel //grupo 2
                     {
+                        Id= group2.Id,
                         Name = group2.Name,
                         Description = group2.Description,
                         IsFirstLevel = false,
@@ -299,6 +302,7 @@ namespace GestionComercial.Applications.Services
                         && a.AccountSubGroupNumber2 == group2.AccountSubGroupNumber2 && a.AccountSubGroupNumber3 != 0 && a.AccountSubGroupNumber4 == 0
                         && a.AccountSubGroupNumber5 == 0).Select(group3 => new AccountViewModel //grupo 3
                         {
+                            Id = group3.Id,
                             Name = group3.Name,
                             Description = group3.Description,
                             IsFirstLevel = false,
@@ -308,6 +312,7 @@ namespace GestionComercial.Applications.Services
                             && a.AccountSubGroupNumber4 != 0 && a.AccountSubGroupNumber5 == 0)
                             .Select(group4 => new AccountViewModel //grupo 4
                             {
+                                Id = group4.Id,
                                 Name = group4.Name,
                                 Description = group4.Description,
                                 IsFirstLevel = false,
@@ -317,6 +322,7 @@ namespace GestionComercial.Applications.Services
                                 && a.AccountSubGroupNumber4 == group4.AccountSubGroupNumber4 && a.AccountSubGroupNumber5 != 0)
                                 .Select(group5 => new AccountViewModel
                                 {
+                                    Id = group5.Id,
                                     Name = group5.Name,
                                     Description = group5.Description,
                                     IsFirstLevel = false,

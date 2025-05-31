@@ -18,6 +18,7 @@ namespace GestionComercial.Desktop.Controls.Accounts
         {
             _accountsApiService = new AccountsApiService();
             InitializeComponent();
+            this.DataContext = new AccountViewModel(); // O lo que uses
         }
 
 
@@ -137,11 +138,24 @@ namespace GestionComercial.Desktop.Controls.Accounts
 
         private void TreeCuentas_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.OriginalSource is DependencyObject source)
+            // Obtené el elemento visual más cercano del tipo TreeViewItem
+            DependencyObject obj = e.OriginalSource as DependencyObject;
+
+            while (obj != null && !(obj is TreeViewItem))
             {
-                var treeViewItem = ItemsControl.ContainerFromElement(TreeCuentas, source) as TreeViewItem;
-                if (treeViewItem != null && treeViewItem.DataContext is AccountViewModel cuenta)
+                obj = VisualTreeHelper.GetParent(obj);
+            }
+
+            if (obj is TreeViewItem item)
+            {
+                // Marcar como manejado para evitar que suba al Main
+                e.Handled = true;
+
+                // Obtener la cuenta desde la propiedad Tag
+                if (item.Tag is AccountViewModel cuenta)
                 {
+                    TreeCuentas.Items.Clear();
+                    DescripcionTextBlock.Text = "Pasá el mouse por una cuenta para ver su descripción";
                     TreeCuentas.Visibility = Visibility.Hidden;
                     Comentario.Visibility = Visibility.Hidden;
                     TreeCuentas.DataContext = null;
@@ -168,10 +182,11 @@ namespace GestionComercial.Desktop.Controls.Accounts
         {
             TreeCuentas.Visibility = Visibility.Hidden;
             Comentario.Visibility = Visibility.Hidden;
-            TreeCuentas.Items.Clear(); 
+            TreeCuentas.Items.Clear();
+            DescripcionTextBlock.Text = "Pasá el mouse por una cuenta para ver su descripción";
             PanelEdicion.Visibility = Visibility.Visible;
             btnAddAccount.Visibility = Visibility.Hidden;
-            lblHeader.Content = "Editar cuenta contable";
+            lblHeader.Content = "Nueva cuenta contable";
             var ventana = new EditAccountControlView(0);
             ventana.CuentaActualizada += () =>
             {

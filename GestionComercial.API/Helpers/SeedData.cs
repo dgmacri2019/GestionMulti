@@ -191,7 +191,12 @@ namespace GestionComercial.API.Helpers
                             Sold = 0m,
                             SaleCondition = SaleCondition.Efectivo_Peso,
                             AccountId = _context.Accounts
-                            .Where(a=> a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 1 && a.AccountSubGroupNumber4 == 1)
+                            .Where(a=> a.AccountTypeId == 1
+                                && a.AccountSubGroupNumber1 == 1
+                                && a.AccountSubGroupNumber2 == 1
+                                && a.AccountSubGroupNumber3 == 1
+                                && a.AccountSubGroupNumber4 == 1
+                                && a.AccountSubGroupNumber5 == 1)
                             .FirstOrDefault().Id,
                         },
                         new Box
@@ -206,7 +211,12 @@ namespace GestionComercial.API.Helpers
                             Sold = 0m,
                             SaleCondition = SaleCondition.Efectivo_Dolar,
                             AccountId = _context.Accounts
-                             .Where(a=> a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 1 && a.AccountSubGroupNumber4 == 2)
+                             .Where(a=> a.AccountTypeId == 1
+                                    && a.AccountSubGroupNumber1 == 1
+                                    && a.AccountSubGroupNumber2 == 1
+                                    && a.AccountSubGroupNumber3 == 1
+                                    && a.AccountSubGroupNumber4 == 1
+                                    && a.AccountSubGroupNumber5 == 2)
                             .FirstOrDefault().Id,
                         },
                         new Box
@@ -221,7 +231,12 @@ namespace GestionComercial.API.Helpers
                             Sold = 0m,
                             SaleCondition = SaleCondition.Efectivo_Real,
                             AccountId = _context.Accounts
-                             .Where(a=> a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 1 && a.AccountSubGroupNumber4 == 4)
+                             .Where(a=> a.AccountTypeId == 1
+                                    && a.AccountSubGroupNumber1 == 1
+                                    && a.AccountSubGroupNumber2 == 1
+                                    && a.AccountSubGroupNumber3 == 1
+                                    && a.AccountSubGroupNumber4 == 1
+                                    && a.AccountSubGroupNumber5 == 4)
                             .FirstOrDefault().Id,
                         },
                         new Box
@@ -236,7 +251,12 @@ namespace GestionComercial.API.Helpers
                             Sold = 0m,
                             SaleCondition = SaleCondition.Efectivo_Euro,
                             AccountId = _context.Accounts
-                             .Where(a=> a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 1 && a.AccountSubGroupNumber4 == 3)
+                             .Where(a=> a.AccountTypeId == 1
+                                    && a.AccountSubGroupNumber1 == 1
+                                    && a.AccountSubGroupNumber2 == 1
+                                    && a.AccountSubGroupNumber3 == 1
+                                    && a.AccountSubGroupNumber4 == 1
+                                    && a.AccountSubGroupNumber5 == 3)
                             .FirstOrDefault().Id,
                         },
                         new Box
@@ -251,7 +271,12 @@ namespace GestionComercial.API.Helpers
                             Sold = 0m,
                             SaleCondition = SaleCondition.Efectivo_Otro,
                             AccountId = _context.Accounts
-                             .Where(a=> a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 1 && a.AccountSubGroupNumber4 == 9)
+                             .Where(a=> a.AccountTypeId == 1
+                                    && a.AccountSubGroupNumber1 == 1
+                                    && a.AccountSubGroupNumber2 == 1
+                                    && a.AccountSubGroupNumber3 == 1
+                                    && a.AccountSubGroupNumber4 == 1
+                                    && a.AccountSubGroupNumber5 == 9)
                             .FirstOrDefault().Id,
                         },
                     });
@@ -282,10 +307,20 @@ namespace GestionComercial.API.Helpers
 
                 State? state = await _context.States.FirstOrDefaultAsync();
                 Account? accountBank1 = await _context.Accounts
-                        .Where(a => a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 2 && a.AccountSubGroupNumber4 == 1)
+                        .Where(a => a.AccountTypeId == 1
+                                && a.AccountSubGroupNumber1 == 1
+                                && a.AccountSubGroupNumber2 == 1
+                                && a.AccountSubGroupNumber3 == 2
+                                && a.AccountSubGroupNumber4 == 1
+                                && a.AccountSubGroupNumber5 == 1)
                         .FirstOrDefaultAsync();
                 Account? accountBank2 = await _context.Accounts
-                        .Where(a => a.AccountGroupNumber == 1 && a.AccountSubGroupNumber1 == 1 && a.AccountSubGroupNumber2 == 1 && a.AccountSubGroupNumber3 == 2 && a.AccountSubGroupNumber4 == 2)
+                        .Where(a => a.AccountTypeId == 1
+                                && a.AccountSubGroupNumber1 == 1
+                                && a.AccountSubGroupNumber2 == 1
+                                && a.AccountSubGroupNumber3 == 2
+                                && a.AccountSubGroupNumber4 == 1
+                                && a.AccountSubGroupNumber5 == 2)
                         .FirstOrDefaultAsync();
 
                 Bank bank = new()
@@ -554,11 +589,12 @@ namespace GestionComercial.API.Helpers
                     int accountSubGroupNumber5 = int.Parse(itemAccount[6].ToString());
                     int accountTypeId = int.Parse(itemAccount[7].ToString());
                     bool accountEnabled = itemAccount[8].ToString() != "0";
-                    string accountDescription = itemAccount[9].ToString();
+                    bool foreignCurrency = itemAccount[9].ToString() != "0";
+                    string accountDescription = itemAccount[10].ToString();
 
                     accounts.Add(new Account
                     {
-                        AccountGroupNumber = accountGroupNumber,
+                        //AccountGroupNumber = accountGroupNumber,
                         AccountSubGroupNumber1 = accountSubGroupNumber1,
                         AccountSubGroupNumber2 = accountSubGroupNumber2,
                         AccountSubGroupNumber3 = accountSubGroupNumber3,
@@ -570,12 +606,159 @@ namespace GestionComercial.API.Helpers
                         IsDeleted = false,
                         IsEnabled = accountEnabled,
                         Name = accountName,
+                        ForeignCurrency = foreignCurrency,
                         Description = accountDescription,
                     });
                 }
 
                 _context.Accounts.AddRange(accounts);
                 StaticCommon.ContextInUse = false;
+                await _context.SaveChangesAsync();
+
+                accounts.Clear();
+                accounts = await _context.Accounts.ToListAsync();
+
+                List<Account> accountsGroup1 = accounts.Where(a => a.AccountSubGroupNumber1 != 0
+                                                              && a.AccountSubGroupNumber2 == 0
+                                                              && a.AccountSubGroupNumber3 == 0
+                                                              && a.AccountSubGroupNumber4 == 0
+                                                              && a.AccountSubGroupNumber5 == 0)
+                                                        .ToList();
+
+                List<Account> accountsGroup2 = accounts.Where(a => a.AccountSubGroupNumber1 != 0
+                                                              && a.AccountSubGroupNumber2 != 0
+                                                              && a.AccountSubGroupNumber3 == 0
+                                                              && a.AccountSubGroupNumber4 == 0
+                                                              && a.AccountSubGroupNumber5 == 0)
+                                                        .ToList();
+
+                List<Account> accountsGroup3 = accounts.Where(a => a.AccountSubGroupNumber1 != 0
+                                                              && a.AccountSubGroupNumber2 != 0
+                                                              && a.AccountSubGroupNumber3 != 0
+                                                              && a.AccountSubGroupNumber4 == 0
+                                                              && a.AccountSubGroupNumber5 == 0)
+                                                        .ToList();
+
+
+                List<Account> accountsGroup4 = accounts.Where(a => a.AccountSubGroupNumber1 != 0
+                                                              && a.AccountSubGroupNumber2 != 0
+                                                              && a.AccountSubGroupNumber3 != 0
+                                                              && a.AccountSubGroupNumber4 != 0
+                                                              && a.AccountSubGroupNumber5 == 0)
+                                                        .ToList();
+
+                List<Account> accountsGroup5 = accounts.Where(a => a.AccountSubGroupNumber1 != 0
+                                                              && a.AccountSubGroupNumber2 != 0
+                                                              && a.AccountSubGroupNumber3 != 0
+                                                              && a.AccountSubGroupNumber4 != 0
+                                                              && a.AccountSubGroupNumber5 != 0)
+                                                        .ToList();
+
+
+                foreach (Account account in accountsGroup5)
+                {
+                    account.AccountIdSubGroupNumber4 = accountsGroup4.Where(a => a.AccountTypeId == account.AccountTypeId 
+                                                                               && a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
+                                                                               && a.AccountSubGroupNumber3 == account.AccountSubGroupNumber3
+                                                                               && a.AccountSubGroupNumber4 == account.AccountSubGroupNumber4
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+
+                    account.AccountIdSubGroupNumber3 = accountsGroup3.Where(a => a.AccountTypeId == account.AccountTypeId
+                                                                               && a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
+                                                                               && a.AccountSubGroupNumber3 == account.AccountSubGroupNumber3
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+                    account.AccountIdSubGroupNumber2 = accountsGroup2.Where(a => a.AccountTypeId == account.AccountTypeId
+                                                                               && a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
+                                                                               && a.AccountSubGroupNumber3 == 0
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+                    account.AccountIdSubGroupNumber1 = accountsGroup1.Where(a => a.AccountTypeId == account.AccountTypeId
+                                                                               && a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == 0
+                                                                               && a.AccountSubGroupNumber3 == 0
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+
+                    _context.Update(account);
+                }
+                await _context.SaveChangesAsync();
+
+                foreach (Account account in accountsGroup4)
+                {
+                   
+                    account.AccountIdSubGroupNumber3 = accountsGroup3.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
+                                                                               && a.AccountSubGroupNumber3 == account.AccountSubGroupNumber3
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+                    account.AccountIdSubGroupNumber2 = accountsGroup2.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
+                                                                               && a.AccountSubGroupNumber3 == 0
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+                    account.AccountIdSubGroupNumber1 = accountsGroup1.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == 0
+                                                                               && a.AccountSubGroupNumber3 == 0
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+
+                    _context.Update(account);
+                }
+                await _context.SaveChangesAsync();
+
+                foreach (Account account in accountsGroup3)
+                {
+                    var z = account;
+
+                    try
+                    {
+                        
+                        account.AccountIdSubGroupNumber2 = accountsGroup2.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                                               && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
+                                                                                               && a.AccountSubGroupNumber3 == 0
+                                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                                       .FirstOrDefault().Id;
+                        account.AccountIdSubGroupNumber1 = accountsGroup1.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                                   && a.AccountSubGroupNumber2 == 0
+                                                                                   && a.AccountSubGroupNumber3 == 0
+                                                                                   && a.AccountSubGroupNumber4 == 0
+                                                                                   && a.AccountSubGroupNumber5 == 0)
+                                                                           .FirstOrDefault().Id;
+
+                        _context.Update(account);
+                    }
+                    catch (Exception ex)
+                    {
+                        var s = z;
+                    }
+                }
+                await _context.SaveChangesAsync();
+
+                foreach (Account account in accountsGroup2)
+                {
+                   
+                    account.AccountIdSubGroupNumber1 = accountsGroup1.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
+                                                                               && a.AccountSubGroupNumber2 == 0
+                                                                               && a.AccountSubGroupNumber3 == 0
+                                                                               && a.AccountSubGroupNumber4 == 0
+                                                                               && a.AccountSubGroupNumber5 == 0)
+                                                                       .FirstOrDefault().Id;
+
+                    _context.Update(account);
+                }
+
                 await _context.SaveChangesAsync();
                 result.Success = true;
                 return result;

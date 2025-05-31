@@ -163,7 +163,8 @@ namespace GestionComercial.Infrastructure.Persistence
             modelBuilder.Entity<Account>()
                 .HasIndex(a => new
                 {
-                    a.AccountGroupNumber,
+                    //a.AccountGroupNumber,
+                    a.AccountTypeId,
                     a.AccountSubGroupNumber1,
                     a.AccountSubGroupNumber2,
                     a.AccountSubGroupNumber3,

@@ -7,11 +7,15 @@ namespace GestionComercial.Domain.Entities.AccountingBook
 {
     public class Account : CommonEntity
     {
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Display(Name = "Grupo")]
-        [Range(1, 9, ErrorMessage = "debe seleccionar el {0}")]
-        public int AccountGroupNumber { get; set; }
+        //[Required(ErrorMessage = "El campo {0} es requerido")]
+        //[Display(Name = "Grupo")]
+        //[Range(1, 9, ErrorMessage = "debe seleccionar el {0}")]
+        //public int AccountGroupNumber { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Tipo de Cuenta")]
+        [Range(1, 99, ErrorMessage = "debe seleccionar el {0}")]
+        public int AccountTypeId { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "SubGrupo 1")]
@@ -52,11 +56,35 @@ namespace GestionComercial.Domain.Entities.AccountingBook
         public string Description { get; set; }
 
 
-        public int AccountTypeId { get; set; }
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Cuenta SubGrupo 1")]
+        [Range(0, int.MaxValue, ErrorMessage = "debe seleccionar el {0}")]
+        public int AccountIdSubGroupNumber1 { get; set; }
 
+
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Cuenta SubGrupo 2")]
+        [Range(0, int.MaxValue, ErrorMessage = "debe seleccionar el {0}")]
+        public int AccountIdSubGroupNumber2 { get; set; }
+
+
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Cuenta SubGrupo 3")]
+        [Range(0, int.MaxValue, ErrorMessage = "debe seleccionar el {0}")]
+        public int AccountIdSubGroupNumber3 { get; set; }
+
+
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Cuenta SubGrupo 4")]
+        [Range(0, int.MaxValue, ErrorMessage = "debe seleccionar el {0}")]
+        public int AccountIdSubGroupNumber4 { get; set; }
+                      
 
         [Display(Name = "Referenciado?")]
         public bool IsReference { get; set; }
+
+        [Display(Name = "Es Moneda Extranjera?")]
+        public bool ForeignCurrency { get; set; }
 
 
         [Display(Name = "Cuenta")]
@@ -64,30 +92,23 @@ namespace GestionComercial.Domain.Entities.AccountingBook
         {
             get
             {
-                return string.Format("{0:00}.{1:000}.{2:0000}.{3:00000}.{4:000000} - {5}",
-                     AccountSubGroupNumber1,
+                return string.Format("{0:00}.{1:00}.{2:000}.{3:0000}.{4:00000}.{5:000000} - {6}",
+                    AccountTypeId,
+                    AccountSubGroupNumber1,
                     AccountSubGroupNumber2,
                     AccountSubGroupNumber3,
                     AccountSubGroupNumber4,
                     AccountSubGroupNumber5,
                     Name);
-                //return string.Format("{0:0}.{1:00}.{2:000}.{3:0000}.{4:00000}.{5:000000} - {6}",
-                //    AccountGroupNumber,
-                //    AccountSubGroupNumber1,
-                //    AccountSubGroupNumber2,
-                //    AccountSubGroupNumber3,
-                //    AccountSubGroupNumber4,
-                //    AccountSubGroupNumber5,
-                //    Name);
             }
         }
 
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual ICollection<Box>? Boxes { get; set; }
 
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual ICollection<Bank>? Banks { get; set; }
 
         [JsonIgnore]

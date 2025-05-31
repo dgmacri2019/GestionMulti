@@ -79,6 +79,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
                 BoxViewModel.CreateUser = App.UserName;
+                BoxViewModel.BoxName = BoxViewModel.BoxName.ToUpper();
 
                 Box box = ConverterHelper.ToBox(BoxViewModel, BoxViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _bankApiService.AddBoxAsync(box);
@@ -105,6 +106,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
                 BoxViewModel.UpdateUser = App.UserName;
+                BoxViewModel.BoxName = BoxViewModel.BoxName.ToUpper();
                 BoxViewModel.UpdateDate = DateTime.Now;
 
                 Box box = ConverterHelper.ToBox(BoxViewModel, BoxViewModel.Id == 0);

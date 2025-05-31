@@ -36,10 +36,10 @@
                      Text="{Binding Name}"/>
         </StackPanel>
 
-      
+
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Tipo de cuenta" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock x:Name="lblAccountType" Text="Tipo de cuenta" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccountType"
                       Style="{StaticResource ComboBox}"
                       Width="auto"
@@ -52,7 +52,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="SubGrupo 1" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock x:Name="lblAccountGroup1" Text="SubGrupo 1" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccountGroup1"
                       Style="{StaticResource ComboBox}"
                       Width="auto"
@@ -61,18 +61,12 @@
                       ItemsSource="{Binding AccountsGroup1}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Id"
-                      SelectedValue="{Binding AccountSubGroupNumber1}" 
+                      SelectedValue="{Binding AccountIdSubGroupNumber1}" 
                       SelectionChanged="cbAccountGroup1_SelectionChanged"/>
-            <TextBox x:Name="txtAccountGroup1"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     Visibility="Hidden"
-                     VerticalAlignment="Center"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="SubGrupo 2" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock x:Name="lblAccountGroup2" Text="SubGrupo 2" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccountGroup2" 
                       Style="{StaticResource ComboBox}"
                       Width="auto"
@@ -81,18 +75,12 @@
                       ItemsSource="{Binding AccountsGroup2}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Id"
-                      SelectedValue="{Binding AccountSubGroupNumber2}" 
+                      SelectedValue="{Binding AccountIdSubGroupNumber2}" 
                       SelectionChanged="cbAccountGroup2_SelectionChanged"/>
-            <TextBox x:Name="txtAccountGroup2"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     Visibility="Hidden"
-                     VerticalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="3" Margin="10,0,20,8">
-            <TextBlock Text="SubGrupo 3" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
+            <TextBlock x:Name="lblAccountGroup3" Text="SubGrupo 3" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccountGroup3" 
                       Style="{StaticResource ComboBox}"
                       Width="auto"
@@ -101,19 +89,13 @@
                       ItemsSource="{Binding AccountsGroup3}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Id"
-                      SelectedValue="{Binding AccountSubGroupNumber3}" 
+                      SelectedValue="{Binding AccountIdSubGroupNumber3}" 
                       SelectionChanged="cbAccountGroup3_SelectionChanged"/>
-            <TextBox x:Name="txtAccountGroup3"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     Visibility="Hidden"
-                     VerticalAlignment="Center"/>
         </StackPanel>
-        
-        
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="SubGrupo 4" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
+            <TextBlock x:Name="lblAccountGroup4" Text="SubGrupo 4" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccountGroup4"
                       Style="{StaticResource ComboBox}"
                       Width="auto"
@@ -122,36 +104,24 @@
                       ItemsSource="{Binding AccountsGroup4}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Id"
-                      SelectedValue="{Binding AccountSubGroupNumber4}" SelectionChanged="cbAccountGroup4_SelectionChanged"/>
-            <TextBox x:Name="txtAccountGroup4"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     Visibility="Hidden"
-                     VerticalAlignment="Center"/>
+                      SelectedValue="{Binding AccountIdSubGroupNumber4}" 
+                      SelectionChanged="cbAccountGroup4_SelectionChanged"/>
         </StackPanel>
-        
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="SubGrupo 5" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10,0,20,8">
+            <TextBlock x:Name="lblAccountGroup5" Text="SubGrupo 5" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccountGroup5" 
                       Style="{StaticResource ComboBox}"
                       Width="auto"
                       MinWidth="100"
-                      IsEnabled="False"
                       ItemsSource="{Binding AccountsGroup5}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Id"
-                      Visibility="Hidden"
-                      SelectedValue="{Binding AccountSubGroupNumber5}"/>
-            <TextBox x:Name="txtAccountGroup5"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     Visibility="Visible"
-                     VerticalAlignment="Center"/>
+                      SelectedValue="{Binding AccountSubGroupNumber5}" 
+                      SelectionChanged="cbAccountGroup5_SelectionChanged"/>
         </StackPanel>
-        
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="4" Margin="10,0,20,8">
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="4" Margin="10,0,20,8" Visibility="Hidden">
             <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <CheckBox x:Name="chbIsEnabled"
                    Style="{StaticResource CheckBox}"
@@ -165,8 +135,8 @@
             <TextBlock Text="Descripcion" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtDescription"
                      Style="{StaticResource TextBoxSearch}"
-                     Width="600"
-                     Height="60"
+                     Width="800"
+                     Height="200"
                      VerticalAlignment="Center"
                      TextWrapping="Wrap" 
                      AcceptsReturn="True"
@@ -181,8 +151,8 @@
             Content="Cancelar"  
             Margin="0,40,0,0" 
             Click="BtnCancel_Click" 
-            Style="{StaticResource BtnCancel}"/>       
-        
+            Style="{StaticResource BtnCancel}"/>
+
         <Button 
             x:Name="btnUpdate"
             Grid.Row="4" 
@@ -191,7 +161,7 @@
             Margin="0,40,0,0" 
             Click="BtnUpdate_Click"
             Style="{StaticResource BtnUpdate}"/>
-        
+
         <Button 
             x:Name="btnAdd"
             Grid.Row="4" 

@@ -68,7 +68,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
                 BankViewModel.CreateUser = App.UserName;
-
+                BankViewModel.BankName = BankViewModel.BankName.ToUpper();
                 Bank bank = ConverterHelper.ToBank(BankViewModel, BankViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _bankApiService.AddBankAsync(bank);
                 if (resultUpdate.Success)
@@ -93,6 +93,7 @@ namespace GestionComercial.Desktop.Controls.Banks
 
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
+                BankViewModel.BankName = BankViewModel.BankName.ToUpper();
                 BankViewModel.UpdateUser = App.UserName;
                 BankViewModel.UpdateDate = DateTime.Now;
 
