@@ -2,8 +2,10 @@
 using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
+using GestionComercial.Desktop.Controls.Permissions;
 using GestionComercial.Desktop.Controls.PriceLists;
 using GestionComercial.Desktop.Controls.Providers;
+using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
@@ -55,66 +57,74 @@ namespace GestionComercial.Desktop.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
-            var menu = new List<MenuItemModel>
-            {
-                new MenuItemModel
-                 {
+            List<MenuItemModel> menu =
+            [
+                new()
+                {
                      Title = "Clientes",
                      Icon = "/Images/Clients 32.png",
-                     Children = new List<MenuItemModel>
-                     {
-                         new MenuItemModel { Title = "Clientes ", Icon = "/Images/Clients 32.png", Tag = "Clients" },
-                     }
-                 },
+                     Children =
+                     [
+                         new() { Title = "Clientes ", Icon = "/Images/Clients 32.png", Tag = "Clients" },
+                     ]
+                },
                 new MenuItemModel
                 {
                     Title = "Proveedores",
                     Icon = "/Images/Provider 32.png",
-                    Children = new List<MenuItemModel>
-                    {
-                        new MenuItemModel { Title = "Proveedores ", Icon = "/Images/Provider 32.png", Tag = "Providers" },
-                    }
+                    Children =
+                    [
+                        new() { Title = "Proveedores ", Icon = "/Images/Provider 32.png", Tag = "Providers" },
+                    ]
                 },
                 new MenuItemModel
                 {
                     Title = "Stock",
                     Icon = "/Images/Products 32.png",
-                    Children = new List<MenuItemModel>
-                    {
-                        new MenuItemModel { Title = "Articulos", Icon = "/Images/Products 32.png", Tag = "Stock" },
-                        new MenuItemModel { Title = "Listadas de Precios", Icon = "/Images/Details.png", Tag = "PriceLists" },
-                        new MenuItemModel 
-                        { 
-                            Title = "Reportes", 
+                    Children =
+                    [
+                        new() { Title = "Articulos", Icon = "/Images/Products 32.png", Tag = "Stock" },
+                        new() { Title = "Listadas de Precios", Icon = "/Images/Details.png", Tag = "PriceLists" },
+                        new() {
+                            Title = "Reportes",
                             Icon = "/Images/Report 20.png",
-                            Children = new List<MenuItemModel>
-                            {
-                                new MenuItemModel { Title = "Reporte Stock", Icon = "/Images/Report 32.png", Tag = "Stock_Report" },
-                            }
+                            Children =
+                            [
+                                new() { Title = "Reporte Stock", Icon = "/Images/Report 32.png", Tag = "Stock_Report" },
+                            ]
                         },
 
-                    }
+                    ]
                 },
                 new MenuItemModel
                 {
                     Title = "Cajas y Bancos",
                     Icon = "/Images/Bank 32.png",
-                    Children = new List<MenuItemModel>
-                    {
-                        new MenuItemModel { Title = "Listado de Cajas Bancos", Icon = "/Images/Bank 32.png", Tag = "Banks" },
-                        new MenuItemModel { Title = "Parametros de acreditación", Icon = "/Images/Bank 32.png", Tag = "Banks_Parameter" },
-                    }
+                    Children =
+                    [
+                        new() { Title = "Listado de Cajas Bancos", Icon = "/Images/Bank 32.png", Tag = "Banks" },
+                        new() { Title = "Parametros de acreditación", Icon = "/Images/Bank 32.png", Tag = "Banks_Parameter" },
+                    ]
                 },
                 new MenuItemModel
                 {
                     Title = "Cuentas Contables",
                     Icon = "/Images/Acounting Book 32.png",
-                    Children = new List<MenuItemModel>
-                    {
-                        new MenuItemModel { Title = "Tipos de cuenta", Icon = "/Images/Acounting Book 32.png", Tag = "AccountTypes" },
-                        new MenuItemModel { Title = "Cuentas", Icon = "/Images/Acounting Book 32.png", Tag = "Accounts" },
-                    }
+                    Children =
+                    [
+                        new() { Title = "Tipos de cuenta", Icon = "/Images/Acounting Book 32.png", Tag = "AccountTypes" },
+                        new() { Title = "Cuentas", Icon = "/Images/Acounting Book 32.png", Tag = "Accounts" },
+                    ]
+                },
+                new MenuItemModel
+                {
+                    Title = "Configuración",
+                    Icon = "/Images/Setting Config 32.png",
+                    Children =
+                    [
+                        new() { Title = "Usuarios", Icon = "/Images/Usuario.png", Tag = "Users" },
+                        new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
+                    ]
                 },
 
                 new MenuItemModel
@@ -122,18 +132,17 @@ namespace GestionComercial.Desktop.Views
                     Title = "Cerrar Sesión",
                     Icon = "/Images/Block 32.png",
                     Tag = "LogOut",
-                    Children = new List<MenuItemModel>
-                    {
-                        new MenuItemModel { Title = "Cerrar Sesión ", Icon = "/Images/Block 32.png", Tag = "LogOut" },
-                    //    //new MenuItemModel { Title = "Apertura / Cierre", Icon = "/Images/openclose.png", Tag = "CajaApertura" }
-                    }
+                    Children =
+                    [
+                        new() { Title = "Cerrar Sesión ", Icon = "/Images/Block 32.png", Tag = "LogOut" },
+                    ]
                 },
-            };
-            
-            // Podés filtrar los ítems según el usuario logueado
+            ];
 
 
-           
+
+
+
             NavigationTree.ItemsSource = menu;
         }
 
@@ -164,10 +173,15 @@ namespace GestionComercial.Desktop.Views
                     case "Accounts":
                         MainContent.Content = new ListAccountControlView();
                         break;
+                    case "Users":
+                        MainContent.Content = new ListUsersControlView();
+                        break;
+                    case "Permissions":
+                        MainContent.Content = new ListPermissionsControlView();
+                        break;
                     case "LogOut":
                         LogOut();
                         break;
-                        // más opciones según el tag...
                 }
             }
         }

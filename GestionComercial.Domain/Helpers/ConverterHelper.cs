@@ -5,6 +5,7 @@ using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.BoxAndBank;
@@ -372,7 +373,6 @@ namespace GestionComercial.Domain.Helpers
 
         #endregion
 
-
         #region Accounting Books
 
         public static AccountViewModel ToAccountViewModel(Account account)
@@ -435,7 +435,29 @@ namespace GestionComercial.Domain.Helpers
             };
         }
 
+
+
         #endregion
 
+        #region Users
+
+        public static UserViewModel ToUserViewModel(User user)
+        {
+            return new UserViewModel
+            {
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                ChangePassword = user.ChangePassword,
+                Email = user.Email,
+                Enabled = user.Enabled,
+                FullName = user.FullName,
+                Phone = user.PhoneNumber,
+            };
+        }
+
+
+        #endregion
     }
 }

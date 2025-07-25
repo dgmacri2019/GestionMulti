@@ -32,14 +32,14 @@ namespace GestionComercial.Desktop.Controls.Providers
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DgProviders.SelectedItem is ProviderViewModel client)
+            if (DgProviders.SelectedItem is ProviderViewModel provider)
             {
                 DgProviders.Visibility = Visibility.Hidden;
                 DgProviders.DataContext = null;
                 PanelSearch.Visibility = Visibility.Hidden;
                 PanelEdicion.Visibility = Visibility.Visible;
                 lblHeader.Content = "Editar Proveedor";
-                var ventana = new EditProviderControlView(client.Id);
+                var ventana = new EditProviderControlView(provider.Id);
                 ventana.ProveedorActualizado += () =>
                 {
                     DgProviders.DataContext = new ProviderListViewModel(SearchBox.Text, Enabled, Deleted);

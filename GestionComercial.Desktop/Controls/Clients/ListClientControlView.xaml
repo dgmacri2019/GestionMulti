@@ -96,7 +96,7 @@
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Razón Social" Width="400">
+                <DataGridTemplateColumn Header="Razón Social" Width="auto" MinWidth="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -108,7 +108,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Nombre Fantasía" Width="400">
+                <DataGridTemplateColumn Header="Nombre Fantasía" Width="auto" MinWidth="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -133,7 +133,7 @@
                 </DataGridTemplateColumn>
 
                 
-                 <DataGridTemplateColumn Header="Dirección" Width="auto">
+                 <DataGridTemplateColumn Header="Dirección" Width="auto" MinWidth="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>

@@ -1,6 +1,8 @@
 ﻿using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +18,7 @@ namespace GestionComercial.Applications.Services
     public class UserService : IUserService
     {
         private readonly AppDbContext _context;
-        private readonly DBHelper _dBHelper;
+        //private readonly DBHelper _dBHelper;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
@@ -24,7 +26,7 @@ namespace GestionComercial.Applications.Services
         {
             _userManager = userManager;
             _context = context;
-            _dBHelper = new DBHelper();
+            //_dBHelper = new DBHelper();
             _configuration = configuration;
         }
 
@@ -41,13 +43,12 @@ namespace GestionComercial.Applications.Services
 
                 IList<string> roles = await _userManager.GetRolesAsync(user);
 
-                var claims = new List<Claim>
-                {
+                List<Claim> claims =
+                [
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
-                };
-
-                claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    .. roles.Select(role => new Claim(ClaimTypes.Role, role)),
+                ];
 
                 byte[] key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
                 JwtSecurityToken token = new(
@@ -74,7 +75,7 @@ namespace GestionComercial.Applications.Services
             }
         }
 
-        public async Task<IdentityResult> AddAsync(UserDto model)
+        public async Task<IdentityResult> AddAsync(UserFilterDto model)
         {
             User user = new()
             {
@@ -104,7 +105,7 @@ namespace GestionComercial.Applications.Services
             return await _userManager.DeleteAsync(user);
         }
 
-        public async Task<IdentityResult> UpdateAsync(UserDto model)
+        public async Task<IdentityResult> UpdateAsync(UserFilterDto model)
         {
             User? user = await _userManager.FindByIdAsync(model.Id);
 
@@ -121,7 +122,7 @@ namespace GestionComercial.Applications.Services
             return await _userManager.UpdateAsync(user);
         }
 
-        public async Task<IdentityResult> ChangeRoleAsync(UserDto model)
+        public async Task<IdentityResult> ChangeRoleAsync(UserFilterDto model)
         {
             User? user = await _userManager.FindByIdAsync(model.Id);
 
@@ -135,28 +136,74 @@ namespace GestionComercial.Applications.Services
             return await _userManager.AddToRoleAsync(user, model.Role);
         }
 
-
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<UserViewModel>> GetAllAsync(UserFilterDto model)
         {
-            return _context.Users.ToList();
+
+            List<User> users = model.All ?
+                await _context.Users.ToListAsync()
+                :
+                await _context.Users.Where(u => u.Enabled == model.IsEnabled).ToListAsync();
+
+            return ToUserViewModelList(users);
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<UserViewModel>> SearchToListAsync(UserFilterDto model)
         {
-            return await _context.Users.ToListAsync();
+            List<User> users = model.All ?
+                await _context.Users.ToListAsync()
+                :
+                string.IsNullOrEmpty(model.NameFilter) ?
+                    await _context.Users
+                    .Where(u => u.Enabled == model.IsEnabled)
+                    .ToListAsync()
+                    :
+                    await _context.Users
+                    .Where(u => u.Enabled == model.IsEnabled && (u.UserName.Contains(model.NameFilter)
+                                                            || u.FirstName.Contains(model.NameFilter)
+                                                            || u.LastName.Contains(model.NameFilter)
+                                                            || u.Email.Contains(model.NameFilter)))
+                    .ToListAsync();
+
+            return ToUserViewModelList(users);
         }
 
-        public User GetById(string id)
+        public async Task<UserViewModel?> GetByIdAsync(UserFilterDto model)
         {
-            return _context.Users.Find(id);
+            if (string.IsNullOrEmpty(model.Id))
+                return new UserViewModel
+                {
+                    FirstName = string.Empty,
+                    LastName = string.Empty,
+                    Email = string.Empty,
+                    Id = string.Empty,
+                    ChangePassword = true,
+                    Enabled = true,
+                    UserName = string.Empty,
+                };
+
+            User? user = await _context.Users.FindAsync(model.Id);
+
+            return user == null ? null : ConverterHelper.ToUserViewModel(user);
         }
 
-        public async Task<User> GetByIdAsync(string id)
+
+
+
+        private IEnumerable<UserViewModel> ToUserViewModelList(List<User> users)
         {
-            return await _context.Users.FindAsync(id);
+            return users.Select(user => new UserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Enabled = user.Enabled,
+                FullName = user.FullName,
+                UserName = user.UserName,
+                ChangePassword = user.ChangePassword,
+                Email = user.Email,
+                Phone = user.PhoneNumber,
+            });
         }
-
-
 
     }
 }

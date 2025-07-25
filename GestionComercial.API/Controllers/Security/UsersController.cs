@@ -25,7 +25,7 @@ namespace GestionComercial.API.Controllers.Security
 
 
         [HttpPost("AddAsync")]
-        public async Task<IActionResult> AddAsync(UserDto model)
+        public async Task<IActionResult> AddAsync(UserFilterDto model)
         {
             IdentityResult resultAdd = await _userService.AddAsync(model);
             return resultAdd.Succeeded ? Ok(new { message = "Usuario creado correctamente" }) : BadRequest(resultAdd.Errors);
@@ -41,7 +41,7 @@ namespace GestionComercial.API.Controllers.Security
 
 
         [HttpPost("UpdateAsync")]
-        public async Task<IActionResult> UpdateAsync(UserDto model)
+        public async Task<IActionResult> UpdateAsync(UserFilterDto model)
         {
             IdentityResult resultAdd = await _userService.UpdateAsync(model);
             return resultAdd.Succeeded ? Ok(new { message = "Usuario actualizado correctamente" }) : BadRequest(resultAdd.Errors);
@@ -49,39 +49,33 @@ namespace GestionComercial.API.Controllers.Security
 
 
         [HttpPost("ChangeRoleAsync")]
-        public async Task<IActionResult> ChangeRoleAsync(UserDto model)
+        public async Task<IActionResult> ChangeRoleAsync(UserFilterDto model)
         {
             IdentityResult resultAdd = await _userService.ChangeRoleAsync(model);
             return resultAdd.Succeeded ? Ok(new { message = "Rol actualizado correctamente" }) : BadRequest(resultAdd.Errors);
         }
 
 
-        [HttpGet("GetAllAsync")]
-        public async Task<IActionResult> GetAllAsync()
+        [HttpPost("GetAllAsync")]
+        public async Task<IActionResult> GetAllAsync(UserFilterDto model)
         {
-            return Ok(await _userService.GetAllAsync());
-        }
-
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
-        {
-            return Ok(_userService.GetAll());
+            return Ok(await _userService.GetAllAsync(model));
         }
 
 
-
-        [HttpGet("GetByIdAsync/{id}")]
-        public async Task<IActionResult> GetByIdAsync(string id)
+        [HttpPost("SearchToListAsync")]
+        public async Task<IActionResult> SearchToListAsync(UserFilterDto model)
         {
-            User user = await _userService.GetByIdAsync(id);
-            if (user == null) return NotFound();
-            return Ok(user);
+            return Ok(await _userService.SearchToListAsync(model));
         }
 
-        [HttpGet("GetById/{id}")]
-        public IActionResult GetById(string id)
+
+
+
+        [HttpPost("GetByIdAsync")]
+        public async Task<IActionResult> GetByIdAsync(UserFilterDto model)
         {
-            User user = _userService.GetById(id);
+            UserViewModel? user = await _userService.GetByIdAsync(model);
             if (user == null) return NotFound();
             return Ok(user);
         }
