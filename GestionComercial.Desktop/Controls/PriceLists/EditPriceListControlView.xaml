@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.PriceLists"
-             xmlns:local1="clr-namespace:GestionComercial.Desktop.Helpers"
+             xmlns:local1="clr-namespace:GestionComercial.Desktop.Helpers" xmlns:client="clr-namespace:GestionComercial.Desktop.ViewModels.Client" d:DataContext="{d:DesignInstance Type=client:ClientListViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1460"
              x:Name="miUserControl" 
