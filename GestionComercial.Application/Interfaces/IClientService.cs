@@ -3,7 +3,7 @@ using GestionComercial.Domain.Response;
 
 namespace GestionComercial.Applications.Interfaces
 {
-    public interface IClienService
+    public interface IClientService
     {
         Task<GeneralResponse> DeleteAsync(int id);
         Task<IEnumerable<ClientViewModel>> GetAllAsync(bool isEnabled, bool isDeleted);

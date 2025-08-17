@@ -14,10 +14,10 @@ namespace GestionComercial.API.Controllers.Clients
     [AuthorizePermission]
     public class ClientsController : ControllerBase
     {
-        private readonly IClienService _clienService;
+        private readonly IClientService _clienService;
         private readonly IMasterService _masterService;
 
-        public ClientsController(IClienService clienService, IMasterService masterService)
+        public ClientsController(IClientService clienService, IMasterService masterService)
         {
             _clienService = clienService;
             _masterService = masterService;

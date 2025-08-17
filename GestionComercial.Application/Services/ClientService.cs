@@ -12,13 +12,13 @@ using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Applications.Services
 {
-    public class ClienService : IClienService
+    public class ClientService : IClientService
     {
         private readonly AppDbContext _context;
         private readonly DBHelper _dBHelper;
 
 
-        public ClienService(AppDbContext context)
+        public ClientService(AppDbContext context)
         {
             _context = context;
             _dBHelper = new DBHelper();
