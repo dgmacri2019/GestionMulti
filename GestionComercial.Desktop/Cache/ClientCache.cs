@@ -16,21 +16,89 @@ namespace GestionComercial.Desktop.Cache
 
         public List<ClientViewModel> SearchClients(string name, bool isEnabled, bool isDeleted)
         {
-            return _clients
-                    .Where(p => p.IsEnabled == isEnabled
-                             && p.IsDeleted == isDeleted
-                             && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
-                              || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)
-                              || (p.DocumentNumber?.ToLower().Contains(name.ToLower()) ?? false)))
-                    .ToList();
+            try
+            {
+                return _clients
+                          .Where(p => p.IsEnabled == isEnabled
+                                   && p.IsDeleted == isDeleted
+                                   && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
+                                    || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)
+                                    || (p.DocumentNumber?.ToLower().Contains(name.ToLower()) ?? false)))
+                          .ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
 
 
 
-        public void SetClientes(List<ClientViewModel> clients)
+        public void SetClients(List<ClientViewModel> clients)
         {
-            _clients = clients;
+            try
+            {
+                _clients = clients;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public void SetClient(ClientViewModel client)
+        {
+            try
+            {
+                _clients.Add(client);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void UpdateClient(ClientViewModel client)
+        {
+            try
+            {
+                ClientViewModel clientViewModel = _clients.FirstOrDefault(c => c.Id == client.Id);
+                if (clientViewModel != null)
+                {
+                    _clients.Remove(clientViewModel);
+                    _clients.Add(client);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void RemoveClient(ClientViewModel client)
+        {
+            try
+            {
+                ClientViewModel clientViewModel = _clients.FirstOrDefault(c => c.Id == client.Id);
+                if (clientViewModel != null)
+                    _clients.Remove(clientViewModel);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+
+        public void ClearCache()
+        { 
+            _clients.Clear();
         }
 
         public bool HasData => _clients != null && _clients.Any();

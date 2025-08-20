@@ -1,6 +1,9 @@
+using GestionComercial.Api.Notifications;
 using GestionComercial.API.Helpers;
+using GestionComercial.API.Hubs;
 using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Notifications;
 using GestionComercial.Applications.Services;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
@@ -10,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IO.Compression;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +34,8 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+// SignalR
+builder.Services.AddSignalR();
 
 // Inyección de dependencias
 builder.Services.AddScoped<IArticleService, ArticleService>();
@@ -43,6 +49,7 @@ builder.Services.AddScoped<IPriceListService, PriceListService>();
 builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<IMasterService, MasterService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IClientsNotifier, SignalRClientsNotifier>();
 
 //builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -90,7 +97,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<ClientsHub>("/hubs/clients"); // ?? URL del hub
 
 using (var scope = app.Services.CreateScope())
 {

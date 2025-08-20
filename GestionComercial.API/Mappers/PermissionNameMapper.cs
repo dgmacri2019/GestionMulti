@@ -34,7 +34,7 @@
             if (action.Contains("delete"))
                 return "Eliminar";
 
-            if (action.Contains("get") || action.Contains("find") || action.Contains("search"))
+            if (action.Contains("get") || action.Contains("find") || action.Contains("search") || action.Contains("notify"))
                 return "Lectura";
 
             return action;

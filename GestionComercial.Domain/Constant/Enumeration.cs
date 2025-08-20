@@ -217,5 +217,15 @@ namespace GestionComercial.Domain.Constant
             Presupuesto = 999,
         }
 
+
+        //Tipos de cambios
+
+        public enum ChangeType
+        {
+            Created, 
+            Updated, 
+            Deleted
+        }
+
     }
 }

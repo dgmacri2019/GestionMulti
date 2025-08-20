@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Cache;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Helpers;
@@ -42,12 +43,15 @@ namespace GestionComercial.Desktop.Controls.Clients
 
         private async Task FindClient()
         {
-            ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId, true, false);
+            ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId);
+
+            clientViewModel = ClientCache.Instance.GetAllClients().Where(c => c.Id == ClientId).FirstOrDefault();
+
             if (result.Success)
-            {
-                clientViewModel = result.ClientViewModel;
+            {                
                 if (ClientId == 0)
                 {
+                    clientViewModel = result.ClientViewModel;
                     clientViewModel.CreateUser = App.UserName;
                 }
                 DataContext = clientViewModel;

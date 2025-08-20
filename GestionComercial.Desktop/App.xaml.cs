@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Views;
+using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using System.Windows;
 
@@ -13,10 +14,18 @@ namespace GestionComercial.Desktop
         public static string Password { get; set; }
         public static string UserName { get; set; }
         public static string UserRole { get; set; }
+        public static IConfiguration Configuration { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
-        {// Seteo la cultura a Argentina
-         // Seteo cultura a Argentina
+        {
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            Configuration = builder.Build();
+
+            // Seteo la cultura a Argentina
+            // Seteo cultura a Argentina
             var culture = new CultureInfo("es-AR");
 
             Thread.CurrentThread.CurrentCulture = culture;

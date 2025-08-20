@@ -28,126 +28,166 @@ namespace GestionComercial.Desktop.Services
 
         internal async Task<List<ClientViewModel>> SearchAsync(string name, bool isEnabled, bool isDeleted)
         {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/clients/SearchToListAsync", new
+            try
             {
-                Name = name,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
-            });
+                // Llama al endpoint y deserializa la respuesta
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-
-                var options = new JsonSerializerOptions
+                var response = await _httpClient.PostAsJsonAsync("api/clients/SearchToListAsync", new
                 {
-                    PropertyNameCaseInsensitive = true
-                };
+                    Name = name,
+                    IsDeleted = isDeleted,
+                    IsEnabled = isEnabled,
+                });
 
-                var articles = JsonSerializer.Deserialize<List<ClientViewModel>>(jsonResponse, options);
+                var jsonResponse = await response.Content.ReadAsStringAsync();
 
-
-                return articles;
-            }
-            else
-            {
-                // Manejo de error
-                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                return null;
-            }
-        }
-
-        internal async Task<List<ClientViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
-        {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
-            {
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
-            });
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-
-                var options = new JsonSerializerOptions
+                if (response.IsSuccessStatusCode)
                 {
-                    PropertyNameCaseInsensitive = true
-                };
 
-                var articles = JsonSerializer.Deserialize<List<ClientViewModel>>(jsonResponse, options);
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var articles = JsonSerializer.Deserialize<List<ClientViewModel>>(jsonResponse, options);
 
 
-                return articles;
+                    return articles;
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
             }
-            else
+            catch (Exception)
             {
-                // Manejo de error
-                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                return null;
+
+                throw;
             }
         }
 
-        internal async Task<ClientResponse> GetByIdAsync(int clientId, bool isEnabled, bool isDeleted)
+        internal async Task<List<ClientViewModel>> GetAllAsync()
         {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/clients/GetByIdAsync", new
+            try
             {
-                Id = clientId,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
-            });
+                // Llama al endpoint y deserializa la respuesta
 
-            JsonSerializerOptions options = new()
+                var response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
+                {
+                    //IsDeleted = isDeleted,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var articles = JsonSerializer.Deserialize<List<ClientViewModel>>(jsonResponse, options);
+
+
+                    return articles;
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception)
             {
-                PropertyNameCaseInsensitive = true
-            };
-            var jsonResponse = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-                return new ClientResponse
+                throw;
+            }
+        }
+
+        internal async Task<ClientResponse> GetByIdAsync(int clientId)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/clients/GetByIdAsync", new
                 {
-                    ClientViewModel = JsonSerializer.Deserialize<ClientViewModel>(jsonResponse, options),
-                    Success = true,
-                };
-            else
-                return new ClientResponse
+                    Id = clientId,
+                    //IsDeleted = isDeleted,
+                    //IsEnabled = isEnabled,
+                });
+
+                JsonSerializerOptions options = new()
                 {
-                    Success = false,
-                    Message = $"Error: {response.StatusCode}\n{jsonResponse}",
+                    PropertyNameCaseInsensitive = true
                 };
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return new ClientResponse
+                    {
+                        ClientViewModel = JsonSerializer.Deserialize<ClientViewModel>(jsonResponse, options),
+                        Success = true,
+                    };
+                else
+                    return new ClientResponse
+                    {
+                        Success = false,
+                        Message = $"Error: {response.StatusCode}\n{jsonResponse}",
+                    };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         internal async Task<GeneralResponse> UpdateAsync(Client client)
         {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/clients/UpdateAsync", client);
-            var error = await response.Content.ReadAsStringAsync();
-            return new GeneralResponse
+            try
             {
-                Message = $"Error: {response.StatusCode}\n{error}",
-                Success = response.IsSuccessStatusCode,
-            };
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/clients/UpdateAsync", client);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         internal async Task<GeneralResponse> AddAsync(Client client)
         {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/clients/AddAsync", client);
-            var error = await response.Content.ReadAsStringAsync();
-            return new GeneralResponse
+            try
             {
-                Message = $"Error: {response.StatusCode}\n{error}",
-                Success = response.IsSuccessStatusCode,
-            };
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/clients/AddAsync", client);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
