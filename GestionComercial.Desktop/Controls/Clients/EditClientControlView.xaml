@@ -25,10 +25,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
@@ -68,7 +68,7 @@
                       DisplayMemberPath="Description"
                       SelectedValuePath="Id"
                       ItemsSource="{Binding DocumentTypes}"
-                      SelectedItem="{Binding DocumentTypeId}"/>
+                      SelectedValue="{Binding DocumentTypeId}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3" Margin="10,0,20,8">
@@ -251,7 +251,7 @@
                       DisplayMemberPath="Description"
                       SelectedValuePath="Id"
                       ItemsSource="{Binding TaxConditions}"
-                      SelectedItem="{Binding TaxConditionId}"/>
+                      SelectedValue="{Binding TaxConditionId}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">
