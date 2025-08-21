@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs.Provider;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
@@ -22,7 +23,7 @@ namespace GestionComercial.Applications.Services
         }
 
 
-       
+
         public async Task<GeneralResponse> DeleteAsync(int id)
         {
             Provider? provider = await _context.Providers.FindAsync(id);
@@ -36,10 +37,12 @@ namespace GestionComercial.Applications.Services
 
         public async Task<IEnumerable<ProviderViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
         {
-             List<Provider> providers = await _context.Providers
-                  .Include(c => c.State)
-                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-                  .ToListAsync();
+            List<Provider> providers = await _context.Providers
+                 .Include(c => c.State)
+                 .Include(ic => ic.IvaCondition)
+                 .Include(dt => dt.DocumentType)
+                 .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
+                 .ToListAsync();
 
 
             return ToProviderViewModelList(providers);
@@ -51,20 +54,30 @@ namespace GestionComercial.Applications.Services
             ICollection<State> states = await _context.States
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<IvaCondition> ivaConditions = await _context.IvaConditions
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
 
             states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
+            ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
+
+            ICollection<DocumentType> documentTypes = await _context.DocumentTypes
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+
+            documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
 
             ObservableCollection<SaleCondition> saleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))];
 
-            ObservableCollection<TaxCondition> taxConditions = [.. (TaxCondition[])Enum.GetValues(typeof(TaxCondition))];
+            //ObservableCollection<TaxCondition> taxConditions = [.. (TaxCondition[])Enum.GetValues(typeof(TaxCondition))];
 
-            ObservableCollection<DocumentType> documentTypes = [.. (DocumentType[])Enum.GetValues(typeof(DocumentType))];
+            //ObservableCollection<DocumentType> documentTypes = [.. (DocumentType[])Enum.GetValues(typeof(DocumentType))];
 
             if (id == 0)
                 return new ProviderViewModel
                 {
                     SaleConditions = saleConditions,
-                    TaxConditions = taxConditions,
+                    IvaConditions = ivaConditions,
                     DocumentTypes = documentTypes,
                     States = states,
                     IsDeleted = false,
@@ -75,13 +88,14 @@ namespace GestionComercial.Applications.Services
 
             Provider? provider = await _context.Providers
                 .Include(s => s.State)
+                .Include(ic => ic.IvaCondition)
+                .Include(dt => dt.DocumentType)
                 .Where(a => a.Id == id && a.IsEnabled == isEnabled && a.IsDeleted == isDeleted)
                 .FirstOrDefaultAsync();
 
-            states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
-
+           
             return provider == null ? null : ConverterHelper.ToProviderViewModel(provider, states,
-                saleConditions, taxConditions, documentTypes);
+                saleConditions, ivaConditions, documentTypes);
         }
 
         public async Task<IEnumerable<ProviderViewModel>> SearchToListAsync(string name, bool isEnabled, bool isDeleted)
@@ -91,11 +105,15 @@ namespace GestionComercial.Applications.Services
             List<Provider> providers = string.IsNullOrEmpty(name) ?
                 await _context.Providers
                  .Include(c => c.State)
+                 .Include(ic => ic.IvaCondition)
+                 .Include(dt => dt.DocumentType)
                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .ToListAsync()
                 :
                 await _context.Providers
                  .Include(s => s.State)
+                 .Include(ic => ic.IvaCondition)
+                 .Include(dt => dt.DocumentType)
                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted && (p.BusinessName.Contains(name) || p.FantasyName.Contains(name) || p.DocumentNumber.Contains(name)))
                  .ToListAsync();
 
@@ -103,7 +121,7 @@ namespace GestionComercial.Applications.Services
             return ToProviderViewModelList(providers);
         }
 
-       
+
 
 
 
@@ -129,9 +147,9 @@ namespace GestionComercial.Applications.Services
                 PayDay = provider.PayDay,
                 LastPuchase = provider.LastPuchase,
                 Sold = provider.Sold,
-                DocumentType = provider.DocumentType,
+                DocumentTypeString = provider.DocumentType.Description,
                 SaleCondition = provider.SaleCondition,
-                TaxCondition = provider.TaxCondition,
+                IvaConditionString = provider.IvaCondition.Description,
                 State = provider.State.Name,
                 CreateDate = provider.CreateDate,
                 CreateUser = provider.CreateUser,

@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -31,12 +32,12 @@ namespace GestionComercial.Domain.DTOs.Client
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
-        public string TaxConditionString { get; set; }
+        public string IvaConditionString { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public TaxCondition TaxCondition { get; set; }
+        public int IvaConditionId { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Dirección")]
@@ -163,8 +164,8 @@ namespace GestionComercial.Domain.DTOs.Client
         public ICollection<PriceList> PriceLists { get; set; }
         public ICollection<State> States { get; set; }
         public ObservableCollection<SaleCondition> SaleConditions { get; set; }
-        public ObservableCollection<TaxCondition> TaxConditions { get; set; }
-        public ObservableCollection<DocumentType> DocumentTypes { get; set; }
+        public ICollection<IvaCondition> IvaConditions { get; set; }
+        public ICollection<DocumentType> DocumentTypes { get; set; }
 
 
 

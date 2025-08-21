@@ -35,7 +35,7 @@ namespace GestionComercial.Infrastructure.Persistence
         public DbSet<Optional> Optionals { get; set; }
         public DbSet<Tax> Taxes { get; set; }
         public DbSet<Tribute> Tributes { get; set; }
-        public DbSet<TypeDocument> TypeDocuments { get; set; }
+        public DbSet<DocumentType> DocumentTypes { get; set; }
 
 
         //BOX AND BANK

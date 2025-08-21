@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.Entities.Purchases;
+﻿using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.Purchases;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
@@ -17,7 +18,7 @@ namespace GestionComercial.Domain.Entities.Masters
         public string? FantasyName { get; set; }
 
         [Display(Name = "Tipo Documento")]
-        public DocumentType DocumentType { get; set; }
+        public int DocumentTypeId { get; set; }
 
         [MaxLength(13, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [MinLength(7, ErrorMessage = "El {0} no puede contener menos de {1} caracteres")]
@@ -86,15 +87,20 @@ namespace GestionComercial.Domain.Entities.Masters
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public TaxCondition TaxCondition { get; set; }
+        public int IvaConditionId { get; set; }
 
 
 
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual State? State { get; set; }
+       
+        [JsonIgnore]
+        public virtual DocumentType? DocumentType { get; set; }
+        [JsonIgnore]
+        public virtual IvaCondition? IvaCondition { get; set; }
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual ICollection<Purchase>? Purcheases { get; set; }
     }
 }

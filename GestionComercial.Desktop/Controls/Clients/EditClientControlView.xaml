@@ -65,8 +65,10 @@
             <ComboBox x:Name="cbDocumentTypes"                      
                       Style="{StaticResource ComboBox}"
                       Width="auto"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Id"
                       ItemsSource="{Binding DocumentTypes}"
-                      SelectedItem="{Binding DocumentType, Mode=TwoWay}"/>
+                      SelectedItem="{Binding DocumentTypeId}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3" Margin="10,0,20,8">
@@ -246,8 +248,10 @@
             <ComboBox x:Name="cbTaxConditions" 
                       Style="{StaticResource ComboBox}"
                       Width="auto"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Id"
                       ItemsSource="{Binding TaxConditions}"
-                      SelectedItem="{Binding TaxCondition, Mode=TwoWay}"/>
+                      SelectedItem="{Binding TaxConditionId}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">

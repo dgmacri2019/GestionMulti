@@ -104,8 +104,8 @@ namespace GestionComercial.Desktop.Controls.Providers
 
                 if (ValidateProvider())
                 {
-                    providerViewModel.DocumentType = (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue);
-                    providerViewModel.TaxCondition = (TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue);
+                    //providerViewModel.DocumentType = (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue);
+                    //providerViewModel.TaxCondition = (TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue);
                     providerViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
                     btnAdd.IsEnabled = false;
                     lblError.Text = string.Empty;
@@ -144,9 +144,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 msgError("Ingrese el documento o cuit");
                 result = false;
             }
-            else if ((DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.DNI ||
-                (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.Pasaporte ||
-                (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.Otro)
+            else if (Convert.ToInt32(cbDocumentTypes.SelectedValue) >= 3)
             {
                 if (!ValidatorHelper.IsNumeric(txtDocumentNumber.Text))
                 {
@@ -154,12 +152,11 @@ namespace GestionComercial.Desktop.Controls.Providers
                     result = false;
                 }
             }
-            else if ((DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.CUIL ||
-                (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.CUIT)
+            else if (Convert.ToInt32(cbDocumentTypes.SelectedValue) <= 2)
             {
                 if (!ValidatorHelper.ValidateCuit(txtDocumentNumber.Text.Replace("-", "")))
                 {
-                    msgError("El cuit ingresado es inválido");
+                    msgError("El cuit/cuil ingresado es inválido");
                     result = false;
                 }
             }
@@ -185,7 +182,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 result = false;
             }
 
-            if ((TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue) == TaxCondition.Seleccione)
+            if (Convert.ToInt32(cbTaxConditions.SelectedValue) == 0)
             {
                 msgError("Seleccione la condición de I.V.A.");
                 result = false;

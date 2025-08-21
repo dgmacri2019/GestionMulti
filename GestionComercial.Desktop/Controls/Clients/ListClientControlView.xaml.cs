@@ -21,14 +21,14 @@ namespace GestionComercial.Desktop.Controls.Clients
         public ListClientControlView()
         {
             InitializeComponent();
-            btnEnables.Visibility = Visibility.Hidden;
-            btnDisables.Visibility = Visibility.Visible;
-            DataContext = new ClientListViewModel(Enabled, Deleted);
+            //btnEnables.Visibility = Visibility.Hidden;
+            //btnDisables.Visibility = Visibility.Visible;
+            DataContext = new ClientListViewModel();
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DgArticles.DataContext = new ClientListViewModel(SearchBox.Text, Enabled, Deleted);
+            DgArticles.DataContext = new ClientListViewModel();
         }
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -36,19 +36,23 @@ namespace GestionComercial.Desktop.Controls.Clients
             if (DgArticles.SelectedItem is ClientViewModel client)
             {
                 DgArticles.Visibility = Visibility.Hidden;
-                DgArticles.DataContext = null;
+                //DgArticles.DataContext = null;
                 PanelSearch.Visibility = Visibility.Hidden;
                 PanelEdicion.Visibility = Visibility.Visible;
                 lblHeader.Content = "Editar Cliente";
+                btnAdd.Visibility = Visibility.Hidden;
                 var ventana = new EditClientControlView(client.Id);
                 ventana.ClienteActualizado += () =>
                 {
-                    DgArticles.DataContext = new ClientListViewModel(SearchBox.Text, Enabled, Deleted);
+                    //DgArticles.DataContext = new ClientListViewModel();
+                    //DataContext = new ClientListViewModel();
                     DgArticles.Visibility = Visibility.Visible;
                     PanelSearch.Visibility = Visibility.Visible;
                     PanelEdicion.Content = null;
                     PanelEdicion.Visibility = Visibility.Hidden;
                     lblHeader.Content = "Clientes";
+                    btnEnables.Visibility = Visibility.Visible;
+                    btnAdd.Visibility = Visibility.Visible;
                     if (!string.IsNullOrEmpty(SearchBox.Text))
                         SearchBox.Focus();
                 };
@@ -61,22 +65,22 @@ namespace GestionComercial.Desktop.Controls.Clients
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             DgArticles.Visibility = Visibility.Hidden;
-            DgArticles.DataContext = null;
+            //DgArticles.DataContext = null;
             PanelSearch.Visibility = Visibility.Hidden;
             PanelEdicion.Visibility = Visibility.Visible;
-            btnDisables.Visibility = Visibility.Hidden;
+            btnEnables.Visibility = Visibility.Hidden;
             btnAdd.Visibility = Visibility.Hidden;
             lblHeader.Content = "Nuevo Cliente";
             var ventana = new EditClientControlView(0);
             ventana.ClienteActualizado += () =>
             {
-                DgArticles.DataContext = new ClientListViewModel(Enabled, Deleted);
+                //DgArticles.DataContext = new ClientListViewModel();
                 DgArticles.Visibility = Visibility.Visible;
                 PanelSearch.Visibility = Visibility.Visible;
                 PanelEdicion.Content = null;
                 PanelEdicion.Visibility = Visibility.Hidden;
                 btnAdd.Visibility = Visibility.Visible;
-                btnDisables.Visibility = Visibility.Visible;
+                btnEnables.Visibility = Visibility.Visible;
                 lblHeader.Content = "Clientes";
             };
 
@@ -86,17 +90,17 @@ namespace GestionComercial.Desktop.Controls.Clients
         private void btnDisables_Click(object sender, RoutedEventArgs e)
         {
             btnEnables.Visibility = Visibility.Visible;
-            btnDisables.Visibility = Visibility.Hidden;
+            //btnDisables.Visibility = Visibility.Hidden;
             Enabled = false;
-            DgArticles.DataContext = new ClientListViewModel(SearchBox.Text, Enabled, Deleted);
+            DgArticles.DataContext = new ClientListViewModel();
         }
 
         private void btnEnables_Click(object sender, RoutedEventArgs e)
         {
             btnEnables.Visibility = Visibility.Hidden;
-            btnDisables.Visibility = Visibility.Visible;
+            //btnDisables.Visibility = Visibility.Visible;
             Enabled = true;
-            DgArticles.DataContext = new ClientListViewModel(SearchBox.Text, Enabled, Deleted);
+            DgArticles.DataContext = new ClientListViewModel();
         }
 
         private void Email_RequestNavigate(object sender, RequestNavigateEventArgs e)

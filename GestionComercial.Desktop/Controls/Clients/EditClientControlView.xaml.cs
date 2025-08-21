@@ -28,7 +28,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             InitializeComponent();
             _clientsApiService = new ClientsApiService();
             ClientId = clientId;
-            FindClient();
+            _ = FindClient();
             if (ClientId > 0)
             {
                 btnAdd.Visibility = Visibility.Hidden;
@@ -45,10 +45,10 @@ namespace GestionComercial.Desktop.Controls.Clients
         {
             ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId);
 
-            clientViewModel = ClientCache.Instance.GetAllClients().Where(c => c.Id == ClientId).FirstOrDefault();
+            clientViewModel = ClientCache.Instance.GetAllClients().FirstOrDefault(c => c.Id == ClientId);
 
             if (result.Success)
-            {                
+            {
                 if (ClientId == 0)
                 {
                     clientViewModel = result.ClientViewModel;
@@ -106,8 +106,8 @@ namespace GestionComercial.Desktop.Controls.Clients
 
                 if (ValidateClient())
                 {
-                    clientViewModel.DocumentType = (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue);
-                    clientViewModel.TaxCondition = (TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue);
+                    //clientViewModel.DocumentType = (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue);
+                    //clientViewModel.TaxCondition = (TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue);
                     clientViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
                     btnAdd.IsEnabled = false;
                     lblError.Text = string.Empty;
@@ -148,12 +148,10 @@ namespace GestionComercial.Desktop.Controls.Clients
             }
             if (string.IsNullOrWhiteSpace(txtDocumentNumber.Text))
             {
-                msgError("Ingrese el documento o cuit");
+                msgError("Ingrese el documento, cuit o cuil");
                 result = false;
             }
-            else if ((DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.DNI ||
-                (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.Pasaporte ||
-                (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.Otro)
+            else if (Convert.ToInt32(cbDocumentTypes.SelectedValue) >= 3)
             {
                 if (!ValidatorHelper.IsNumeric(txtDocumentNumber.Text))
                 {
@@ -161,12 +159,11 @@ namespace GestionComercial.Desktop.Controls.Clients
                     result = false;
                 }
             }
-            else if ((DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.CUIL ||
-                (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue) == DocumentType.CUIT)
+            else if (Convert.ToInt32(cbDocumentTypes.SelectedValue) <= 2)
             {
                 if (!ValidatorHelper.ValidateCuit(txtDocumentNumber.Text.Replace("-", "")))
                 {
-                    msgError("El cuit ingresado es inválido");
+                    msgError("El cuit/cuil ingresado es inválido");
                     result = false;
                 }
             }
@@ -192,7 +189,7 @@ namespace GestionComercial.Desktop.Controls.Clients
                 result = false;
             }
 
-            if ((TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue) == TaxCondition.Seleccione)
+            if (Convert.ToInt32(cbTaxConditions.SelectedValue) == 0)
             {
                 msgError("Seleccione la condición de I.V.A.");
                 result = false;

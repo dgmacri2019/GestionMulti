@@ -2,7 +2,7 @@
 
 namespace GestionComercial.Domain.Entities.Afip
 {
-    public class TypeDocument : CommonEntity
+    public class DocumentType : CommonEntity
     {
         public int AfipId { get; set; }
 

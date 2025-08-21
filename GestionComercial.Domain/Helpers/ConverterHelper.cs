@@ -127,15 +127,15 @@ namespace GestionComercial.Domain.Helpers
                 SaleCondition = clientViewModel.SaleCondition,
                 Sold = clientViewModel.Sold,
                 StateId = clientViewModel.StateId,
-                TaxCondition = clientViewModel.TaxCondition,
+                IvaConditionId = clientViewModel.IvaConditionId,
                 UpdateDate = clientViewModel.UpdateDate,
                 UpdateUser = clientViewModel.UpdateUser,
             };
         }
 
         public static ClientViewModel ToClientViewModel(Client client, ICollection<PriceList> priceLists,
-            ICollection<State> states, ObservableCollection<SaleCondition> saleConditions, ObservableCollection<TaxCondition> taxConditions,
-            ObservableCollection<DocumentType> documentTypes)
+            ICollection<State> states, ObservableCollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
+            ICollection<DocumentType> documentTypes)
         {
             return new ClientViewModel
             {
@@ -145,7 +145,7 @@ namespace GestionComercial.Domain.Helpers
                 DocumentNumber = client.DocumentNumber,
                 DocumentType = client.DocumentType,
                 DocumentTypes = documentTypes,
-                DocumentTypeString = EnumExtensionService.GetDisplayName(client.DocumentType),
+                DocumentTypeString = client.DocumentType.Description,
                 Email = client.Email,
                 FantasyName = client.FantasyName,
                 Id = client.Id,
@@ -168,9 +168,9 @@ namespace GestionComercial.Domain.Helpers
                 Sold = client.Sold,
                 StateId = client.StateId,
                 States = states,
-                TaxCondition = client.TaxCondition,
-                TaxConditions = taxConditions,
-                TaxConditionString = EnumExtensionService.GetDisplayName(client.TaxCondition),
+                IvaConditionId = client.IvaConditionId,
+                IvaConditions = ivaConditions,
+                IvaConditionString = client.IvaCondition.Description,
                 WebSite = client.WebSite,
                 CreateUser = client.CreateUser,
                 CreateDate = client.CreateDate,
@@ -180,6 +180,7 @@ namespace GestionComercial.Domain.Helpers
                 IsDeleted = client.IsDeleted,
                 PriceList = client.PriceList.Description,
                 State = client.State.Name,
+
             };
         }
 
@@ -200,7 +201,7 @@ namespace GestionComercial.Domain.Helpers
                 CreateDate = providerViewModel.CreateDate,
                 CreateUser = providerViewModel.CreateUser,
                 DocumentNumber = providerViewModel.DocumentNumber,
-                DocumentType = providerViewModel.DocumentType,
+                DocumentTypeId = providerViewModel.DocumentTypeId,
                 Email = providerViewModel.Email,
                 FantasyName = providerViewModel.FantasyName,
                 IsDeleted = providerViewModel.IsDeleted,
@@ -215,15 +216,15 @@ namespace GestionComercial.Domain.Helpers
                 SaleCondition = providerViewModel.SaleCondition,
                 Sold = providerViewModel.Sold,
                 StateId = providerViewModel.StateId,
-                TaxCondition = providerViewModel.TaxCondition,
+                IvaConditionId = providerViewModel.IvaConditionId,
                 UpdateDate = providerViewModel.UpdateDate,
                 UpdateUser = providerViewModel.UpdateUser,
             };
         }
 
         public static ProviderViewModel? ToProviderViewModel(Provider provider, ICollection<State> states,
-            ObservableCollection<SaleCondition> saleConditions, ObservableCollection<TaxCondition> taxConditions,
-            ObservableCollection<DocumentType> documentTypes)
+            ObservableCollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
+             ICollection<DocumentType> documentTypes)
         {
             return new ProviderViewModel
             {
@@ -231,7 +232,7 @@ namespace GestionComercial.Domain.Helpers
                 BusinessName = provider.BusinessName,
                 City = provider.City,
                 DocumentNumber = provider.DocumentNumber,
-                DocumentType = provider.DocumentType,
+                DocumentTypeId = provider.DocumentTypeId,
                 DocumentTypes = documentTypes,
                 Email = provider.Email,
                 FantasyName = provider.FantasyName,
@@ -248,8 +249,8 @@ namespace GestionComercial.Domain.Helpers
                 Sold = provider.Sold,
                 StateId = provider.StateId,
                 States = states,
-                TaxCondition = provider.TaxCondition,
-                TaxConditions = taxConditions,
+                IvaConditionId = provider.IvaConditionId,
+                IvaConditions = ivaConditions,
                 WebSite = provider.WebSite,
                 CreateUser = provider.CreateUser,
                 CreateDate = provider.CreateDate,
@@ -258,6 +259,8 @@ namespace GestionComercial.Domain.Helpers
                 IsEnabled = provider.IsEnabled,
                 IsDeleted = provider.IsDeleted,
                 State = provider.State.Name,
+                DocumentTypeString = provider.DocumentType.Description,
+                IvaConditionString = provider.IvaCondition.Description,
             };
         }
 

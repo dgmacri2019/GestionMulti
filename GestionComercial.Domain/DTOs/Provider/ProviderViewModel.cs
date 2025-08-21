@@ -1,11 +1,7 @@
-﻿using GestionComercial.Domain.Entities.Masters;
-using System;
-using System.Collections.Generic;
+﻿using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.Masters;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.DTOs.Provider
@@ -24,7 +20,10 @@ namespace GestionComercial.Domain.DTOs.Provider
         public string? FantasyName { get; set; }
 
         [Display(Name = "Tipo Documento")]
-        public DocumentType DocumentType { get; set; }
+        public string DocumentTypeString { get; set; }
+
+        [Display(Name = "Tipo Documento")]
+        public int DocumentTypeId { get; set; }
 
         [MaxLength(13, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [MinLength(7, ErrorMessage = "El {0} no puede contener menos de {1} caracteres")]
@@ -93,7 +92,9 @@ namespace GestionComercial.Domain.DTOs.Provider
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public TaxCondition TaxCondition { get; set; }
+        public int IvaConditionId { get; set; }
+        
+        public string IvaConditionString { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -124,7 +125,7 @@ namespace GestionComercial.Domain.DTOs.Provider
 
         public ICollection<State> States { get; set; }
         public ObservableCollection<SaleCondition> SaleConditions { get; set; }
-        public ObservableCollection<TaxCondition> TaxConditions { get; set; }
-        public ObservableCollection<DocumentType> DocumentTypes { get; set; }
+        public ICollection<IvaCondition> IvaConditions { get; set; }
+        public ICollection<DocumentType> DocumentTypes { get; set; }
     }
 }

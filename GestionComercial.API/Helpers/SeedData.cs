@@ -43,7 +43,7 @@ namespace GestionComercial.API.Helpers
                         EmailConfirmed = true,
                         LastName = "MACRI",
                         FirstName = "Diego Gaston",
-                        Enabled = true
+                        Enabled = true,                        
                     };
 
                     IdentityResult result = await userManager.CreateAsync(user, "@Diego248");
@@ -116,6 +116,18 @@ namespace GestionComercial.API.Helpers
                         resultResponse.Message = ex.Message;
                         return resultResponse;
                     }
+                }
+                if (!dbContext.DocumentTypes.Any())
+                {
+                    GeneralResponse resultDocumentType = await CreateDocumentTypesAsync(dbContext);
+                    if (!resultDocumentType.Success)
+                        return resultDocumentType;
+                }
+                if (!dbContext.IvaConditions.Any())
+                {
+                    GeneralResponse resultIvaCondition = await CreateIvaConditionsAsync(dbContext);
+                    if (!resultIvaCondition.Success)
+                        return resultIvaCondition;
                 }
                 if (!dbContext.Banks.Any())
                 {
@@ -657,7 +669,7 @@ namespace GestionComercial.API.Helpers
 
                 foreach (Account account in accountsGroup5)
                 {
-                    account.AccountIdSubGroupNumber4 = accountsGroup4.Where(a => a.AccountTypeId == account.AccountTypeId 
+                    account.AccountIdSubGroupNumber4 = accountsGroup4.Where(a => a.AccountTypeId == account.AccountTypeId
                                                                                && a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
                                                                                && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
                                                                                && a.AccountSubGroupNumber3 == account.AccountSubGroupNumber3
@@ -693,7 +705,7 @@ namespace GestionComercial.API.Helpers
 
                 foreach (Account account in accountsGroup4)
                 {
-                   
+
                     account.AccountIdSubGroupNumber3 = accountsGroup3.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
                                                                                && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
                                                                                && a.AccountSubGroupNumber3 == account.AccountSubGroupNumber3
@@ -723,7 +735,7 @@ namespace GestionComercial.API.Helpers
 
                     try
                     {
-                        
+
                         account.AccountIdSubGroupNumber2 = accountsGroup2.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
                                                                                                && a.AccountSubGroupNumber2 == account.AccountSubGroupNumber2
                                                                                                && a.AccountSubGroupNumber3 == 0
@@ -748,7 +760,7 @@ namespace GestionComercial.API.Helpers
 
                 foreach (Account account in accountsGroup2)
                 {
-                   
+
                     account.AccountIdSubGroupNumber1 = accountsGroup1.Where(a => a.AccountSubGroupNumber1 == account.AccountSubGroupNumber1
                                                                                && a.AccountSubGroupNumber2 == 0
                                                                                && a.AccountSubGroupNumber3 == 0
@@ -1465,6 +1477,148 @@ namespace GestionComercial.API.Helpers
                 ];
 
                 _context.PriceLists.AddRange(priceLists);
+
+                StaticCommon.ContextInUse = false;
+                await _context.SaveChangesAsync();
+
+                result.Success = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                StaticCommon.ContextInUse = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        private static async Task<GeneralResponse> CreateDocumentTypesAsync(AppDbContext _context)
+        {
+            GeneralResponse result = new GeneralResponse { Success = false };
+            try
+            {
+                while (StaticCommon.ContextInUse)
+                    await Task.Delay(100);
+
+                List<DocumentType> documentTypes =
+                [
+                    new DocumentType
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "CUIT".ToUpper(),
+                        AfipId = 80,
+                    },
+                    new DocumentType
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "cuil".ToUpper(),
+                        AfipId = 86,
+                    },
+                    new DocumentType
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "dni".ToUpper(),
+                        AfipId = 96,
+                    },
+                    new DocumentType
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "pasaporte".ToUpper(),
+                        AfipId = 94,
+                    },
+                    new DocumentType
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "otro".ToUpper(),
+                        AfipId = 99,
+                    },
+                ];
+
+                _context.DocumentTypes.AddRange(documentTypes);
+
+                StaticCommon.ContextInUse = false;
+                await _context.SaveChangesAsync();
+
+                result.Success = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                StaticCommon.ContextInUse = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        private static async Task<GeneralResponse> CreateIvaConditionsAsync(AppDbContext _context)
+        {
+            GeneralResponse result = new GeneralResponse { Success = false };
+            try
+            {
+                while (StaticCommon.ContextInUse)
+                    await Task.Delay(100);
+
+                List<IvaCondition> ivaConditions =
+                [
+                    new IvaCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Responsable Inscripto".ToUpper(),
+                        AfipId = 1,
+                        CbteClase = "1",
+                    },
+                    new IvaCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Monotributo".ToUpper(),
+                        AfipId = 6,
+                        CbteClase = "6",
+                    },
+                    new IvaCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Iva Exento".ToUpper(),
+                        AfipId = 4,
+                        CbteClase = "4",
+                    },
+                    new IvaCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Consumidor Final".ToUpper(),
+                        AfipId = 5,
+                        CbteClase = "5",
+                    },
+
+                ];
+
+                _context.IvaConditions.AddRange(ivaConditions);
 
                 StaticCommon.ContextInUse = false;
                 await _context.SaveChangesAsync();

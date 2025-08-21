@@ -1,6 +1,9 @@
 ﻿using GestionComercial.Desktop.Cache;
 using GestionComercial.Desktop.Services;
+using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.Entities.Masters;
+using Microsoft.AspNetCore.SignalR;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using static GestionComercial.Domain.Notifications.ClientChangeNotification;
@@ -10,151 +13,117 @@ namespace GestionComercial.Desktop.ViewModels.Client
     public class ClientListViewModel : BaseViewModel
     {
         private readonly ClientsApiService _clientsApiService;
-
-        public ObservableCollection<ClientViewModel> Clients { get; set; } = [];
-
-        public ICommand? LoadClientsCommand { get; }
-
         private readonly ClientsHubService _hubService;
 
-        public ClientListViewModel(bool isEnabled, bool isDeleted)
+        // 🔹 Propiedades de filtros
+        private string _nameFilter = string.Empty;
+        public string NameFilter
+        {
+            get => _nameFilter;
+            set
+            {
+                if (_nameFilter != value)
+                {
+                    _nameFilter = value;
+                    OnPropertyChanged();
+                    _ = LoadClientsAsync(); // 🔹 ejecuta búsqueda al escribir
+                }
+            }
+        }
+
+        private bool _isEnabledFilter = true;
+        public bool IsEnabledFilter
+        {
+            get => _isEnabledFilter;
+            set
+            {
+                if (_isEnabledFilter != value)
+                {
+                    _isEnabledFilter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isDeletedFilter = false;
+        public bool IsDeletedFilter
+        {
+            get => _isDeletedFilter;
+            set
+            {
+                if (_isDeletedFilter != value)
+                {
+                    _isDeletedFilter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        // 🔹 Lista observable para bindear al DataGrid
+        public ObservableCollection<ClientViewModel> Clients { get; } = new();
+
+        // 🔹 Command para buscar
+        public ICommand SearchCommand { get; }
+        public ICommand ToggleEnabledCommand { get; }
+
+
+        public string ToggleEnabledText => IsEnabledFilter? "Clientes Inhabilitados" : "Clientes Habilitados";
+
+        public ClientListViewModel()
         {
             _clientsApiService = new ClientsApiService();
-            var hubUrl = App.Configuration["ApiSettings:ClientsHubUrl"];
+
+            //var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:ClientsHubUrl"]);
+            var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:BaseUrl"]);
+
+
             _hubService = new ClientsHubService(hubUrl);
+            _hubService.ClienteCambiado += OnClienteCambiado;            
+            ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
+            SearchCommand = new RelayCommand1(async _ => await LoadClientsAsync());
 
-            _hubService.ClienteCambiado += OnClienteCambiado;
-
-            // Iniciamos la conexión
             _ = _hubService.StartAsync();
-            _ = GetAllAsync(isEnabled, isDeleted);
+            _ = LoadClientsAsync(); // carga inicial
         }
 
-
-        public ClientListViewModel(string name, bool isEnabled, bool isDeleted)
+        private async Task ToggleEnabled()
         {
-            _clientsApiService = new ClientsApiService();
-            var hubUrl = App.Configuration["ApiSettings:ClientsHubUrl"];
-            _hubService = new ClientsHubService(hubUrl);
-
-            _hubService.ClienteCambiado += OnClienteCambiado;
-
-            // Iniciamos la conexión
-            _ = _hubService.StartAsync();
-            _ = SearchAsync(name, isEnabled, isDeleted);
+            IsEnabledFilter = !IsEnabledFilter;
+            OnPropertyChanged(nameof(ToggleEnabledText));
+            await LoadClientsAsync();
         }
 
-        private async Task SearchAsync(string name, bool isEnabled, bool isDeleted)
+        // 🔹 Carga clientes aplicando filtros
+        public async Task LoadClientsAsync()
         {
-            try
+            if (!ClientCache.Instance.HasData)
             {
-                if (!ClientCache.Instance.HasData)
-                {
-                    List<ClientViewModel> clients = await _clientsApiService.GetAllAsync();
-                    ClientCache.Instance.SetClients(clients);
-                }
+                var clients = await _clientsApiService.GetAllAsync();
+                ClientCache.Instance.SetClients(clients);
+            }
+
+            var filtered = ClientCache.Instance.SearchClients(NameFilter, IsEnabledFilter, IsDeletedFilter);
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
                 Clients.Clear();
-                foreach (var p in ClientCache.Instance.SearchClients(name, isEnabled, isDeleted))
-                {
-                    Clients.Add(p);
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+                foreach (var c in filtered)
+                    Clients.Add(c);
+            });
         }
 
-        private async Task<ObservableCollection<ClientViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
+        // 🔹 SignalR recibe notificación y actualiza cache + lista
+        private async void OnClienteCambiado(ClienteChangeNotification notification)
         {
-            try
-            {
-                if (!ClientCache.Instance.HasData)
-                {
-                    List<ClientViewModel> clients = await _clientsApiService.GetAllAsync();
-                    ClientCache.Instance.SetClients(clients);
-                }
+            var clients = await _clientsApiService.GetAllAsync();
 
-                Clients.Clear();
-                foreach (var p in ClientCache.Instance.GetAllClients().Where(c => c.IsEnabled == isEnabled && c.IsDeleted == isDeleted).ToList())
-                {
-                    Clients.Add(p);
-                }
-                return Clients;
-            }
-            catch (Exception)
+            await App.Current.Dispatcher.InvokeAsync(() =>
             {
+                ClientCache.Instance.ClearCache();
+                ClientCache.Instance.SetClients(clients);
 
-                throw;
-            }
+                _ = LoadClientsAsync();
+            });
         }
-
-        private async void OnClienteCambiado(ClienteChangeNotification noti)
-        {
-            //ClientResponse clientResponse;
-            List<ClientViewModel> clients;
-            // Actualizamos la lista según el tipo de cambio
-            switch (noti)
-            {
-                case ClientCreado c:
-                    //clientResponse = await _clientsApiService.GetByIdAsync(c.ClientId);
-                    //if (clientResponse.Success)
-                    //{
-                    //    ClientCache.Instance.SetClient(clientResponse.ClientViewModel);
-                    //}
-                    //else
-                    //{
-                    clients = await _clientsApiService.GetAllAsync();
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        ClientCache.Instance.ClearCache();
-                        //Clients.Clear();
-                        ClientCache.Instance.SetClients(clients);
-                        //}
-
-                    });
-                    break;
-                case ClientActualizado c:
-                    clients = await _clientsApiService.GetAllAsync();
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        ClientCache.Instance.ClearCache();
-                        //Clients.Clear();
-                        ClientCache.Instance.SetClients(clients);
-                        //}
-
-                    });
-                    //var existente = Clients.FirstOrDefault(x => x.Id == c.ClientId);
-                    //if (existente != null)
-                    //{
-                    //    clientResponse = await _clientsApiService.GetByIdAsync(c.ClientId);
-                    //    if (clientResponse.Success)
-                    //    {
-                    //        ClientCache.Instance.UpdateClient(clientResponse.ClientViewModel);
-                    //    }
-                    //    else
-                    //    {
-                    //        ClientCache.Instance.ClearCache();
-                    //        Clients.Clear();
-                    //    }
-                    //}
-                    break;
-                case ClientEliminado c:
-                    clients = await _clientsApiService.GetAllAsync();
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        ClientCache.Instance.ClearCache();
-                        //Clients.Clear();
-                        ClientCache.Instance.SetClients(clients);
-                        //}
-
-                    });
-                    break;
-            }
-        }
-
-
-
     }
 }

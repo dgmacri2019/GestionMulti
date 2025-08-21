@@ -1,6 +1,6 @@
-﻿using GestionComercial.Domain.Entities.Masters;
+﻿using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.Masters;
 using System.Text.Json.Serialization;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Sales
 {
@@ -12,7 +12,7 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public long Cuit { get; set; }
 
-        public TaxCondition TaxCondition { get; set; }
+        public int TaxConditionId { get; set; }
 
         public int PtoVenta { get; set; }
 
@@ -57,13 +57,16 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual Client? Client { get; set; }
 
-        [JsonIgnore] 
+        [JsonIgnore]
+        public virtual IvaCondition? IvaCondition { get; set; }
+
+        [JsonIgnore]
         public virtual Sale? Sale { get; set; }
     }
 }
