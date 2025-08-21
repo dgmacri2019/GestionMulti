@@ -18,23 +18,21 @@ namespace GestionComercial.Desktop.Cache
         {
             try
             {
-                return _clients
-                          .Where(p => p.IsEnabled == isEnabled
-                                   && p.IsDeleted == isDeleted
-                                   && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
-                                    || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)
-                                    || (p.DocumentNumber?.ToLower().Contains(name.ToLower()) ?? false)))
-                          .ToList();
+                return _clients != null ? _clients
+                              .Where(p => p.IsEnabled == isEnabled
+                                       && p.IsDeleted == isDeleted
+                                       && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
+                                        || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)
+                                        || (p.DocumentNumber?.ToLower().Contains(name.ToLower()) ?? false)))
+                              .ToList()
+                              :
+                              new List<ClientViewModel>();
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-
-
-
 
         public void SetClients(List<ClientViewModel> clients)
         {
@@ -78,7 +76,6 @@ namespace GestionComercial.Desktop.Cache
                 throw;
             }
         }
-
         public void RemoveClient(ClientViewModel client)
         {
             try
@@ -97,7 +94,7 @@ namespace GestionComercial.Desktop.Cache
 
 
         public void ClearCache()
-        { 
+        {
             _clients.Clear();
         }
 

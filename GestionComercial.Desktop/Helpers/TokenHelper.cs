@@ -35,8 +35,15 @@ namespace GestionComercial.Desktop.Helpers
 
         public static string ExtractTokenValue(string jsonWithToken)
         {
-            var jsonDoc = JsonDocument.Parse(jsonWithToken);
-            return jsonDoc.RootElement.GetProperty("token").GetString();
+            try
+            {
+                var jsonDoc = JsonDocument.Parse(jsonWithToken);
+                return jsonDoc.RootElement.GetProperty("token").GetString();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
     }
 }

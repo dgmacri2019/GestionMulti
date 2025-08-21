@@ -250,8 +250,8 @@
                       Width="auto"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Id"
-                      ItemsSource="{Binding TaxConditions}"
-                      SelectedValue="{Binding TaxConditionId}"/>
+                      ItemsSource="{Binding IvaConditions}"
+                      SelectedValue="{Binding IvaConditionId}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">

@@ -23,7 +23,7 @@ namespace GestionComercial.Domain.DTOs.Client
         public string DocumentTypeString { get; set; }
 
         [Display(Name = "Tipo Documento")]
-        public DocumentType DocumentType { get; set; }
+        public int DocumentTypeId { get; set; }
 
         [MaxLength(13, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [MinLength(7, ErrorMessage = "El {0} no puede contener menos de {1} caracteres")]

@@ -107,7 +107,7 @@ namespace GestionComercial.Domain.Helpers
                 CreateDate = clientViewModel.CreateDate,
                 CreateUser = clientViewModel.CreateUser,
                 DocumentNumber = clientViewModel.DocumentNumber,
-                DocumentType = clientViewModel.DocumentType,
+                DocumentTypeId = clientViewModel.DocumentTypeId,
                 Email = clientViewModel.Email,
                 FantasyName = clientViewModel.FantasyName,
                 IsDeleted = clientViewModel.IsDeleted,
@@ -129,7 +129,7 @@ namespace GestionComercial.Domain.Helpers
                 StateId = clientViewModel.StateId,
                 IvaConditionId = clientViewModel.IvaConditionId,
                 UpdateDate = clientViewModel.UpdateDate,
-                UpdateUser = clientViewModel.UpdateUser,
+                UpdateUser = clientViewModel.UpdateUser, 
             };
         }
 
@@ -143,7 +143,7 @@ namespace GestionComercial.Domain.Helpers
                 BusinessName = client.BusinessName,
                 City = client.City,
                 DocumentNumber = client.DocumentNumber,
-                DocumentType = client.DocumentType,
+                DocumentTypeId = client.DocumentTypeId,
                 DocumentTypes = documentTypes,
                 DocumentTypeString = client.DocumentType.Description,
                 Email = client.Email,

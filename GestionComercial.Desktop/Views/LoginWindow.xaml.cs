@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,30 +27,41 @@ namespace GestionComercial.Desktop.Views
             string username = txtUsername.Text;
             string password = txtPassword.Password;
             btnLogin.IsEnabled = false;
-            string token = await _authService.LoginAsync(username, password);
+            string token = string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(token))
+            LoginResponse resultLogin = await _authService.LoginAsync(username, password);
+            if (resultLogin.Success)
             {
-                App.UserName = TokenHelper.GetUsername(token);
-                App.UserRole = TokenHelper.GetRole(token);
-                App.AuthToken = TokenHelper.ExtractTokenValue(token);
+                token = resultLogin.Token;
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    App.UserName = TokenHelper.GetUsername(token);
+                    App.UserRole = TokenHelper.GetRole(token);
+                    App.AuthToken = TokenHelper.ExtractTokenValue(token);
 
-                // Abrir ventana principal y pasar el token
-                MainWindow main = new();
-                main.Show();
-                this.Close();
+                    // Abrir ventana principal y pasar el token
+                    MainWindow main = new();
+                    main.Show();
+                    this.Close();
+                }
+                else
+                {
+                    lblError.Text = "Credenciales inválidas";
+                    btnLogin.IsEnabled = true;
+                }
             }
             else
             {
-                lblError.Text = "Credenciales inválidas";
+                lblError.Text = resultLogin.Message;
                 btnLogin.IsEnabled = true;
             }
+
         }
 
         private async void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
-            {                
+            {
                 await LoginAsync();
             }
         }
