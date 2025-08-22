@@ -11,39 +11,33 @@ namespace GestionComercial.Desktop.Controls.Articles
     /// </summary>
     public partial class ListAticleControlView : UserControl
     {
-        private bool Enabled = true;
-        private bool Deleted = false;
-
+       
         public ListAticleControlView()
         {
             InitializeComponent();
-            btnEnables.Visibility = Visibility.Hidden;
-            btnDisables.Visibility = Visibility.Visible;
-            DataContext = new ArticleListViewModel(Enabled, Deleted);
+            DataContext = new ArticleListViewModel();
         }
 
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            DgArticles.DataContext = new ArticleListViewModel(SearchBox.Text, Enabled, Deleted);
-        }
-
+       
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DgArticles.SelectedItem is ArticleWithPricesDto article)
+            if (DgArticles.SelectedItem is ArticleViewModel article)
             {
                 DgArticles.Visibility = Visibility.Hidden;
-                DgArticles.DataContext = null;
                 PanelSearch.Visibility = Visibility.Hidden;
                 PanelEdicion.Visibility = Visibility.Visible;
                 lblHeader.Content = "Editar Artículo";
+                btnEnables.Visibility = Visibility.Hidden;
+                btnAdd.Visibility = Visibility.Hidden;
                 var ventana = new EditArticleControlView(article.Id);
                 ventana.ProductoActualizado += () =>
                 {
-                    DgArticles.DataContext = new ArticleListViewModel(SearchBox.Text, Enabled, Deleted);
-                    DgArticles.Visibility = Visibility.Visible;
+                     DgArticles.Visibility = Visibility.Visible;
                     PanelSearch.Visibility = Visibility.Visible;
                     PanelEdicion.Content = null;
                     PanelEdicion.Visibility = Visibility.Hidden;
+                    btnEnables.Visibility = Visibility.Visible;
+                    btnAdd.Visibility = Visibility.Visible;
                     lblHeader.Content = "Artículos";
                     if(!string.IsNullOrEmpty(SearchBox.Text))
                         SearchBox.Focus();
@@ -57,38 +51,27 @@ namespace GestionComercial.Desktop.Controls.Articles
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             DgArticles.Visibility = Visibility.Hidden;
-            DgArticles.DataContext = null;
             PanelSearch.Visibility = Visibility.Hidden;
             PanelEdicion.Visibility = Visibility.Visible;
+            btnEnables.Visibility = Visibility.Hidden;
+            btnAdd.Visibility = Visibility.Hidden;
             lblHeader.Content = "Nuevo Artículo";
             var ventana = new EditArticleControlView(0);
             ventana.ProductoActualizado += () =>
             {
-                DgArticles.DataContext = new ArticleListViewModel(Enabled, Deleted);
+                DgArticles.DataContext = new ArticleListViewModel();
                 DgArticles.Visibility = Visibility.Visible;
                 PanelSearch.Visibility = Visibility.Visible;
                 PanelEdicion.Content = null;
                 PanelEdicion.Visibility = Visibility.Hidden;
+                btnAdd.Visibility = Visibility.Visible;
+                btnEnables.Visibility = Visibility.Visible;
                 lblHeader.Content = "Artículos";
             };
 
             PanelEdicion.Content = ventana;
         }
 
-        private void btnDisables_Click(object sender, RoutedEventArgs e)
-        {
-            btnEnables.Visibility = Visibility.Visible;
-            btnDisables.Visibility = Visibility.Hidden;
-            Enabled = false;
-            DgArticles.DataContext = new ArticleListViewModel(SearchBox.Text, Enabled, Deleted);
-        }
-
-        private void btnEnables_Click(object sender, RoutedEventArgs e)
-        {
-            btnEnables.Visibility = Visibility.Hidden;
-            btnDisables.Visibility = Visibility.Visible;
-            Enabled = true;
-            DgArticles.DataContext = new ArticleListViewModel(SearchBox.Text, Enabled, Deleted);
-        }
+       
     }
 }

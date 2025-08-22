@@ -1,10 +1,12 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Stock
 {
@@ -16,53 +18,68 @@ namespace GestionComercial.API.Controllers.Stock
     {
         private readonly IArticleService _artcicleService;
         private readonly IMasterService _masterService;
+        private readonly IArticlesNotifier _notifier;
 
-
-        public ArticlesController(IArticleService articleService, IMasterService masterService)
+        public ArticlesController(IArticleService articleService, IMasterService masterService, IArticlesNotifier notifier)
         {
             _artcicleService = articleService;
             _masterService = masterService;
+            _notifier = notifier;
         }
 
-
+        [HttpPost("{id:int}/notify")]
+        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
+        {
+            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
+            return Ok();
+        }
 
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Article article)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(article);
-            return resultAdd.Success ?
-                Ok("Articulo creado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(article.Id, article.Description, ChangeType.Created);
+
+                return Ok("Artículo creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("UpdateAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] Article article)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(article);
-            return resultAdd.Success ?
-                Ok("Articulo actualizado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(article.Id, article.Description, ChangeType.Updated);
+                return Ok("Artículo actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("DeleteAsync")]
         public async Task<IActionResult> DeleteAsync([FromBody] ArticleFilterDto filter)
         {
+            ArticleViewModel? article = await _artcicleService.GetByIdAsync(filter.Id);
+            if (article == null)
+                return BadRequest("No se reconoce el artículo");
+
             GeneralResponse resultAdd = await _artcicleService.DeleteAsync(filter.Id);
-            return resultAdd.Success ?
-                Ok("Articulo borrado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(article.Id, article.Description, ChangeType.Deleted);
+                return Ok("Artículo borrado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
 
-
-
         [HttpPost("GetAllAsync")]
-        public async Task<IActionResult> GetAllAsync([FromBody] ArticleFilterDto filter)
+        public async Task<IActionResult> GetAllAsync()
         {
-            IEnumerable<ArticleWithPricesDto> articles = await _artcicleService.GetAllAsync(filter.IsEnabled, filter.IsDeleted);
+            IEnumerable<ArticleViewModel> articles = await _artcicleService.GetAllAsync();
             return Ok(articles);
         }
 
@@ -79,7 +96,7 @@ namespace GestionComercial.API.Controllers.Stock
         [HttpPost("FindByCodeOrBarCodeAsync")]
         public async Task<IActionResult> FindByCodeOrBarCodeAsync([FromBody] ArticleFilterDto filter)
         {
-            ArticleWithPricesDto? article = await _artcicleService.FindByCodeOrBarCodeAsync(filter.Code);
+            ArticleViewModel? article = await _artcicleService.FindByCodeOrBarCodeAsync(filter.Code);
             if (article == null)
                 return NotFound();
 
@@ -89,7 +106,7 @@ namespace GestionComercial.API.Controllers.Stock
         [HttpPost("FindByBarCodeAsync")]
         public async Task<IActionResult> FindByBarCodeAsync([FromBody] ArticleFilterDto filter)
         {
-            ArticleWithPricesDto? article = await _artcicleService.FindByBarCodeAsync(filter.BarCode);
+            ArticleViewModel? article = await _artcicleService.FindByBarCodeAsync(filter.BarCode);
             if (article == null)
                 return NotFound();
 
@@ -99,7 +116,7 @@ namespace GestionComercial.API.Controllers.Stock
         [HttpPost("SearchToListAsync")]
         public async Task<IActionResult> SearchToListAsync([FromBody] ArticleFilterDto filter)
         {
-            IEnumerable<ArticleWithPricesDto> articles = await _artcicleService.SearchToListAsync(filter.Description, filter.IsEnabled, filter.IsDeleted);
+            IEnumerable<ArticleViewModel> articles = await _artcicleService.SearchToListAsync(filter.Description);
             return Ok(articles);
         }
 

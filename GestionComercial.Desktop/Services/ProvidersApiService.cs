@@ -57,14 +57,14 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<List<ProviderViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
+        internal async Task<List<ProviderViewModel>> GetAllAsync()
         {
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/providers/GetAllAsync", new
             {
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
+                //IsDeleted = isDeleted,
+                //IsEnabled = isEnabled,
             });
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -90,15 +90,15 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<ProviderResponse> GetByIdAsync(int clientId, bool isEnabled, bool isDeleted)
+        internal async Task<ProviderResponse> GetByIdAsync(int clientId)
         {
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/providers/GetByIdAsync", new
             {
                 Id = clientId,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
+                //IsDeleted = isDeleted,
+                //IsEnabled = isEnabled,
             });
 
             JsonSerializerOptions options = new()

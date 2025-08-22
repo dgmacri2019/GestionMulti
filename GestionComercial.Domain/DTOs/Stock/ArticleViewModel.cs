@@ -126,9 +126,32 @@ namespace GestionComercial.Domain.DTOs.Stock
         [Display(Name = "Habilitado?")]
         public bool IsEnabled { get; set; }
 
+        public List<PriceListItemDto> PriceLists { get; set; } = [];
+        public List<TaxePriceDto> TaxesPrice { get; set; } = [];
+
+        public string Category { get; set; } = string.Empty;
+        public string CategoryColor { get; set; } = string.Empty;
+        public decimal PriceWithTax { get; set; }
+
 
         public virtual ICollection<Tax> Taxes { get; set; }
         public virtual ICollection<Measure> Measures { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
     }
+
+
+    public class PriceListItemDto
+    {
+        public string Description { get; set; } = string.Empty;
+        public decimal Utility { get; set; }
+        public decimal FinalPrice { get; set; }
+    }
+
+    public class TaxePriceDto
+    {
+        public string Description { get; set; } = string.Empty;
+        public decimal Utility { get; set; }
+        public decimal Price { get; set; }
+    }
+
 }

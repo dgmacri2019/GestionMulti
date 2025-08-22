@@ -101,12 +101,15 @@
             <TextBox x:Name="txtCost"
                      Style="{StaticResource TextBoxSearch}"
                      Width="100"
-                     VerticalAlignment="Center"                     
-                     Text="{Binding Cost, StringFormat={}{0:C4}}" 
+                     VerticalAlignment="Center"
+                     Text="{Binding Cost}"                      
                      TextChanged="txtCost_TextChanged" 
                      PreviewTextInput="txtCost_PreviewTextInput"
                      LostFocus="txtCost_LostFocus" 
-                     KeyDown="txtCost_KeyDown"/>
+                     KeyDown="txtCost_KeyDown" 
+                     GotKeyboardFocus="txtCost_GotKeyboardFocus"
+                     PreviewMouseLeftButtonDown="txtCost_PreviewMouseLeftButtonDown"/>
+            <!--Text="{Binding Cost, StringFormat={}{0:C4}}"-->
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
@@ -130,9 +133,11 @@
                      Style="{StaticResource TextBoxSearch}"
                      Width="100"
                      VerticalAlignment="Center"                     
-                     Text="{Binding RealCost, StringFormat={}{0:C4}}" 
+                     Text="{Binding RealCost}" 
                      PreviewTextInput="txtRealCost_PreviewTextInput" 
-                     LostFocus="txtRealCost_LostFocus"/>
+                     LostFocus="txtRealCost_LostFocus" 
+                     PreviewMouseLeftButtonDown="txtRealCost_PreviewMouseLeftButtonDown" 
+                     GotKeyboardFocus="txtRealCost_GotKeyboardFocus"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="3" Margin="10,0,20,8">

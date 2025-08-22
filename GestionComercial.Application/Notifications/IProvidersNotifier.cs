@@ -2,8 +2,8 @@
 
 namespace GestionComercial.Applications.Notifications
 {
-    public interface IClientsNotifier
+    public interface IProvidersNotifier
     {
-        Task NotifyAsync(int clientId, string businessName, ChangeType action);
+        Task NotifyAsync(int providerId, string businessName, ChangeType action);
     }
 }

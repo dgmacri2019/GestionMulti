@@ -74,7 +74,7 @@ namespace GestionComercial.API.Controllers.Clients
             GeneralResponse resultAdd = await _clienService.DeleteAsync(client.Id);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(client.Id, client.BusinessName, ChangeType.Created);
+                await _notifier.NotifyAsync(client.Id, client.BusinessName, ChangeType.Deleted);
 
                 return Ok("Cliente borrado correctamente");
             }
@@ -84,8 +84,8 @@ namespace GestionComercial.API.Controllers.Clients
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync([FromBody] ClientFilterDto filter)
         {
-            IEnumerable<ClientViewModel> articles = await _clienService.GetAllAsync();
-            return Ok(articles);
+            IEnumerable<ClientViewModel> clients = await _clienService.GetAllAsync();
+            return Ok(clients);
         }
 
 

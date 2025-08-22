@@ -1,10 +1,4 @@
-﻿using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.DTOs.Stock;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GestionComercial.Domain.DTOs.Stock;
 
 namespace GestionComercial.Desktop.Cache
 {
@@ -13,30 +7,39 @@ namespace GestionComercial.Desktop.Cache
         private static ArticleCache _instance;
         public static ArticleCache Instance => _instance ??= new ArticleCache();
 
-        private List<ArticleWithPricesDto> _articles;
+        private List<ArticleViewModel> _articles;
 
-        public List<ArticleWithPricesDto> GetAllArticles()
+        public List<ArticleViewModel> GetAllArticles()
         {
             return _articles;
         }
 
-        public List<ArticleWithPricesDto> SearchArticles(string name, bool isEnabled, bool isDeleted)
+        public List<ArticleViewModel> SearchArticles(string name, bool isEnabled, bool isDeleted)
         {
-            return _articles
-                    .Where(p => (p.Description?.ToLower().Contains(name.ToLower()) ?? false)
-                              || (p.Code?.ToLower().Contains(name.ToLower()) ?? false)
-                              || (p.BarCode?.ToLower().Contains(name.ToLower()) ?? false))
-                    .ToList();
+            return _articles != null ? _articles
+                .Where(a => a.IsEnabled == isEnabled
+                         && a.IsDeleted == isDeleted
+                         && (a.Description?.ToLower().Contains(name.ToLower()) ?? false)
+                          || (a.Code?.ToLower().Contains(name.ToLower()) ?? false)
+                          || (a.BarCode?.ToLower().Contains(name.ToLower()) ?? false))
+                .ToList()
+                :
+                [];
         }
 
 
 
 
-        public void SetArticles(List<ArticleWithPricesDto> articles)
+        public void SetArticles(List<ArticleViewModel> articles)
         {
-            _articles= articles;
+            _articles = articles;
         }
 
+
+        public void ClearCache()
+        {
+            _articles.Clear();
+        }
         public bool HasData => _articles != null && _articles.Any();
     }
 }

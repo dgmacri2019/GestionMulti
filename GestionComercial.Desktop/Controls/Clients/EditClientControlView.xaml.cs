@@ -28,7 +28,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             InitializeComponent();
             _clientsApiService = new ClientsApiService();
             ClientId = clientId;
-            _ = FindClient();
+            _ = FindClientAsync();
             if (ClientId > 0)
             {
                 btnAdd.Visibility = Visibility.Hidden;
@@ -41,7 +41,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             }
         }
 
-        private async Task FindClient()
+        private async Task FindClientAsync()
         {
             ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId);
 

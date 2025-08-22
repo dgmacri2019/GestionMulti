@@ -1,9 +1,8 @@
 ﻿using GestionComercial.Desktop.Cache;
 using GestionComercial.Desktop.Services;
+using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.Entities.Masters;
-using Microsoft.AspNetCore.SignalR;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using static GestionComercial.Domain.Notifications.ClientChangeNotification;
@@ -14,6 +13,9 @@ namespace GestionComercial.Desktop.ViewModels.Client
     {
         private readonly ClientsApiService _clientsApiService;
         private readonly ClientsHubService _hubService;
+
+        // 🔹 Lista observable para bindear al DataGrid
+        public ObservableCollection<ClientViewModel> Clients { get; } = [];
 
         // 🔹 Propiedades de filtros
         private string _nameFilter = string.Empty;
@@ -59,15 +61,12 @@ namespace GestionComercial.Desktop.ViewModels.Client
             }
         }
 
-        // 🔹 Lista observable para bindear al DataGrid
-        public ObservableCollection<ClientViewModel> Clients { get; } = new();
-
         // 🔹 Command para buscar
         public ICommand SearchCommand { get; }
         public ICommand ToggleEnabledCommand { get; }
 
 
-        public string ToggleEnabledText => IsEnabledFilter? "Clientes Inhabilitados" : "Clientes Habilitados";
+        public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
 
         public ClientListViewModel()
         {
@@ -78,7 +77,7 @@ namespace GestionComercial.Desktop.ViewModels.Client
 
 
             _hubService = new ClientsHubService(hubUrl);
-            _hubService.ClienteCambiado += OnClienteCambiado;            
+            _hubService.ClienteCambiado += OnClienteCambiado;
             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
             SearchCommand = new RelayCommand1(async _ => await LoadClientsAsync());
 

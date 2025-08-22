@@ -1,10 +1,12 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Providers
 {
@@ -16,12 +18,21 @@ namespace GestionComercial.API.Controllers.Providers
     {
         private readonly IProviderService _providerService;
         private readonly IMasterService _masterService;
+        private readonly IProvidersNotifier _notifier;
 
 
-        public ProvidersController(IProviderService providerService, IMasterService masterService)
+        public ProvidersController(IProviderService providerService, IMasterService masterService, IProvidersNotifier notifier)
         {
             _providerService = providerService;
             _masterService = masterService;
+            _notifier = notifier;
+        }
+
+        [HttpPost("{id:int}/notify")]
+        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
+        {
+            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
+            return Ok();
         }
 
 
@@ -29,10 +40,14 @@ namespace GestionComercial.API.Controllers.Providers
         public async Task<IActionResult> AddAsync([FromBody] Provider provider)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(provider);
-            return resultAdd.Success ?
-                Ok("Proveedor creado correctamente")
-                :
-            BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(provider.Id, provider.BusinessName, ChangeType.Created);
+
+                return
+                Ok("Proveedor creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
 
@@ -40,44 +55,54 @@ namespace GestionComercial.API.Controllers.Providers
         public async Task<IActionResult> UpdateAsync([FromBody] Provider provider)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(provider);
-            return resultAdd.Success ?
-                Ok("Proveedor actualizado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(provider.Id, provider.BusinessName, ChangeType.Updated);
+
+                return Ok("Proveedor actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("DeleteAsync")]
         public async Task<IActionResult> DeleteAsync([FromBody] ProviderFilterDto filter)
         {
+            ProviderViewModel? provider = await _providerService.GetByIdAsync(filter.Id);
+            if (provider == null)
+                return BadRequest("No se reconoce el proveedor");
+
             GeneralResponse resultAdd = await _providerService.DeleteAsync(filter.Id);
-            return resultAdd.Success ?
-                Ok("Proveedor borrado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(provider.Id, provider.BusinessName, ChangeType.Deleted);
+
+                return Ok("Proveedor borrado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync([FromBody] ProviderFilterDto filter)
         {
-            IEnumerable<ProviderViewModel> articles = await _providerService.GetAllAsync(filter.IsEnabled, filter.IsDeleted);
-            return Ok(articles);
+            IEnumerable<ProviderViewModel> providers = await _providerService.GetAllAsync();
+            return Ok(providers);
         }
 
-        [HttpPost("SearchToListAsync")]
-        public async Task<IActionResult> SearchToListAsync([FromBody] ProviderFilterDto filter)
-        {
-            IEnumerable<ProviderViewModel> articles = await _providerService.SearchToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
-            return Ok(articles);
-        }
+        //[HttpPost("SearchToListAsync")]
+        //public async Task<IActionResult> SearchToListAsync([FromBody] ProviderFilterDto filter)
+        //{
+        //    IEnumerable<ProviderViewModel> articles = await _providerService.SearchToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
+        //    return Ok(articles);
+        //}
 
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] ProviderFilterDto filter)
         {
-            ProviderViewModel? article = await _providerService.GetByIdAsync(filter.Id, filter.IsEnabled, filter.IsDeleted);
-            if (article == null)
+            ProviderViewModel? provider = await _providerService.GetByIdAsync(filter.Id);
+            if (provider == null)
                 return NotFound();
 
-            return Ok(article);
+            return Ok(provider);
         }
 
     }

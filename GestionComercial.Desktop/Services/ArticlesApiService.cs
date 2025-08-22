@@ -26,14 +26,13 @@ namespace GestionComercial.Desktop.Services
 
 
 
-        internal async Task<List<ArticleWithPricesDto>> GetProductsWithPricesAsync(bool isEnabled, bool isDeleted)
+        internal async Task<List<ArticleViewModel>> GetProductsWithPricesAsync()
         {
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/articles/GetAllAsync", new
             {
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
+
             });
 
             if (response.IsSuccessStatusCode)
@@ -44,7 +43,7 @@ namespace GestionComercial.Desktop.Services
                     PropertyNameCaseInsensitive = true
                 };
 
-                var articles = JsonSerializer.Deserialize<List<ArticleWithPricesDto>>(jsonResponse, options);
+                var articles = JsonSerializer.Deserialize<List<ArticleViewModel>>(jsonResponse, options);
 
 
                 return articles;
@@ -60,15 +59,13 @@ namespace GestionComercial.Desktop.Services
 
         }
 
-        internal async Task<ArticleResponse> GetByIdAsync(int articleId, bool isEnabled, bool isDeleted)
+        internal async Task<ArticleResponse> GetByIdAsync(int articleId)
         {
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/articles/GetByIdAsync", new
             {
                 Id = articleId,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
             });
 
             JsonSerializerOptions options = new()
@@ -91,7 +88,35 @@ namespace GestionComercial.Desktop.Services
                 };
         }
 
-        internal async Task<List<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
+        internal async Task<GeneralResponse> UpdateAsync(Article article)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/articles/UpdateAsync", article);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+        internal async Task<GeneralResponse> AddAsync(Article article)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/articles/AddAsync", article);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+
+        /*
+          internal async Task<List<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
         {
             // Llama al endpoint y deserializa la respuesta
 
@@ -124,31 +149,9 @@ namespace GestionComercial.Desktop.Services
                 return null;
             }
         }
+ 
+         */
 
-        internal async Task<GeneralResponse> UpdateAsync(Article article)
-        {
-            // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/articles/UpdateAsync", article);
-            var error = await response.Content.ReadAsStringAsync();
-            return new GeneralResponse
-            {
-                Message = $"Error: {response.StatusCode}\n{error}",
-                Success = response.IsSuccessStatusCode,
-            };
-        }
-
-        internal async Task<GeneralResponse> AddAsync(Article article)
-        {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/articles/AddAsync", article);
-            var error = await response.Content.ReadAsStringAsync();
-            return new GeneralResponse
-            {
-                Message = $"Error: {response.StatusCode}\n{error}",
-                Success = response.IsSuccessStatusCode,
-            };
-        }
     }
 }

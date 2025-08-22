@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Cache;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.Entities.Masters;
@@ -44,7 +45,10 @@ namespace GestionComercial.Desktop.Controls.Providers
 
         private async Task FindProvider()
         {
-            ProviderResponse result = await _providersApiService.GetByIdAsync(ProviderId, true, false);
+            ProviderResponse result = await _providersApiService.GetByIdAsync(ProviderId);
+
+            providerViewModel = ProviderCache.Instance.GetAllProviders().FirstOrDefault(p => p.Id == ProviderId);
+
             if (result.Success)
             {
                 providerViewModel = result.ProviderViewModel;

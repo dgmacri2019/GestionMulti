@@ -40,7 +40,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public async Task<ArticleWithPricesDto?> FindByBarCodeAsync(string barCode)
+        public async Task<ArticleViewModel?> FindByBarCodeAsync(string barCode)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -53,7 +53,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public async Task<ArticleWithPricesDto?> FindByCodeOrBarCodeAsync(string code)
+        public async Task<ArticleViewModel?> FindByCodeOrBarCodeAsync(string code)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -68,7 +68,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public async Task<IEnumerable<ArticleWithPricesDto>> GetAllAsync(bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<ArticleViewModel>> GetAllAsync()
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -78,7 +78,7 @@ namespace GestionComercial.Applications.Services
                 .Include(p => p.Tax)
                 .Include(m => m.Measure)
                 .Include(c => c.Category)
-                .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
+                .OrderBy(a => a.Description)
                 .GroupBy(c => c.Category.Description)
                 .ToListAsync();
 
@@ -130,7 +130,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public async Task<IEnumerable<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<ArticleViewModel>> SearchToListAsync(string description)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
@@ -140,7 +140,8 @@ namespace GestionComercial.Applications.Services
                  .Include(p => p.Tax)
                  .Include(m => m.Measure)
                  .Include(c => c.Category)
-                 .Where(c => c.IsDeleted == isDeleted && c.IsEnabled == isEnabled && (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description) || c.BarCode.Contains(description)))
+                 .Where(c => (c.Description.Contains(description) || c.Code.Contains(description) || c.Category.Description.Contains(description) || c.BarCode.Contains(description)))
+                 .OrderBy(a => a.Description)
                  .GroupBy(c => c.Category.Description)
                  .ToListAsync();
 
@@ -272,7 +273,7 @@ namespace GestionComercial.Applications.Services
 
         #region Private Methods
 
-        private ArticleWithPricesDto ToPriceDto(Article article, ICollection<PriceList> priceLists)
+        private ArticleViewModel ToPriceDto(Article article, ICollection<PriceList> priceLists)
         {
             return new()
             {
@@ -314,9 +315,9 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        private IEnumerable<ArticleWithPricesDto> ToListPriceDto(List<IGrouping<string, Article>> Articles, ICollection<PriceList> priceLists)
+        private IEnumerable<ArticleViewModel> ToListPriceDto(List<IGrouping<string, Article>> Articles, ICollection<PriceList> priceLists)
         {
-            return Articles.SelectMany(group => group.Select(article => new ArticleWithPricesDto
+            return Articles.SelectMany(group => group.Select(article => new ArticleViewModel
             {
                 Id = article.Id,
                 Stock = article.Stock,

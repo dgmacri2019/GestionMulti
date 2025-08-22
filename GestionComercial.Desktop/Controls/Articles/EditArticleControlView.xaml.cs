@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Cache;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
@@ -29,7 +30,7 @@ namespace GestionComercial.Desktop.Controls.Articles
             InitializeComponent();
             _articlesApiService = new ArticlesApiService();
             ArticleId = articleId;
-            FindArticle();
+            _ = FindArticleAsync();
             if (ArticleId > 0)
             {
                 btnAdd.Visibility = Visibility.Hidden;
@@ -42,9 +43,11 @@ namespace GestionComercial.Desktop.Controls.Articles
             }
         }
 
-        private async void FindArticle()
+        private async Task FindArticleAsync()
         {
-            ArticleResponse result = await _articlesApiService.GetByIdAsync(ArticleId, true, false);
+            ArticleResponse result = await _articlesApiService.GetByIdAsync(ArticleId);
+
+            articleViewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
             if (result.Success)
             {
                 articleViewModel = result.ArticleViewModel;
@@ -92,19 +95,27 @@ namespace GestionComercial.Desktop.Controls.Articles
                 throw;
             }
         }
-
+        
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            btnAdd.IsEnabled = false;
-            lblError.Text = string.Empty;
-            articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtRealCost.Text.Replace(".", ","));
-            Article article = ConverterHelper.ToArticle(articleViewModel, articleViewModel.Id == 0);
-            GeneralResponse resultUpdate = await _articlesApiService.AddAsync(article);
-            if (resultUpdate.Success)
-                ProductoActualizado?.Invoke(); // para notificar a la vista principal
-            else
-                lblError.Text = resultUpdate.Message;
-            btnAdd.IsEnabled = true;
+            try
+            {
+                btnAdd.IsEnabled = false;
+                lblError.Text = string.Empty;
+                articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtRealCost.Text.Replace(".", ","));
+                Article article = ConverterHelper.ToArticle(articleViewModel, articleViewModel.Id == 0);
+                GeneralResponse resultUpdate = await _articlesApiService.AddAsync(article);
+                if (resultUpdate.Success)
+                    ProductoActualizado?.Invoke(); // para notificar a la vista principal
+                else
+                    lblError.Text = resultUpdate.Message;
+                btnAdd.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = ex.Message;
+                btnAdd.IsEnabled = true;
+            }
         }
 
         private void txtCost_TextChanged(object sender, TextChangedEventArgs e)
@@ -116,10 +127,23 @@ namespace GestionComercial.Desktop.Controls.Articles
                 decimal porcent = Convert.ToDecimal(txtBonification.Text);
                 decimal value = cost + (cost * porcent / 100);
                 //txtCost.Text = string.Format("{0:C2}", cost);
-                txtRealCost.Text = string.Format("{0:C4}", value);
+                txtRealCost.Text = string.Format("{0}", value);
             }
         }
-      
+        private void txtCost_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+                tb.SelectAll();
+        }
+        private void txtCost_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
+            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;   // Consumí este clic
+                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
+            }
+        }
         private void txtCost_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             string textoIngresado = e.Text;
@@ -130,12 +154,10 @@ namespace GestionComercial.Desktop.Controls.Articles
                 result = true;
             e.Handled = result;
         }
-    
         private void txtCost_LostFocus(object sender, RoutedEventArgs e)
         {
             txtCost.Text = txtCost.Text.Replace(".", ",");
         }
-  
         private void txtCost_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -143,6 +165,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                 //e.Handled = true;
             }
         }
+
 
         private void txtBonification_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -159,7 +182,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                     decimal cost = !ValidatorHelper.IsNumeric(costString) ? 0 : Convert.ToDecimal(costString);
                     decimal porcent = txtBonification.Text.Substring(0, 1) == "-" && txtBonification.Text.Length == 1 ? 0 : Convert.ToDecimal(txtBonification.Text);
                     decimal value = cost + (cost * porcent / 100);
-                    txtRealCost.Text = string.Format("{0:C4}", value);
+                    txtRealCost.Text = string.Format("{0}", value);
                 }
             }
             catch (Exception ex)
@@ -205,6 +228,21 @@ namespace GestionComercial.Desktop.Controls.Articles
             string costString = txtRealCost.Text.Substring(0, 1) == "$" ? txtRealCost.Text.Substring(1) : txtRealCost.Text;
             txtRealCost.Text = string.Format("{0:C4}", !ValidatorHelper.IsNumeric(costString) ? 0 : costString);
         }
+        private void txtRealCost_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
+            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;   // Consumí este clic
+                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
+            }
+        }
+        private void txtRealCost_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+                tb.SelectAll();
+        }
+
 
         private void txtStock_LostFocus(object sender, RoutedEventArgs e)
         {

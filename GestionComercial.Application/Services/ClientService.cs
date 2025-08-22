@@ -1,5 +1,4 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.Constant;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
@@ -8,7 +7,6 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
 
 namespace GestionComercial.Applications.Services
 {
@@ -50,6 +48,7 @@ namespace GestionComercial.Applications.Services
                  .Include(dt => dt.DocumentType)
                  .Include(sc => sc.SaleCondition)
                  //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
+                 .OrderBy(c => c.BusinessName)
                  .GroupBy(c => c.PriceList.Description)
                  .ToListAsync();
 
@@ -111,7 +110,7 @@ namespace GestionComercial.Applications.Services
             documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
             ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
-        
+
             if (id == 0)
                 return new ClientViewModel
                 {
@@ -140,6 +139,7 @@ namespace GestionComercial.Applications.Services
             return client == null ? null : ConverterHelper.ToClientViewModel(client, priceLists, states,
                 saleConditions, ivaConditions, documentTypes);
         }
+      
         /*
        public async Task<IEnumerable<ClientViewModel>> SearchToListAsync(string name, bool isEnabled, bool isDeleted)
        {

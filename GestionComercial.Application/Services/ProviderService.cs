@@ -30,24 +30,25 @@ namespace GestionComercial.Applications.Services
                 _context.Providers.Remove(provider);
                 await _context.SaveChangesAsync();
             }
-            return new GeneralResponse { Success = false, Message = "Cliente no encontrado" };
+            return new GeneralResponse { Success = false, Message = "Proveedor no encontrado" };
         }
 
-        public async Task<IEnumerable<ProviderViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<ProviderViewModel>> GetAllAsync()
         {
             List<Provider> providers = await _context.Providers
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
                  .Include(sc => sc.SaleCondition)
-                 .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
+                 //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
+                 .OrderBy(p => p.BusinessName)
                  .ToListAsync();
 
 
             return ToProviderViewModelList(providers);
         }
 
-        public async Task<ProviderViewModel?> GetByIdAsync(int id, bool isEnabled, bool isDeleted)
+        public async Task<ProviderViewModel?> GetByIdAsync(int id)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product           
             ICollection<State> states = await _context.States
@@ -92,14 +93,15 @@ namespace GestionComercial.Applications.Services
                 .Include(ic => ic.IvaCondition)
                 .Include(dt => dt.DocumentType)
                 .Include(sc => sc.SaleCondition)
-                .Where(a => a.Id == id && a.IsEnabled == isEnabled && a.IsDeleted == isDeleted)
-                .FirstOrDefaultAsync();
+                //.Where(a => a.Id == id && a.IsEnabled == isEnabled && a.IsDeleted == isDeleted)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
 
             return provider == null ? null : ConverterHelper.ToProviderViewModel(provider, states,
                 saleConditions, ivaConditions, documentTypes);
         }
 
+        /*
         public async Task<IEnumerable<ProviderViewModel>> SearchToListAsync(string name, bool isEnabled, bool isDeleted)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
@@ -124,7 +126,7 @@ namespace GestionComercial.Applications.Services
 
             return ToProviderViewModelList(providers);
         }
-
+        */
 
 
 

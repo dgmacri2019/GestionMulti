@@ -57,24 +57,25 @@
                     Margin="0,5,0,0"
                     Style="{StaticResource BtnArticles}" Click="btnAdd_Click"/>
 
-                <Button 
+                <!--<Button 
                     x:Name="btnDisables"
                     Grid.Row="1"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
                     Content="Proveedores Inhabilitados"
                     Margin="0,5,0,0" 
-                    Style="{StaticResource BtnDisables}" Click="btnDisables_Click"/>
+                    Style="{StaticResource BtnDisables}" Click="btnDisables_Click"/>-->
 
                 <Button 
                     x:Name="btnEnables"
                     Grid.Row="1"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
-                    Content="Proveedores Habilitados"
-                    Margin="0,5,0,0" 
-                    Style="{StaticResource BtnEnables}" 
-                    Click="btnEnables_Click"/>
+                    Content="{Binding ToggleEnabledText}"
+                    Command="{Binding ToggleEnabledCommand}"
+                    Margin="40,5,0,0" 
+                    Style="{StaticResource BtnEnables}" />
+                <!--Click="btnEnables_Click"/>-->
             </Grid>
         </StackPanel>
 
@@ -85,10 +86,11 @@
                      Width="250"
                      VerticalAlignment="Center"                     
                      ToolTip="Ingresa nombre, razón social o cuit"
-                     TextChanged="SearchBox_TextChanged"/>
+                     Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" />
+                     <!--TextChanged="SearchBox_TextChanged"/>-->
         </StackPanel>
 
-        <DataGrid x:Name="DgProviders"
+        <DataGrid x:Name="DgProviders" Background="Gray"
                   Grid.Row="2" 
                   ItemsSource="{Binding Providers}" 
                   AutoGenerateColumns="False"                  

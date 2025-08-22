@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="LightGray">
+             Background="Gray">
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
         <Grid.RowDefinitions>
@@ -55,23 +55,16 @@
                     Content="Nuevo Articulo"
                     Margin="0,5,0,0" 
                     Style="{StaticResource BtnArticles}" Click="btnAdd_Click"/>
-                <Button 
-                    x:Name="btnDisables"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Content="Articulos Inhabilitados"
-                    Margin="0,5,0,0" 
-                    Style="{StaticResource BtnDisables}" Click="btnDisables_Click"/>
+               
                 <Button 
                     x:Name="btnEnables"
                     Grid.Row="1"
                     Grid.Column="1"
                     HorizontalAlignment="Right"
-                    Content="Articulos Habilitados"
-                    Margin="0,5,0,0" 
-                    Style="{StaticResource BtnEnables}" 
-                    Click="btnEnables_Click"/>
+                    Content="{Binding ToggleEnabledText}"
+                    Command="{Binding ToggleEnabledCommand}"
+                    Margin="40,5,0,0" 
+                    Style="{StaticResource BtnEnables}" />
             </Grid>
         </StackPanel>
 
@@ -82,12 +75,12 @@
                      Width="250"
                      VerticalAlignment="Center"                     
                      ToolTip="Ingresa código, descripción, categoría o código de barra"
-                     TextChanged="SearchBox_TextChanged"/>
+                     Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
-        <DataGrid x:Name="DgArticles"
+        <DataGrid x:Name="DgArticles" Background="Gray"
                   Grid.Row="2" 
-                  ItemsSource="{Binding Products}" 
+                  ItemsSource="{Binding Articles}" 
                   AutoGenerateColumns="False"                  
                   CanUserAddRows="False"
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
@@ -97,13 +90,14 @@
                 <DataGridTemplateColumn Header="Categoría" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Border Background="{Binding CategoryColor}" Padding="5" CornerRadius="4">
+                            <Border Background="{Binding CategoryColor}" Padding="10" CornerRadius="10">
                                 <TextBlock Text="{Binding Category}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="White"
-                           FontWeight="Bold"
-                           TextAlignment="Center"/>
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

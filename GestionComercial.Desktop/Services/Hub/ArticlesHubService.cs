@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using static GestionComercial.Domain.Notifications.ClientChangeNotification;
+using static GestionComercial.Domain.Notifications.ArticleChangeNotification;
 
-namespace GestionComercial.Desktop.Services
+namespace GestionComercial.Desktop.Services.Hub
 {
-    internal class ClientsHubService
+    internal class ArticlesHubService
     {
         private readonly HubConnection _connection;
 
         // Evento que levantamos cuando llega una notificación
-        public event Action<ClienteChangeNotification> ClienteCambiado;
+        public event Action<ArticuloChangeNotification> ArticuloCambiado;
 
-        public ClientsHubService(string hubUrl)
+        public ArticlesHubService(string hubUrl)
         {
             _connection = new HubConnectionBuilder()
-                .WithUrl(hubUrl) // ejemplo: "https://localhost:5001/hubs/clientes"
+                .WithUrl(hubUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
             // Aquí registramos el método que el servidor va a invocar
-            _connection.On<ClienteChangeNotification>("ClientesActualizados", (notification) =>
+            _connection.On<ArticuloChangeNotification>("ArticulosActualizados", (notification) =>
             {
-                ClienteCambiado?.Invoke(notification);
+                ArticuloCambiado?.Invoke(notification);
             });
         }
 

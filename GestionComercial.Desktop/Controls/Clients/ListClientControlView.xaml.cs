@@ -14,21 +14,12 @@ namespace GestionComercial.Desktop.Controls.Clients
     public partial class ListClientControlView : UserControl
     {
 
-        private bool Enabled = true;
-        private bool Deleted = false;
-
-
         public ListClientControlView()
         {
             InitializeComponent();
             //btnEnables.Visibility = Visibility.Hidden;
             //btnDisables.Visibility = Visibility.Visible;
             DataContext = new ClientListViewModel();
-        }
-
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            DgArticles.DataContext = new ClientListViewModel();
         }
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -40,6 +31,7 @@ namespace GestionComercial.Desktop.Controls.Clients
                 PanelSearch.Visibility = Visibility.Hidden;
                 PanelEdicion.Visibility = Visibility.Visible;
                 lblHeader.Content = "Editar Cliente";
+                btnEnables.Visibility = Visibility.Hidden;
                 btnAdd.Visibility = Visibility.Hidden;
                 var ventana = new EditClientControlView(client.Id);
                 ventana.ClienteActualizado += () =>
@@ -87,22 +79,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             PanelEdicion.Content = ventana;
         }
 
-        private void btnDisables_Click(object sender, RoutedEventArgs e)
-        {
-            btnEnables.Visibility = Visibility.Visible;
-            //btnDisables.Visibility = Visibility.Hidden;
-            Enabled = false;
-            DgArticles.DataContext = new ClientListViewModel();
-        }
-
-        private void btnEnables_Click(object sender, RoutedEventArgs e)
-        {
-            btnEnables.Visibility = Visibility.Hidden;
-            //btnDisables.Visibility = Visibility.Visible;
-            Enabled = true;
-            DgArticles.DataContext = new ClientListViewModel();
-        }
-
+       
         private void Email_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo($"mailto:{e.Uri}")
