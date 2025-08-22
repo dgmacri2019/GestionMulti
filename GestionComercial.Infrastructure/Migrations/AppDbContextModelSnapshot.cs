@@ -822,7 +822,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -834,7 +834,9 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BankId", "SaleCondition")
+                    b.HasIndex("SaleConditionId");
+
+                    b.HasIndex("BankId", "SaleConditionId")
                         .IsUnique()
                         .HasDatabaseName("Bank_SaleCondition_Index");
 
@@ -877,7 +879,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Sold")
@@ -893,6 +895,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.ToTable("Boxes");
                 });
@@ -1008,7 +1012,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsFinished")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SaleId")
@@ -1042,6 +1046,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.ToTable("Budgets");
                 });
@@ -1465,7 +1471,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Sold")
@@ -1493,6 +1499,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasIndex("IvaConditionId");
 
                     b.HasIndex("PriceListId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.HasIndex("StateId");
 
@@ -2030,7 +2038,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Sold")
@@ -2059,9 +2067,52 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("IvaConditionId");
 
+                    b.HasIndex("SaleConditionId");
+
                     b.HasIndex("StateId");
 
                     b.ToTable("Providers");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.SaleCondition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AfipId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SaleConditions");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.Permission", b =>
@@ -2465,7 +2516,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("SubTotal")
@@ -2494,6 +2545,8 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.HasIndex("ProviderId", "BillNumber", "BillPoint")
                         .IsUnique()
@@ -2881,7 +2934,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<int>("PurchaseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -2897,6 +2950,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PurchaseId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.ToTable("PurchasePayMetodDetails");
                 });
@@ -3120,7 +3175,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<int>("ReservationPoint")
                         .HasColumnType("int");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SaleId")
@@ -3154,6 +3209,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.HasIndex("SaleId");
 
@@ -3344,7 +3401,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
@@ -3360,6 +3417,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ReservationId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.ToTable("ReservationPayMetodDetails");
                 });
@@ -3416,7 +3475,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("PartialPay")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SaleDate")
@@ -3456,6 +3515,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.ToTable("Sales");
                 });
@@ -3641,7 +3702,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SaleCondition")
+                    b.Property<int>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SaleId")
@@ -3658,6 +3719,8 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.HasIndex("SaleId");
 
@@ -4075,7 +4138,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany("BankParameters")
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Bank");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Box", b =>
@@ -4086,7 +4157,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany("Boxes")
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Account");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Debitation", b =>
@@ -4116,7 +4195,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Budget.BudgetDetail", b =>
@@ -4215,6 +4302,12 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany("Clients")
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GestionComercial.Domain.Entities.Masters.State", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
@@ -4226,6 +4319,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("IvaCondition");
 
                     b.Navigation("PriceList");
+
+                    b.Navigation("SaleCondition");
 
                     b.Navigation("State");
                 });
@@ -4280,6 +4375,12 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany("Providers")
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GestionComercial.Domain.Entities.Masters.State", "State")
                         .WithMany("Providers")
                         .HasForeignKey("StateId")
@@ -4289,6 +4390,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("DocumentType");
 
                     b.Navigation("IvaCondition");
+
+                    b.Navigation("SaleCondition");
 
                     b.Navigation("State");
                 });
@@ -4365,7 +4468,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Provider");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Purchases.PurchaseDetail", b =>
@@ -4487,7 +4598,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Purchase");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.Invoice", b =>
@@ -4534,6 +4653,12 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GestionComercial.Domain.Entities.Sales.Sale", "Sale")
                         .WithMany()
                         .HasForeignKey("SaleId")
@@ -4543,6 +4668,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Sale");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.ReservationDetail", b =>
@@ -4607,7 +4734,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Reservation");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.Sale", b =>
@@ -4618,7 +4753,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetail", b =>
@@ -4677,6 +4820,12 @@ namespace GestionComercial.Infrastructure.Migrations
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SalePayMetodDetail", b =>
                 {
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GestionComercial.Domain.Entities.Sales.Sale", "Sale")
                         .WithMany("SalePayMetodDetails")
                         .HasForeignKey("SaleId")
@@ -4684,6 +4833,8 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Sale");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Article", b =>
@@ -4830,6 +4981,17 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
                 {
                     b.Navigation("Purcheases");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.SaleCondition", b =>
+                {
+                    b.Navigation("BankParameters");
+
+                    b.Navigation("Boxes");
+
+                    b.Navigation("Clients");
+
+                    b.Navigation("Providers");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.Permission", b =>
