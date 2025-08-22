@@ -75,8 +75,8 @@ namespace GestionComercial.Domain.Entities.Masters
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de Venta")]
-        [Range(1, 100, ErrorMessage = "Debe seleccionar la {0}")]
-        public SaleCondition SaleCondition { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
+        public int SaleConditionId { get; set; }
 
         [Display(Name = "Día de pago")]
         [MaxLength(200, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
@@ -129,6 +129,9 @@ namespace GestionComercial.Domain.Entities.Masters
 
         [JsonIgnore]
         public virtual IvaCondition? IvaCondition { get; set; }
+
+        [JsonIgnore]
+        public virtual SaleCondition? SaleCondition { get; set; }
 
 
 

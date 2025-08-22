@@ -124,17 +124,17 @@ namespace GestionComercial.Domain.Helpers
                 PostalCode = clientViewModel.PostalCode,
                 PriceListId = clientViewModel.PriceListId,
                 Remark = clientViewModel.Remark,
-                SaleCondition = clientViewModel.SaleCondition,
+                SaleConditionId = clientViewModel.SaleConditionId,
                 Sold = clientViewModel.Sold,
                 StateId = clientViewModel.StateId,
                 IvaConditionId = clientViewModel.IvaConditionId,
                 UpdateDate = clientViewModel.UpdateDate,
-                UpdateUser = clientViewModel.UpdateUser, 
+                UpdateUser = clientViewModel.UpdateUser,
             };
         }
 
         public static ClientViewModel ToClientViewModel(Client client, ICollection<PriceList> priceLists,
-            ICollection<State> states, ObservableCollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
+            ICollection<State> states, ICollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
             ICollection<DocumentType> documentTypes)
         {
             return new ClientViewModel
@@ -162,9 +162,9 @@ namespace GestionComercial.Domain.Helpers
                 PriceListId = client.PriceListId,
                 PriceLists = priceLists,
                 Remark = client.Remark,
-                SaleCondition = client.SaleCondition,
+                SaleConditionId = client.SaleConditionId,
                 SaleConditions = saleConditions,
-                SaleConditionString = EnumExtensionService.GetDisplayName(client.SaleCondition),
+                SaleConditionString = client.SaleCondition.Description,
                 Sold = client.Sold,
                 StateId = client.StateId,
                 States = states,
@@ -213,7 +213,7 @@ namespace GestionComercial.Domain.Helpers
                 Phone2 = providerViewModel.Phone2,
                 PostalCode = providerViewModel.PostalCode,
                 Remark = providerViewModel.Remark,
-                SaleCondition = providerViewModel.SaleCondition,
+                SaleConditionId = providerViewModel.SaleConditionId,
                 Sold = providerViewModel.Sold,
                 StateId = providerViewModel.StateId,
                 IvaConditionId = providerViewModel.IvaConditionId,
@@ -223,7 +223,7 @@ namespace GestionComercial.Domain.Helpers
         }
 
         public static ProviderViewModel? ToProviderViewModel(Provider provider, ICollection<State> states,
-            ObservableCollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
+            ICollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
              ICollection<DocumentType> documentTypes)
         {
             return new ProviderViewModel
@@ -244,7 +244,8 @@ namespace GestionComercial.Domain.Helpers
                 Phone2 = provider.Phone2,
                 PostalCode = provider.PostalCode,
                 Remark = provider.Remark,
-                SaleCondition = provider.SaleCondition,
+                SaleConditionId = provider.SaleConditionId,
+                SaleConditionString = provider.SaleCondition.Description,
                 SaleConditions = saleConditions,
                 Sold = provider.Sold,
                 StateId = provider.StateId,
@@ -349,7 +350,7 @@ namespace GestionComercial.Domain.Helpers
                 BoxName = boxViewModel.BoxName,
                 FromCredit = boxViewModel.FromCredit,
                 FromDebit = boxViewModel.FromDebit,
-                SaleCondition = boxViewModel.SaleCondition,
+                SaleConditionId = boxViewModel.SaleConditionId,
                 Sold = boxViewModel.Sold,
             };
         }
@@ -369,7 +370,7 @@ namespace GestionComercial.Domain.Helpers
                 UpdateUser = bankParameterViewModel.UpdateUser,
                 DebitationDay = bankParameterViewModel.DebitationDay,
                 Rate = bankParameterViewModel.Rate,
-                SaleCondition = bankParameterViewModel.SaleCondition,
+                SaleConditionId = bankParameterViewModel.SaleConditionId,
             };
         }
 

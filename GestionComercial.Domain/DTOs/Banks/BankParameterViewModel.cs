@@ -1,8 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.BoxAndBank;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Collections.ObjectModel;
+using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.DTOs.Banks
 {
@@ -44,7 +42,7 @@ namespace GestionComercial.Domain.DTOs.Banks
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condicion Venta")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -66,9 +64,11 @@ namespace GestionComercial.Domain.DTOs.Banks
 
         public string BankName { get; set; }
 
+
+
         public ICollection<Bank> Banks { get; set; }
 
-        public ObservableCollection<SaleCondition> SaleConditions { get; set; }
+        public ICollection<SaleCondition> SaleConditions { get; set; }
 
     }
 }

@@ -9,7 +9,6 @@ using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Applications.Services
 {
@@ -49,6 +48,7 @@ namespace GestionComercial.Applications.Services
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
+                 .Include(sc=>sc.SaleCondition)
                  //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .GroupBy(c => c.PriceList.Description)
                  .ToListAsync();
@@ -65,16 +65,17 @@ namespace GestionComercial.Applications.Services
                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                .ToListAsync();
 
+            ICollection<SaleCondition> saleConditions = await _context.SaleConditions
+                .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                .OrderBy(sc => sc.Description)
+                .ToListAsync();
 
+            saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
             states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
             priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
             ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
             documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
-            ObservableCollection<SaleCondition> saleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))];
-
-            //ObservableCollection<TaxCondition> taxConditions = [.. (TaxCondition[])Enum.GetValues(typeof(TaxCondition))];
-
-            //ObservableCollection<DocumentType> documentTypes = [.. (DocumentType[])Enum.GetValues(typeof(DocumentType))];
+            
             return ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions);
         }
 
@@ -168,7 +169,7 @@ namespace GestionComercial.Applications.Services
 
 
         private IEnumerable<ClientViewModel> ToClientViewModelAndPriceList(List<IGrouping<string, Client>> clients, ICollection<PriceList> priceLists, ICollection<DocumentType> documentTypes,
-            ObservableCollection<SaleCondition> saleConditions, ICollection<State> states, ICollection<IvaCondition> ivaConditions)
+            ICollection<SaleCondition> saleConditions, ICollection<State> states, ICollection<IvaCondition> ivaConditions)
         {
             return clients.SelectMany(group => group.Select(client => new ClientViewModel
             {
@@ -188,7 +189,7 @@ namespace GestionComercial.Applications.Services
                 Email = client.Email,
                 WebSite = client.WebSite,
                 Remark = client.Remark,
-                SaleConditionString = EnumExtensionService.GetDisplayName(client.SaleCondition),
+                SaleConditionString = client.SaleCondition.Description,
                 PayDay = client.PayDay,
                 LegendInvoices = client.LegendInvoices,
                 LastPuchase = client.LastPuchase,
@@ -198,7 +199,7 @@ namespace GestionComercial.Applications.Services
                 Sold = client.Sold,
                 PriceListId = client.PriceListId,
                 DocumentTypeId = client.DocumentTypeId,
-                SaleCondition = client.SaleCondition,
+                SaleConditionId = client.SaleConditionId,
                 IvaConditionId = client.IvaConditionId,
                 State = client.State.Name,
                 PriceList = client.PriceList.Description,

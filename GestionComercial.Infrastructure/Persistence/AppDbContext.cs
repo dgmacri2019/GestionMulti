@@ -72,6 +72,7 @@ namespace GestionComercial.Infrastructure.Persistence
         public DbSet<Measure> Measures { get; set; }
         public DbSet<PriceList> PriceLists { get; set; }
         public DbSet<Provider> Providers { get; set; }
+        public DbSet<SaleCondition> SaleConditions { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
 
@@ -199,7 +200,7 @@ namespace GestionComercial.Infrastructure.Persistence
 
               {
                   bp.BankId,
-                  bp.SaleCondition,
+                  bp.SaleConditionId,
               })
               .IsUnique()
               .HasDatabaseName("Bank_SaleCondition_Index");

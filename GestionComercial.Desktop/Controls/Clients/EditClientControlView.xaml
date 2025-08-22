@@ -239,8 +239,10 @@
             <ComboBox x:Name="cbSaleConditions" 
                       Style="{StaticResource ComboBox}"
                       Width="auto"
+                       DisplayMemberPath="Description"
+                      SelectedValuePath="Id"
                       ItemsSource="{Binding SaleConditions}"
-                      SelectedItem="{Binding SaleCondition, Mode=TwoWay}"/>
+                      SelectedValue="{Binding SaleConditionId}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="3" Margin="10,0,20,8">

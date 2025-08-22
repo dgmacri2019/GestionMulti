@@ -16,7 +16,7 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condicion Venta")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -40,6 +40,9 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
         [JsonIgnore] 
         public virtual Bank? Bank { get; set; }
+
+        [JsonIgnore] 
+        public virtual SaleCondition? SaleCondition { get; set; }
 
     }
 }

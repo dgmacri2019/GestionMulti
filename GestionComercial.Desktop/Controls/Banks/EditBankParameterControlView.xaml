@@ -38,7 +38,7 @@
                      Style="{StaticResource TextBoxSearch}"
                      Width="auto"
                      VerticalAlignment="Center"                     
-                     Text="{Binding SaleCondition}"
+                     Text="{Binding SaleConditionString}"
                      IsReadOnly="True"/>
         </StackPanel>
 

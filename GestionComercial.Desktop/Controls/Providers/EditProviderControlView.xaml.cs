@@ -106,7 +106,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 {
                     //providerViewModel.DocumentType = (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue);
                     //providerViewModel.TaxCondition = (TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue);
-                    providerViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
+                    //providerViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
                     btnAdd.IsEnabled = false;
                     lblError.Text = string.Empty;
                     Provider provider = ConverterHelper.ToProvider(providerViewModel, providerViewModel.Id == 0);
@@ -187,7 +187,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 msgError("Seleccione la condición de I.V.A.");
                 result = false;
             }
-            if ((SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue) == SaleCondition.Seleccione)
+            if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
             {
                 msgError("Seleccione la condición de venta");
                 result = false;

@@ -87,7 +87,10 @@ namespace GestionComercial.Domain.DTOs.Provider
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Metodo de pago")]
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
+
+        [Display(Name = "Metodo de pago")]
+        public string SaleConditionString { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
@@ -124,7 +127,7 @@ namespace GestionComercial.Domain.DTOs.Provider
         public string State { get; set; }
 
         public ICollection<State> States { get; set; }
-        public ObservableCollection<SaleCondition> SaleConditions { get; set; }
+        public ICollection<SaleCondition> SaleConditions { get; set; }
         public ICollection<IvaCondition> IvaConditions { get; set; }
         public ICollection<DocumentType> DocumentTypes { get; set; }
     }

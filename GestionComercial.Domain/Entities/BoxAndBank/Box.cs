@@ -2,7 +2,6 @@
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.BoxAndBank
 {
@@ -20,14 +19,19 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
         [Display(Name = "Saldo")]
         public decimal Sold { get; set; }
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
         [Display(Name = "Cuanta Contable")]
         public int AccountId { get; set; }
 
 
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual Account? Account { get; set; }
+
+        [JsonIgnore]
+        public virtual SaleCondition? SaleCondition { get; set; }
+
+
     }
 }

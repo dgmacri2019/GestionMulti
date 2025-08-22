@@ -15,6 +15,7 @@ using System;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using static GestionComercial.Domain.Constant.Enumeration;
+using SaleCondition = GestionComercial.Domain.Entities.Masters.SaleCondition;
 
 namespace GestionComercial.API.Helpers
 {
@@ -129,6 +130,15 @@ namespace GestionComercial.API.Helpers
                     if (!resultIvaCondition.Success)
                         return resultIvaCondition;
                 }
+              
+                if (!dbContext.SaleConditions.Any())
+                {
+                    GeneralResponse resultSaleCondition = await CreateSaleConditionsAsync(dbContext);
+                    if (!resultSaleCondition.Success)
+                        return resultSaleCondition;
+                }
+              
+                
                 if (!dbContext.Banks.Any())
                 {
                     GeneralResponse resultBank = await CreateBanksAsync(dbContext);
@@ -179,6 +189,8 @@ namespace GestionComercial.API.Helpers
             }
         }
 
+        
+
         private static async Task<GeneralResponse> CreateBoxesAsync(AppDbContext _context)
         {
             GeneralResponse result = new() { Success = false };
@@ -201,7 +213,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Sold = 0m,
-                            SaleCondition = SaleCondition.Efectivo_Peso,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 4).Id,
                             AccountId = _context.Accounts
                             .Where(a=> a.AccountTypeId == 1
                                 && a.AccountSubGroupNumber1 == 1
@@ -221,7 +233,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Sold = 0m,
-                            SaleCondition = SaleCondition.Efectivo_Dolar,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 18).Id,
                             AccountId = _context.Accounts
                              .Where(a=> a.AccountTypeId == 1
                                     && a.AccountSubGroupNumber1 == 1
@@ -241,7 +253,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Sold = 0m,
-                            SaleCondition = SaleCondition.Efectivo_Real,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 19).Id,
                             AccountId = _context.Accounts
                              .Where(a=> a.AccountTypeId == 1
                                     && a.AccountSubGroupNumber1 == 1
@@ -261,7 +273,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Sold = 0m,
-                            SaleCondition = SaleCondition.Efectivo_Euro,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 20).Id,
                             AccountId = _context.Accounts
                              .Where(a=> a.AccountTypeId == 1
                                     && a.AccountSubGroupNumber1 == 1
@@ -281,7 +293,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Sold = 0m,
-                            SaleCondition = SaleCondition.Efectivo_Otro,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 21).Id,
                             AccountId = _context.Accounts
                              .Where(a=> a.AccountTypeId == 1
                                     && a.AccountSubGroupNumber1 == 1
@@ -401,7 +413,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.Cheque,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 3).Id,
                         },
                         new BankParameter
                         {
@@ -413,7 +425,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.Deposito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 5).Id,
                         },
                         new BankParameter
                         {
@@ -425,7 +437,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.Credito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 7).Id,
                         },
                         new BankParameter
                         {
@@ -437,7 +449,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.Debito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 6).Id,
                         },
                         new BankParameter
                         {
@@ -449,7 +461,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_Credito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 12).Id,
                         },
                         new BankParameter
                         {
@@ -461,7 +473,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_Debito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 13).Id,
                         },
                         new BankParameter
                         {
@@ -473,7 +485,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_Link_Pago,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 16).Id,
                         },
                         new BankParameter
                         {
@@ -485,7 +497,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_OnLine,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 15).Id,
                         },
                         new BankParameter
                         {
@@ -497,7 +509,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_Otro,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 17).Id,
                         },
                         new BankParameter
                         {
@@ -509,7 +521,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_QR_Credito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 9).Id,
                         },
                         new BankParameter
                         {
@@ -521,7 +533,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_QR_Dinero_Cuenta,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 11).Id,
                         },
                         new BankParameter
                         {
@@ -533,7 +545,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.MercadoPago_QR_Debito,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 10).Id,
                         },
                         new BankParameter
                         {
@@ -545,7 +557,7 @@ namespace GestionComercial.API.Helpers
                             IsDeleted = false,
                             IsEnabled = true,
                             Rate = 0m,
-                            SaleCondition = SaleCondition.Mercado_Pago_Transfencia,
+                            SaleConditionId = _context.SaleConditions.FirstOrDefault(sc=>sc.AfipId == 8).Id,
                         },
                     });
 
@@ -1633,7 +1645,232 @@ namespace GestionComercial.API.Helpers
                 return result;
             }
         }
+        private static async Task<GeneralResponse> CreateSaleConditionsAsync(AppDbContext _context)
+        {
+            GeneralResponse result = new GeneralResponse { Success = false };
+            try
+            {
+                while (StaticCommon.ContextInUse)
+                    await Task.Delay(100);
 
+                List<SaleCondition> saleConditions =
+                [
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = false,
+                        IsDeleted = false,
+                        Description = "Sin Cargo".ToUpper(),
+                        AfipId = 1,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Cuenta corriente".ToUpper(),
+                        AfipId = 2,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "cheque".ToUpper(),
+                        AfipId = 3,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Efectivo Pesos".ToUpper(),
+                        AfipId = 4,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Transferencia bancaria".ToUpper(),
+                        AfipId = 5,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Tarjeta de débito".ToUpper(),
+                        AfipId = 6,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "tarjeta de crédito".ToUpper(),
+                        AfipId = 7,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago transferencia".ToUpper(),
+                        AfipId = 8,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago qr crédito".ToUpper(),
+                        AfipId = 9,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago qr débito".ToUpper(),
+                        AfipId = 10,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago qr dinero en cuenta".ToUpper(),
+                        AfipId = 11,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago point crédito".ToUpper(),
+                        AfipId = 12,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago point débito".ToUpper(),
+                        AfipId = 13,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago point qr".ToUpper(),
+                        AfipId = 14,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago on-line".ToUpper(),
+                        AfipId = 15,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago link de pago".ToUpper(),
+                        AfipId = 16,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "mercado pago otro".ToUpper(),
+                        AfipId = 17,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Efectivo dolar".ToUpper(),
+                        AfipId = 18,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Efectivo Real".ToUpper(),
+                        AfipId = 19,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Efectivo euro".ToUpper(),
+                        AfipId = 20,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Efectivo otro".ToUpper(),
+                        AfipId = 21,
+                    },
+                    new SaleCondition
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsEnabled = true,
+                        IsDeleted = false,
+                        Description = "Multiple metodos de pago".ToUpper(),
+                        AfipId = 22,
+                    },
+
+                ];
+
+                _context.SaleConditions.AddRange(saleConditions);
+
+                StaticCommon.ContextInUse = false;
+                await _context.SaveChangesAsync();
+
+                result.Success = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                StaticCommon.ContextInUse = false;
+                result.Message = ex.Message;
+                return result;
+            }
+        }
         private static async Task<GeneralResponse> UploadStatesAsync(AppDbContext _context)
         {
             GeneralResponse result = new GeneralResponse { Success = false };

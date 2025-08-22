@@ -82,7 +82,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Metodo de pago")]
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
@@ -94,11 +94,15 @@ namespace GestionComercial.Domain.Entities.Masters
 
         [JsonIgnore]
         public virtual State? State { get; set; }
-       
+
         [JsonIgnore]
         public virtual DocumentType? DocumentType { get; set; }
+
         [JsonIgnore]
         public virtual IvaCondition? IvaCondition { get; set; }
+
+        [JsonIgnore]
+        public virtual SaleCondition? SaleCondition { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Purchase>? Purcheases { get; set; }

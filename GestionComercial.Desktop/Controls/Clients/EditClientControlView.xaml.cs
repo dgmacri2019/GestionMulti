@@ -108,7 +108,7 @@ namespace GestionComercial.Desktop.Controls.Clients
                 {
                     //clientViewModel.DocumentType = (DocumentType)Convert.ToInt32(cbDocumentTypes.SelectedValue);
                     //clientViewModel.TaxCondition = (TaxCondition)Convert.ToInt32(cbTaxConditions.SelectedValue);
-                    clientViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
+                    //clientViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
                     btnAdd.IsEnabled = false;
                     lblError.Text = string.Empty;
                     Client client = ConverterHelper.ToClient(clientViewModel, clientViewModel.Id == 0);
@@ -194,7 +194,7 @@ namespace GestionComercial.Desktop.Controls.Clients
                 msgError("Seleccione la condición de I.V.A.");
                 result = false;
             }
-            if ((SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue) == SaleCondition.Seleccione)
+            if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
             {
                 msgError("Seleccione la condición de venta");
                 result = false;

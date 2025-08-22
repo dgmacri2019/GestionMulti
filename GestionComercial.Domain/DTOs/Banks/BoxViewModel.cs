@@ -1,8 +1,6 @@
-﻿using GestionComercial.Domain.Constant;
-using GestionComercial.Domain.Entities.AccountingBook;
-using System.Collections.ObjectModel;
+﻿using GestionComercial.Domain.Entities.AccountingBook;
+using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.DTOs.Banks
 {
@@ -46,7 +44,7 @@ namespace GestionComercial.Domain.DTOs.Banks
 
         [Display(Name = "Saldo")]
         public decimal Sold { get; set; }
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
         [Display(Name = "Cuanta Contable")]
         public int AccountId { get; set; }
@@ -54,6 +52,6 @@ namespace GestionComercial.Domain.DTOs.Banks
 
         public ICollection<Account> Accounts { get; set; }
 
-        public ObservableCollection<SaleCondition> SaleConditions { get; set; }
+        public ICollection<SaleCondition> SaleConditions { get; set; }
     }
 }

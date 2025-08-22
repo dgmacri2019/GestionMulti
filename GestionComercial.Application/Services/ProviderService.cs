@@ -7,7 +7,6 @@ using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Applications.Services
 {
@@ -41,6 +40,7 @@ namespace GestionComercial.Applications.Services
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
+                 .Include(sc => sc.SaleCondition)
                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .ToListAsync();
 
@@ -57,21 +57,20 @@ namespace GestionComercial.Applications.Services
             ICollection<IvaCondition> ivaConditions = await _context.IvaConditions
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
-
-            states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
-            ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
-
             ICollection<DocumentType> documentTypes = await _context.DocumentTypes
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<SaleCondition> saleConditions = await _context.SaleConditions
+                .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                .OrderBy(sc => sc.Description)
+                .ToListAsync();
 
+            saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+            states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
+            ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
             documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
 
-            ObservableCollection<SaleCondition> saleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))];
 
-            //ObservableCollection<TaxCondition> taxConditions = [.. (TaxCondition[])Enum.GetValues(typeof(TaxCondition))];
-
-            //ObservableCollection<DocumentType> documentTypes = [.. (DocumentType[])Enum.GetValues(typeof(DocumentType))];
 
             if (id == 0)
                 return new ProviderViewModel
@@ -90,10 +89,11 @@ namespace GestionComercial.Applications.Services
                 .Include(s => s.State)
                 .Include(ic => ic.IvaCondition)
                 .Include(dt => dt.DocumentType)
+                .Include(sc => sc.SaleCondition)
                 .Where(a => a.Id == id && a.IsEnabled == isEnabled && a.IsDeleted == isDeleted)
                 .FirstOrDefaultAsync();
 
-           
+
             return provider == null ? null : ConverterHelper.ToProviderViewModel(provider, states,
                 saleConditions, ivaConditions, documentTypes);
         }
@@ -107,6 +107,7 @@ namespace GestionComercial.Applications.Services
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
+                 .Include(sc => sc.SaleCondition)
                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .ToListAsync()
                 :
@@ -114,6 +115,7 @@ namespace GestionComercial.Applications.Services
                  .Include(s => s.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
+                 .Include(sc => sc.SaleCondition)
                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted && (p.BusinessName.Contains(name) || p.FantasyName.Contains(name) || p.DocumentNumber.Contains(name)))
                  .ToListAsync();
 
@@ -148,7 +150,7 @@ namespace GestionComercial.Applications.Services
                 LastPuchase = provider.LastPuchase,
                 Sold = provider.Sold,
                 DocumentTypeString = provider.DocumentType.Description,
-                SaleCondition = provider.SaleCondition,
+                SaleConditionId = provider.SaleConditionId,
                 IvaConditionString = provider.IvaCondition.Description,
                 State = provider.State.Name,
                 CreateDate = provider.CreateDate,
@@ -156,7 +158,7 @@ namespace GestionComercial.Applications.Services
                 UpdateDate = provider.UpdateDate,
                 UpdateUser = provider.UpdateUser,
                 IsDeleted = provider.IsDeleted,
-                IsEnabled = provider.IsEnabled
+                IsEnabled = provider.IsEnabled,
             });
         }
     }

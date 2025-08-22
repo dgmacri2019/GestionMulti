@@ -4,44 +4,47 @@ namespace GestionComercial.Domain.Constant
 {
     public class Enumeration
     {
+        /*
         // Tipo de documentos
-        //public enum DocumentType
-        //{
-        //    [Display(Name = "Seleccione el tipo de documento")]
-        //    Seleccione = 0,
-            
-        //    [Display(Name = "CUIT")]
-        //    CUIT = 80,
+        public enum DocumentType
+        {
+            [Display(Name = "Seleccione el tipo de documento")]
+            Seleccione = 0,
 
-        //    [Display(Name = "CUIL")]
-        //    CUIL = 86,
+            [Display(Name = "CUIT")]
+            CUIT = 80,
 
-        //    [Display(Name = "DNI")]
-        //    DNI = 96,
+            [Display(Name = "CUIL")]
+            CUIL = 86,
 
-        //    [Display(Name = "Pasaporte")]
-        //    Pasaporte = 94,
+            [Display(Name = "DNI")]
+            DNI = 96,
 
-        //    [Display(Name = "Otro")]
-        //    Otro = 99,
+            [Display(Name = "Pasaporte")]
+            Pasaporte = 94,
 
-        //}
+            [Display(Name = "Otro")]
+            Otro = 99,
+
+        }
 
         // tipo de Condición IVA 
-        //public enum TaxCondition
-        //{
-        //    [Display(Name = "Seleccione el tipo de contrinuyente")]
-        //    Seleccione = 0,
-        //    [Display(Name = "Responsable Inscripto")]
-        //    Iva_Inscripto = 101,
-        //    [Display(Name = "Consumidor Final")]
-        //    Consumidor_Final = 102,
-        //    [Display(Name = "Exento")]
-        //    Iva_Exento = 103,
-        //    [Display(Name = "Responsable Monotributo")]
-        //    Monotributo = 104
-        //}
+        public enum TaxCondition
+        {
+            [Display(Name = "Seleccione el tipo de contrinuyente")]
+            Seleccione = 0,
+            [Display(Name = "Responsable Inscripto")]
+            Iva_Inscripto = 101,
+            [Display(Name = "Consumidor Final")]
+            Consumidor_Final = 102,
+            [Display(Name = "Exento")]
+            Iva_Exento = 103,
+            [Display(Name = "Responsable Monotributo")]
+            Monotributo = 104
+        }
 
+
+        
         // Tipo de Condicion de venta
         public enum SaleCondition
         {
@@ -91,6 +94,8 @@ namespace GestionComercial.Domain.Constant
             Multiples_Metodos = 21,
 
         }
+
+        */
 
         //Version del Sistema
         public enum SystemVersionType
