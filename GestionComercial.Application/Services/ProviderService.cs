@@ -6,7 +6,6 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
 
 namespace GestionComercial.Applications.Services
 {
@@ -53,12 +52,15 @@ namespace GestionComercial.Applications.Services
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product           
             ICollection<State> states = await _context.States
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Name)
                 .ToListAsync();
             ICollection<IvaCondition> ivaConditions = await _context.IvaConditions
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Description)
                 .ToListAsync();
             ICollection<DocumentType> documentTypes = await _context.DocumentTypes
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Description)
                 .ToListAsync();
             ICollection<SaleCondition> saleConditions = await _context.SaleConditions
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)

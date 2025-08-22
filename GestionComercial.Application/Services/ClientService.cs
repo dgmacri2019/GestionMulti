@@ -48,7 +48,7 @@ namespace GestionComercial.Applications.Services
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
-                 .Include(sc=>sc.SaleCondition)
+                 .Include(sc => sc.SaleCondition)
                  //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .GroupBy(c => c.PriceList.Description)
                  .ToListAsync();
@@ -75,7 +75,7 @@ namespace GestionComercial.Applications.Services
             priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
             ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
             documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
-            
+
             return ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions);
         }
 
@@ -88,27 +88,30 @@ namespace GestionComercial.Applications.Services
                 .ToListAsync();
             ICollection<State> states = await _context.States
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Name)
                 .ToListAsync();
 
             ICollection<DocumentType> documentTypes = await _context.DocumentTypes
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Description)
                 .ToListAsync();
 
             ICollection<IvaCondition> ivaConditions = await _context.IvaConditions
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Description)
+                .ToListAsync();
+
+            ICollection<SaleCondition> saleConditions = await _context.SaleConditions
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(s => s.Description)
                 .ToListAsync();
 
             states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
             priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
             documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
             ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
-
-            ObservableCollection<SaleCondition> saleConditions = [.. (SaleCondition[])Enum.GetValues(typeof(SaleCondition))];
-
-            //ObservableCollection<TaxCondition> taxConditions = [.. (TaxCondition[])Enum.GetValues(typeof(TaxCondition))];
-
-            //ObservableCollection<DocumentType> documentTypes = [.. (DocumentType[])Enum.GetValues(typeof(DocumentType))];
-
+            saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+        
             if (id == 0)
                 return new ClientViewModel
                 {
