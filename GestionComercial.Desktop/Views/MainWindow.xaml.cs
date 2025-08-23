@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Controls.Accounts;
+﻿using GestionComercial.Desktop.Cache;
+using GestionComercial.Desktop.Controls.Accounts;
 using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
@@ -193,7 +194,7 @@ namespace GestionComercial.Desktop.Views
             App.UserName = string.Empty;
             App.UserRole = string.Empty;
             App.Password = string.Empty;
-
+            CacheManager.ClearAll();
             LoginWindow loginView = new LoginWindow();
             loginView.Show();
             // Importante: cerrar la ventana actual correctamente

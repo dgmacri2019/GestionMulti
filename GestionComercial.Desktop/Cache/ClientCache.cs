@@ -2,12 +2,17 @@
 
 namespace GestionComercial.Desktop.Cache
 {
-    public class ClientCache
-    {
+    public class ClientCache : ICache
+    {       
         private static ClientCache _instance;
         public static ClientCache Instance => _instance ??= new ClientCache();
 
         private List<ClientViewModel> _clients;
+
+        private ClientCache()
+        {
+            CacheManager.Register(this);
+        }
 
         public List<ClientViewModel> GetAllClients()
         {

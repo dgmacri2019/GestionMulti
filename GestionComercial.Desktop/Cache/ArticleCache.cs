@@ -2,12 +2,17 @@
 
 namespace GestionComercial.Desktop.Cache
 {
-    internal class ArticleCache
+    internal class ArticleCache : ICache
     {
         private static ArticleCache _instance;
         public static ArticleCache Instance => _instance ??= new ArticleCache();
 
         private List<ArticleViewModel> _articles;
+
+        private ArticleCache()
+        {
+            CacheManager.Register(this);
+        }
 
         public List<ArticleViewModel> GetAllArticles()
         {

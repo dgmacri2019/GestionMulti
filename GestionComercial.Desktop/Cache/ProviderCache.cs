@@ -2,13 +2,16 @@
 
 namespace GestionComercial.Desktop.Cache
 {
-    internal class ProviderCache
+    internal class ProviderCache : ICache
     {
         private static ProviderCache _instance;
         public static ProviderCache Instance => _instance ??= new ProviderCache();
 
         private List<ProviderViewModel> _providers;
-
+        private ProviderCache()
+        {
+            CacheManager.Register(this);
+        }
         public List<ProviderViewModel> GetAllProviders()
         {
             return _providers;

@@ -7,12 +7,13 @@ namespace GestionComercial.Desktop.Services
 {
     public class AuthApiService
     {
-        private readonly HttpClient _client;
+        private readonly HttpClient _httpClient;
 
         public AuthApiService()
         {
 
-            _client = new ApiService().GetHttpClient();
+            _httpClient = new ApiService().GetHttpClient();
+            _httpClient.Timeout.Add(new TimeSpan(100));
         }
 
         public async Task<LoginResponse> LoginAsync(string username, string password)
@@ -20,7 +21,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
 
-                var response = await _client.PostAsJsonAsync("api/auth/LoginAsync", new { username, password });
+                var response = await _httpClient.PostAsJsonAsync("api/auth/LoginAsync", new { username, password });
 
                 if (response.IsSuccessStatusCode)
                 {
