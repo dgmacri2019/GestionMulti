@@ -12,13 +12,10 @@ namespace GestionComercial.Desktop.Services.Hub
 
         public ArticlesHubService(string hubUrl)
         {
-            TimeSpan timeSpan = new TimeSpan(100);
-            
-
-            _connection = new HubConnectionBuilder()
+             _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
                 .WithAutomaticReconnect()
-                .WithServerTimeout(timeSpan)
+                .WithServerTimeout(new TimeSpan(100))
                 .Build();
 
             // Aquí registramos el método que el servidor va a invocar

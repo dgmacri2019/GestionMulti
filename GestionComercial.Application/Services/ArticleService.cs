@@ -46,9 +46,18 @@ namespace GestionComercial.Applications.Services
             ICollection<PriceList> priceLists = await _context.PriceLists
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<Category> categories = await _context.Categories
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Measure> measures = await _context.Measures
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Tax> taxes = await _context.Taxes
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
             Article? product = await _context.Articles.Where(p => p.BarCode == barCode).FirstOrDefaultAsync();
 
-            return product == null ? null : ToPriceDto(product, priceLists);
+            return product == null ? null : ToPriceDto(product, priceLists, categories, measures, taxes);
         }
 
 
@@ -59,11 +68,20 @@ namespace GestionComercial.Applications.Services
             ICollection<PriceList> priceLists = await _context.PriceLists
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<Category> categories = await _context.Categories
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Measure> measures = await _context.Measures
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Tax> taxes = await _context.Taxes
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
             Article? product = string.IsNullOrEmpty(code) ? null : await _context.Articles
                 .Where(p => p.Code == code || p.BarCode == code)
                 .FirstOrDefaultAsync();
 
-            return product == null ? null : ToPriceDto(product, priceLists);
+            return product == null ? null : ToPriceDto(product, priceLists, categories, measures, taxes);
         }
 
 
@@ -74,6 +92,15 @@ namespace GestionComercial.Applications.Services
             ICollection<PriceList> priceLists = await _context.PriceLists
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<Category> categories = await _context.Categories
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Measure> measures = await _context.Measures
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Tax> taxes = await _context.Taxes
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
             List<IGrouping<string, Article>> Articles = await _context.Articles
                 .Include(p => p.Tax)
                 .Include(m => m.Measure)
@@ -82,7 +109,7 @@ namespace GestionComercial.Applications.Services
                 .GroupBy(c => c.Category.Description)
                 .ToListAsync();
 
-            return ToListPriceDto(Articles, priceLists);
+            return ToListPriceDto(Articles, priceLists, categories, measures, taxes);
         }
 
 
@@ -136,6 +163,16 @@ namespace GestionComercial.Applications.Services
             ICollection<PriceList> priceLists = await _context.PriceLists
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
+            ICollection<Category> categories = await _context.Categories
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Measure> measures = await _context.Measures
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+            ICollection<Tax> taxes = await _context.Taxes
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
+
             List<IGrouping<string, Article>> Articles = await _context.Articles
                  .Include(p => p.Tax)
                  .Include(m => m.Measure)
@@ -145,7 +182,7 @@ namespace GestionComercial.Applications.Services
                  .GroupBy(c => c.Category.Description)
                  .ToListAsync();
 
-            return ToListPriceDto(Articles, priceLists);
+            return ToListPriceDto(Articles, priceLists, categories, measures, taxes);
         }
 
 
@@ -273,7 +310,8 @@ namespace GestionComercial.Applications.Services
 
         #region Private Methods
 
-        private ArticleViewModel ToPriceDto(Article article, ICollection<PriceList> priceLists)
+        private ArticleViewModel ToPriceDto(Article article, ICollection<PriceList> priceLists,
+            ICollection<Category> categories, ICollection<Measure> measures, ICollection<Tax> taxes)
         {
             return new()
             {
@@ -282,12 +320,34 @@ namespace GestionComercial.Applications.Services
                 Code = article.Code,
                 Description = article.Description,
                 Category = article.Category.Description,
+                CategoryColor = article.Category.Color,
+                PriceWithTax = article.PriceWithTaxes,
                 Cost = article.Cost,
                 Bonification = article.Bonification,
                 RealCost = article.RealCost,
-                PriceWithTax = article.PriceWithTaxes,
-                CategoryColor = article.Category.Color,
                 BarCode = article.BarCode,
+                CategoryId = article.CategoryId,
+                ChangePoint = article.ChangePoint,
+                Clarifications = article.Clarifications,
+                CreateDate = article.CreateDate,
+                CreateUser = article.CreateUser,
+                InternalTax = article.InternalTax,
+                IsDeleted = article.IsDeleted,
+                IsEnabled = article.IsEnabled,
+                IsWeight = article.IsWeight,
+                MeasureId = article.MeasureId,
+                MinimalStock = article.MinimalStock,
+                Remark = article.Remark,
+                Replacement = article.Replacement,
+                SalePoint = article.SalePoint,
+                StockCheck = article.StockCheck,
+                TaxId = article.TaxId,
+                Umbral = article.Umbral,
+                UpdateDate = article.UpdateDate,
+                UpdateUser = article.UpdateUser,
+                Categories = categories,
+                Measures = measures,
+                Taxes = taxes,
                 TaxesPrice =
                 [
                      new TaxePriceDto
@@ -315,7 +375,9 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        private IEnumerable<ArticleViewModel> ToListPriceDto(List<IGrouping<string, Article>> Articles, ICollection<PriceList> priceLists)
+        private IEnumerable<ArticleViewModel> ToListPriceDto(List<IGrouping<string, Article>> Articles,
+            ICollection<PriceList> priceLists, ICollection<Category> categories, ICollection<Measure> measures,
+            ICollection<Tax> taxes)
         {
             return Articles.SelectMany(group => group.Select(article => new ArticleViewModel
             {
@@ -330,6 +392,28 @@ namespace GestionComercial.Applications.Services
                 Bonification = article.Bonification,
                 RealCost = article.RealCost,
                 BarCode = article.BarCode,
+                CategoryId = article.CategoryId,
+                ChangePoint = article.ChangePoint,
+                Clarifications = article.Clarifications,
+                CreateDate = article.CreateDate,
+                CreateUser = article.CreateUser,
+                InternalTax = article.InternalTax,
+                IsDeleted = article.IsDeleted,
+                IsEnabled = article.IsEnabled,
+                IsWeight = article.IsWeight,
+                MeasureId = article.MeasureId,
+                MinimalStock = article.MinimalStock,
+                Remark = article.Remark,
+                Replacement = article.Replacement,
+                SalePoint = article.SalePoint,
+                StockCheck = article.StockCheck,
+                TaxId = article.TaxId,
+                Umbral = article.Umbral,
+                UpdateDate = article.UpdateDate,
+                UpdateUser = article.UpdateUser,
+                Categories = categories,
+                Measures = measures,
+                Taxes = taxes,
                 TaxesPrice =
                 [
                      new TaxePriceDto

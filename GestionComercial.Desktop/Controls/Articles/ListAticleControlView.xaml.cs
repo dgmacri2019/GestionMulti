@@ -11,14 +11,14 @@ namespace GestionComercial.Desktop.Controls.Articles
     /// </summary>
     public partial class ListAticleControlView : UserControl
     {
-       
+
         public ListAticleControlView()
         {
             InitializeComponent();
             DataContext = new ArticleListViewModel();
         }
 
-       
+
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (DgArticles.SelectedItem is ArticleViewModel article)
@@ -32,14 +32,14 @@ namespace GestionComercial.Desktop.Controls.Articles
                 var ventana = new EditArticleControlView(article.Id);
                 ventana.ProductoActualizado += () =>
                 {
-                     DgArticles.Visibility = Visibility.Visible;
+                    DgArticles.Visibility = Visibility.Visible;
                     PanelSearch.Visibility = Visibility.Visible;
                     PanelEdicion.Content = null;
                     PanelEdicion.Visibility = Visibility.Hidden;
                     btnEnables.Visibility = Visibility.Visible;
                     btnAdd.Visibility = Visibility.Visible;
                     lblHeader.Content = "Artículos";
-                    if(!string.IsNullOrEmpty(SearchBox.Text))
+                    if (!string.IsNullOrEmpty(SearchBox.Text))
                         SearchBox.Focus();
                 };
 
@@ -59,7 +59,6 @@ namespace GestionComercial.Desktop.Controls.Articles
             var ventana = new EditArticleControlView(0);
             ventana.ProductoActualizado += () =>
             {
-                DgArticles.DataContext = new ArticleListViewModel();
                 DgArticles.Visibility = Visibility.Visible;
                 PanelSearch.Visibility = Visibility.Visible;
                 PanelEdicion.Content = null;
@@ -72,6 +71,6 @@ namespace GestionComercial.Desktop.Controls.Articles
             PanelEdicion.Content = ventana;
         }
 
-       
+
     }
 }
