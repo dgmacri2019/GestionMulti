@@ -238,7 +238,7 @@ namespace GestionComercial.Infrastructure.Persistence
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
                     ex.InnerException.InnerException.Message.Contains("Product_Code_Index"))
                 {
-                    response.Message = "Ese código de producto ya se encuentra registrado";
+                    response.Message = "Ese código de artículo ya se encuentra registrado";
                 }
                 else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Product_BarCode_Index")) ||
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
