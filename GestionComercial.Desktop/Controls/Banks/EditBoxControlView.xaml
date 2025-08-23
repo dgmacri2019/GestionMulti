@@ -83,7 +83,7 @@
               Style="{StaticResource ComboBox}"
               Width="300"
               ItemsSource="{Binding Accounts}"
-              DisplayMemberPath="Name"
+              DisplayMemberPath="Description"
               SelectedValuePath="Id"
               SelectedValue="{Binding AccountId}"/>
         </StackPanel>

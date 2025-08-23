@@ -19,6 +19,7 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 
         [Display(Name = "Saldo")]
         public decimal Sold { get; set; }
+
         public int SaleConditionId { get; set; }
 
         [Display(Name = "Cuanta Contable")]

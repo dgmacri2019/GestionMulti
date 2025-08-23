@@ -24,15 +24,15 @@ namespace GestionComercial.Desktop.Services
             _httpClient.Timeout.Add(new TimeSpan(100));
         }
 
-        internal async Task<List<BankAndBoxViewModel>> SearchAsync(string name, bool isEnabled, bool isDeleted)
+        internal async Task<List<BankAndBoxViewModel>> SearchAsync()
         {
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/banks/SearchBankAndBoxToListAsync", new
             {
-                Name = name,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
+                //Name = name,
+                //IsDeleted = isDeleted,
+                //IsEnabled = isEnabled,
             });
 
             var jsonResponse = await response.Content.ReadAsStringAsync();

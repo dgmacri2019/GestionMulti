@@ -26,7 +26,7 @@ namespace GestionComercial.API.Controllers.Security
             if (!resultLogin.Success)
                 return BadRequest(resultLogin.Message);
             if (resultLogin.Success && resultLogin.Token == null)
-                return Unauthorized(new { message = "Usuario o contraseña invalidos" });
+                return Unauthorized(new { message = "Usuario o contraseña inválidos" });
 
             return Ok(new { resultLogin.Token });
         }

@@ -39,7 +39,7 @@ namespace GestionComercial.Applications.Services
             {
                 User? user = await _userManager.FindByNameAsync(username);
                 if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
-                    return new LoginResponse { Success = false, Token = null };
+                    return new LoginResponse { Success = false, Token = null, Message="Usuario o contraseña inválidos" };
 
                 IList<string> roles = await _userManager.GetRolesAsync(user);
 

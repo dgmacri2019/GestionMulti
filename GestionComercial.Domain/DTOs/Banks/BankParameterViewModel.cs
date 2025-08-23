@@ -44,6 +44,8 @@ namespace GestionComercial.Domain.DTOs.Banks
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
         public int SaleConditionId { get; set; }
 
+        public string SaleConditionString { get; set; }
+
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Comisión")]
@@ -69,6 +71,6 @@ namespace GestionComercial.Domain.DTOs.Banks
         public ICollection<Bank> Banks { get; set; }
 
         public ICollection<SaleCondition> SaleConditions { get; set; }
-
+       
     }
 }

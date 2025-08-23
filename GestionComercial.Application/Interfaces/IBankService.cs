@@ -23,7 +23,7 @@ namespace GestionComercial.Applications.Interfaces
 
 
         Task<BankViewModel?> GetBankByIdAsync(int id);       
-        Task<IEnumerable<BankAndBoxViewModel>> SearchBankAndBoxToListAsync(string name, bool isEnabled, bool isDeleted);
+        Task<IEnumerable<BankAndBoxViewModel>> SearchBankAndBoxToListAsync();
         Task<BoxViewModel?> GetBoxByIdAsync(int id);
 
 
@@ -31,7 +31,7 @@ namespace GestionComercial.Applications.Interfaces
 
 
         Task<BankParameterViewModel?> GetBankParameterByIdAsync(int id);
-        Task<IEnumerable<BankParameterViewModel>> SearchBankParameterToListAsync(string name, bool isEnabled, bool isDeleted);
+        Task<IEnumerable<BankParameterViewModel>> SearchBankParameterToListAsync();
 
     }
 }

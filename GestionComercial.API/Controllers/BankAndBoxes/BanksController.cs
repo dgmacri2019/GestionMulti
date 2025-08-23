@@ -1,10 +1,13 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.BankAndBoxes
 {
@@ -16,64 +19,85 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
     {
         private readonly IBankService _bankService;
         private readonly IMasterService _masterService;
+        private readonly IBoxAndBanksNotifier _notifier;
 
-
-        public BanksController(IBankService bankService, IMasterService masterService)
+        public BanksController(IBankService bankService, IMasterService masterService, IBoxAndBanksNotifier notifier)
         {
             _bankService = bankService;
             _masterService = masterService;
+            _notifier = notifier;
         }
 
-
+        [HttpPost("{id:int}/notify")]
+        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
+        {
+            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
+            return Ok();
+        }
 
         [HttpPost("AddAcreditationAsync")]
         public async Task<IActionResult> AddAcreditationAsync([FromBody] Acreditation acreditation)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(acreditation);
-            return resultAdd.Success ?
-                Ok("Acreditación creada correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(acreditation.Id, "Acreditación", ChangeType.Created);
+
+                return Ok("Acreditación creada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("AddBankAsync")]
         public async Task<IActionResult> AddBankAsync([FromBody] Bank bank)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(bank);
-            return resultAdd.Success ?
-                Ok("Banco creado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(bank.Id, bank.BankName, ChangeType.Created);
+
+                return Ok("Banco creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("AddBankParamerAsync")]
         public async Task<IActionResult> AddBankParamerAsync([FromBody] BankParameter bankParameter)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(bankParameter);
-            return resultAdd.Success ?
-                Ok("Parametro bancario creado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(bankParameter.Id, "Parámetro Bancario", ChangeType.Created);
+
+                return Ok("Parametro bancario creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("AddBoxAsync")]
         public async Task<IActionResult> AddBoxAsync([FromBody] Box box)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(box);
-            return resultAdd.Success ?
-                Ok("Caja creada correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(box.Id, box.BoxName, ChangeType.Created);
+
+                return Ok("Caja creada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("AddDebitationAsync")]
         public async Task<IActionResult> AddDebitationAsync([FromBody] Debitation debitation)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(debitation);
-            return resultAdd.Success ?
-                Ok("Débito creado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(debitation.Id, "Débito", ChangeType.Created);
+
+                return Ok("Débito creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
 
@@ -82,50 +106,65 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         public async Task<IActionResult> UpdateAcreditationAsync([FromBody] Acreditation acreditation)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(acreditation);
-            return resultAdd.Success ?
-                Ok("Acreditación modificada correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(acreditation.Id, "Acreditacion", ChangeType.Created);
+
+                return Ok("Acreditación modificada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("UpdateBankAsync")]
         public async Task<IActionResult> UpdateBankAsync([FromBody] Bank bank)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(bank);
-            return resultAdd.Success ?
-                Ok("Banco modificado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(bank.Id, bank.BankName, ChangeType.Created);
+
+                return Ok("Banco modificado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("UpdateBankParameterAsync")]
         public async Task<IActionResult> UpdateBankParameterAsync([FromBody] BankParameter bankParameter)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(bankParameter);
-            return resultAdd.Success ?
-                Ok("Parametro bancario modificado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(bankParameter.Id, "Parámetro Bancario", ChangeType.Created);
+
+                return Ok("Parametro bancario modificado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("UpdateBoxAsync")]
         public async Task<IActionResult> UpdateBoxAsync([FromBody] Box box)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(box);
-            return resultAdd.Success ?
-                Ok("Caja modificada correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(box.Id, box.BoxName, ChangeType.Created);
+
+                return Ok("Caja modificada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
         [HttpPost("UpdateDebitationAsync")]
         public async Task<IActionResult> UpdateDebitationAsync([FromBody] Debitation debitation)
         {
             GeneralResponse resultAdd = await _masterService.UpdateAsync(debitation);
-            return resultAdd.Success ?
-                Ok("Débito modificado correctamente")
-                :
-                BadRequest(resultAdd.Message);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(debitation.Id, "Débito", ChangeType.Created);
+
+                return Ok("Débito modificado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
         }
 
 
@@ -153,7 +192,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("SearchBankAndBoxToListAsync")]
         public async Task<IActionResult> SearchBankAndBoxToListAsync([FromBody] BankFilterDto filter)
         {
-            IEnumerable<BankAndBoxViewModel> result = await _bankService.SearchBankAndBoxToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
+            IEnumerable<BankAndBoxViewModel> result = await _bankService.SearchBankAndBoxToListAsync();
             if (result == null)
                 return NotFound();
 
@@ -164,7 +203,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         [HttpPost("SearchBankParameterToListAsync")]
         public async Task<IActionResult> SearchBankParameterToListAsync([FromBody] BankFilterDto filter)
         {
-            IEnumerable<BankParameterViewModel> result = await _bankService.SearchBankParameterToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
+            IEnumerable<BankParameterViewModel> result = await _bankService.SearchBankParameterToListAsync();
             if (result == null)
                 return NotFound();
 

@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="LightGray">
+             Background="Gray">
 
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
@@ -48,7 +48,7 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Style="{StaticResource lblHeader}"
-                    Foreground="#C74CE6"/>
+                    Foreground="#9238A8"/>
 
                 <Button 
                     x:Name="btnAddBank"
@@ -87,19 +87,19 @@
         <DataGrid 
             x:Name="DgBankParameter"
             Grid.Row="2" 
-                ColumnHeaderHeight="60"
-                ItemsSource="{Binding BankParameters}" 
-                AutoGenerateColumns="False"
-                CanUserAddRows="False"
-                ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                MouseDoubleClick="DataGrid_MouseDoubleClick">
+            ColumnHeaderHeight="60"
+            ItemsSource="{Binding BankParameters}" 
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+            MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Condición de venta" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding SaleCondition}" 
+                                <TextBlock Text="{Binding SaleConditionString}" 
                                          Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>

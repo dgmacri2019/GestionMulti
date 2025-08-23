@@ -22,7 +22,6 @@ namespace GestionComercial.Desktop.Services
             {
 
                 var response = await _httpClient.PostAsJsonAsync("api/auth/LoginAsync", new { username, password });
-
                 if (response.IsSuccessStatusCode)
                 {
                     var token = await response.Content.ReadAsStringAsync();
@@ -32,8 +31,8 @@ namespace GestionComercial.Desktop.Services
                         Token = token.Trim('"'), // Elimina comillas si viene como string
                     };
                 }
-
-                return new LoginResponse { Success = false, Message = response.RequestMessage.ToString() };
+                var result = await response.Content.ReadAsStringAsync();
+                return new LoginResponse { Success = false, Message = result };
             }
             catch (Exception ex)
             {

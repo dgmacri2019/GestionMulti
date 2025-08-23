@@ -9,7 +9,7 @@
              d:DesignHeight="768" d:DesignWidth="1460"
              x:Name="miUserControl" 
              Loaded="miUserControl_Loaded"
-             Background="LightGray">
+             Background="Gray">
 
 
     <Grid x:Name="GridGeneral" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Background="LightGray">

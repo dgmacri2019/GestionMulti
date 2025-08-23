@@ -47,7 +47,7 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Style="{StaticResource lblHeader}"
-                    Foreground="#C74CE6"/>
+                    Foreground="#9238A8"/>
 
                 <Button 
                     x:Name="btnAddBank"
@@ -71,16 +71,6 @@
 
             </Grid>
         </StackPanel>
-
-        <!--<StackPanel x:Name="PanelSearch" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0,0,50,8">
-            <TextBlock Text="Buscar:" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
-            <TextBox x:Name="SearchBox"
-         Style="{StaticResource TextBoxSearch}"
-         Width="250"
-         VerticalAlignment="Center"                     
-         ToolTip="Ingresa nombre, razón social o cuit"
-         TextChanged="SearchBox_TextChanged"/>
-        </StackPanel>-->
 
         <DataGrid x:Name="DgBoxAndBanks"
                   Grid.Row="2" 

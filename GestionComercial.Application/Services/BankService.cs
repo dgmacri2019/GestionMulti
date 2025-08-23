@@ -1,12 +1,13 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs.Banks;
+using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using static GestionComercial.Domain.Constant.Enumeration;
+using Microsoft.Identity.Client;
 
 namespace GestionComercial.Applications.Services
 {
@@ -55,14 +56,27 @@ namespace GestionComercial.Applications.Services
 
         public async Task<BankViewModel?> GetBankByIdAsync(int id)
         {
+            List<State> states = await _context.States
+                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                 .OrderBy(sc => sc.Name)
+                 .ToListAsync();
+
+            List<Account> accounts = await _context.Accounts
+                .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                .OrderBy(sc => sc.Name)
+                .ToListAsync();
+
+            states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
+            accounts.Add(new Account { Id = 0, Name = "Seleccione la cuanta contable" });
+
             if (id == 0)
                 return new BankViewModel
                 {
                     IsDeleted = false,
                     IsEnabled = true,
                     CreateDate = DateTime.Now,
-                    Accounts = await _context.Accounts.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
-                    States = await _context.States.Where(s => s.IsEnabled && !s.IsDeleted).ToListAsync(),
+                    Accounts = accounts,
+                    States = states,
                 };
             else
             {
@@ -78,8 +92,8 @@ namespace GestionComercial.Applications.Services
                 {
                     AccountId = bank.AccountId,
                     AccountNumber = bank.AccountNumber,
-                    Accounts = await _context.Accounts.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
-                    States = await _context.States.Where(s => s.IsEnabled && !s.IsDeleted).ToListAsync(),
+                    Accounts = accounts,
+                    States = states,
                     Address = bank.Address,
                     Alias = bank.Alias,
                     BankName = bank.BankName,
@@ -110,7 +124,14 @@ namespace GestionComercial.Applications.Services
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Description)
                 .ToListAsync();
+
+            List<Account> accounts = await _context.Accounts
+                .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                .OrderBy(sc => sc.Name)
+                .ToListAsync();
+
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+            accounts.Add(new Account { Id = 0, Name = "Seleccione la cuanta contable" });
 
             if (id == 0)
                 return new BoxViewModel
@@ -118,7 +139,7 @@ namespace GestionComercial.Applications.Services
                     IsDeleted = false,
                     IsEnabled = true,
                     CreateDate = DateTime.Now,
-                    Accounts = await _context.Accounts.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
+                    Accounts = accounts,
                     SaleConditions = saleConditions,
                 };
             else
@@ -133,7 +154,7 @@ namespace GestionComercial.Applications.Services
                 {
                     UpdateUser = box.UpdateUser,
                     CreateUser = box.CreateUser,
-                    Accounts = await _context.Accounts.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
+                    Accounts = accounts,
                     UpdateDate = box.UpdateDate,
                     AccountId = box.AccountId,
                     BoxName = box.BoxName,
@@ -149,7 +170,7 @@ namespace GestionComercial.Applications.Services
                 };
             }
         }
-        public async Task<IEnumerable<BankAndBoxViewModel>> SearchBankAndBoxToListAsync(string name, bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<BankAndBoxViewModel>> SearchBankAndBoxToListAsync()
         {
             List<BankAndBoxViewModel> bankAndBoxes = [];
 
@@ -157,35 +178,19 @@ namespace GestionComercial.Applications.Services
                 await Task.Delay(100);
             StaticCommon.ContextInUse = true;
 
-            List<Bank> banks = string.IsNullOrEmpty(name) ?
-                await _context.Banks
-                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted)
-                .Include(s => s.State)
-                .Include(bp => bp.BankParameters)
-                .Include(a => a.Acreditations)
-                .Include(d => d.Debitations)
-                .ToListAsync()
-                :
-                await _context.Banks
-                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted && b.BankName.Contains(name))
+            List<Bank> banks = await _context.Banks
                 .Include(s => s.State)
                 .Include(bp => bp.BankParameters)
                 .Include(a => a.Acreditations)
                 .Include(d => d.Debitations)
                 .ToListAsync();
 
-            List<Box> boxes = string.IsNullOrEmpty(name) ?
-                await _context.Boxes
-                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted)
-                .Include(a => a.Account)
-                .Include(sc => sc.SaleCondition)
-                .ToListAsync()
-                :
-                await _context.Boxes
-                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted && b.BoxName.Contains(name))
-                .Include(a => a.Account)
+
+            List<Box> boxes = await _context.Boxes
+                 .Include(a => a.Account)
                 .Include(sc => sc.SaleCondition)
                 .ToListAsync();
+
             StaticCommon.ContextInUse = false;
 
             foreach (Box b in boxes)
@@ -197,8 +202,11 @@ namespace GestionComercial.Applications.Services
                     BankName = b.BoxName,
                     FromCredit = b.FromCredit,
                     FromDebit = b.FromDebit,
+                    SaleConditionId = b.SaleConditionId,
+                    AccountId = b.AccountId,
                     Sold = b.Sold,
                     IsBank = false,
+                    SaleConditionString = b.SaleCondition.Description,
                 });
             foreach (Bank b in banks)
                 bankAndBoxes.Add(new BankAndBoxViewModel
@@ -211,11 +219,23 @@ namespace GestionComercial.Applications.Services
                     FromDebit = b.FromDebit,
                     Sold = b.Sold,
                     IsBank = true,
+                    Address = b.Address,
+                    PostalCode = b.PostalCode,
+                    StateId = b.StateId,
+                    City = b.City,
+                    Phone = b.Phone,
+                    Phone1 = b.Phone1,
+                    Email = b.Email,
+                    WebSite = b.WebSite,
+                    AccountNumber = b.AccountNumber,
+                    CBU = b.CBU,
+                    Alias = b.Alias,
+                    AccountId = b.AccountId,
                 });
             return bankAndBoxes.ToList();
         }
 
-        public async Task<IEnumerable<BankParameterViewModel>> SearchBankParameterToListAsync(string name, bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<BankParameterViewModel>> SearchBankParameterToListAsync()
         {
             List<BankParameterViewModel> bankParameterViewModels = [];
 
@@ -223,19 +243,17 @@ namespace GestionComercial.Applications.Services
                 await Task.Delay(100);
             StaticCommon.ContextInUse = true;
 
-            List<Bank> banks = await _context.Banks.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync();
+            List<Bank> banks = await _context.Banks
+                .Where(b => b.IsEnabled && !b.IsDeleted)
+                .Include(a => a.Account)
+                .Include(s => s.State)
+                .OrderBy(b => b.BankName)
+                .ToListAsync();
 
-            List<BankParameter> bankParameters = string.IsNullOrEmpty(name) ?
-                await _context.BankParameters
-                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted)
+            List<BankParameter> bankParameters = await _context.BankParameters
+                .Where(a => a.IsEnabled && !a.IsDeleted)
                 .Include(s => s.Bank)
                 .Include(sc => sc.SaleCondition)
-                .ToListAsync()
-                :
-                await _context.BankParameters
-                .Include(s => s.Bank)
-                .Include(sc=>sc.SaleCondition)
-                .Where(b => b.IsEnabled == isEnabled && b.IsDeleted == isDeleted && b.Bank.BankName.Contains(name))
                 .ToListAsync();
 
             List<SaleCondition> saleConditions = await _context.SaleConditions
@@ -256,7 +274,15 @@ namespace GestionComercial.Applications.Services
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Description)
                 .ToListAsync();
+            List<Bank> banks = await _context.Banks
+               .Where(b => b.IsEnabled && !b.IsDeleted)
+               .Include(a => a.Account)
+               .Include(s => s.State)
+               .OrderBy(b => b.BankName)
+               .ToListAsync();
+
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+            banks.Add(new Bank { Id = 0, BankName = "Seleccione el banco" });
 
             if (id == 0)
                 return new BankParameterViewModel
@@ -264,7 +290,7 @@ namespace GestionComercial.Applications.Services
                     IsDeleted = false,
                     IsEnabled = true,
                     CreateDate = DateTime.Now,
-                    Banks = await _context.Banks.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
+                    Banks = banks,
                     SaleConditions = saleConditions,
                 };
             else
@@ -275,11 +301,9 @@ namespace GestionComercial.Applications.Services
                  .Include(sc => sc.SaleCondition)
                  .FirstOrDefaultAsync();
 
-
-
                 return new BankParameterViewModel
                 {
-                    Banks = await _context.Banks.Where(a => a.IsEnabled && !a.IsDeleted).ToListAsync(),
+                    Banks = banks,
                     CreateDate = bankParameter.CreateDate,
                     CreateUser = bankParameter.CreateUser,
                     Id = bankParameter.Id,
@@ -294,6 +318,7 @@ namespace GestionComercial.Applications.Services
                     Rate = bankParameter.Rate,
                     SaleConditionId = bankParameter.SaleConditionId,
                     BankName = bankParameter.Bank.BankName,
+                    SaleConditionString = bankParameter.SaleCondition.Description,
                 };
             }
         }
@@ -304,23 +329,24 @@ namespace GestionComercial.Applications.Services
 
         private IEnumerable<BankParameterViewModel> ToBankParameterViewModelList(List<BankParameter> bankParameters, List<Bank> banks, List<SaleCondition> saleConditions)
         {
-            return bankParameters.Select(provider => new BankParameterViewModel
+            return bankParameters.Select(bankParameter => new BankParameterViewModel
             {
-                Id = provider.Id,
-                SaleConditionId = provider.SaleConditionId,
-                CreateDate = provider.CreateDate,
-                CreateUser = provider.CreateUser,
-                UpdateDate = provider.UpdateDate,
-                UpdateUser = provider.UpdateUser,
-                IsDeleted = provider.IsDeleted,
-                IsEnabled = provider.IsEnabled,
+                Id = bankParameter.Id,
+                SaleConditionId = bankParameter.SaleConditionId,
+                CreateDate = bankParameter.CreateDate,
+                CreateUser = bankParameter.CreateUser,
+                UpdateDate = bankParameter.UpdateDate,
+                UpdateUser = bankParameter.UpdateUser,
+                IsDeleted = bankParameter.IsDeleted,
+                IsEnabled = bankParameter.IsEnabled,
                 Banks = banks,
-                BankName = banks.Where(b => b.Id == provider.BankId).FirstOrDefault().BankName,
+                BankName = banks.Where(b => b.Id == bankParameter.BankId).FirstOrDefault().BankName,
                 SaleConditions = saleConditions,
-                AcreditationDay = provider.AcreditationDay,
-                BankId = provider.BankId,
-                DebitationDay = provider.DebitationDay,
-                Rate = provider.Rate,
+                AcreditationDay = bankParameter.AcreditationDay,
+                BankId = bankParameter.BankId,
+                DebitationDay = bankParameter.DebitationDay,
+                Rate = bankParameter.Rate,
+                SaleConditionString = bankParameter.SaleCondition.Description,
             });
         }
     }
