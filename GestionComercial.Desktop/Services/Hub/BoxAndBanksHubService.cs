@@ -19,7 +19,7 @@ namespace GestionComercial.Desktop.Services.Hub
                 .Build();
 
             // Aquí registramos el método que el servidor va a invocar
-            _connection.On<CajaYBancoChangeNotification>("BancosyCajasActualizados", (notification) =>
+            _connection.On<CajaYBancoChangeNotification>("CajasYBancosActualizados", (notification) =>
             {
                 CajaYBancoCambiado?.Invoke(notification);
             });
