@@ -15,7 +15,7 @@ namespace GestionComercial.Desktop.Services.Hub
              _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
                 .WithAutomaticReconnect()
-                .WithServerTimeout(new TimeSpan(100))
+                //.WithServerTimeout(new TimeSpan(100))
                 .Build();
 
             // Aquí registramos el método que el servidor va a invocar

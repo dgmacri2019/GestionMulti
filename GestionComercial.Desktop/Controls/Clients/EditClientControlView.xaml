@@ -63,7 +63,7 @@
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Número" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Número Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtDocumentNumber"
               Style="{StaticResource TextBoxSearch}"
               Width="100"

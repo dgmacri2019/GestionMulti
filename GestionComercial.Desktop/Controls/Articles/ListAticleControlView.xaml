@@ -87,7 +87,7 @@
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Categoría" Width="120">
+                <DataGridTemplateColumn Header="Categoría" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Background="{Binding CategoryColor}" Padding="10" CornerRadius="10">
@@ -103,7 +103,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Código" Width="100">
+                <DataGridTemplateColumn Header="Código" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -115,7 +115,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Código Barra" Width="140">
+                <DataGridTemplateColumn Header="Código Barra" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -139,7 +139,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Stock" Width="80">                    
+                <DataGridTemplateColumn Header="Stock" Width="auto">                    
                     <DataGridTemplateColumn.CellTemplate>                        
                         <DataTemplate>
                             <Border 
@@ -154,7 +154,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Costo" Width="100">
+                <DataGridTemplateColumn Header="Costo" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -166,7 +166,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Bonificación" Width="100">
+                <DataGridTemplateColumn Header="Bonificación" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Background="{Binding Bonification, Converter={StaticResource NegativoAFondoConverter}}">
@@ -180,7 +180,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="SubTotal" Width="100">
+                <DataGridTemplateColumn Header="SubTotal" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -192,7 +192,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Impuestos" Width="200">
+                <DataGridTemplateColumn Header="Impuestos" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding TaxesPrice}">
@@ -227,7 +227,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Costo Real" Width="100">
+                <DataGridTemplateColumn Header="Costo Real" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -239,7 +239,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Listas de Precios" Width="200">
+                <DataGridTemplateColumn Header="Listas de Precios" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding PriceLists}">

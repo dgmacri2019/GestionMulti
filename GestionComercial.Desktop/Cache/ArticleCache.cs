@@ -22,11 +22,10 @@ namespace GestionComercial.Desktop.Cache
         public List<ArticleViewModel> SearchArticles(string name, bool isEnabled, bool isDeleted)
         {
             return _articles != null ? _articles
-                .Where(a => a.IsEnabled == isEnabled
-                         && a.IsDeleted == isDeleted
-                         && (a.Description?.ToLower().Contains(name.ToLower()) ?? false)
-                          || (a.Code?.ToLower().Contains(name.ToLower()) ?? false)
-                          || (a.BarCode?.ToLower().Contains(name.ToLower()) ?? false))
+                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted
+                       && ((a.Description?.ToLower().Contains(name.ToLower()) ?? false)
+                        || (a.Code?.ToLower().Contains(name.ToLower()) ?? false)
+                        || (a.BarCode?.ToLower().Contains(name.ToLower()) ?? false)))
                 .ToList()
                 :
                 [];
