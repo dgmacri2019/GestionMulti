@@ -11,7 +11,9 @@
              x:Name="miUserControl" 
              Loaded="miUserControl_Loaded"
              Background="LightGray">
-    <Grid x:Name="GridGeneral" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Background="LightGray">
+    
+    <Grid x:Name="GridGeneral" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" 
+          Background="LightGray">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -26,9 +28,8 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
@@ -70,7 +71,7 @@
             <TextBlock Text="Condición de Venta" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbSaleConditions" 
                   Style="{StaticResource ComboBox}"
-                  Width="250"
+                  Width="auto"
                        DisplayMemberPath="Description"
                       SelectedValuePath="Id"
                   ItemsSource="{Binding SaleConditions}"
@@ -81,14 +82,14 @@
             <TextBlock Text="Cuenta Contable" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbAccount" 
               Style="{StaticResource ComboBox}"
-              Width="300"
+              Width="auto"
               ItemsSource="{Binding Accounts}"
-              DisplayMemberPath="Description"
+              DisplayMemberPath="Name"
               SelectedValuePath="Id"
               SelectedValue="{Binding AccountId}"/>
         </StackPanel>
         
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="4" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Habilitada" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <CheckBox x:Name="chbIsEnabled"
                Style="{StaticResource CheckBox}"
@@ -99,19 +100,19 @@
 
         <Button 
             x:Name="btnCancel"
-            Grid.Row="8" 
+            Grid.Row="3" 
             Grid.Column="1" 
             Content="Cancelar"
-            Margin="0,40,0,0" 
+            Margin="0,40,150,0" 
             Click="BtnCancel_Click" 
             Style="{StaticResource BtnCancel}"/>
 
         <Button 
             x:Name="btnUpdate"
-            Grid.Row="8" 
-            Grid.Column="2" 
+            Grid.Row="3" 
+            Grid.Column="1" 
             Content="Actualizar" 
-            Margin="0,40,0,0" 
+            Margin="150,40,0,0" 
             Click="BtnUpdate_Click"
             Style="{StaticResource BtnUpdate}">
             <Button.IsEnabled>
@@ -124,10 +125,10 @@
 
         <Button 
             x:Name="btnAdd"
-            Grid.Row="8" 
-            Grid.Column="2"         
+            Grid.Row="3" 
+            Grid.Column="1"         
             Content="Guardar" 
-            Margin="0,40,0,0" 
+            Margin="150,40,0,0" 
             Click="BtnAdd_Click"
             Style="{StaticResource BtnAdd}">
             <Button.IsEnabled>
@@ -140,8 +141,8 @@
 
         <TextBlock 
             x:Name="lblError"
-            Grid.Row="9" 
-            Grid.ColumnSpan="4"
+            Grid.Row="4" 
+            Grid.ColumnSpan="3"
             Style="{StaticResource lblError}"
             TextWrapping="Wrap"/>
 
