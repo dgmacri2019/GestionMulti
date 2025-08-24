@@ -78,7 +78,6 @@ namespace GestionComercial.Applications.Services
             return ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions);
         }
 
-
         public async Task<ClientViewModel?> GetByIdAsync(int id)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
@@ -139,46 +138,21 @@ namespace GestionComercial.Applications.Services
             return client == null ? null : ConverterHelper.ToClientViewModel(client, priceLists, states,
                 saleConditions, ivaConditions, documentTypes);
         }
-      
-        /*
-       public async Task<IEnumerable<ClientViewModel>> SearchToListAsync(string name, bool isEnabled, bool isDeleted)
-       {
-           // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-           ICollection<PriceList> priceLists = await _context.PriceLists
-             .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-             .ToListAsync();
-
-           List<IGrouping<string, Client>> clients = string.IsNullOrEmpty(name) ?
-               await _context.Clients
-                .Include(c => c.PriceList)
-                .Include(c => c.State)
-                .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-                .GroupBy(c => c.PriceList.Description)
-                .ToListAsync()
-               :
-               await _context.Clients
-                .Include(c => c.PriceList)
-                .Include(s => s.State)
-                .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted && (p.BusinessName.Contains(name) || p.FantasyName.Contains(name) || p.DocumentNumber.Contains(name)))
-                .GroupBy(c => c.PriceList.Description)
-                .ToListAsync();
-
-
-           return ToClientViewModelAndPriceList(clients, priceLists);
-       }
-
-     */
 
 
 
-        private IEnumerable<ClientViewModel> ToClientViewModelAndPriceList(List<IGrouping<string, Client>> clients, ICollection<PriceList> priceLists, ICollection<DocumentType> documentTypes,
-            ICollection<SaleCondition> saleConditions, ICollection<State> states, ICollection<IvaCondition> ivaConditions)
+
+
+        private IEnumerable<ClientViewModel> ToClientViewModelAndPriceList(List<IGrouping<string, Client>> clients,
+            ICollection<PriceList> priceLists, ICollection<DocumentType> documentTypes, ICollection<SaleCondition> saleConditions, 
+            ICollection<State> states, ICollection<IvaCondition> ivaConditions)
         {
             return clients.SelectMany(group => group.Select(client => new ClientViewModel
             {
                 Id = client.Id,
                 BusinessName = client.BusinessName,
                 FantasyName = client.FantasyName,
+                OptionalCode = client.OptionalCode,
                 DocumentTypeString = client.DocumentType.Description,
                 DocumentNumber = client.DocumentNumber,
                 IvaConditionString = client.IvaCondition.Description,

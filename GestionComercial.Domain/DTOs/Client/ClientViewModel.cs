@@ -1,9 +1,7 @@
 ﻿using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.DTOs.Client
 {
@@ -14,6 +12,10 @@ namespace GestionComercial.Domain.DTOs.Client
         [MaxLength(300, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [Display(Name = "Razón social")]
         public string BusinessName { get; set; }
+
+        [MaxLength(15, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
+        [Display(Name = "Código Opcional")]
+        public string? OptionalCode { get; set; }
 
         [MaxLength(300, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [Display(Name = "Nombre Fantasía")]

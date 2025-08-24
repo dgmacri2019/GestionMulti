@@ -104,6 +104,7 @@ namespace GestionComercial.Domain.Helpers
                 City = clientViewModel.City,
                 WebSite = clientViewModel.WebSite,
                 BusinessName = clientViewModel.BusinessName,
+                OptionalCode = clientViewModel.OptionalCode,
                 CreateDate = clientViewModel.CreateDate,
                 CreateUser = clientViewModel.CreateUser,
                 DocumentNumber = clientViewModel.DocumentNumber,
@@ -141,6 +142,7 @@ namespace GestionComercial.Domain.Helpers
             {
                 Address = client.Address,
                 BusinessName = client.BusinessName,
+                OptionalCode = client.OptionalCode,
                 City = client.City,
                 DocumentNumber = client.DocumentNumber,
                 DocumentTypeId = client.DocumentTypeId,

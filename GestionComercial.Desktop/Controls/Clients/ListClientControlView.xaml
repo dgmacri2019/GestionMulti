@@ -98,7 +98,7 @@
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Razón Social" Width="auto" MinWidth="100">
+                <DataGridTemplateColumn Header="Razón&#x0a;Social" Width="auto" MinWidth="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -110,11 +110,27 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Nombre Fantasía" Width="auto" MinWidth="100">
+                <DataGridTemplateColumn Header="Nombre&#x0a;Fantasía" Width="auto" MinWidth="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding FantasyName}" 
+                                   Style="{StaticResource LeftAlignedTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="80">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Código&#x0a;Opcional"
+                                   TextAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding OptionalCode}" 
                                    Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
@@ -140,7 +156,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding Address}" 
-                                   Style="{StaticResource CenteredTextStyle}">
+                                   Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>
@@ -152,7 +168,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding State}" 
-                                   Style="{StaticResource CenteredTextStyle}">
+                                   Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>
@@ -164,7 +180,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding City}" 
-                                   Style="{StaticResource CenteredTextStyle}">
+                                   Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>
@@ -175,7 +191,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Style="{StaticResource CenteredTextStyle}">
+                                <TextBlock Style="{StaticResource LeftAlignedTextStyle}">
                                     <Hyperlink NavigateUri="{Binding Email}"
                                                RequestNavigate="Email_RequestNavigate">
                                         <TextBlock Text="{Binding Email}" />
@@ -190,7 +206,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Style="{StaticResource CenteredTextStyle}">
+                                <TextBlock Style="{StaticResource LeftAlignedTextStyle}">
                                     <Hyperlink NavigateUri="{Binding WebSite}"
                                                RequestNavigate="WebSite_RequestNavigate">
                                         <TextBlock Text="{Binding WebSite}" />
@@ -206,7 +222,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding Phone}" 
-                                   Style="{StaticResource CenteredTextStyle}">
+                                   Style="{StaticResource LeftAlignedTextStyle}">
                                 </TextBlock>
                             </Border>
                         </DataTemplate>

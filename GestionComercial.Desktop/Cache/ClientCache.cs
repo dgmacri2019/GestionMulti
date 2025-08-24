@@ -3,7 +3,7 @@
 namespace GestionComercial.Desktop.Cache
 {
     public class ClientCache : ICache
-    {       
+    {
         private static ClientCache _instance;
         public static ClientCache Instance => _instance ??= new ClientCache();
 
@@ -63,7 +63,6 @@ namespace GestionComercial.Desktop.Cache
                 throw;
             }
         }
-
         public void UpdateClient(ClientViewModel client)
         {
             try
@@ -96,6 +95,45 @@ namespace GestionComercial.Desktop.Cache
             }
 
         }
+
+
+        public ClientViewModel? FindClientByOptionalCode(string optionalCode)
+        {
+            try
+            {
+                return _clients != null && string.IsNullOrEmpty(optionalCode) ? _clients
+                              .Where(p => p.IsEnabled
+                                       && !p.IsDeleted)
+                              .FirstOrDefault(a => a.OptionalCode == optionalCode)
+                              :
+                              new ClientViewModel();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<ClientViewModel> FindClientsByName(string name)
+        {
+            try
+            {
+                return _clients != null && string.IsNullOrEmpty(name) ? _clients
+                             .Where(p => p.IsEnabled
+                                      && !p.IsDeleted
+                                      && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
+                                       || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)))
+                             .ToList()
+                             :
+                             new List<ClientViewModel>();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
 
 
         public void ClearCache()
