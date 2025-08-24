@@ -62,25 +62,14 @@
                      VerticalAlignment="Center"                     
                      Text="{Binding FantasyName}"/>
         </StackPanel>
-        
+
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Número Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
-            <TextBox x:Name="txtDocumentNumber"
-              Style="{StaticResource TextBoxSearch}"
-              Width="100"
-              VerticalAlignment="Center" >
-                <TextBox.Text>
-                    <Binding 
-                 Path="DocumentNumber" 
-                 UpdateSourceTrigger="PropertyChanged" 
-                 ValidatesOnDataErrors="True" 
-                 NotifyOnValidationError="True">
-                        <Binding.ValidationRules>
-                            <local1:StringEmptyValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
+            <TextBlock Text="Código Opcional" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBox x:Name="txtOptionalCode"
+                     Style="{StaticResource TextBoxSearch}"
+                     Width="120"
+                     VerticalAlignment="Center"
+                     Text="{Binding OptionalCode}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
@@ -92,9 +81,29 @@
                       SelectedValuePath="Id"
                       ItemsSource="{Binding DocumentTypes}"
                       SelectedValue="{Binding DocumentTypeId}"/>
-        </StackPanel>       
+        </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
+            <TextBlock Text="Número Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBox x:Name="txtDocumentNumber"
+                     Style="{StaticResource TextBoxSearch}"
+                     Width="100"
+                     VerticalAlignment="Center" >
+                <TextBox.Text>
+                    <Binding 
+                        Path="DocumentNumber" 
+                        UpdateSourceTrigger="PropertyChanged" 
+                        ValidatesOnDataErrors="True" 
+                        NotifyOnValidationError="True">
+                        <Binding.ValidationRules>
+                            <local1:StringEmptyValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="10,0,20,8">
             <TextBlock Text="Domicilio" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtAddress"
                      Style="{StaticResource TextBoxSearch}"
@@ -114,7 +123,7 @@
             </TextBox>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Código Postal" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtPostalCode"
                      Style="{StaticResource TextBoxSearch}"
@@ -136,7 +145,7 @@
 
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Provincia" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbStates" 
                       Style="{StaticResource ComboBox}"
@@ -147,7 +156,7 @@
                       SelectedValue="{Binding StateId}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10,0,20,8">
             <TextBlock Text="Localidad" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtCity"
                      Style="{StaticResource TextBoxSearch}"
@@ -167,7 +176,7 @@
             </TextBox>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtPhone"
                      Style="{StaticResource TextBoxSearch}"
@@ -177,7 +186,7 @@
                      />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtPhone1"
                      Style="{StaticResource TextBoxSearch}"
@@ -187,7 +196,7 @@
                   />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" Margin="10,0,20,8">
             <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtPhone2"
                      Style="{StaticResource TextBoxSearch}"
@@ -197,7 +206,7 @@
                      />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Email" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtEmail"
                      Style="{StaticResource TextBoxSearch}"
@@ -216,7 +225,7 @@
                 </TextBox.Text>
             </TextBox>
         </StackPanel>
-        
+
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Condición de Venta" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <ComboBox x:Name="cbSaleConditions" 
@@ -226,9 +235,9 @@
                 SelectedValuePath="Id"
                 ItemsSource="{Binding SaleConditions}"
                 SelectedValue="{Binding SaleConditionId}"/>
-        </StackPanel>       
+        </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" Margin="10,0,20,8">
             <TextBlock Text="Día de pago" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtPayDay"
                      Style="{StaticResource TextBoxSearch}"
@@ -237,15 +246,6 @@
                      Text="{Binding PayDay}" 
                      ToolTip="El valor indicado aquí, generará el arlerta de reposición"
                      />
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Página Web" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
-            <TextBox x:Name="txtWebSite"
-              Style="{StaticResource TextBoxSearch}"
-              Width="250"
-              VerticalAlignment="Center"                     
-              Text="{Binding WebSite}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Margin="10,0,20,8">
@@ -270,15 +270,15 @@
                       SelectedValue="{Binding PriceListId}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
-            <CheckBox x:Name="chbIsEnabled"
-                   Style="{StaticResource CheckBox}"
-                   Width="50"
-                   VerticalAlignment="Center"                     
-                   IsChecked="{Binding IsEnabled}"/>
-        </StackPanel>
-
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" Margin="10,0,20,8">
+            <TextBlock Text="Página Web" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBox x:Name="txtWebSite"
+                     Style="{StaticResource TextBoxSearch}"
+                     Width="250"
+                     VerticalAlignment="Center"
+                     Text="{Binding WebSite}"/>
+        </StackPanel>        
+        
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
             <TextBlock Text="Comentarios" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtRemark"
@@ -292,6 +292,15 @@
                      Text="{Binding Remark}"/>
         </StackPanel>
 
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2" Margin="10,0,20,8">
+            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <CheckBox x:Name="chbIsEnabled"
+                      Style="{StaticResource CheckBox}"
+                      Width="50"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsEnabled}"/>
+        </StackPanel>
+        
         <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
             <TextBlock Text="Leyenda Facturas" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
             <TextBox x:Name="txtLegendInvoices"

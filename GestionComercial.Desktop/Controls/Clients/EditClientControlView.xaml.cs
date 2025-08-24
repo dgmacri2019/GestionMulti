@@ -6,7 +6,6 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Controls.Clients
 {
