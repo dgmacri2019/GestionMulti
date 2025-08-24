@@ -2,7 +2,6 @@
 using GestionComercial.Domain.Entities.Purchases;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Masters
 {
@@ -16,6 +15,10 @@ namespace GestionComercial.Domain.Entities.Masters
         [MaxLength(300, ErrorMessage = "El campo {0} debe contener un máximo de {1} caracteres")]
         [Display(Name = "Nombre de Fantasía")]
         public string? FantasyName { get; set; }
+
+        [MaxLength(15, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
+        [Display(Name = "Código Opcional")]
+        public string? OptionalCode { get; set; }
 
         [Display(Name = "Tipo Documento")]
         public int DocumentTypeId { get; set; }

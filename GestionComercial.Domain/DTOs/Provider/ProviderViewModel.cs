@@ -19,6 +19,10 @@ namespace GestionComercial.Domain.DTOs.Provider
         [Display(Name = "Nombre de Fantasía")]
         public string? FantasyName { get; set; }
 
+        [MaxLength(15, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
+        [Display(Name = "Código Opcional")]
+        public string? OptionalCode { get; set; }
+
         [Display(Name = "Tipo Documento")]
         public string DocumentTypeString { get; set; }
 

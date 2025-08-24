@@ -200,6 +200,7 @@ namespace GestionComercial.Domain.Helpers
                 City = providerViewModel.City,
                 WebSite = providerViewModel.WebSite,
                 BusinessName = providerViewModel.BusinessName,
+                OptionalCode = providerViewModel.OptionalCode, 
                 CreateDate = providerViewModel.CreateDate,
                 CreateUser = providerViewModel.CreateUser,
                 DocumentNumber = providerViewModel.DocumentNumber,
@@ -230,6 +231,7 @@ namespace GestionComercial.Domain.Helpers
         {
             return new ProviderViewModel
             {
+                OptionalCode = provider.OptionalCode,
                 Address = provider.Address,
                 BusinessName = provider.BusinessName,
                 City = provider.City,

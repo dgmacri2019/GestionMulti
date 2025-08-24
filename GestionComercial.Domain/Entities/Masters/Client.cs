@@ -1,7 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Masters
 {

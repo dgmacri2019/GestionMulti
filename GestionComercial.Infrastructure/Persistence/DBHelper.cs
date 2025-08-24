@@ -234,6 +234,30 @@ namespace GestionComercial.Infrastructure.Persistence
                 {
                     response.Message = "Esa cuanta de Email ya se encuentra registrada";
                 }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Client_Code_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Client_Code_Index"))
+                {
+                    response.Message = "Ese código de cliente ya se encuentra registrado";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Client_Document_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Client_Document_Index"))
+                {
+                    response.Message = "Ese tipo y número de documento ya se encuentra registrado";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Provider_Code_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Provider_Code_Index"))
+                {
+                    response.Message = "Ese código de proveedor ya se encuentra registrado";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Provider_Document_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Provider_Document_Index"))
+                {
+                    response.Message = "Ese tipo y número de documento ya se encuentra registrado";
+                }
                 else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Product_Code_Index")) ||
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
                     ex.InnerException.InnerException.Message.Contains("Product_Code_Index"))

@@ -231,6 +231,26 @@ namespace GestionComercial.Infrastructure.Persistence
                 .IsUnique()
                 .HasDatabaseName("User_Email_Index");
 
+            modelBuilder.Entity<Client>()
+                .HasIndex(c => new { c.OptionalCode })
+                .IsUnique()
+                .HasDatabaseName("Client_Code_Index");
+
+            modelBuilder.Entity<Client>()
+                .HasIndex(c => new { c.DocumentNumber, c.DocumentTypeId })
+                .IsUnique()
+                .HasDatabaseName("Client_Document_Index");
+
+            modelBuilder.Entity<Provider>()
+                .HasIndex(c => new { c.OptionalCode })
+                .IsUnique()
+                .HasDatabaseName("Provider_Code_Index");
+
+            modelBuilder.Entity<Provider>()
+                .HasIndex(c => new { c.DocumentNumber, c.DocumentTypeId })
+                .IsUnique()
+                .HasDatabaseName("Provider_Document_Index");
+
             modelBuilder.Entity<Article>()
                 .HasIndex(p => new { p.Code })
                 .IsUnique()
