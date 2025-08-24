@@ -90,7 +90,7 @@
                 <DataGridTemplateColumn Header="Categoría" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Border Background="{Binding CategoryColor}" Padding="10" CornerRadius="10">
+                            <Border Background="{Binding CategoryColor}" Padding="10" CornerRadius="20">
                                 <TextBlock Text="{Binding Category}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
@@ -127,7 +127,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Descripción" Width="*">
+                <DataGridTemplateColumn Header="Descripción" Width="auto" MinWidth="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
@@ -142,13 +142,20 @@
                 <DataGridTemplateColumn Header="Stock" Width="auto">                    
                     <DataGridTemplateColumn.CellTemplate>                        
                         <DataTemplate>
-                            <Border 
-                                Background="{Binding Stock, Converter={StaticResource NegativoAFondoConverter}}">
-                                <TextBlock Text="{Binding Stock, StringFormat={}{0:N4}}" 
+                            <Border CornerRadius="30">
+                                <!--Background="{Binding Stock, Converter={StaticResource NegativoAFondoConverter}}">-->
+                                <TextBlock Text="{Binding Stock, StringFormat={}{0:N2}}" 
                                            Style="{StaticResource CenteredTextStyle}"
                                            Foreground="{Binding Stock, Converter={StaticResource NegativoATextoConverter}}">
-
                                 </TextBlock>
+
+                                <Border.Background>
+                                    <MultiBinding Converter="{StaticResource StockMultiConverter}">
+                                        <Binding Path="Stock" />
+                                        <Binding Path="MinimalStock" />
+                                        <!-- tu segundo valor -->
+                                    </MultiBinding>
+                                </Border.Background>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -169,7 +176,8 @@
                 <DataGridTemplateColumn Header="Bonificación" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Border Background="{Binding Bonification, Converter={StaticResource NegativoAFondoConverter}}">
+                            <Border CornerRadius="20"
+                                Background="{Binding Bonification, Converter={StaticResource NegativoAFondoConverter}}">
                                 <TextBlock 
                                     Text="{Binding Bonification, StringFormat={}{0:P0}}" 
                                     Style="{StaticResource CenteredTextStyle}"
@@ -231,7 +239,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding PriceWithTax, StringFormat={}{0:C4}}" 
+                                <TextBlock Text="{Binding PriceWithTax, StringFormat={}{0:C2}}" 
                                            Style="{StaticResource CenteredTextStyle}">
                                 </TextBlock>
                             </Border>

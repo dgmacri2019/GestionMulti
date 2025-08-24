@@ -11,18 +11,11 @@ namespace GestionComercial.Desktop.Controls.Banks
     /// </summary>
     public partial class ListBankParameterControlView : UserControl
     {
-        private bool Enabled = true;
-        private bool Deleted = false;
-
         public ListBankParameterControlView()
         {
             InitializeComponent();
-            DataContext = new BankParameterListViewModel(string.Empty, Enabled, Deleted);
+            DataContext = new BankParameterListViewModel();
         }
-
-
-
-
 
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -30,14 +23,12 @@ namespace GestionComercial.Desktop.Controls.Banks
             if (DgBankParameter.SelectedItem is BankParameterViewModel bankParameterViewModel)
             {
                 DgBankParameter.Visibility = Visibility.Hidden;
-                DgBankParameter.DataContext = null;
                 PanelEdicion.Visibility = Visibility.Visible;
                 btnAddBank.Visibility = Visibility.Hidden;
                 lblHeader.Content = "Editar Parametro de acreditación bancaria";
                 var ventana = new EditBankParameterControlView(bankParameterViewModel.Id);
                 ventana.ParametroActualizado += () =>
                 {
-                    DgBankParameter.DataContext = new BankParameterListViewModel(string.Empty, Enabled, Deleted);
                     DgBankParameter.Visibility = Visibility.Visible;
                     PanelEdicion.Content = null;
                     PanelEdicion.Visibility = Visibility.Hidden;

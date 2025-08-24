@@ -1,7 +1,10 @@
 ﻿<Window x:Class="GestionComercial.Desktop.Views.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Login" Height="290" Width="400" 
+        Title="Login" 
+        Height="350" 
+        Width="350" 
+        Icon="/Images/090906_Tienda2.png"
         WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -12,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="0,0,0,10">
-            <TextBlock Text="Username:" />
+            <TextBlock Text="Usuario:" />
             <TextBox x:Name="txtUsername" Margin="0,5"/>
         </StackPanel>
 
@@ -30,9 +33,10 @@
             Click="Login_Click"
             Style="{StaticResource BtnLogin}"/>
 
-        <TextBlock
+        <TextBlock 
             x:Name="lblError"
-            Grid.Row="3" 
-            Style="{StaticResource lblError}"/>
+            Grid.Row="3"
+            Style="{StaticResource lblError}"
+            TextWrapping="Wrap"/>
     </Grid>
 </Window>

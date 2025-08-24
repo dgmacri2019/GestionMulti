@@ -172,15 +172,15 @@ namespace GestionComercial.Desktop.Services
         }
 
 
-        internal async Task<List<BankParameterViewModel>> SearchBankParameterAsync(string name, bool isEnabled, bool isDeleted)
+        internal async Task<List<BankParameterViewModel>> SearchBankParameterAsync()
         {
             // Llama al endpoint y deserializa la respuesta
 
             var response = await _httpClient.PostAsJsonAsync("api/banks/SearchBankParameterToListAsync", new
             {
-                Name = name,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
+                //Name = name,
+                //IsDeleted = isDeleted,
+                //IsEnabled = isEnabled,
             });
 
             var jsonResponse = await response.Content.ReadAsStringAsync();

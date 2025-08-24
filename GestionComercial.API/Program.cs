@@ -53,6 +53,7 @@ builder.Services.AddScoped<IClientsNotifier, SignalRClientsNotifier>();
 builder.Services.AddScoped<IProvidersNotifier, SignalRProvidersNotifier>();
 builder.Services.AddScoped<IArticlesNotifier, SignalRArticlesNotifier>();
 builder.Services.AddScoped<IBoxAndBanksNotifier, SignalRBoxAndBanksNotifier>();
+builder.Services.AddScoped<IBankParametersNotifier, SignalRBankParametersNotifier>();
 
 //builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -104,6 +105,7 @@ app.MapHub<ClientsHub>("/hubs/clients"); // ?? URL del hub
 app.MapHub<ProvidersHub>("/hubs/providers"); // ?? URL del hub
 app.MapHub<ArticlesHub>("/hubs/articles"); // ?? URL del hub
 app.MapHub<BoxAndBanksHub>("/hubs/boxandbank"); // ?? URL del hub
+app.MapHub<BankParametersHub>("/hubs/bankparameter"); // ?? URL del hub
 
 using (var scope = app.Services.CreateScope())
 {

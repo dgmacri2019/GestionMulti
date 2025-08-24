@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using static GestionComercial.Domain.Notifications.BoxAndBankChangeNotification;
+using static GestionComercial.Domain.Notifications.BankParameterChangeNotification;
 
 namespace GestionComercial.Desktop.Services.Hub
 {
-    internal class BoxAndBanksHubService
+    internal class BankParametersHubService
     {
         private readonly HubConnection _connection;
-        
-        // Evento que levantamos cuando llega una notificación
-        public event Action<CajaYBancoChangeNotification> CajaYBancoCambiado;
 
-        public BoxAndBanksHubService(string hubUrl)
+        // Evento que levantamos cuando llega una notificación
+        public event Action<ParametroBancarioChangeNotification> ParametrosBancariosCambiado;
+
+        public BankParametersHubService(string hubUrl)
         {
             _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
@@ -19,9 +19,9 @@ namespace GestionComercial.Desktop.Services.Hub
                 .Build();
 
             // Aquí registramos el método que el servidor va a invocar
-            _connection.On<CajaYBancoChangeNotification>("CajasYBancosActualizados", (notification) =>
+            _connection.On<ParametroBancarioChangeNotification>("ParametrosBancariosActualizados", (notification) =>
             {
-                CajaYBancoCambiado?.Invoke(notification);
+                ParametrosBancariosCambiado?.Invoke(notification);
             });
         }
 

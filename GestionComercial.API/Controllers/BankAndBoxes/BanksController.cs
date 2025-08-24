@@ -20,12 +20,15 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
         private readonly IBankService _bankService;
         private readonly IMasterService _masterService;
         private readonly IBoxAndBanksNotifier _notifier;
+        private readonly IBankParametersNotifier _notifierBankParameter;
 
-        public BanksController(IBankService bankService, IMasterService masterService, IBoxAndBanksNotifier notifier)
+        public BanksController(IBankService bankService, IMasterService masterService, IBoxAndBanksNotifier notifier, 
+            IBankParametersNotifier notifierBankParameter)
         {
             _bankService = bankService;
             _masterService = masterService;
             _notifier = notifier;
+            _notifierBankParameter = notifierBankParameter;
         }
 
         [HttpPost("{id:int}/notify")]
@@ -67,7 +70,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
             GeneralResponse resultAdd = await _masterService.AddAsync(bankParameter);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(bankParameter.Id, "Parámetro Bancario", ChangeType.Created);
+                await _notifierBankParameter.NotifyAsync(bankParameter.Id, "Parámetro Bancario", ChangeType.Created);
 
                 return Ok("Parametro bancario creado correctamente");
             }
@@ -134,7 +137,7 @@ namespace GestionComercial.API.Controllers.BankAndBoxes
             GeneralResponse resultAdd = await _masterService.UpdateAsync(bankParameter);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(bankParameter.Id, "Parámetro Bancario", ChangeType.Created);
+                await _notifierBankParameter.NotifyAsync(bankParameter.Id, "Parámetro Bancario", ChangeType.Created);
 
                 return Ok("Parametro bancario modificado correctamente");
             }

@@ -7,9 +7,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <NuGetAuditMode>all</NuGetAuditMode>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\MultiConverter.cs" />
     <Compile Remove="ViewModels\Stock\ArticleViewModel.cs" />
   </ItemGroup>
 
@@ -392,6 +394,10 @@
     <None Remove="Images\User 64.png" />
     <None Remove="Images\usuario.png" />
     <None Remove="Images\whataspp_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>

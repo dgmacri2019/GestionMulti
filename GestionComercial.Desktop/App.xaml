@@ -29,6 +29,8 @@
             <helpers:NegativoAFondoConverter x:Key="NegativoAFondoConverter"/>
             <helpers:NegativoATextoConverter x:Key="NegativoATextoConverter"/>
             <helpers:ValidationToEnabledConverter x:Key="ValidationToEnabledConverter"/>
+            <helpers:StockMultiConverter x:Key="StockMultiConverter"/>
+            
         </ResourceDictionary>
         
     </Application.Resources>

@@ -7,9 +7,11 @@
         xmlns:local1="clr-namespace:GestionComercial.Domain.DTOs.Menu;assembly=GestionComercial.Domain"
         mc:Ignorable="d"
         Title="Sistema de Gestión Comercial"
+        Icon="/Images/090906_Tienda2.png"
         Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
-         WindowState="Maximized" Loaded="Window_Loaded">
+        WindowState="Maximized" 
+        Loaded="Window_Loaded">
 
     <DockPanel>
         <!-- Header -->
