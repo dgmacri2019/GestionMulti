@@ -89,175 +89,162 @@
         </StackPanel>
 
         <DataGrid x:Name="DgArticles" Background="Gray"
-                  Grid.Row="2" 
-                  ItemsSource="{Binding Clients}" 
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  IsReadOnly="True"
-                  ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                  MouseDoubleClick="DataGrid_MouseDoubleClick">
+          Grid.Row="2" 
+          ItemsSource="{Binding Clients}" 
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          IsReadOnly="True"
+          CanUserSortColumns="True"
+          ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+          MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Razón&#x0a;Social" Width="auto" MinWidth="100">
+                <DataGridTemplateColumn Header="Razón&#x0a;Social" Width="auto" MinWidth="100" SortMemberPath="BusinessName">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding BusinessName}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Nombre&#x0a;Fantasía" Width="auto" MinWidth="100">
+                <DataGridTemplateColumn Header="Nombre&#x0a;Fantasía" Width="auto" MinWidth="100" SortMemberPath="FantasyName">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding FantasyName}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="80">
+                <DataGridTemplateColumn Width="80" SortMemberPath="OptionalCode">
                     <DataGridTemplateColumn.Header>
-                        <TextBlock Text="Código&#x0a;Opcional"
-                                   TextAlignment="Center"/>
+                        <TextBlock Text="Código&#x0a;Opcional" TextAlignment="Center"/>
                     </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding OptionalCode}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="DNI / CUIT" Width="auto">
+                <DataGridTemplateColumn Header="DNI / CUIT" Width="auto" SortMemberPath="DocumentNumber">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding DocumentNumber}" 
-                                   Style="{StaticResource CenteredTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-
-                <DataGridTemplateColumn Header="Dirección" Width="auto" MinWidth="150">
+                <DataGridTemplateColumn Header="Dirección" Width="auto" MinWidth="150" SortMemberPath="Address">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding Address}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Provincia" Width="auto">
+                <DataGridTemplateColumn Header="Provincia" Width="auto" SortMemberPath="State">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding State}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Ciudad" Width="auto">
+                <DataGridTemplateColumn Header="Ciudad" Width="auto" SortMemberPath="City">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding City}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Email" Width="auto">
+                <DataGridTemplateColumn Header="Email" Width="auto" SortMemberPath="Email">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Style="{StaticResource LeftAlignedTextStyle}">
-                                    <Hyperlink NavigateUri="{Binding Email}"
-                                               RequestNavigate="Email_RequestNavigate">
-                                        <TextBlock Text="{Binding Email}" />
-                                    </Hyperlink>
-                                </TextBlock>
+                            <Hyperlink NavigateUri="{Binding Email}" RequestNavigate="Email_RequestNavigate">
+                                <TextBlock Text="{Binding Email}" />
+                            </Hyperlink>
+                        </TextBlock>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Sitio Web" Width="auto">
+                <DataGridTemplateColumn Header="Sitio Web" Width="auto" SortMemberPath="WebSite">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Style="{StaticResource LeftAlignedTextStyle}">
-                                    <Hyperlink NavigateUri="{Binding WebSite}"
-                                               RequestNavigate="WebSite_RequestNavigate">
-                                        <TextBlock Text="{Binding WebSite}" />
-                                    </Hyperlink>
-                                </TextBlock>
+                            <Hyperlink NavigateUri="{Binding WebSite}" RequestNavigate="WebSite_RequestNavigate">
+                                <TextBlock Text="{Binding WebSite}" />
+                            </Hyperlink>
+                        </TextBlock>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Teléfono" Width="auto">
+                <DataGridTemplateColumn Header="Teléfono" Width="auto" SortMemberPath="Phone">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding Phone}" 
-                                   Style="{StaticResource LeftAlignedTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Saldo" Width="80">
+                <DataGridTemplateColumn Header="Saldo" Width="80" SortMemberPath="Sold">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Border 
-                                Background="{Binding Sold, Converter={StaticResource NegativoAFondoConverter}}">
+                            <Border Background="{Binding Sold, Converter={StaticResource NegativoAFondoConverter}}">
                                 <TextBlock Text="{Binding Sold, StringFormat={}{0:C2}}" 
-                                           Style="{StaticResource CenteredTextStyle}"
-                                           Foreground="{Binding Sold, Converter={StaticResource NegativoATextoConverter}}">
-                                </TextBlock>
+                                   Style="{StaticResource CenteredTextStyle}"
+                                   Foreground="{Binding Sold, Converter={StaticResource NegativoATextoConverter}}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Lista de Precios" Width="auto">
+                <DataGridTemplateColumn Header="Lista de Precios" Width="auto" SortMemberPath="PriceList">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding PriceList}" 
-                                   Style="{StaticResource CenteredTextStyle}">
-                                </TextBlock>
+                                   Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-
             </DataGrid.Columns>
         </DataGrid>
+
+
         <!-- Contenedor para el control de edición -->
         <ContentControl x:Name="PanelEdicion" Grid.Row="1" Style="{StaticResource Test }"/>
 
