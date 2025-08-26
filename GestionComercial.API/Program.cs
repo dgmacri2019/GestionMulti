@@ -115,6 +115,7 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
+    endpoints.MapControllers();
     endpoints.MapHub<ClientsHub>("/hubs/clients"); // ?? URL del hub
     endpoints.MapHub<ProvidersHub>("/hubs/providers"); // ?? URL del hub
     endpoints.MapHub<ArticlesHub>("/hubs/articles"); // ?? URL del hub
