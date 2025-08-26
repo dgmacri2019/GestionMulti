@@ -21,7 +21,7 @@ namespace GestionComercial.Desktop.Services
             string token = App.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
-            _httpClient.Timeout.Add(new TimeSpan(100));            
+            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));            
         }
 
 

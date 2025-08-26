@@ -7,10 +7,10 @@
              xmlns:local1="clr-namespace:GestionComercial.Desktop.Helpers"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="LightGray" Loaded="UserControl_Loaded">
+             Background="Gray" Loaded="UserControl_Loaded">
 
 
-    <Grid>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -47,7 +47,7 @@
               VerticalAlignment="Center" 
               HorizontalAlignment="Center"
               Style="{StaticResource lblHeader}"
-              Foreground="#C74CE6"/>
+              Foreground="#A35715"/>
 
                 <Button 
               x:Name="btnAddAccount"

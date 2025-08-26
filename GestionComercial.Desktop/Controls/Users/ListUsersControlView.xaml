@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="LightGray">
+             Background="Gray">
 
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
@@ -47,7 +47,7 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Style="{StaticResource lblHeader}"
-                    Foreground="#165E72"/>
+                    Foreground="#BD0000"/>
 
                 <Button 
                     x:Name="btnAdd"
@@ -91,6 +91,7 @@
 
         <DataGrid x:Name="DgUsers"
                   Grid.Row="2" 
+                  Background="Gray"
                   ItemsSource="{Binding Users}" 
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"

@@ -73,6 +73,7 @@
         </StackPanel>
 
         <DataGrid x:Name="DgBoxAndBanks"
+                  Background="Gray"
                   Grid.Row="2" 
                   ColumnHeaderHeight="50"
                   ItemsSource="{Binding BoxAndBanks}" 

@@ -7,7 +7,8 @@
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="LightGray">
+             Background="Gray">
+    
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
         <Grid.RowDefinitions>
             <!-- Fila 0: Texto y botones -->
@@ -44,7 +45,7 @@
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Center"
                 Style="{StaticResource lblHeader}"
-                Foreground="#F49A18"/>
+                Foreground="#324F52"/>
 
                 <Button
                     x:Name="btnAdd"
@@ -87,6 +88,7 @@
         </StackPanel>
 
         <DataGrid x:Name="DgPriceLists"
+                  Background="Gray"
                   Grid.Row="2" 
                   ItemsSource="{Binding PriceLists}" 
                   AutoGenerateColumns="False"

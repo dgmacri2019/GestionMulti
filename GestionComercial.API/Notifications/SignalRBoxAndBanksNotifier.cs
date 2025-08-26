@@ -1,6 +1,5 @@
-﻿using GestionComercial.API.Hubs;
+﻿using GestionComercial.API.Notifications.Background;
 using GestionComercial.Applications.Notifications;
-using Microsoft.AspNetCore.SignalR;
 using static GestionComercial.Domain.Constant.Enumeration;
 using static GestionComercial.Domain.Notifications.BoxAndBankChangeNotification;
 
@@ -8,11 +7,12 @@ namespace GestionComercial.API.Notifications
 {
     public class SignalRBoxAndBanksNotifier : IBoxAndBanksNotifier
     {
-        private readonly IHubContext<BoxAndBanksHub, IBoxAndBanksClient> _hub;
-
-        public SignalRBoxAndBanksNotifier(IHubContext<BoxAndBanksHub, IBoxAndBanksClient> hub)
+        //private readonly IHubContext<BoxAndBanksHub, IBoxAndBanksClient> _hub;
+        private readonly INotificationQueue _queue;
+        public SignalRBoxAndBanksNotifier(/*IHubContext<BoxAndBanksHub, IBoxAndBanksClient> hub*/INotificationQueue queue)
         {
-            _hub = hub;
+            _queue = queue;
+            //_hub = hub;
         }
 
         public async Task NotifyAsync(int clienteId, string nombre, ChangeType accion)
@@ -25,7 +25,10 @@ namespace GestionComercial.API.Notifications
                 ChangeType.Deleted => new BoxAndBankEliminado(clienteId, DateTimeOffset.UtcNow),
                 _ => throw new ArgumentException("Acción inválida")
             };
-            await _hub.Clients.All.CajasYBancosActualizados(notification);
+            //await _hub.Clients.All.CajasYBancosActualizados(notification);
+
+            // 👉 encolamos (rápido) y devolvemos el control al request
+            await _queue.EnqueueAsync(new BoxAndBankChangedItem(notification));
         }
     }
 }

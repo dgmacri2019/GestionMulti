@@ -10,7 +10,6 @@ using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -58,16 +57,21 @@ namespace GestionComercial.Desktop.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            List<MenuItemModel> menu =
-            [
+            NavigationTree.ItemsSource = CreateMenuItem();
+        }
+
+        private List<MenuItemModel> CreateMenuItem()
+        {
+            return
+                [
                 new()
                 {
-                     Title = "Clientes",
-                     Icon = "/Images/Clients 32.png",
-                     Children =
-                     [
-                         new() { Title = "Clientes ", Icon = "/Images/Clients 32.png", Tag = "Clients" },
-                     ]
+                    Title = "Clientes",
+                    Icon = "/Images/Clients 32.png",
+                    Children =
+                    [
+                        new() { Title = "Clientes ", Icon = "/Images/Clients 32.png", Tag = "Clients" },
+                    ]
                 },
                 new MenuItemModel
                 {
@@ -123,28 +127,47 @@ namespace GestionComercial.Desktop.Views
                     Icon = "/Images/Setting Config 32.png",
                     Children =
                     [
-                        new() { Title = "Usuarios", Icon = "/Images/Usuario.png", Tag = "Users" },
-                        new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
+                        new() {
+                            Title = "Parametros",
+                            Icon = "/Images/Setting Config 32.png",
+                            Children =
+                            [
+                                new() {
+                                    Title = "Generales",
+                                    Icon ="/Images/Setting 32.png",
+                                    Children =
+                                    [
+                                         new() { Title = "Email", Icon = "/Images/Email Setting 32.png", Tag = "Email_Setup" },
+                                        new() { Title = "Sistema", Icon = "/Images/GetParameter 32.png", Tag = "System_Setup" },
+                                    ]
+                                },
+                                new() { Title = "Impresión", Icon = "/Images/Printer Setup 32.png", Tag = "Printer_Setup" },
+
+                            ]
+                        },
+                        new() {
+                            Title = "Seguridad",
+                            Icon = "/Images/Security 32.png",
+                            Children =
+                            [
+                                new() { Title = "Usuarios", Icon = "/Images/Users 32.png", Tag = "Users" },
+                                new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
+                            ]
+                        },
+
                     ]
                 },
-
                 new MenuItemModel
                 {
                     Title = "Cerrar Sesión",
                     Icon = "/Images/Block 32.png",
                     Tag = "LogOut",
-                    Children =
-                    [
-                        new() { Title = "Cerrar Sesión ", Icon = "/Images/Block 32.png", Tag = "LogOut" },
-                    ]
+                    //Children =
+                    //[
+                    //    new() { Title = "Cerrar Sesión ", Icon = "/Images/Block 32.png", Tag = "LogOut" },
+                    //]
                 },
             ];
-
-
-
-
-
-            NavigationTree.ItemsSource = menu;
         }
 
         private void NavigationTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -179,6 +202,12 @@ namespace GestionComercial.Desktop.Views
                         break;
                     case "Permissions":
                         MainContent.Content = new ListPermissionsControlView();
+                        break;
+                    case "Email_Setup":
+                        break;
+                    case "System_Setup":
+                        break;
+                    case "Printer_Setup":
                         break;
                     case "LogOut":
                         LogOut();

@@ -2,6 +2,7 @@ using GestionComercial.Api.Notifications;
 using GestionComercial.API.Helpers;
 using GestionComercial.API.Hubs;
 using GestionComercial.API.Notifications;
+using GestionComercial.API.Notifications.Background;
 using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
@@ -35,7 +36,17 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // SignalR
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);   // detección de clientes colgados
+    options.KeepAliveInterval = TimeSpan.FromSeconds(10);   // ping periódico
+    options.MaximumParallelInvocationsPerClient = 10;            // defensivo
+});
+
+// Cola + dispatcher
+builder.Services.AddSingleton<INotificationQueue, NotificationQueue>();
+builder.Services.AddHostedService<NotificationDispatcher>();
 
 // Inyección de dependencias
 builder.Services.AddScoped<IArticleService, ArticleService>();
@@ -100,12 +111,16 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapHub<ClientsHub>("/hubs/clients"); // ?? URL del hub
-app.MapHub<ProvidersHub>("/hubs/providers"); // ?? URL del hub
-app.MapHub<ArticlesHub>("/hubs/articles"); // ?? URL del hub
-app.MapHub<BoxAndBanksHub>("/hubs/boxandbank"); // ?? URL del hub
-app.MapHub<BankParametersHub>("/hubs/bankparameter"); // ?? URL del hub
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ClientsHub>("/hubs/clients"); // ?? URL del hub
+    endpoints.MapHub<ProvidersHub>("/hubs/providers"); // ?? URL del hub
+    endpoints.MapHub<ArticlesHub>("/hubs/articles"); // ?? URL del hub
+    endpoints.MapHub<BoxAndBanksHub>("/hubs/boxandbank"); // ?? URL del hub
+    endpoints.MapHub<BankParametersHub>("/hubs/bankparameter"); // ?? URL del hub
+});
 
 using (var scope = app.Services.CreateScope())
 {

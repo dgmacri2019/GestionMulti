@@ -1,0 +1,10 @@
+﻿1) Instalar IIS (todos los complementos) en Windows Server o Windows 10/11 Pro 
+2) Instalar el archivo "dotnet-hosting-9.0.3-win"
+3) Ingresar a %windir%\system32\inetsrv\config
+   Editar el archivo "ApplicationHost.config"
+   Reemplazar <section name="webSocket" overrideModeDefault="Deny" /> por <section name="webSocket" overrideModeDefault="Allow" />
+4) Configurar el sitio web
+6) En el Application Pool del sitio:
+	Idle Time-out: ponelo en 0 (o alto) para que no te suspenda la app con conexiones WebSocket abiertas.
+	Regular Time Interval (minutes) (recycling): aumentalo o desactivalo en ambiente controlado.
+4) Reiniciar el equipo

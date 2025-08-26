@@ -86,6 +86,7 @@
 
         <DataGrid 
             x:Name="DgBankParameter"
+            Background="Gray"
             Grid.Row="2" 
             ColumnHeaderHeight="60"
             ItemsSource="{Binding BankParameters}" 

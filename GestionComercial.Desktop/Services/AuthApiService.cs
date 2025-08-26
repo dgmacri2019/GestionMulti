@@ -13,7 +13,7 @@ namespace GestionComercial.Desktop.Services
         {
 
             _httpClient = new ApiService().GetHttpClient();
-            _httpClient.Timeout.Add(new TimeSpan(100));
+            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 
         public async Task<LoginResponse> LoginAsync(string username, string password)

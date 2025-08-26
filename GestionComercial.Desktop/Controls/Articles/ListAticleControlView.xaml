@@ -45,7 +45,7 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Style="{StaticResource lblHeader}"
-                    Foreground="#2B418A"/>
+                    Foreground="#324F52"/>
 
                 <Button 
                     x:Name="btnAdd"
