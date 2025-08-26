@@ -108,21 +108,23 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
+// Primero enrutamiento
+app.UseRouting();
+
+// Luego autenticación y autorización
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseRouting();
-
+// Finalmente, los endpoints
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapHub<ClientsHub>("/hubs/clients"); // ?? URL del hub
-    endpoints.MapHub<ProvidersHub>("/hubs/providers"); // ?? URL del hub
-    endpoints.MapHub<ArticlesHub>("/hubs/articles"); // ?? URL del hub
-    endpoints.MapHub<BoxAndBanksHub>("/hubs/boxandbank"); // ?? URL del hub
-    endpoints.MapHub<BankParametersHub>("/hubs/bankparameter"); // ?? URL del hub
+    endpoints.MapHub<ClientsHub>("/hubs/clients");
+    endpoints.MapHub<ProvidersHub>("/hubs/providers");
+    endpoints.MapHub<ArticlesHub>("/hubs/articles");
+    endpoints.MapHub<BoxAndBanksHub>("/hubs/boxandbank");
+    endpoints.MapHub<BankParametersHub>("/hubs/bankparameter");
 });
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
