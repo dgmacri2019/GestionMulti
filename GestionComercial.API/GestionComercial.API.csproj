@@ -52,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\Purchase\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 

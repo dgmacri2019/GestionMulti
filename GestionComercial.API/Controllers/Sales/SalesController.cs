@@ -1,64 +1,92 @@
-﻿using GestionComercial.Infrastructure.Extensions;
-using GestionComercial.Infrastructure.Persistence;
+﻿using GestionComercial.API.Security;
+using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Notifications;
+using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Sales
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Developer, Administrator,Cajero")]
+    [Authorize]
+    [AuthorizePermission]
     public class SalesController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ISalesService _saleService;
+        private readonly IMasterService _masterService;
+        private readonly IClientsNotifier _notifier;
 
-        public SalesController(AppDbContext context, UserManager<IdentityUser> userManager)
+
+        public SalesController(ISalesService saleService, IMasterService masterService, IClientsNotifier notifier)
         {
-            _context = context;
-            _userManager = userManager;
+            _saleService = saleService;
+            _masterService = masterService;
+            _notifier = notifier;
+        }
+
+        [HttpPost("{id:int}/notify")]
+        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
+        {
+            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
+            return Ok();
         }
 
 
-        // POST: api/sales/generatesaleasync
-        [HttpPost("GenerateSaleAsync")]
-        public async Task<IActionResult> GenerateSaleAsync()
+
+
+        [HttpPost("AddAsync")]
+        public async Task<IActionResult> AddAsync([FromBody] Sale sale)
         {
-            // Aquí colocarías la lógica para generar una venta.
-            // Por ejemplo: validar datos, crear la venta en la base de datos, etc.
+            GeneralResponse resultAdd = await _masterService.AddAsync(sale);
 
-            // Simulación de respuesta
-            return Ok(new { Message = "Venta generada correctamente" });
-        }
-
-
-
-        // POST: api/sales/cancelsaleasync
-        [HttpPost("CancelSaleAsync")]
-        public async Task<IActionResult> CancelSaleAsync()
-        {
-            // Obtener el usuario autenticado.
-            IdentityUser? user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (resultAdd.Success)
             {
-                return Unauthorized();
+                await _notifier.NotifyAsync(sale.Id, sale.Client.BusinessName, ChangeType.Created);
+
+                return
+                    Ok("Venta creada correctamente");
             }
-
-            // Si el usuario pertenece al rol "Cajero", debe contar con el permiso especial "anular_ventas".
-            if (await _userManager.IsInRoleAsync(user, "Cajero"))
-                if (!IdentityUserExtensions.HasPermission(user, "anular_ventas", _context))
-                    return Forbid();
-
-
-
-            // Para los roles Developer y Administrador se asume que tienen acceso total.
-
-            // Aquí colocarías la lógica para anular una venta.
-            // Por ejemplo: buscar la venta, validarla, marcarla como anulada, etc.
-
-            // Simulación de respuesta
-            return Ok(new { Message = "Venta anulada correctamente" });
+            else return BadRequest(resultAdd.Message);
         }
+
+
+        [HttpPost("UpdateAsync")]
+        public async Task<IActionResult> UpdateAsync([FromBody] Sale sale)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(sale);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(sale.Id, sale.Client.BusinessName, ChangeType.Updated);
+
+                return Ok("Venta actualizada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+
+        [HttpPost("GetAllAsync")]
+        public async Task<IActionResult> GetAllAsync([FromBody] SaleFilterDto filter)
+        {
+            IEnumerable<SaleViewModel> sales = await _saleService.GetAllAsync();
+            return Ok(sales);
+        }
+
+
+
+        [HttpPost("GetByIdAsync")]
+        public async Task<IActionResult> GetByIdAsync([FromBody] SaleFilterDto filter)
+        {
+            SaleViewModel? sale = await _saleService.GetByIdAsync(filter.Id);
+            if (sale == null)
+                return NotFound();
+
+            return Ok(sale);
+        }
+
     }
 }

@@ -2,7 +2,6 @@
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Sales
 {
@@ -18,7 +17,7 @@ namespace GestionComercial.Domain.Entities.Sales
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Forma de pago")]
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
         [Display(Name = "Importe total de la venta")]
         public decimal Total { get; set; }
@@ -64,6 +63,9 @@ namespace GestionComercial.Domain.Entities.Sales
 
         [JsonIgnore]
         public virtual Client? Client { get; set; }
+
+        [JsonIgnore]
+        public virtual SaleCondition? SaleCondition { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<SaleDetail>? SaleDetails { get; set; }
