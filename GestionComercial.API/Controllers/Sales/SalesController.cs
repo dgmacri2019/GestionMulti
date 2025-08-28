@@ -18,10 +18,10 @@ namespace GestionComercial.API.Controllers.Sales
     {
         private readonly ISalesService _saleService;
         private readonly IMasterService _masterService;
-        private readonly IClientsNotifier _notifier;
+        private readonly ISalesNotifier _notifier;
 
 
-        public SalesController(ISalesService saleService, IMasterService masterService, IClientsNotifier notifier)
+        public SalesController(ISalesService saleService, IMasterService masterService, ISalesNotifier notifier)
         {
             _saleService = saleService;
             _masterService = masterService;

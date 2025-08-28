@@ -6,6 +6,7 @@ using GestionComercial.Desktop.Controls.Clients;
 using GestionComercial.Desktop.Controls.Permissions;
 using GestionComercial.Desktop.Controls.PriceLists;
 using GestionComercial.Desktop.Controls.Providers;
+using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
 using GestionComercial.Domain.DTOs.Menu;
@@ -96,6 +97,25 @@ namespace GestionComercial.Desktop.Views
                             Children =
                             [
                                 new() { Title = "Reporte Stock", Icon = "/Images/Report 32.png", Tag = "Stock_Report" },
+                            ]
+                        },
+
+                    ]
+                },
+                new MenuItemModel
+                {
+                    Title = "Ventas",
+                    Icon = "/Images/Sales 32.png",
+                    Children =
+                    [
+                        new() { Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "Sales" },
+                        //new() { Title = "Listadas de Precios", Icon = "/Images/Details.png", Tag = "PriceLists" },
+                        new() {
+                            Title = "Reportes",
+                            Icon = "/Images/Report 20.png",
+                            Children =
+                            [
+                                new() { Title = "Reporte Ventas", Icon = "/Images/Report 32.png", Tag = "Sale_Report" },
                             ]
                         },
 
@@ -202,6 +222,11 @@ namespace GestionComercial.Desktop.Views
                         break;
                     case "Permissions":
                         MainContent.Content = new ListPermissionsControlView();
+                        break;
+                    case "Sales":
+                        MainContent.Content = new SalesControlView();
+                        break;
+                    case "Sales_Report":
                         break;
                     case "Email_Setup":
                         break;
