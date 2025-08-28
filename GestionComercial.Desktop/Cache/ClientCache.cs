@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.DTOs.Client;
+﻿using GestionComercial.Desktop.ViewModels.Client;
+using GestionComercial.Domain.DTOs.Client;
 
 namespace GestionComercial.Desktop.Cache
 {
@@ -101,12 +102,15 @@ namespace GestionComercial.Desktop.Cache
         {
             try
             {
-                return _clients != null && string.IsNullOrEmpty(optionalCode) ? _clients
+                if (_clients == null)
+                    new ClientListViewModel();
+
+                return !string.IsNullOrEmpty(optionalCode) ? _clients
                               .Where(p => p.IsEnabled
                                        && !p.IsDeleted)
                               .FirstOrDefault(a => a.OptionalCode == optionalCode)
                               :
-                              new ClientViewModel();
+                              null;
             }
             catch (Exception)
             {

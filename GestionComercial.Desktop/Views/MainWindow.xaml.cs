@@ -224,7 +224,7 @@ namespace GestionComercial.Desktop.Views
                         MainContent.Content = new ListPermissionsControlView();
                         break;
                     case "Sales":
-                        MainContent.Content = new SalesControlView();
+                        MainContent.Content = new SalesControlView(0);
                         break;
                     case "Sales_Report":
                         break;

@@ -14,6 +14,9 @@
                 "PriceLists" => "Lista de Precios",
                 "Banks" => "Bancos",
                 "Accounts" => "Cuentas Contables",
+                "Sales" => "Ventas",
+                "Purchases" => "Compras",
+
                 _ => controller
             };
         }
