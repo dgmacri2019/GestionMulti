@@ -4,12 +4,14 @@ using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
+using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
 using System.Collections.ObjectModel;
 using static GestionComercial.Domain.Constant.Enumeration;
@@ -200,7 +202,7 @@ namespace GestionComercial.Domain.Helpers
                 City = providerViewModel.City,
                 WebSite = providerViewModel.WebSite,
                 BusinessName = providerViewModel.BusinessName,
-                OptionalCode = providerViewModel.OptionalCode, 
+                OptionalCode = providerViewModel.OptionalCode,
                 CreateDate = providerViewModel.CreateDate,
                 CreateUser = providerViewModel.CreateUser,
                 DocumentNumber = providerViewModel.DocumentNumber,
@@ -464,6 +466,88 @@ namespace GestionComercial.Domain.Helpers
                 Phone = user.PhoneNumber,
             };
         }
+
+
+
+        #endregion
+
+        #region Sales
+        public static SaleViewModel? ToSaleViewModel(Sale sale, ICollection<Client> clients, ICollection<SaleCondition> saleConditions)
+        {
+            return new SaleViewModel
+            {
+                Id = sale.Id,
+                CreateDate = sale.CreateDate,
+                CreateUser = sale.CreateUser,
+                IsDeleted = sale.IsDeleted,
+                IsEnabled = sale.IsEnabled,
+                UpdateDate = sale.UpdateDate,
+                UpdateUser = sale.UpdateUser,
+                Acreditations = sale.Acreditations,
+                AutorizationCode = sale.AutorizationCode,
+                BaseImp105 = sale.BaseImp105,
+                BaseImp21 = sale.BaseImp21,
+                BaseImp27 = sale.BaseImp27,
+                ClientId = sale.ClientId,
+                GeneralDiscount = sale.GeneralDiscount,
+                InternalTax = sale.InternalTax,
+                IsFinished = sale.IsFinished,
+                PaidOut = sale.PaidOut,
+                PartialPay = sale.PartialPay,
+                SaleConditionId = sale.SaleConditionId,
+                SaleDate = sale.SaleDate,
+                SaleDetails = sale.SaleDetails,
+                SaleNumber = sale.SaleNumber,
+                SalePayMetodDetails = sale.SalePayMetodDetails,
+                SalePoint = sale.SalePoint,
+                Sold = sale.Sold,
+                SubTotal = sale.SubTotal,
+                Total = sale.Total,
+                TotalIVA105 = sale.TotalIVA105,
+                TotalIVA21 = sale.TotalIVA21,
+                TotalIVA27 = sale.TotalIVA27,
+                Clients = clients,
+                SaleConditions = saleConditions,
+            };
+        }
+
+        public static Sale ToSale(SaleViewModel saleViewModel, bool isNew)
+        {
+            return new Sale
+            {
+                Id = isNew ? 0 : saleViewModel.Id,
+                CreateDate = saleViewModel.CreateDate,
+                CreateUser = saleViewModel.CreateUser,
+                IsDeleted = saleViewModel.IsDeleted,
+                IsEnabled = saleViewModel.IsEnabled,
+                UpdateDate = saleViewModel.UpdateDate,
+                UpdateUser = saleViewModel.UpdateUser,
+                Acreditations = saleViewModel.Acreditations,
+                AutorizationCode = saleViewModel.AutorizationCode,
+                BaseImp105 = saleViewModel.BaseImp105,
+                BaseImp21 = saleViewModel.BaseImp21,
+                BaseImp27 = saleViewModel.BaseImp27,
+                ClientId = saleViewModel.ClientId,
+                GeneralDiscount = saleViewModel.GeneralDiscount,
+                InternalTax = saleViewModel.InternalTax,
+                IsFinished = saleViewModel.IsFinished,
+                PaidOut = saleViewModel.PaidOut,
+                PartialPay = saleViewModel.PartialPay,
+                SaleConditionId = saleViewModel.SaleConditionId,
+                SaleDate = saleViewModel.SaleDate,
+                SaleDetails = saleViewModel.SaleDetails,
+                SaleNumber = saleViewModel.SaleNumber,
+                SalePayMetodDetails = saleViewModel.SalePayMetodDetails,
+                SalePoint = saleViewModel.SalePoint,
+                Sold = saleViewModel.Sold,
+                SubTotal = saleViewModel.SubTotal,
+                Total = saleViewModel.Total,
+                TotalIVA105 = saleViewModel.TotalIVA105,
+                TotalIVA21 = saleViewModel.TotalIVA21,
+                TotalIVA27 = saleViewModel.TotalIVA27,
+            };
+        }
+
 
 
         #endregion
