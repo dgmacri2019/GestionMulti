@@ -60,6 +60,10 @@ builder.Services.AddScoped<IPriceListService, PriceListService>();
 builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<IMasterService, MasterService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ISalesService, SalesService>();
+
+
+
 builder.Services.AddScoped<IClientsNotifier, SignalRClientsNotifier>();
 builder.Services.AddScoped<IProvidersNotifier, SignalRProvidersNotifier>();
 builder.Services.AddScoped<IArticlesNotifier, SignalRArticlesNotifier>();
