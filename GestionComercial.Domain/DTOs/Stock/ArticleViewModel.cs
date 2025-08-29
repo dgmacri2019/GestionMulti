@@ -126,6 +126,7 @@ namespace GestionComercial.Domain.DTOs.Stock
         [Display(Name = "Habilitado?")]
         public bool IsEnabled { get; set; }
 
+        
         public List<PriceListItemDto> PriceLists { get; set; } = [];
         public List<TaxePriceDto> TaxesPrice { get; set; } = [];
 

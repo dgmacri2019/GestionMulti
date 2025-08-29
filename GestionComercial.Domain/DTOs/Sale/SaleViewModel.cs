@@ -1,14 +1,25 @@
 ﻿using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.DTOs.Sale
 {
-    public class SaleViewModel
+    public class SaleViewModel : INotifyPropertyChanged
     {
         public int Id { get; set; }
+
+        private DateTime date = DateTime.Today;
+        public DateTime Date
+        {
+            get => date;
+            set { date = value; OnPropertyChanged(); }
+        }
+
 
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -107,9 +118,16 @@ namespace GestionComercial.Domain.DTOs.Sale
         [JsonIgnore]
         public virtual ICollection<Acreditation>? Acreditations { get; set; }
 
-        public ICollection<Entities.Masters.Client> Clients { get; set; }
+        public ObservableCollection<Entities.Masters.Client> Clients { get; set; }
         
-        public ICollection<SaleCondition> SaleConditions { get; set; }
-        public ICollection<PriceList> PriceLists { get; set; }
+        public ObservableCollection<PriceList> PriceLists { get; set; }
+
+        public ObservableCollection<ArticleItem> Articles { get; set; } = [];
+        public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

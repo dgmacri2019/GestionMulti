@@ -5,6 +5,7 @@ using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 
 namespace GestionComercial.Applications.Services
 {
@@ -34,24 +35,24 @@ namespace GestionComercial.Applications.Services
                 .GroupBy(c => c.Client.BusinessName)
                 .ToListAsync();
 
-            ICollection<Client> clients = await _context.Clients
+            ObservableCollection<Client> clients = new ObservableCollection<Client>(await _context.Clients
              .Include(c => c.PriceList)
              .Include(c => c.State)
              .Include(ic => ic.IvaCondition)
              .Include(dt => dt.DocumentType)
              .Include(sc => sc.SaleCondition)
              .Where(p => p.IsEnabled && !p.IsDeleted)
-             .ToListAsync();
+             .ToListAsync());
 
-            ICollection<SaleCondition> saleConditions = await _context.SaleConditions
+            ObservableCollection<SaleCondition> saleConditions = new ObservableCollection<SaleCondition>(await _context.SaleConditions
              .Where(sc => sc.IsEnabled && !sc.IsDeleted)
              .OrderBy(sc => sc.Description)
-             .ToListAsync();
+             .ToListAsync());
 
-            ICollection<PriceList> priceLists = await _context.PriceLists
+            ObservableCollection<PriceList> priceLists = new ObservableCollection<PriceList>(await _context.PriceLists
              .Where(pl => pl.IsEnabled && !pl.IsDeleted)
              .OrderBy(pl => pl.Description)
-             .ToListAsync();
+             .ToListAsync());
 
 
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
@@ -65,24 +66,24 @@ namespace GestionComercial.Applications.Services
 
         public async Task<SaleViewModel?> GetByIdAsync(int id)
         {
-            ICollection<Client> clients = await _context.Clients
+            ObservableCollection<Client> clients = new ObservableCollection<Client>(await _context.Clients
               .Include(c => c.PriceList)
               .Include(c => c.State)
               .Include(ic => ic.IvaCondition)
               .Include(dt => dt.DocumentType)
               .Include(sc => sc.SaleCondition)
               .Where(p => p.IsEnabled && !p.IsDeleted)
-              .ToListAsync();
+              .ToListAsync());
 
-            ICollection<SaleCondition> saleConditions = await _context.SaleConditions
+            ObservableCollection<SaleCondition> saleConditions = new ObservableCollection<SaleCondition>(await _context.SaleConditions
              .Where(sc => sc.IsEnabled && !sc.IsDeleted)
              .OrderBy(sc => sc.Description)
-             .ToListAsync();
+             .ToListAsync());
 
-            ICollection<PriceList> priceLists = await _context.PriceLists
+            ObservableCollection<PriceList> priceLists = new ObservableCollection<PriceList>(await _context.PriceLists
               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
               .OrderBy(pl => pl.Description)
-              .ToListAsync();
+              .ToListAsync());
 
 
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
@@ -115,7 +116,7 @@ namespace GestionComercial.Applications.Services
 
 
         private IEnumerable<SaleViewModel> ToSaleViewModelsList(List<IGrouping<string, Sale>> sales,
-           ICollection<Client> clients, ICollection<SaleCondition> saleConditions, ICollection<PriceList> priceLists)
+           ObservableCollection<Client> clients, ObservableCollection<SaleCondition> saleConditions, ObservableCollection<PriceList> priceLists)
         {
             return sales.SelectMany(group => group.Select(sale => new SaleViewModel
             {

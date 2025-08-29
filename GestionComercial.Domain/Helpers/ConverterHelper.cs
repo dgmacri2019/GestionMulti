@@ -472,7 +472,7 @@ namespace GestionComercial.Domain.Helpers
         #endregion
 
         #region Sales
-        public static SaleViewModel? ToSaleViewModel(Sale sale, ICollection<Client> clients, ICollection<SaleCondition> saleConditions, ICollection<PriceList> priceLists)
+        public static SaleViewModel? ToSaleViewModel(Sale sale, ObservableCollection<Client> clients, ObservableCollection<SaleCondition> saleConditions, ObservableCollection<PriceList> priceLists)
         {
             return new SaleViewModel
             {

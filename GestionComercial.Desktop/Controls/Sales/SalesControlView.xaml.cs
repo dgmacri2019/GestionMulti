@@ -2,7 +2,6 @@
 using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,7 +51,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                 case Key.Enter:
                     {
                         ClearClient();
-                        
+
                         ClientViewModel? client = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text);
                         if (client != null)
                         {
@@ -110,6 +109,73 @@ namespace GestionComercial.Desktop.Controls.Sales
                 lblError.Text = result.Message;
         }
 
+
+        private void dgArticles_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var vm = this.DataContext as SaleViewModel;
+                if (vm != null)
+                {
+                    vm.Articles.Add(new ArticleItem());
+                    dgArticles.SelectedIndex = vm.Articles.Count - 1;
+                    dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[vm.Articles.Count - 1], dgArticles.Columns[0]);
+                    dgArticles.BeginEdit();
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void dgArticles_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction == DataGridEditAction.Commit)
+            {
+                if (e.Row.Item is ArticleItem item)
+                    item.UpdateTotals();
+            }
+        }
+
+        private void txtBarcode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var code = txtBarcode.Text;
+                var vm = this.DataContext as SaleViewModel;
+                if (vm != null)
+                {
+                    // Buscar artículo en tu cache
+                    var article = ArticleCache.Instance.FindByCodeOrBarCode(code); // Reemplazar con tu implementación
+                    if (article != null)
+                    {
+                        var newItem = new ArticleItem
+                        {
+                            Code = article.Code,
+                            Description = article.Description,
+                            Price = 10
+                        };
+                        vm.Articles.Add(newItem);
+                    }
+
+                    txtBarcode.Clear();
+                    txtBarcode.Focus();
+                }
+            }
+        }
+
+        private void chBarcode_Checked(object sender, RoutedEventArgs e)
+        {
+            txtBarcode.Focus();
+        }
+
+        private void chBarcode_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (dgArticles.Items.Count > 0)
+            {
+                dgArticles.SelectedIndex = 0;
+                dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
+                dgArticles.BeginEdit();
+            }
+        }
 
 
         private void msgError(string msg)
