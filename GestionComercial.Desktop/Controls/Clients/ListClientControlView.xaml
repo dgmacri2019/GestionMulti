@@ -16,8 +16,6 @@
             <RowDefinition Height="auto"/>
             <!-- Fila 2: DataGrid -->
             <RowDefinition Height="*"/>
-            <!-- Fila 3: Add/Edit -->
-            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="PanelHeader" Orientation="Horizontal" HorizontalAlignment="Center"  Grid.Row="0" Margin="0,0,50,8">
@@ -78,7 +76,7 @@
         </StackPanel>
 
         <StackPanel x:Name="PanelSearch" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0,0,50,8">
-            <TextBlock Text="Buscar:" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Buscar:" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="SearchBox"
              Style="{StaticResource TextBoxSearch}"
              Width="250"
@@ -88,8 +86,7 @@
             <!--TextChanged="SearchBox_TextChanged"/>-->
         </StackPanel>
 
-        <DataGrid x:Name="DgArticles" Background="Gray"
-          Grid.Row="2" 
+        <DataGrid x:Name="DgArticles" Background="Gray" Grid.Row="2" 
           ItemsSource="{Binding Clients}" 
           AutoGenerateColumns="False"
           CanUserAddRows="False"
@@ -245,9 +242,31 @@
         </DataGrid>
 
 
-        <!-- Contenedor para el control de edición -->
-        <ContentControl x:Name="PanelEdicion" Grid.Row="1" Style="{StaticResource Test }"/>
+        <!-- Antes: -->
+        <!-- <ContentControl x:Name="PanelEdicion" Grid.Row="1" Style="{StaticResource Test }"/> -->
 
+        <!-- Reemplazar por: -->
+        <!--
+        <ScrollViewer Grid.Row="2"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Auto"
+              CanContentScroll="False">
+            <ContentControl x:Name="PanelEdicion"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+        </ScrollViewer>-->
 
+        <ContentControl x:Name="PanelEdicion" Grid.Row="2" Margin="0,-60,0,0" Visibility="Hidden">
+            <ContentControl.Template>
+                <ControlTemplate TargetType="ContentControl">
+                    <Border Background="{TemplateBinding Background}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                                      CanContentScroll="False">
+                            <ContentPresenter />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
     </Grid>
 </UserControl>

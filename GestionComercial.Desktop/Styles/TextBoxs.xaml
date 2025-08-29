@@ -3,7 +3,7 @@
 
 
     <Style x:Key="TextBoxSearch" TargetType="TextBox">
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="10"/>
         <Setter Property="Margin" Value="0,0,15,0"/>
         <Setter Property="Foreground" Value="#545454" />
         <Style.Triggers>

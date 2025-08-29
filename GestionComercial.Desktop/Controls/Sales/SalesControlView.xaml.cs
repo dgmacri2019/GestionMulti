@@ -2,6 +2,7 @@
 using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,11 +51,20 @@ namespace GestionComercial.Desktop.Controls.Sales
                     }
                 case Key.Enter:
                     {
+                        ClearClient();
+                        
                         ClientViewModel? client = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text);
                         if (client != null)
                         {
                             txtFansatyName.Text = string.IsNullOrEmpty(client.FantasyName) ? client.BusinessName : client.FantasyName;
                             txtAddress.Text = $"{client.Address}\n{client.City}, {client.State}\nC.P.{client.PostalCode}";
+                            txtEmail.Text = !string.IsNullOrEmpty(client.Email) ? client.Email : string.Empty;
+                            chSendEmail.IsChecked = !string.IsNullOrEmpty(client.Email);
+                            cbPriceLists.ItemsSource = client.PriceLists;
+                            cbPriceLists.SelectedValue = client.PriceListId;
+                            cbSaleConditions.ItemsSource = client.SaleConditions;
+                            cbSaleConditions.SelectedValue = client.SaleConditionId;
+
                         }
                         else
                             MessageBox.Show("El código informado no existe", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -63,6 +73,18 @@ namespace GestionComercial.Desktop.Controls.Sales
                 default:
                     break;
             }
+        }
+
+        private void ClearClient()
+        {
+            txtFansatyName.Text = string.Empty;
+            txtAddress.Text = string.Empty;
+            txtEmail.Text = string.Empty;
+            chSendEmail.IsChecked = false;
+            cbPriceLists.ItemsSource = null;
+            //cbPriceLists.SelectedValue = string.Empty;
+            cbSaleConditions.ItemsSource = null;
+            //cbSaleConditions.SelectedValue = string.Empty;
         }
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)

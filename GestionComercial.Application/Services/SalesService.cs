@@ -48,11 +48,17 @@ namespace GestionComercial.Applications.Services
              .OrderBy(sc => sc.Description)
              .ToListAsync();
 
+            ICollection<PriceList> priceLists = await _context.PriceLists
+             .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+             .OrderBy(pl => pl.Description)
+             .ToListAsync();
+
+
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
             clients.Add(new Client { Id = 0, BusinessName = "Seleccione el cliente" });
+            priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
 
-
-            return ToSaleViewModelsList(sales, clients, saleConditions);
+            return ToSaleViewModelsList(sales, clients, saleConditions, priceLists);
 
 
         }
@@ -73,8 +79,15 @@ namespace GestionComercial.Applications.Services
              .OrderBy(sc => sc.Description)
              .ToListAsync();
 
+            ICollection<PriceList> priceLists = await _context.PriceLists
+              .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+              .OrderBy(pl => pl.Description)
+              .ToListAsync();
+
+
             saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
             clients.Add(new Client { Id = 0, BusinessName = "Seleccione el cliente" });
+            priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
 
 
             Sale? sale = await _context.Sales
@@ -93,7 +106,7 @@ namespace GestionComercial.Applications.Services
                     SaleConditions = saleConditions,
                 };
 
-            return sale == null ? null : ConverterHelper.ToSaleViewModel(sale, clients, saleConditions);
+            return sale == null ? null : ConverterHelper.ToSaleViewModel(sale, clients, saleConditions, priceLists);
         }
 
 
@@ -101,7 +114,7 @@ namespace GestionComercial.Applications.Services
 
 
         private IEnumerable<SaleViewModel> ToSaleViewModelsList(List<IGrouping<string, Sale>> sales,
-           ICollection<Client> clients, ICollection<SaleCondition> saleConditions)
+           ICollection<Client> clients, ICollection<SaleCondition> saleConditions, ICollection<PriceList> priceLists)
         {
             return sales.SelectMany(group => group.Select(sale => new SaleViewModel
             {
@@ -137,6 +150,7 @@ namespace GestionComercial.Applications.Services
                 TotalIVA27 = sale.TotalIVA27,
                 Clients = clients,
                 SaleConditions = saleConditions,
+                PriceLists = priceLists,
             }));
         }
     }

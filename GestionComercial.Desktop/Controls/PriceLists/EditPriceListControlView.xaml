@@ -32,7 +32,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Descripción" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Descripción" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtDescription"
                 Style="{StaticResource TextBoxSearch}"
                 Width="300"
@@ -52,7 +52,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3" Margin="10,0,20,8">
-            <TextBlock Text="Utilidad" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Utilidad" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtUtility"
                      Style="{StaticResource TextBoxSearch}"
                      Width="250"
@@ -61,7 +61,7 @@
         </StackPanel>
        
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,0,20,8">
-            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <CheckBox x:Name="chbIsEnabled"
               Style="{StaticResource CheckBox}"
               Width="50"

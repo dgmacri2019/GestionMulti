@@ -14,15 +14,15 @@
     <Grid x:Name="GridGeneral" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" 
           Background="Gray">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
@@ -30,10 +30,13 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
             <!--<ColumnDefinition Width="*"/>-->
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Margin="10,0,20,8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -48,7 +51,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="Cliente" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+                    <TextBlock Text="Cliente" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
                     <TextBox x:Name="txtClientCode"
                          Style="{StaticResource TextBoxSearch}"
                          Width="100"
@@ -57,7 +60,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                    <!--<TextBlock Text="Nombre Fantasía" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>-->
+                    <!--<TextBlock Text="Nombre Fantasía" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>-->
                     <TextBox x:Name="txtFansatyName"
                              Style="{StaticResource TextBoxSearch}"
                              Width="250"
@@ -84,16 +87,37 @@
                              VerticalAlignment="Center"
                              IsReadOnly="True"
                              Text="{Binding Email}"/>
-                    <CheckBox  VerticalAlignment="Center" Style="{StaticResource CheckBox}"/>
+                    <CheckBox x:Name="chSendEmail" VerticalAlignment="Center" Style="{StaticResource CheckBox}"/>
                     <TextBlock Text="Enviar Comprobante por mail" VerticalAlignment="Center" Style="{StaticResource BlackNormal10}"/>
 
                 </StackPanel>
             </Grid>
         </StackPanel>
-
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="4" Margin="10,0,20,8">
+            <TextBlock Text="Lista de Precios" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+            <ComboBox x:Name="cbPriceLists" 
+                      Style="{StaticResource ComboBox}"
+                      Width="Auto"
+                      ItemsSource="{Binding PriceLists}"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding PriceListId}"/>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="5" Margin="10,0,20,8">
+            <TextBlock Text="Condición de Venta" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+            <ComboBox x:Name="cbSaleConditions" 
+                      Style="{StaticResource ComboBox}"
+                      Width="Auto"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Id"
+                      ItemsSource="{Binding SaleConditions}"
+                      SelectedValue="{Binding SaleConditionId}"/>
+        </StackPanel>
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Fecha" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Fecha" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <DatePicker x:Name="dpDate" 
                         VerticalAlignment="Center" 
                         Width="100" />

@@ -34,7 +34,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Razón Social" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Razón Social" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtBussinessName"
                    Style="{StaticResource TextBoxSearch}"
                    Width="200"
@@ -54,7 +54,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Nombre Fantasía" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Nombre Fantasía" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtFansatyName"
                    Style="{StaticResource TextBoxSearch}"
                    Width="180"
@@ -63,7 +63,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Código Opcional" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Código Opcional" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtOptionalCode"
                    Style="{StaticResource TextBoxSearch}"
                    Width="180"
@@ -74,7 +74,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Tipo Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Tipo Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <ComboBox x:Name="cbDocumentTypes"                      
              Style="{StaticResource ComboBox}"
              Width="auto"
@@ -85,7 +85,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Número Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Número Documento" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtDocumentNumber"
            Style="{StaticResource TextBoxSearch}"
            Width="100"
@@ -105,7 +105,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Domicilio" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Domicilio" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtAddress"
                    Style="{StaticResource TextBoxSearch}"
                    Width="200"
@@ -126,7 +126,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Provincia" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Provincia" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <ComboBox x:Name="cbStates" 
                     Style="{StaticResource ComboBox}"
                     Width="auto"
@@ -137,7 +137,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Localidad" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Localidad" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtCity"
                    Style="{StaticResource TextBoxSearch}"
                    Width="200"
@@ -157,7 +157,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Código Postal" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Código Postal" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtPostalCode"
            Style="{StaticResource TextBoxSearch}"
            Width="100"
@@ -180,7 +180,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtPhone"
                    Style="{StaticResource TextBoxSearch}"
                    Width="120"
@@ -190,7 +190,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtPhone1"
                    Style="{StaticResource TextBoxSearch}"
                    Width="120"
@@ -200,7 +200,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Teléfono / Fax" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtPhone2"
                    Style="{StaticResource TextBoxSearch}"
                    Width="80"
@@ -211,7 +211,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Email" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Email" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtEmail"
                    Style="{StaticResource TextBoxSearch}"
                    Width="220"
@@ -229,7 +229,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Página Web" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Página Web" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtWebSite"
                    Style="{StaticResource TextBoxSearch}"
                    Width="250"
@@ -238,7 +238,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Día de pago" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Día de pago" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtPayDay"
                    Style="{StaticResource TextBoxSearch}"
                    Width="100"
@@ -250,7 +250,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Condición de IVA" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Condición de IVA" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <ComboBox x:Name="cbTaxConditions" 
                     Style="{StaticResource ComboBox}"
                     Width="auto"
@@ -261,7 +261,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" Margin="10,0,20,8">            
-            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <CheckBox x:Name="chbIsEnabled" 
                       Style="{StaticResource CheckBox}"
                       Width="50"
@@ -271,7 +271,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Condición de Venta" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Condición de Venta" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <ComboBox x:Name="cbSaleConditions" 
                       Style="{StaticResource ComboBox}"
                       Width="auto"
@@ -283,7 +283,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,0,20,8">
-            <TextBlock Text="Comentarios" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Comentarios" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtRemark"
                    Style="{StaticResource TextBoxSearch}"
                    Width="1460"

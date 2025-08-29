@@ -9,6 +9,8 @@ using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
+using GestionComercial.Desktop.ViewModels.Client;
+using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
 
@@ -263,6 +265,18 @@ namespace GestionComercial.Desktop.Views
 
             // Establecer login como nueva MainWindow si querés seguir con el flujo
             Application.Current.MainWindow = loginView;
+        }
+
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            Thread thread = new(CargarCache);
+            thread.Start();
+        }
+
+        private void CargarCache(object? obj)
+        {
+            ClientListViewModel clientListViewModel = new();
+            ArticleListViewModel articleListViewModel = new();
         }
     }
 }

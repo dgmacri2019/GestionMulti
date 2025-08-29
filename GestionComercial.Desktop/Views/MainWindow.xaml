@@ -15,7 +15,7 @@
 
     <DockPanel>
         <!-- Header -->
-        <StackPanel DockPanel.Dock="Top" Background="#2B579A" Orientation="Horizontal" Height="50">
+        <StackPanel DockPanel.Dock="Top" Background="#2B579A" Orientation="Horizontal" Height="50" Loaded="StackPanel_Loaded">
             <TextBlock Text="Sistema de Gestión Comercial" 
                        Foreground="White" 
                        VerticalAlignment="Center" 
@@ -117,20 +117,8 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <!-- Menu lateral -->
-        <!--
-        <StackPanel DockPanel.Dock="Left" Width="180" Background="#EEE">
-            <Button Content="Ventas" Margin="5" Padding="5"/>
-            <Button Content="Compras" Margin="5" Padding="5"/>
-            <Button Content="Proveedores" Margin="5" Padding="5" Click="Provider_Click"/>
-            <Button Content="Stock" Margin="5" Padding="5" Click="Stock_Click"/>
-            <Button Content="Clientes" Margin="5" Padding="5" Click="Client_Click"/>
-            <Button Content="Lista de Precios" Margin="5" Padding="5" Click="PriceList_Click" /> 
-            <Button Content="Bancos" Margin="5" Padding="5" Click="Bank_Click" />
-            <Button Content="Cerrar sesión" Margin="5" Padding="5" Command="{Binding LogoutCommand}"/>
-        </StackPanel>
--->
-        <!-- StatusBar -->
+       
+        
         <StatusBar DockPanel.Dock="Bottom" Background="#F3F3F3">
             <StatusBarItem>
                 <TextBlock Text="{Binding HoraActual}" FontWeight="Bold"/>

@@ -61,6 +61,7 @@ namespace GestionComercial.Desktop.Controls.Clients
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            GridGeneral.MaxWidth = this.ActualWidth;
             lblError.MaxWidth = this.ActualWidth;
         }
 

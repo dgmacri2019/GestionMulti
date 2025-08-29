@@ -472,7 +472,7 @@ namespace GestionComercial.Domain.Helpers
         #endregion
 
         #region Sales
-        public static SaleViewModel? ToSaleViewModel(Sale sale, ICollection<Client> clients, ICollection<SaleCondition> saleConditions)
+        public static SaleViewModel? ToSaleViewModel(Sale sale, ICollection<Client> clients, ICollection<SaleCondition> saleConditions, ICollection<PriceList> priceLists)
         {
             return new SaleViewModel
             {
@@ -508,6 +508,7 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = sale.TotalIVA27,
                 Clients = clients,
                 SaleConditions = saleConditions,
+                PriceLists = priceLists,
             };
         }
 

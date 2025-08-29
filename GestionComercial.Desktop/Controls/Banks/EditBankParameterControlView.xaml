@@ -33,7 +33,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Condición de venta" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Condición de venta" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtSaleCondition"
                      Style="{StaticResource TextBoxSearch}"
                      Width="auto"
@@ -43,7 +43,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Banco" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Banco" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <ComboBox 
                 x:Name="cbbanks" 
                 Style="{StaticResource ComboBox}"
@@ -56,7 +56,7 @@
 
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Comisión %" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Comisión %" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox 
                 x:Name="txtRate"
                 Style="{StaticResource TextBoxSearch}"
@@ -69,7 +69,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Días para acreditación" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Días para acreditación" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox 
                 x:Name="txtAcreditation"
                 Style="{StaticResource TextBoxSearch}"
@@ -84,7 +84,7 @@
        
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold18}"/>
+            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <CheckBox 
                 x:Name="chbIsEnabled"
                 Style="{StaticResource CheckBox}"

@@ -106,5 +106,6 @@ namespace GestionComercial.Domain.DTOs.Sale
         public ICollection<Entities.Masters.Client> Clients { get; set; }
         
         public ICollection<SaleCondition> SaleConditions { get; set; }
+        public ICollection<PriceList> PriceLists { get; set; }
     }
 }

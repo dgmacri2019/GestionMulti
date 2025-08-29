@@ -3,7 +3,7 @@
 
     <Style x:Key="BtnLogin" TargetType="Button">
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Background" Value="Green"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
@@ -28,13 +28,13 @@
 
     <Style x:Key="BtnCancel" TargetType="Button">
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Background" Value="Green"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderBrush" Value="DarkGreen"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Width" Value="100"/>
+        <Setter Property="Width" Value="80"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -53,13 +53,13 @@
 
     <Style x:Key="BtnAdd" TargetType="Button">
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Background" Value="Blue"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderBrush" Value="DarkBlue"/>
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="Width" Value="100"/>
+        <Setter Property="Width" Value="80"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -78,13 +78,13 @@
 
     <Style x:Key="BtnUpdate" TargetType="Button">
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Background" Value="Blue"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderBrush" Value="DarkBlue"/>
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="Width" Value="100"/>
+        <Setter Property="Width" Value="80"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

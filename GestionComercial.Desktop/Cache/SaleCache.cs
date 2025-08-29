@@ -4,19 +4,20 @@ namespace GestionComercial.Desktop.Cache
 {
     internal class SaleCache : ICache
     {
-        private static SaleCache _instance;
+        private static SaleCache? _instance;
         public static SaleCache Instance => _instance ??= new SaleCache();
+        private List<SaleViewModel>? _sales;
 
-        private List<SaleViewModel> _sales;
         private SaleCache()
         {
             CacheManager.Register(this);
         }
-        public List<SaleViewModel> GetAllSales()
+        
+        
+        public List<SaleViewModel>? GetAllSales()
         {
             return _sales;
         }
-
         public List<SaleViewModel> SearchSales(string clientBusinessName, bool isEnabled, bool isDeleted)
         {
             try
@@ -35,7 +36,6 @@ namespace GestionComercial.Desktop.Cache
                 throw;
             }
         }
-
         public void SetSales(List<SaleViewModel> sales)
         {
             try
@@ -60,12 +60,11 @@ namespace GestionComercial.Desktop.Cache
                 throw;
             }
         }
-
         public void UpdateSale(SaleViewModel sale)
         {
             try
             {
-                SaleViewModel saleViewModel = _sales.FirstOrDefault(c => c.Id == sale.Id);
+                SaleViewModel? saleViewModel = _sales.FirstOrDefault(c => c.Id == sale.Id);
                 if (sale != null)
                 {
                     _sales.Remove(saleViewModel);

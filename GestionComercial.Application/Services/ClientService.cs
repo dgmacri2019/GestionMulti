@@ -83,6 +83,7 @@ namespace GestionComercial.Applications.Services
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .OrderBy(pl => pl.Description)
                 .ToListAsync();
             ICollection<State> states = await _context.States
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
@@ -144,7 +145,7 @@ namespace GestionComercial.Applications.Services
 
 
         private IEnumerable<ClientViewModel> ToClientViewModelAndPriceList(List<IGrouping<string, Client>> clients,
-            ICollection<PriceList> priceLists, ICollection<DocumentType> documentTypes, ICollection<SaleCondition> saleConditions, 
+            ICollection<PriceList> priceLists, ICollection<DocumentType> documentTypes, ICollection<SaleCondition> saleConditions,
             ICollection<State> states, ICollection<IvaCondition> ivaConditions)
         {
             return clients.SelectMany(group => group.Select(client => new ClientViewModel

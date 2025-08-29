@@ -77,6 +77,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             };
 
             PanelEdicion.Content = ventana;
+            PanelEdicion.MaxWidth = this.Width;
         }
 
        
