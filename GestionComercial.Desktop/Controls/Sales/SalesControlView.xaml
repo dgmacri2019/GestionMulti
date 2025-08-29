@@ -108,18 +108,38 @@
                       KeyDown="dgArticles_KeyDown"
                       CellEditEnding="dgArticles_CellEditEnding">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Código" Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                    <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="200" IsReadOnly="True"/>
-                    <DataGridComboBoxColumn Header="Lista de Precios" 
+                    <DataGridTextColumn Header="Código" 
+                                        Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" 
+                                        Width="100"/>
+                    <DataGridTextColumn Header="Descripción" 
+                                        Binding="{Binding Description}"
+                                        Width="200" 
+                                        IsReadOnly="True"/>
+                    <DataGridComboBoxColumn x:Name="cbPriceListItem"
+                                            Header="Lista de Precios"                                             
                                             SelectedValueBinding="{Binding PriceListId}" 
                                             DisplayMemberPath="Description" 
                                             SelectedValuePath="Id" 
-                                            ItemsSource="{Binding PriceLists}" Width="120"/>
-                    <DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
-                    <DataGridTextColumn Header="Precio" Binding="{Binding Price}" Width="80" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal}" Width="100" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Bonificación (%)" Binding="{Binding Discount, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                    <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="100" IsReadOnly="True"/>
+                                            ItemsSource="{Binding PriceLists}" 
+                                            Width="120"/>
+                    <DataGridTextColumn Header="Cantidad" 
+                                        Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="80"/>
+                    <DataGridTextColumn Header="Precio" 
+                                        Binding="{Binding Price}"
+                                        Width="80" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Subtotal" 
+                                        Binding="{Binding Subtotal}" 
+                                        Width="100" 
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Bonificación (%)" 
+                                        Binding="{Binding Discount, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="100"/>
+                    <DataGridTextColumn Header="Total"
+                                        Binding="{Binding Total}" 
+                                        Width="100" 
+                                        IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>

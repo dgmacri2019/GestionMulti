@@ -2,6 +2,8 @@
 using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
@@ -144,14 +146,20 @@ namespace GestionComercial.Desktop.Controls.Sales
                 if (vm != null)
                 {
                     // Buscar artículo en tu cache
-                    var article = ArticleCache.Instance.FindByCodeOrBarCode(code); // Reemplazar con tu implementación
+                    ArticleViewModel? article = ArticleCache.Instance.FindByCodeOrBarCode(code); // Reemplazar con tu implementación
                     if (article != null)
                     {
+                        var taxPrice = article.PriceWithTax;
+                        var x = article.RealCost;
+                        var priceLists = article.PriceLists;
+                        
                         var newItem = new ArticleItem
                         {
                             Code = article.Code,
                             Description = article.Description,
-                            Price = 10
+                            Price = 10,
+                            PriceListId = Convert.ToInt32(cbPriceLists.SelectedValue),
+                            
                         };
                         vm.Articles.Add(newItem);
                     }

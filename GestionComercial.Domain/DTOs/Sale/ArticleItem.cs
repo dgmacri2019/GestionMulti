@@ -1,5 +1,4 @@
-﻿using GestionComercial.Domain.DTOs.Stock;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace GestionComercial.Domain.DTOs.Sale

@@ -365,6 +365,7 @@ namespace GestionComercial.Applications.Services
                 ],
                 PriceLists = priceLists.Select(pl => new PriceListItemDto
                 {
+                    Id = pl.Id,
                     Description = pl.Description,
                     Utility = pl.Utility,
                     FinalPrice = article.PriceWithTaxes + (article.PriceWithTaxes * pl.Utility / 100)
@@ -431,6 +432,7 @@ namespace GestionComercial.Applications.Services
                 ],
                 PriceLists = priceLists.Select(pl => new PriceListItemDto
                 {
+                    Id=pl.Id,
                     Description = pl.Description,
                     Utility = pl.Utility,
                     FinalPrice = article.PriceWithTaxes + (article.PriceWithTaxes * pl.Utility / 100)

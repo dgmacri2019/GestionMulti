@@ -118,15 +118,16 @@ namespace GestionComercial.Domain.DTOs.Sale
         [JsonIgnore]
         public virtual ICollection<Acreditation>? Acreditations { get; set; }
 
-        public ObservableCollection<Entities.Masters.Client> Clients { get; set; }
-        
-        public ObservableCollection<PriceList> PriceLists { get; set; }
+        public ObservableCollection<Entities.Masters.Client> Clients { get; set; } = [];
+
+        public ObservableCollection<PriceList> PriceLists { get; set; } = [];
 
         public ObservableCollection<ArticleItem> Articles { get; set; } = [];
         public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

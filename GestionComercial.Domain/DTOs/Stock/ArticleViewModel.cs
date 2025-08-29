@@ -143,6 +143,7 @@ namespace GestionComercial.Domain.DTOs.Stock
 
     public class PriceListItemDto
     {
+        public int Id { get; set; }
         public string Description { get; set; } = string.Empty;
         public decimal Utility { get; set; }
         public decimal FinalPrice { get; set; }
