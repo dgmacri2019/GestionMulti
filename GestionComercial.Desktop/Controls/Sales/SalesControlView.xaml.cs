@@ -81,10 +81,8 @@ namespace GestionComercial.Desktop.Controls.Sales
             txtAddress.Text = string.Empty;
             txtEmail.Text = string.Empty;
             chSendEmail.IsChecked = false;
-            cbPriceLists.ItemsSource = null;
-            //cbPriceLists.SelectedValue = string.Empty;
-            cbSaleConditions.ItemsSource = null;
-            //cbSaleConditions.SelectedValue = string.Empty;
+            cbPriceLists.SelectedValue = 0;
+            cbSaleConditions.SelectedValue = 0;
         }
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)

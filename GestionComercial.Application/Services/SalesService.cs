@@ -104,6 +104,7 @@ namespace GestionComercial.Applications.Services
                 {
                     Clients = clients,
                     SaleConditions = saleConditions,
+                    PriceLists = priceLists,
                 };
 
             return sale == null ? null : ConverterHelper.ToSaleViewModel(sale, clients, saleConditions, priceLists);
