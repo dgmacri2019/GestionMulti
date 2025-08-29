@@ -46,6 +46,10 @@ namespace GestionComercial.Domain.DTOs.Sale
         [Display(Name = "Forma de pago")]
         public int SaleConditionId { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "Lista de precios")]
+        public int PriceListId { get; set; }
+
         [Display(Name = "Importe total de la venta")]
         public decimal Total { get; set; }
 

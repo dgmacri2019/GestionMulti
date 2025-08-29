@@ -119,7 +119,12 @@ namespace GestionComercial.Desktop.Controls.Sales
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-
+            // Buscar el ContentControl padre y vaciarlo
+            var parent = this.Parent as ContentControl;
+            if (parent != null)
+            {
+                parent.Content = null;
+            }
         }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
