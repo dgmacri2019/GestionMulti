@@ -1,6 +1,6 @@
 ﻿using GestionComercial.Domain.DTOs.Banks;
 
-namespace GestionComercial.Desktop.Cache
+namespace GestionComercial.Domain.Cache
 {
     public class BankParameterCache : ICache
     {

@@ -1,8 +1,8 @@
 ﻿using GestionComercial.Domain.DTOs.Provider;
 
-namespace GestionComercial.Desktop.Cache
+namespace GestionComercial.Domain.Cache
 {
-    internal class ProviderCache : ICache
+    public class ProviderCache : ICache
     {
         private static ProviderCache _instance;
         public static ProviderCache Instance => _instance ??= new ProviderCache();

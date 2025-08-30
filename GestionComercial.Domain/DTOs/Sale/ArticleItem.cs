@@ -1,75 +1,81 @@
-﻿using System.ComponentModel;
+﻿using GestionComercial.Domain.DTOs.Stock;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace GestionComercial.Domain.DTOs.Sale
 {
-    public class ArticleItem : INotifyPropertyChanged
+    public class ArticleItem : ObservableObject
     {
-        private string code;
-        public string Code
+        private string _code;
+        private string _description;
+        private int _priceListId;
+        private decimal _price;
+        private int _quantity = 1;
+        private decimal _bonification;
+        private decimal _subtotal;
+        private decimal _total;
+
+        public string Code { get => _code; set => SetProperty(ref _code, value); }
+        public string Description { get => _description; set => SetProperty(ref _description, value); }
+
+        // Colección por fila con las price lists que trae el artículo
+        public ObservableCollection<object> PriceLists { get; set; } = [];
+
+        public int PriceListId
         {
-            get => code;
-            set { code = value; OnPropertyChanged(); LoadFromCache(); }
+            get => _priceListId;
+            set
+            {
+                if (SetProperty(ref _priceListId, value))
+                {
+                    // Buscar el pricelist seleccionado dentro de PriceLists y actualizar Price si existe
+                    if (PriceLists != null && PriceLists.Count > 0)
+                    {
+                        // asumimos que cada entry tiene propiedades Id y FinalPrice
+                        var found = PriceLists
+                            .FirstOrDefault(p => Convert.ToInt32(p.GetType().GetProperty("Id")?.GetValue(p) ?? 0) == value);
+
+                        if (found != null)
+                        {
+                            var fp = found.GetType().GetProperty("FinalPrice");
+                            if (fp != null)
+                            {
+                                var val = fp.GetValue(found);
+                                if (val != null)
+                                    Price = Convert.ToDecimal(val);
+                            }
+                        }
+                    }
+
+                    Recalculate();
+                }
+            }
         }
 
-        public string Description { get; set; }
-        public int PriceListId { get; set; }
-        public decimal Price { get; set; }
+        public decimal Price { get => _price; set { if (SetProperty(ref _price, value)) Recalculate(); } }
+        public int Quantity { get => _quantity; set { if (SetProperty(ref _quantity, value)) Recalculate(); } }
+        public decimal Bonification { get => _bonification; set { if (SetProperty(ref _bonification, value)) Recalculate(); } }
 
-        private int quantity = 1;
-        public int Quantity
-        {
-            get => quantity;
-            set { quantity = value; OnPropertyChanged(); UpdateTotals(); }
-        }
+        public decimal Subtotal { get => _subtotal; private set => SetProperty(ref _subtotal, value); }
+        public decimal Total { get => _total; private set => SetProperty(ref _total, value); }
 
-        private decimal discount = 0;
-        public decimal Discount
-        {
-            get => discount;
-            set { discount = value; OnPropertyChanged(); UpdateTotals(); }
-        }
-
-        private decimal subtotal;
-        public decimal Subtotal
-        {
-            get => subtotal;
-            set { subtotal = value; OnPropertyChanged(); }
-        }
-
-        private decimal total;
-        public decimal Total
-        {
-            get => total;
-            set { total = value; OnPropertyChanged(); }
-        }
-
-        public void UpdateTotals()
+        public void Recalculate()
         {
             Subtotal = Price * Quantity;
-            Total = Subtotal * (1 - Discount / 100);
+            Total = Subtotal - (Subtotal * Bonification / 100m);
         }
+    }
 
-        // Simula la búsqueda en cache de artículos por código
-        private void LoadFromCache()
-        {
-            if (string.IsNullOrWhiteSpace(Code)) return;
-
-            //ArticleViewModel? article = ArticleCache.Instance.FindByCodeOrBarCode(Code); // Implementa tu cache real
-            //if (article != null)
-            //{
-            //    // var salePrice = article.
-
-            //    Description = article.Description;
-            //    Price = 10;
-            //    OnPropertyChanged(nameof(Description));
-            //    OnPropertyChanged(nameof(Price));
-            //    UpdateTotals();
-            //}
-        }
-
+     public class ObservableObject : INotifyPropertyChanged
+    {
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(storage, value)) return false;
+            storage = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return true;
+        }
     }
 }

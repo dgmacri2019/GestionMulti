@@ -1,4 +1,4 @@
-﻿using GestionComercial.Desktop.Cache;
+﻿using GestionComercial.Domain.Cache;
 using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;

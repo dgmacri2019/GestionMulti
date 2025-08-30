@@ -1,4 +1,4 @@
-﻿using GestionComercial.Desktop.Cache;
+﻿using GestionComercial.Domain.Cache;
 using GestionComercial.Desktop.Controls.Accounts;
 using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;

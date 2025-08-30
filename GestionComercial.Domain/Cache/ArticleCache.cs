@@ -3,9 +3,9 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
 
-namespace GestionComercial.Desktop.Cache
+namespace GestionComercial.Domain.Cache
 {
-    internal class ArticleCache : ICache
+    public class ArticleCache : ICache
     {
         private static ArticleCache _instance;
         public static ArticleCache Instance => _instance ??= new ArticleCache();

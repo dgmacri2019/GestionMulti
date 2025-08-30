@@ -1,6 +1,6 @@
 ﻿using GestionComercial.Domain.DTOs.Sale;
 
-namespace GestionComercial.Desktop.Cache
+namespace GestionComercial.Domain.Cache
 {
     internal class SaleCache : ICache
     {

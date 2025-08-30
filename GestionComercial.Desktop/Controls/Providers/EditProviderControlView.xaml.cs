@@ -1,13 +1,11 @@
-﻿using GestionComercial.Desktop.Cache;
-using GestionComercial.Desktop.Services;
-using GestionComercial.Domain.DTOs.Client;
+﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Controls.Providers
 {
@@ -142,7 +140,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 msgError("Seleccione el tipo de documento");
                 result = false;
             }
-                       
+
             if (string.IsNullOrWhiteSpace(txtDocumentNumber.Text))
             {
                 msgError("Ingrese el documento o cuit");

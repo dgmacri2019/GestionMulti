@@ -122,7 +122,7 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public ObservableCollection<PriceList> PriceLists { get; set; } = [];
 
-        public ObservableCollection<ArticleItem> Articles { get; set; } = [];
+       // public ObservableCollection<ArticleItem> ArticleItems { get; set; } = [];
         public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];
 
 

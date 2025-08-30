@@ -1,4 +1,4 @@
-﻿namespace GestionComercial.Desktop.Cache
+﻿namespace GestionComercial.Domain.Cache
 {
     public interface ICache
     {
