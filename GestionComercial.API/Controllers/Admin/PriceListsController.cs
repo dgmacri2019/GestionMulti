@@ -1,7 +1,7 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs.PriceLists;
-using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

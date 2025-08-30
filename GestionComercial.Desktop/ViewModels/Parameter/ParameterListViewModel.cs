@@ -77,6 +77,7 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
             //ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
             //SearchCommand = new RelayCommand1(async _ => await LoadClientsAsync());
 
+            _parametersApiService = new ParametersApiService();
             _ = _hubService.StartAsync();
             _ = LoadParametersAsync(); // carga inicial
         }

@@ -1343,6 +1343,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Unidad".ToUpper(),
+                        SmallDescription = "u".ToUpper(),
                     },
                     new Measure
                     {
@@ -1351,6 +1352,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Docena".ToUpper(),
+                        SmallDescription = "doc".ToUpper(),
                     },
                     new Measure
                     {
@@ -1359,6 +1361,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Kilogramo".ToUpper(),
+                        SmallDescription = "kg".ToUpper(),
                     },
                     new Measure
                     {
@@ -1367,6 +1370,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Hora".ToUpper(),
+                        SmallDescription = "h".ToUpper(),
                     },
                     new Measure
                     {
@@ -1375,6 +1379,7 @@ namespace GestionComercial.API.Helpers
                         IsEnabled = true,
                         IsDeleted = false,
                         Description = "Litro".ToUpper(),
+                        SmallDescription = "lt".ToUpper(),
                     },
                 ];
 

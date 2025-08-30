@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.Stock;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 

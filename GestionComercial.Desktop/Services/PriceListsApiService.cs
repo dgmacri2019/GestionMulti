@@ -1,6 +1,6 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.PriceLists;
-using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using System.Net.Http;
 using System.Net.Http.Headers;

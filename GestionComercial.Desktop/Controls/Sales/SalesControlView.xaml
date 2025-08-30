@@ -17,7 +17,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/> <!-- DataGrid artículos -->
+            <RowDefinition Height="*"/>
+            <!-- DataGrid artículos -->
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -53,31 +54,93 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="Cliente" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
-                    <TextBox x:Name="txtClientCode" Style="{StaticResource TextBoxSearch}" Width="100" VerticalAlignment="Center" KeyDown="txtClientCode_KeyDown"/>
+                <StackPanel Orientation="Horizontal" 
+                            Grid.Row="0" 
+                            Grid.Column="0">
+                    <TextBlock Text="Cliente" 
+                               VerticalAlignment="Center" 
+                               Style="{StaticResource BlueBold10}"/>
+                    <TextBox x:Name="txtClientCode" 
+                             Style="{StaticResource TextBoxSearch}" 
+                             Width="100" 
+                             VerticalAlignment="Center" 
+                             KeyDown="txtClientCode_KeyDown"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                    <TextBox x:Name="txtFansatyName" Style="{StaticResource TextBoxSearch}" Width="250" VerticalAlignment="Center" IsReadOnly="True" Text="{Binding FantasyName}"/>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="0" 
+                            Grid.Column="1">
+                    <TextBox x:Name="txtFansatyName" 
+                             Style="{StaticResource TextBoxSearch}" 
+                             Width="250" 
+                             VerticalAlignment="Center" 
+                             IsReadOnly="True" 
+                             Text="{Binding FantasyName}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                    <TextBox x:Name="txtAddress" Style="{StaticResource TextBoxSearch}" Width="440" Height="60" VerticalAlignment="Center" IsReadOnly="True" Text="{Binding Address}"/>
+                <StackPanel Orientation="Horizontal" 
+                            Grid.Row="1" 
+                            Grid.Column="0" 
+                            Grid.ColumnSpan="2" 
+                            Grid.RowSpan="2">
+                    <TextBox x:Name="txtAddress" 
+                             Style="{StaticResource TextBoxSearch}"
+                             Width="440" 
+                             Height="60" 
+                             VerticalAlignment="Center" 
+                             IsReadOnly="True" 
+                             Text="{Binding Address}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,2,0,0">
-                    <TextBox x:Name="txtEmail" Style="{StaticResource TextBoxSearch}" Width="auto" MinWidth="250" VerticalAlignment="Center" Text="{Binding Email}"/>
-                    <CheckBox x:Name="chSendEmail" VerticalAlignment="Center" Style="{StaticResource CheckBox}"/>
-                    <TextBlock Text="Enviar Comprobante por mail" VerticalAlignment="Center" Style="{StaticResource BlackNormal10}"/>
+                <StackPanel Orientation="Horizontal" 
+                            Grid.Row="3" 
+                            Grid.Column="0" 
+                            Grid.ColumnSpan="2"
+                            Margin="0,2,0,0">
+                    <TextBox x:Name="txtEmail" 
+                             Style="{StaticResource TextBoxSearch}" 
+                             Width="auto" 
+                             MinWidth="250" 
+                             VerticalAlignment="Center" 
+                             Text="{Binding Email}"/>
+                    <CheckBox x:Name="chSendEmail" 
+                              VerticalAlignment="Center" 
+                              Style="{StaticResource CheckBox}"/>
+                    <TextBlock Text="Enviar Comprobante por mail" 
+                               VerticalAlignment="Center" 
+                               Style="{StaticResource BlackNormal10}"/>
                 </StackPanel>
             </Grid>
         </StackPanel>
         <!-- Lista de precios y condición de venta (fila 1) -->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Lista de Precios" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
-            <ComboBox x:Name="cbPriceLists" Style="{StaticResource ComboBox}" Width="Auto" DisplayMemberPath="Description" SelectedValuePath="Id" ItemsSource="{Binding PriceLists}" SelectedValue="{Binding PriceListId}" IsEnabled="False"/>
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="1" 
+                    Grid.Column="1" 
+                    Margin="10,0,20,8">
+            <TextBlock Text="Lista de Precios" 
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource BlueBold10}"/>
+            <ComboBox x:Name="cbPriceLists" 
+                      Style="{StaticResource ComboBox}" 
+                      Width="Auto" 
+                      DisplayMemberPath="Description" 
+                      SelectedValuePath="Id"
+                      ItemsSource="{Binding PriceLists}"
+                      SelectedValue="{Binding PriceListId}"
+                      IsEnabled="False"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Margin="10,0,20,8" HorizontalAlignment="Left">
-            <TextBlock Text="Condición de Venta" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
-            <ComboBox x:Name="cbSaleConditions" Style="{StaticResource ComboBox}" Width="Auto" DisplayMemberPath="Description" SelectedValuePath="Id" ItemsSource="{Binding SaleConditions}" SelectedValue="{Binding SaleConditionId}"/>
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="1" 
+                    Grid.Column="2" 
+                    Margin="10,0,20,8" 
+                    HorizontalAlignment="Left">
+            <TextBlock Text="Condición de Venta" 
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource BlueBold10}"/>
+            <ComboBox x:Name="cbSaleConditions" 
+                      Style="{StaticResource ComboBox}" 
+                      Width="Auto" 
+                      DisplayMemberPath="Description" 
+                      SelectedValuePath="Id" 
+                      ItemsSource="{Binding SaleConditions}" 
+                      SelectedValue="{Binding SaleConditionId}"/>
         </StackPanel>
         <!-- DataGrid para artículos (fila 2) -->
         <StackPanel x:Name="spArticles" 
@@ -88,7 +151,7 @@
                     Visibility="Hidden" 
                     Margin="10,0,20,8">
             <StackPanel>
-                    <DataGrid x:Name="dgArticles" 
+                <DataGrid x:Name="dgArticles" 
                               ItemsSource="{Binding ArticleItems, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                               AutoGenerateColumns="False" 
                               CanUserAddRows="False" 
@@ -97,34 +160,63 @@
                               Height="300"
                               KeyDown="dgArticles_KeyDown" 
                               CellEditEnding="dgArticles_CellEditEnding" 
-                              Loaded="dgArticles_Loaded" 
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Código" Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                            <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="200" IsReadOnly="True"/>
-                            <DataGridTemplateColumn Header="Lista de Precios" Width="120">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <!-- Mostrar combo no editable (muestra la descripción) -->
-                                        <ComboBox ItemsSource="{Binding PriceLists}" DisplayMemberPath="Description" SelectedValuePath="Id" SelectedValue="{Binding PriceListId, Mode=TwoWay}" IsHitTestVisible="False" Focusable="False"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <!-- Editable: ItemsSource por fila -->
-                                        <ComboBox ItemsSource="{Binding PriceLists}" DisplayMemberPath="Description" SelectedValuePath="Id" SelectedValue="{Binding PriceListId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
-                            <DataGridTextColumn Header="Precio" Binding="{Binding Price, StringFormat={}{0:C2}}" Width="80" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat={}{0:C2}}" Width="100" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Bonificación (%)" Binding="{Binding Bonification, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat={}{0:C2}}" Width="100" IsReadOnly="True"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-             </StackPanel>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Código" 
+                                            Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" 
+                                            Width="100"/>
+                        <DataGridTextColumn Header="Descripción" 
+                                            Binding="{Binding Description}" 
+                                            Width="200" 
+                                            IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Lista de Precios" 
+                                                Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <!-- Mostrar combo no editable (muestra la descripción) -->
+                                    <ComboBox ItemsSource="{Binding PriceLists}" 
+                                              DisplayMemberPath="Description" 
+                                              SelectedValuePath="Id" 
+                                              SelectedValue="{Binding PriceListId, Mode=TwoWay}" 
+                                              IsHitTestVisible="False" 
+                                              Focusable="False"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <!-- Editable: ItemsSource por fila -->
+                                    <ComboBox ItemsSource="{Binding PriceLists}"
+                                              DisplayMemberPath="Description" 
+                                              SelectedValuePath="Id" 
+                                              SelectedValue="{Binding PriceListId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Cantidad" 
+                                            Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" 
+                                            Width="80"/>
+                        <DataGridTextColumn Header="Unidad de medida" 
+                                            Binding="{Binding SmallMeasureDescription, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="80"/>
+                        <DataGridTextColumn Header="Precio" 
+                                            Binding="{Binding Price, StringFormat={}{0:C2}}"
+                                            Width="80" 
+                                            IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Subtotal"
+                                            Binding="{Binding Subtotal, StringFormat={}{0:C2}}"
+                                            Width="100" 
+                                            IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Bonificación (%)" 
+                                            Binding="{Binding Bonification, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="100"/>
+                        <DataGridTextColumn Header="Total" 
+                                            Binding="{Binding Total, StringFormat={}{0:C2}}" 
+                                            Width="100"
+                                            IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
         </StackPanel>
         <!-- Checkbox y TextBox para código de barras (fila 3) -->
         <StackPanel x:Name="spPostMethod"
@@ -136,19 +228,19 @@
                     Margin="10,0,20,8" 
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Bottom">
-                <CheckBox x:Name="chBarcode" 
+            <CheckBox x:Name="chBarcode" 
                           Content="Habilitar lectura por código de barras" 
                           VerticalAlignment="Center" 
                           Checked="chBarcode_Checked" 
                           Unchecked="chBarcode_Unchecked"/>
-                <TextBox x:Name="txtBarcode" 
+            <TextBox x:Name="txtBarcode" 
                          Width="200" 
                          Margin="10,0,0,0" 
                          VerticalAlignment="Center" 
                          KeyDown="txtBarcode_KeyDown"/>
         </StackPanel>
 
-       
+
         <!-- Botones (fila 6) -->
         <Button x:Name="btnCancel" Grid.Row="6" Grid.Column="1" Content="Cancelar" Margin="0,40,150,0" Click="BtnCancel_Click" Style="{StaticResource BtnCancel}"/>
         <Button x:Name="btnUpdate" Grid.Row="6" Grid.Column="1" Content="Actualizar" Margin="150,40,0,0" Click="BtnUpdate_Click" Style="{StaticResource BtnUpdate}"/>

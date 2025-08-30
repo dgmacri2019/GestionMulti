@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GestionComercial.Domain.Entities.Masters;
+using System.ComponentModel.DataAnnotations;
 
-namespace GestionComercial.Domain.Entities.Masters
+namespace GestionComercial.Domain.Entities.Stock
 {
     public class PriceList : CommonEntity
     {

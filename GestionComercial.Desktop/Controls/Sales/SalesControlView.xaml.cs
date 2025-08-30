@@ -2,6 +2,7 @@
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Masters;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -15,6 +16,7 @@ namespace GestionComercial.Desktop.Controls.Sales
         private readonly SalesApiService _salesApiService;
         private readonly int SaleId;
         private SaleViewModel saleViewModel;
+        private readonly bool UsePostMethod;
 
         public ObservableCollection<ArticleItem> ArticleItems { get; set; }
 
@@ -26,9 +28,18 @@ namespace GestionComercial.Desktop.Controls.Sales
             DataContext = this;
             SaleId = saleId;
 
-            // Agregar fila inicial en blanco
-            ArticleItems.Add(new ArticleItem());
+            UsePostMethod = ParameterCache.Instance.GetAllGeneralParameters().First().UsePostMethod;
 
+            //if (UsePostMethod)
+            //{
+
+            //}    
+            //else
+            //{
+            //    // Agregar fila inicial en blanco
+            //    ArticleItems.Add(new ArticleItem());
+            //    chBarcode.IsChecked = false;
+            //}
             _ = LoadSaleAsync();
 
             btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
@@ -67,8 +78,9 @@ namespace GestionComercial.Desktop.Controls.Sales
 
                     cbSaleConditions.ItemsSource = client.SaleConditions;
                     cbSaleConditions.SelectedValue = client.SaleConditionId;
-                    spArticles.Visibility= Visibility.Visible;
+                    spArticles.Visibility = Visibility.Visible;
                     spPostMethod.Visibility = Visibility.Visible;
+                    SetingFocus();
                 }
                 else
                 {
@@ -76,6 +88,8 @@ namespace GestionComercial.Desktop.Controls.Sales
                     spArticles.Visibility = Visibility.Hidden;
                     spPostMethod.Visibility = Visibility.Hidden;
                 }
+
+
             }
         }
 
@@ -92,16 +106,19 @@ namespace GestionComercial.Desktop.Controls.Sales
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             txtClientCode.Focus();
-            lblError.MaxWidth = this.ActualWidth;         
-            // Inicializar la primera fila editable
-            if (ArticleItems.Count == 0)
-                ArticleItems.Add(new ArticleItem());
+            lblError.MaxWidth = this.ActualWidth;
 
-            dgArticles.SelectedIndex = 0;
-            dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
-            dgArticles.BeginEdit();
+            if (!UsePostMethod)
+            {
+                // Inicializar la primera fila editable
+                if (ArticleItems.Count == 0)
+                    ArticleItems.Add(new ArticleItem());
+                dgArticles.SelectedIndex = 0;
+                dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
+                dgArticles.BeginEdit();
+            }
             dpDate.SelectedDate = DateTime.Now;
-            
+
         }
 
         private void dgArticles_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -196,16 +213,50 @@ namespace GestionComercial.Desktop.Controls.Sales
                 var code = txtBarcode.Text.Trim();
                 if (!string.IsNullOrEmpty(code))
                 {
-                    var article = ArticleCache.Instance.FindByCodeOrBarCode(code);
+                    bool isProductWeight = code.Substring(0, 2) == "20";
+                    decimal quantity = 1;
+
+                    ArticleViewModel? article = isProductWeight ?
+                        ArticleCache.Instance.FindByCodeOrBarCode(code.Substring(2, 4))
+                        :
+                        ArticleCache.Instance.FindByCodeOrBarCode(code);
+
                     if (article != null)
                     {
+                        isProductWeight = article.IsWeight;
+                        if (article.IsDeleted)
+                        {
+                            MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        if (!article.IsEnabled)
+                        {
+                            MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        if (isProductWeight)
+                        {
+                            if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
+                            {
+                                //TODO: ver tema etiqueta con precios
+                                string quantityString = code.Substring(6, 5);
+                                quantity = Convert.ToInt32(quantityString) / 100;
+                            }
+                            else if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodeWeight)
+                            {
+                                string quantityString = code.Substring(7, 5);
+                                quantity = Convert.ToInt32(quantityString) / 1000;
+                            }
+                        }
+
                         var priceLists = article.PriceLists;
                         int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
                         // Verificar si el artículo ya está en la grilla
                         var existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
 
-                        if (existingItem != null)
+                        if (existingItem != null && !isProductWeight)
                         {
                             // Ya existe → solo aumentar la cantidad
                             existingItem.Quantity += 1;
@@ -216,7 +267,10 @@ namespace GestionComercial.Desktop.Controls.Sales
                             var newItem = new ArticleItem
                             {
                                 Code = article.Code,
-                                Description = article.Description
+                                Description = article.Description,
+                                SmallMeasureDescription = article.Measures.First(m => m.Id == article.MeasureId).SmallDescription,
+                                Quantity = quantity,
+                                Bonification = 0,
                             };
 
                             // llenar PriceLists con las del artículo
@@ -235,8 +289,6 @@ namespace GestionComercial.Desktop.Controls.Sales
                             // asignar lista de precios -> setter actualiza el Price
                             newItem.PriceListId = priceListId;
 
-                            newItem.Quantity = 1;
-                            newItem.Bonification = 0;
                             newItem.Recalculate();
                             ArticleItems.Add(newItem);
 
@@ -289,18 +341,20 @@ namespace GestionComercial.Desktop.Controls.Sales
             // Actualizar venta (implementar según tu API)
         }
 
-        private void dgArticles_Loaded(object sender, RoutedEventArgs e)
+        private void SetingFocus()
         {
-            // Asegurarnos de tener al menos una fila
-            if (ArticleItems == null)
-                ArticleItems = new ObservableCollection<ArticleItem>();
-
-            if (ArticleItems.Count == 0)
-                ArticleItems.Add(new ArticleItem());
-
-            // Si no estamos en modo código de barras, poner foco en la primera celda de Código
-            if (!chBarcode.IsChecked.GetValueOrDefault())
+            if (UsePostMethod)
             {
+                chBarcode.IsChecked = true;
+                txtBarcode.Focus();
+            }
+            else
+            {
+                if (ArticleItems == null)
+                    ArticleItems = new ObservableCollection<ArticleItem>();
+
+                if (ArticleItems.Count == 0)
+                    ArticleItems.Add(new ArticleItem());
                 dgArticles.Dispatcher.BeginInvoke(new System.Action(() =>
                 {
                     if (dgArticles.Items.Count > 0 && dgArticles.Columns.Count > 0)
@@ -320,7 +374,7 @@ namespace GestionComercial.Desktop.Controls.Sales
             double newWidth = e.NewSize.Width;
             double newHeight = e.NewSize.Height;
 
-            dgArticles.Height = newHeight * 0.3;
+            dgArticles.Height = newHeight * 0.5;
         }
     }
 

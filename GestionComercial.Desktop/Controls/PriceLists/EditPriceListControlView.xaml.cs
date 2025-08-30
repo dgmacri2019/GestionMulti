@@ -1,6 +1,6 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.PriceLists;
-using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Windows;

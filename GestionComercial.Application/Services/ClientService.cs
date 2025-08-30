@@ -3,6 +3,7 @@ using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;

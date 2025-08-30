@@ -2,6 +2,7 @@
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

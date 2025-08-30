@@ -13,6 +13,7 @@ using GestionComercial.Desktop.ViewModels.Client;
 using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
+using GestionComercial.Desktop.ViewModels.Parameter;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -277,6 +278,7 @@ namespace GestionComercial.Desktop.Views
         {
             ClientListViewModel clientListViewModel = new();
             ArticleListViewModel articleListViewModel = new();
+            ParameterListViewModel parameterListViewModel = new ();
         }
     }
 }
