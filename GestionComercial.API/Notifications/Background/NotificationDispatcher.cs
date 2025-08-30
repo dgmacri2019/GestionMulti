@@ -13,12 +13,13 @@ namespace GestionComercial.API.Notifications.Background
         private readonly IHubContext<ClientsHub, IClientsClient> _clientsHub;
         private readonly IHubContext<ProvidersHub, IProvidersClient> _providersHub;
         private readonly IHubContext<SalesHub, ISalesClient> _salesHub;
+        private readonly IHubContext<GeneralParametersHub, IParametersClient> _parametersHub;
         // inyectá aquí también otros hubs si los vas a usar
 
         public NotificationDispatcher(INotificationQueue queue, ILogger<NotificationDispatcher> logger, IHubContext<ArticlesHub, IArticlesClient> articlesHub,
             IHubContext<BankParametersHub, IBankParametersClient> bankParametersHub, IHubContext<BoxAndBanksHub, IBoxAndBanksClient> boxAndBankHub,
             IHubContext<ClientsHub, IClientsClient> clientsHub, IHubContext<ProvidersHub, IProvidersClient> providersHub, 
-            IHubContext<SalesHub, ISalesClient> salesHub  )
+            IHubContext<SalesHub, ISalesClient> salesHub, IHubContext<GeneralParametersHub, IParametersClient> parametersHub)
         {
             _queue = queue;
             _logger = logger;
@@ -28,6 +29,7 @@ namespace GestionComercial.API.Notifications.Background
             _clientsHub = clientsHub;
             _providersHub = providersHub;
             _salesHub = salesHub;
+            _parametersHub = parametersHub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -57,6 +59,9 @@ namespace GestionComercial.API.Notifications.Background
                             break;
                         case SaleChangedItem s:
                             await _salesHub.Clients.All.VentasActualizados(s.Notification);
+                            break;
+                        case GeneralParameterChangedItem s:
+                            await _parametersHub.Clients.All.ParametrosGeneralesActualizados(s.Notification);
                             break;
 
                         default:

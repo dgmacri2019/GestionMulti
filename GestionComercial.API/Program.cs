@@ -61,6 +61,7 @@ builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<IMasterService, MasterService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IParameterService, ParameterService>();
 
 
 
@@ -70,6 +71,7 @@ builder.Services.AddScoped<IArticlesNotifier, SignalRArticlesNotifier>();
 builder.Services.AddScoped<IBoxAndBanksNotifier, SignalRBoxAndBanksNotifier>();
 builder.Services.AddScoped<IBankParametersNotifier, SignalRBankParametersNotifier>();
 builder.Services.AddScoped<ISalesNotifier, SignalRSalesNotifier>();
+builder.Services.AddScoped<IParametersNotifier, SignalRParametersNotifier>();
 
 //builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -130,6 +132,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<BoxAndBanksHub>("/hubs/boxandbank");
     endpoints.MapHub<BankParametersHub>("/hubs/bankparameter");
     endpoints.MapHub<SalesHub>("/hubs/sale");
+    endpoints.MapHub<GeneralParametersHub>("/hubs/generalparameter");
 });
 using (var scope = app.Services.CreateScope())
 {

@@ -6,17 +6,24 @@
         {
             return controller switch
             {
-                "Articles" => "Articulos",
                 "Clients" => "Clientes",
-                "Users" => "Usuarios",
                 "Providers" => "Proveedores",
-                "Permissions" => "Permisos",
-                "PriceLists" => "Lista de Precios",
-                "Banks" => "Bancos",
-                "Accounts" => "Cuentas Contables",
-                "Sales" => "Ventas",
+                "Articles" => "Articulos",
                 "Purchases" => "Compras",
-
+                "Sales" => "Ventas",
+                "Banks" => "Bancos",
+                "Reports" => "Reportes",
+                "Parameters" => "Parametros",
+                "Settings" => "Configuraciones",
+                "Accounts" => "Cuentas Contables",
+                "PriceLists" => "Lista de Precios",
+                "Users" => "Usuarios",
+                "PurchaseOrders" => "Ordenes de Compra",
+                "BackUps" => "BackUps",
+                "Budgets" => "Presupuestos",
+                "Payments" => "Pagos y Cobranzas",
+                "DataBases" => "Base de Datos",
+                "Permissions" => "Permisos",                
                 _ => controller
             };
         }

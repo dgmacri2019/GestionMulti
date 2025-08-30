@@ -138,25 +138,23 @@ namespace GestionComercial.Domain.Constant
             [Display(Name = "Configuraciones")]
             Settings = 9,
             [Display(Name = "Cuentas Contables")]
-            Accounting = 10,
+            Accountings = 10,
             [Display(Name = "Listas de Precios")]
-            PriceList = 11,
+            PriceLists = 11,
             [Display(Name = "Usuarios")]
             Users = 12,
             [Display(Name = "Ordenes de Compra")]
             PurchaseOrders = 13,
             [Display(Name = "Back Up")]
-            BackUp = 14,
+            BackUps = 14,
             [Display(Name = "Presupuestos")]
             Budgets = 15,
             [Display(Name = "Pagos y Cobranzas")]
             Payments = 16,
             [Display(Name = "Base de Datos")]
-            DataBase = 17,
+            DataBases = 17,
             [Display(Name = "Permisos")]
-            Permission = 18,
-            [Display(Name = "Lista de Precios")]
-            PriceLists = 19,
+            Permissions = 18,
         }
 
 

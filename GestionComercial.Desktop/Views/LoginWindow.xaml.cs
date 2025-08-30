@@ -23,10 +23,10 @@ namespace GestionComercial.Desktop.Views
 
         private async Task LoginAsync()
         {
+            btnLogin.IsEnabled = false;
             lblError.Text = string.Empty;
             string username = txtUsername.Text;
-            string password = txtPassword.Password;
-            btnLogin.IsEnabled = false;
+            string password = txtPassword.Password;            
             string token = string.Empty;
 
             LoginResponse resultLogin = await _authService.LoginAsync(username, password);
@@ -64,6 +64,17 @@ namespace GestionComercial.Desktop.Views
             {
                 await LoginAsync();
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            txtUsername.Focus();
+        }
+
+        private void txtUsername_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && !string.IsNullOrEmpty(txtUsername.Text))
+                txtPassword.Focus();
         }
     }
 }

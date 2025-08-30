@@ -22,7 +22,7 @@ namespace GestionComercial.Desktop.Controls.Sales
         {
             InitializeComponent();
             _salesApiService = new SalesApiService();
-            ArticleItems = new ObservableCollection<ArticleItem>();
+            ArticleItems = [];
             DataContext = this;
             SaleId = saleId;
 
@@ -67,10 +67,14 @@ namespace GestionComercial.Desktop.Controls.Sales
 
                     cbSaleConditions.ItemsSource = client.SaleConditions;
                     cbSaleConditions.SelectedValue = client.SaleConditionId;
+                    spArticles.Visibility= Visibility.Visible;
+                    spPostMethod.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     MessageBox.Show("El código informado no existe", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    spArticles.Visibility = Visibility.Hidden;
+                    spPostMethod.Visibility = Visibility.Hidden;
                 }
             }
         }
@@ -87,9 +91,8 @@ namespace GestionComercial.Desktop.Controls.Sales
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            lblError.MaxWidth = this.ActualWidth;
-            dpDate.SelectedDate = System.DateTime.Now;
-
+            txtClientCode.Focus();
+            lblError.MaxWidth = this.ActualWidth;         
             // Inicializar la primera fila editable
             if (ArticleItems.Count == 0)
                 ArticleItems.Add(new ArticleItem());
@@ -97,6 +100,8 @@ namespace GestionComercial.Desktop.Controls.Sales
             dgArticles.SelectedIndex = 0;
             dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
             dgArticles.BeginEdit();
+            dpDate.SelectedDate = DateTime.Now;
+            
         }
 
         private void dgArticles_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -307,6 +312,15 @@ namespace GestionComercial.Desktop.Controls.Sales
                     }
                 }), System.Windows.Threading.DispatcherPriority.Input);
             }
+        }
+
+        private void miUserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Nuevo ancho y alto
+            double newWidth = e.NewSize.Width;
+            double newHeight = e.NewSize.Height;
+
+            dgArticles.Height = newHeight * 0.3;
         }
     }
 

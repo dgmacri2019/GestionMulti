@@ -5,7 +5,7 @@
         Height="350" 
         Width="350" 
         Icon="/Images/090906_Tienda2.png"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,12 +15,12 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="0,0,0,10">
-            <TextBlock Text="Usuario:" />
-            <TextBox x:Name="txtUsername" Margin="0,5"/>
+            <TextBlock Text="Usuario:" Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtUsername" Margin="0,5" KeyDown="txtUsername_KeyDown"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Margin="0,0,0,10">
-            <TextBlock Text="Password:" />
+            <TextBlock Text="Password:" Style="{StaticResource BlueBold10}"/>
             <PasswordBox x:Name="txtPassword" Margin="0,5" KeyDown="txtPassword_KeyDown">               
             </PasswordBox>
         </StackPanel>
