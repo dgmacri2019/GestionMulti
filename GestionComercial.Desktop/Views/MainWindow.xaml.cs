@@ -62,6 +62,8 @@ namespace GestionComercial.Desktop.Views
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             NavigationTree.ItemsSource = CreateMenuItem();
+            Thread thread = new(CargarCache);
+            thread.Start();
         }
 
         private List<MenuItemModel> CreateMenuItem()
@@ -268,17 +270,11 @@ namespace GestionComercial.Desktop.Views
             Application.Current.MainWindow = loginView;
         }
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
-        {
-            Thread thread = new(CargarCache);
-            thread.Start();
-        }
-
         private void CargarCache(object? obj)
         {
             ClientListViewModel clientListViewModel = new();
             ArticleListViewModel articleListViewModel = new();
-            ParameterListViewModel parameterListViewModel = new ();
+            ParameterListViewModel parameterListViewModel = new();
         }
     }
 }

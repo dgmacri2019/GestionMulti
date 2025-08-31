@@ -16,6 +16,8 @@ namespace GestionComercial.Domain.Cache
 
         private List<GeneralParameter>? _generalParameters;
 
+        private PcParameter? _pcParameter;
+
         private ParameterCache()
         {
             CacheManager.Register(this);
@@ -38,12 +40,19 @@ namespace GestionComercial.Domain.Cache
 
                 throw;
             }
-        }       
-        public void SetGeneralParameter(GeneralParameter generalParameter)
+        }
+
+
+        public PcParameter GetPcParameter()
+        {
+            return _pcParameter;
+        }
+
+        public void SetPCParameter(PcParameter pcParameter)
         {
             try
             {
-                _generalParameters.Add(generalParameter);
+                _pcParameter = pcParameter;
             }
             catch (Exception)
             {
@@ -51,8 +60,8 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-       
-       
+
+
 
 
 
@@ -60,8 +69,10 @@ namespace GestionComercial.Domain.Cache
         public void ClearCache()
         {
             _generalParameters?.Clear();
+            _pcParameter = null;
         }
 
         public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any();
+        public bool HasDataPCParameters => _pcParameter != null;
     }
 }

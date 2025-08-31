@@ -13,8 +13,7 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         private readonly ParametersApiService _parametersApiService;
         private readonly GeneralParametersHubService _hubService;
 
-        // 🔹 Lista observable para bindear al DataGrid
-        public ObservableCollection<GeneralParameter> GeneralParameters { get; } = [];
+       
 
         // 🔹 Propiedades de filtros
         private string _nameFilter = string.Empty;
@@ -88,21 +87,29 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         {
             if (!ParameterCache.Instance.HasDataGeneralParameters)
             {
-                List<GeneralParameter> parameters = await _parametersApiService.GetAllGeneralParametersAsync();
-                ParameterCache.Instance.SetGeneralParameters(parameters);
+                List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
+                ParameterCache.Instance.SetGeneralParameters(generalParameters);
             }
+            if(!ParameterCache.Instance.HasDataPCParameters)
+            {
+                PcParameter pcParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
+                ParameterCache.Instance.SetPCParameter(pcParameter);
+            }
+
+
         }
 
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnParametroGeneralCambiado(ParametroGeneralChangeNotification notification)
         {
-            List<GeneralParameter> clients = await _parametersApiService.GetAllGeneralParametersAsync();
+            List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
+            PcParameter pcParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
 
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 ParameterCache.Instance.ClearCache();
-                ParameterCache.Instance.SetGeneralParameters(clients);
-
+                ParameterCache.Instance.SetGeneralParameters(generalParameters);
+                ParameterCache.Instance.SetPCParameter(pcParameter);
                 _ = LoadParametersAsync();
             });
         }

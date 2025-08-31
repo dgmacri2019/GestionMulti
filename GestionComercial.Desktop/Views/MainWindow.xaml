@@ -15,7 +15,7 @@
 
     <DockPanel>
         <!-- Header -->
-        <StackPanel DockPanel.Dock="Top" Background="#2B579A" Orientation="Horizontal" Height="50" Loaded="StackPanel_Loaded">
+        <StackPanel DockPanel.Dock="Top" Background="#2B579A" Orientation="Horizontal" Height="50">
             <TextBlock Text="Sistema de Gestión Comercial" 
                        Foreground="White" 
                        VerticalAlignment="Center" 

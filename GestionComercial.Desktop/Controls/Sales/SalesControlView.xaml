@@ -167,7 +167,8 @@
                               Margin="5" 
                               Height="300"
                               KeyDown="dgArticles_KeyDown" 
-                              CellEditEnding="dgArticles_CellEditEnding" 
+                              CellEditEnding="dgArticles_CellEditEnding"
+                          PreparingCellForEdit="dgArticles_PreparingCellForEdit"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
@@ -185,33 +186,34 @@
                         <DataGridTextColumn Header="Descripción" 
                                             Binding="{Binding Description}" 
                                             Width="200" 
-                                            IsReadOnly="True"/>
-                        <DataGridTemplateColumn Header="Lista de Precios" 
-                                                Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <!-- Mostrar combo no editable (muestra la descripción) -->
-                                    <ComboBox ItemsSource="{Binding PriceLists}" 
-                                              DisplayMemberPath="Description" 
-                                              SelectedValuePath="Id" 
-                                               SelectedValue="{Binding PriceListId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                              IsHitTestVisible="False" 
-                                              Focusable="False"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                            <DataGridTemplateColumn.CellEditingTemplate>
-                                <DataTemplate>
-                                    <!-- Editable: ItemsSource por fila -->
-                                    <ComboBox ItemsSource="{Binding PriceLists}"
-                                              DisplayMemberPath="Description" 
-                                              SelectedValuePath="Id" 
-                                              SelectedValue="{Binding PriceListId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellEditingTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Cantidad" 
-                                            Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" 
+                                            IsReadOnly="True"/>    
+                        <DataGridTextColumn Binding="{Binding PriceListId, UpdateSourceTrigger=PropertyChanged}" 
                                             Width="60">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="Lista de Precios"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           HorizontalAlignment="Center"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.EditingElementStyle>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.EditingElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Cantidad" 
+                                            Binding="{Binding Quantity, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
+                                            Width="60">                            
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>

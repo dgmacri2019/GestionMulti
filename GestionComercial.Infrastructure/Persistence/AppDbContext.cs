@@ -55,6 +55,7 @@ namespace GestionComercial.Infrastructure.Persistence
         //MASTER/CONFIGURATION
         public DbSet<EmailParameter> EmailParameters { get; set; }
         public DbSet<GeneralParameter> GeneralParameters { get; set; }
+        public DbSet<PcParameter> PcParameters { get; set; }
         public DbSet<PrinterParameter> PrinterParameters { get; set; }
 
 

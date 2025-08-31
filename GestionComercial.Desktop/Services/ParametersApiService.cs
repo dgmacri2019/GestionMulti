@@ -68,5 +68,46 @@ namespace GestionComercial.Desktop.Services
                 throw;
             }
         }
+
+        internal async Task<PcParameter> GetPcParameterAsync(string pcName)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetPcParameterAsync", new
+                {
+                    PcName = pcName,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    PcParameter? pcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, options);
+
+
+                    return pcParameter;
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

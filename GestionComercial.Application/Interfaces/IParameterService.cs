@@ -6,5 +6,8 @@ namespace GestionComercial.Applications.Interfaces
     {
         Task<IEnumerable<GeneralParameter>> GetAllGeneralParametersAsync();
         Task<GeneralParameter?> GetGeneralParameterByIdAsync(int id);
+
+        Task<PcParameter?> GetPcParameterAsync(string pcName);
+        Task<PcParameter?> GetPcParameterByIdAsync(int id);
     }
 }

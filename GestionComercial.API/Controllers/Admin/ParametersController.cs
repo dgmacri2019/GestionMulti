@@ -1,10 +1,7 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
-using GestionComercial.Applications.Services;
-using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.DTOs.GeneralParameter;
-using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.DTOs.Parameter;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +64,7 @@ namespace GestionComercial.API.Controllers.Admin
             else return BadRequest(resultAdd.Message);
         }
 
-       
+
         [HttpPost("GetAllGeneralParametersAsync")]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -76,14 +73,66 @@ namespace GestionComercial.API.Controllers.Admin
         }
 
 
-         [HttpPost("GetGeneralParameterByIdAsync")]
-        public async Task<IActionResult> GetByIdAsync([FromBody] GeneralParameterFilterDto filter)
+        [HttpPost("GetGeneralParameterByIdAsync")]
+        public async Task<IActionResult> GetByIdAsync([FromBody] ParameterFilterDto filter)
         {
             GeneralParameter? generalParameter = await _parameterService.GetGeneralParameterByIdAsync(filter.Id);
             if (generalParameter == null)
                 return NotFound();
 
             return Ok(generalParameter);
+        }
+
+
+
+
+
+        [HttpPost("AddPcParameterAsync")]
+        public async Task<IActionResult> AddPcParameterAsync([FromBody] PcParameter pcParameter)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(pcParameter);
+
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(pcParameter.Id, "Parametro Pc", ChangeType.Created);
+
+                return
+                    Ok("Parametro Pc creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+        [HttpPost("UpdatePcParameterAsync")]
+        public async Task<IActionResult> UpdatePcParameterAsync([FromBody] PcParameter pcParameter)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(pcParameter);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(pcParameter.Id, "PcParameter", ChangeType.Updated);
+
+                return Ok("Parametro Pc actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+        [HttpPost("GetPcParameterAsync")]
+        public async Task<IActionResult> GetAllPcParametersAsync([FromBody] ParameterFilterDto filter)
+        {
+            PcParameter? pcParameter = await _parameterService.GetPcParameterAsync(filter.PcName);
+            return Ok(pcParameter);
+        }
+
+
+        [HttpPost("GetPcParameterByIdAsync")]
+        public async Task<IActionResult> GetPcParameterByIdAsync([FromBody] ParameterFilterDto filter)
+        {
+            PcParameter? pcParameter = await _parameterService.GetPcParameterByIdAsync(filter.Id);
+            if (pcParameter == null)
+                return NotFound();
+
+            return Ok(pcParameter);
         }
 
 

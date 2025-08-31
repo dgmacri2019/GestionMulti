@@ -42,7 +42,15 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public decimal Price { get => _price; set { if (SetProperty(ref _price, value)) Recalculate(); } }
         public decimal Quantity { get => _quantity; set { if (SetProperty(ref _quantity, value)) Recalculate(); } }
-        public decimal Bonification { get => _bonification; set { if (SetProperty(ref _bonification, value)) Recalculate(); } }
+        public decimal Bonification 
+        { 
+            get => _bonification; 
+            set 
+            { 
+                if (SetProperty(ref _bonification, value)) 
+                    Recalculate(); 
+            } 
+        }
 
         public decimal Subtotal { get => _subtotal; private set => SetProperty(ref _subtotal, value); }
         public decimal Total { get => _total; private set => SetProperty(ref _total, value); }
