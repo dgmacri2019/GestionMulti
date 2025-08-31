@@ -23,7 +23,7 @@ namespace GestionComercial.Desktop.Controls.Sales
         private SaleViewModel saleViewModel;
         private readonly bool UsePostMethod;
         public ObservableCollection<ArticleItem> ArticleItems { get; set; }
-        public int TotalItems => ArticleItems.Sum(a => (int)a.Quantity);
+        public int TotalItems => ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code));
         public decimal TotalPrice => ArticleItems.Sum(a => a.Total);
 
 
@@ -55,7 +55,7 @@ namespace GestionComercial.Desktop.Controls.Sales
             btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
             btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
         }
-               
+
         private async Task LoadSaleAsync()
         {
             var result = await _salesApiService.GetByIdAsync(SaleId);
@@ -138,6 +138,7 @@ namespace GestionComercial.Desktop.Controls.Sales
             dpDate.SelectedDate = DateTime.Now;
 
         }
+
 
         private void dgArticles_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
@@ -222,10 +223,22 @@ namespace GestionComercial.Desktop.Controls.Sales
                         if (ArticleItems.Last() == currentItem)
                             ArticleItems.Add(new ArticleItem());
                     }
+                    else
+                    {
+                        MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        // ✅ Forzar foco en la celda "Cantidad"
+                        Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            var dataGrid = (DataGrid)sender;
+                            dataGrid.CurrentCell = new DataGridCellInfo(currentItem, dataGrid.Columns.First(c => c.Header?.ToString() == "Código"));
+                            dataGrid.BeginEdit();
+                        }), DispatcherPriority.Background);
+                    }
                 }
 
+
                 // Recalcular subtotal y total si cambió cantidad o bonificación
-                if (e.Column.Header.ToString() == "Cantidad" || e.Column.Header.ToString() == "Bonificación (%)")
+                if (e.Column.Header.ToString() == "Cantidad" || e.Column.Header.ToString() == "Bonif (%)")
                 {
                     currentItem.Recalculate();
                     OnPropertyChanged(nameof(TotalItems));
@@ -253,6 +266,7 @@ namespace GestionComercial.Desktop.Controls.Sales
 
             }
         }
+
 
         private void dgArticles_KeyDown(object sender, KeyEventArgs e)
         {
@@ -330,7 +344,6 @@ namespace GestionComercial.Desktop.Controls.Sales
                         {
                             if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
                             {
-                                //TODO: ver tema etiqueta con precios
                                 string quantityString = code.Substring(7, 5);
                                 decimal price = priceLists.Where(pl => pl.Id == priceListId).First().FinalPrice;
                                 quantity = Math.Round(Convert.ToDecimal(quantityString) / price, 3);

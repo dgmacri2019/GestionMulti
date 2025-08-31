@@ -309,7 +309,7 @@
                     HorizontalAlignment="Right" 
                     VerticalAlignment="Bottom">
             <CheckBox x:Name="chBarcode" 
-                          Content="Habilitar lectura por código de barras" 
+                          Content="Método POS" 
                           VerticalAlignment="Center" 
                           Checked="chBarcode_Checked" 
                           Unchecked="chBarcode_Unchecked"/>
@@ -329,7 +329,7 @@
             <TextBlock Text="Cantidad de items: " 
                        Style="{StaticResource BlueBold10}"
                        VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding TotalItems}" 
+            <TextBlock Text="{Binding TotalItems, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                        Style="{StaticResource BlackNormal10}" 
                        VerticalAlignment="Center" 
                        Margin="5,0"/>
@@ -337,9 +337,10 @@
                        Style="{StaticResource BlueBold10}" 
                        VerticalAlignment="Center" 
                        Margin="20,0,0,0"/>
-            <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}}" 
+            <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                        Style="{StaticResource BlackNormal10}" 
-                       VerticalAlignment="Center" Margin="5,0"/>
+                       VerticalAlignment="Center" 
+                       Margin="5,0"/>
         </StackPanel>
         <!-- Botones (fila 6) -->
         <Button x:Name="btnCancel" Grid.Row="6" Grid.Column="1" Content="Cancelar" Margin="0,40,150,0" Click="BtnCancel_Click" Style="{StaticResource BtnCancel}"/>
