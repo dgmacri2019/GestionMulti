@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Desktop.Views.Searchs;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
@@ -177,7 +178,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                             MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
-                        var priceLists = article.PriceLists;
+                        List<PriceListItemDto> priceLists = article.PriceLists;
                         int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
                         if (isProductWeight)
@@ -220,8 +221,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                             dataGrid.BeginEdit();
                         }), DispatcherPriority.Background);
 
-                        if (ArticleItems.Last() == currentItem)
-                            ArticleItems.Add(new ArticleItem());
+                       
                     }
                     else
                     {
@@ -243,6 +243,8 @@ namespace GestionComercial.Desktop.Controls.Sales
                     currentItem.Recalculate();
                     OnPropertyChanged(nameof(TotalItems));
                     OnPropertyChanged(nameof(TotalPrice));
+                    if (ArticleItems.Last() == currentItem)
+                        ArticleItems.Add(new ArticleItem());
                     // ✅ Forzar foco en la celda "Código" de la fila siguiente
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -250,7 +252,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                         var nextRowIndex = ArticleItems.IndexOf(currentItem) + 1;
                         if (nextRowIndex < ArticleItems.Count)
                         {
-                            var nextRowItem = ArticleItems[nextRowIndex];
+                            ArticleItem nextRowItem = ArticleItems[nextRowIndex];
                             dataGrid.CurrentCell = new DataGridCellInfo(
                                 nextRowItem,
                                 dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
@@ -267,45 +269,58 @@ namespace GestionComercial.Desktop.Controls.Sales
             }
         }
 
-
         private void dgArticles_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.F5)
             {
-                /*
-                var currentItem = dgArticles.CurrentItem as ArticleItem;
-                if (currentItem != null && !string.IsNullOrWhiteSpace(currentItem.Code))
+                var currentCell = dgArticles.CurrentCell;
+                if (currentCell.Column != null && currentCell.Column.Header.ToString() == "Código")
                 {
-                    var article = ArticleCache.Instance.FindByCodeOrBarCode(currentItem.Code);
-                    if (article != null)
+                    var currentItem = currentCell.Item as ArticleItem;
+                    if (currentItem == null) return;
+
+                    string searchText = currentItem.Code;
+
+                    var searchWindow = new ArticleSearchWindow(searchText) { Owner = Window.GetWindow(this) };
+                    if (searchWindow.ShowDialog() == true)
                     {
-                        // asignar descripción
-                        currentItem.Description = article.Description;
+                        var selectedArticle = searchWindow.SelectedArticle;
+                        if (selectedArticle != null)
+                        {
+                            currentItem.Code = selectedArticle.Code;
+                            currentItem.Description = selectedArticle.Description;
+                            currentItem.Quantity = 1;
 
-                        // llenar la colección PriceLists de la fila (por fila)
-                        currentItem.PriceLists.Clear();
-                        foreach (var pl in article.PriceLists) // article.PriceLists es la colección que ya tenés
-                            currentItem.PriceLists.Add(pl);
+                            currentItem.PriceLists.Clear();
+                            foreach (var pl in selectedArticle.PriceLists)
+                                currentItem.PriceLists.Add(pl);
 
-                        // elegir priceListId por defecto: el cbPriceLists del cliente o la primera de article
-                        int priceListId = 0;
-                        if (cbPriceLists.SelectedValue != null)
-                            priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
-                        else if (article.PriceLists.Any())
-                            priceListId = Convert.ToInt32(article.PriceLists.First().GetType().GetProperty("Id").GetValue(article.PriceLists.First()));
+                            // Forzar que quede seleccionado el mismo ID que está en el combo principal
+                            var defaultPriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+                            if (currentItem.PriceLists.Any(pl => pl.Id == defaultPriceListId))
+                                currentItem.PriceListId = defaultPriceListId;
+                            else
+                                currentItem.PriceListId = currentItem.PriceLists.FirstOrDefault()?.Id ?? 0;
 
-                        currentItem.PriceListId = priceListId; // esto actualiza Price via el setter
-                        currentItem.Quantity = 1;
-                        currentItem.Bonification = 0;
-                        currentItem.Recalculate();
+                            currentItem.PriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+                            currentItem.Recalculate();
+                            OnPropertyChanged(nameof(TotalItems));
+                            OnPropertyChanged(nameof(TotalPrice));
 
-                        
-
-                        if (ArticleItems.Last() == currentItem)
-                            ArticleItems.Add(new ArticleItem());
+                            // ✅ Forzar foco en la celda "Cantidad"
+                            Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                var dataGrid = (DataGrid)sender;
+                                dataGrid.CurrentCell = new DataGridCellInfo(currentItem, dataGrid.Columns.First(c => c.Header?.ToString() == "Cantidad"));
+                                dataGrid.BeginEdit();
+                            }), DispatcherPriority.Background);
+                            //if (ArticleItems.Last() == currentItem)
+                            //    ArticleItems.Add(new ArticleItem());
+                        }
                     }
+
+                    e.Handled = true;
                 }
-                */
             }
         }
 
@@ -313,7 +328,7 @@ namespace GestionComercial.Desktop.Controls.Sales
         {
             if (e.Key == Key.Enter)
             {
-                var code = txtBarcode.Text.Trim();
+                string code = txtBarcode.Text.Trim();
                 if (!string.IsNullOrEmpty(code))
                 {
                     bool isProductWeight = code.Substring(0, 2) == "20" && code.Length > 8;
@@ -358,9 +373,9 @@ namespace GestionComercial.Desktop.Controls.Sales
 
 
                         // Verificar si el artículo ya está en la grilla
-                        var existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
+                        ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
 
-                        if (existingItem != null && !isProductWeight)
+                        if (existingItem != null && ParameterCache.Instance.GetAllGeneralParameters().First().SumQuantityItems && !isProductWeight)
                         {
                             // Ya existe → solo aumentar la cantidad
                             existingItem.Quantity += 1;
@@ -370,7 +385,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                         }
                         else
                         {
-                            var newItem = new ArticleItem
+                            ArticleItem newItem = new()
                             {
                                 Code = article.Code,
                                 Description = article.Description,

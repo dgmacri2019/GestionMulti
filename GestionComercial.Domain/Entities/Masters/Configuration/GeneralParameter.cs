@@ -16,7 +16,10 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
         [Display(Name = "Días de validez del presupuesto")]
         public int BudgetValidDays { get; set; }
 
-        [Display(Name = "Utilizar lectoc de código de barras")]
+        [Display(Name = "Utilizar lector de código de barras")]
         public bool UsePostMethod { get; set; }
+
+        [Display(Name = "Sumar cantidad del mismo artículo")]
+        public bool SumQuantityItems { get; set; } = true;
     }
 }
