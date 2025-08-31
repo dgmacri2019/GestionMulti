@@ -9,6 +9,14 @@
              x:Name="miUserControl" 
              Loaded="miUserControl_Loaded" 
              Background="Gray" SizeChanged="miUserControl_SizeChanged">
+    <UserControl.Resources>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </UserControl.Resources>
+
+
     <Grid x:Name="GridGeneral" 
           HorizontalAlignment="Stretch" 
           VerticalAlignment="Stretch" 
@@ -165,7 +173,15 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Código" 
                                             Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" 
-                                            Width="100"/>
+                                            Width="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Descripción" 
                                             Binding="{Binding Description}" 
                                             Width="200" 
@@ -195,25 +211,89 @@
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Cantidad" 
                                             Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" 
-                                            Width="80"/>
-                        <DataGridTextColumn Header="Unidad de medida" 
-                                            Binding="{Binding SmallMeasureDescription, UpdateSourceTrigger=PropertyChanged}"
-                                            Width="80"/>
+                                            Width="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.EditingElementStyle>
+                                <Style TargetType="TextBox">
+                                    <EventSetter Event="PreviewTextInput" 
+                                                 Handler="Quantity_PreviewTextInput"/>
+                                    <EventSetter Event="TextChanged" 
+                                                 Handler="Quantity_TextChanged"/>
+                                    <EventSetter Event="GotFocus" 
+                                                 Handler="Quantity_GotFocus"/>                                   
+                                </Style>
+                            </DataGridTextColumn.EditingElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding SmallMeasureDescription, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="60">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="Unidad de medida"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           HorizontalAlignment="Center"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Precio" 
                                             Binding="{Binding Price, StringFormat={}{0:C2}}"
                                             Width="80" 
-                                            IsReadOnly="True"/>
+                                            IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Subtotal"
                                             Binding="{Binding Subtotal, StringFormat={}{0:C2}}"
                                             Width="100" 
-                                            IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Bonificación (%)" 
+                                            IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Bonif (%)" 
                                             Binding="{Binding Bonification, UpdateSourceTrigger=PropertyChanged}"
-                                            Width="100"/>
+                                            Width="70">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Total" 
                                             Binding="{Binding Total, StringFormat={}{0:C2}}" 
                                             Width="100"
-                                            IsReadOnly="True"/>
+                                            IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
@@ -240,7 +320,27 @@
                          KeyDown="txtBarcode_KeyDown"/>
         </StackPanel>
 
-
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="4" 
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="4" 
+                    HorizontalAlignment="Right" 
+                    Margin="10,5,20,5">
+            <TextBlock Text="Cantidad de items: " 
+                       Style="{StaticResource BlueBold10}"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding TotalItems}" 
+                       Style="{StaticResource BlackNormal10}" 
+                       VerticalAlignment="Center" 
+                       Margin="5,0"/>
+            <TextBlock Text="Precio total: " 
+                       Style="{StaticResource BlueBold10}" 
+                       VerticalAlignment="Center" 
+                       Margin="20,0,0,0"/>
+            <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}}" 
+                       Style="{StaticResource BlackNormal10}" 
+                       VerticalAlignment="Center" Margin="5,0"/>
+        </StackPanel>
         <!-- Botones (fila 6) -->
         <Button x:Name="btnCancel" Grid.Row="6" Grid.Column="1" Content="Cancelar" Margin="0,40,150,0" Click="BtnCancel_Click" Style="{StaticResource BtnCancel}"/>
         <Button x:Name="btnUpdate" Grid.Row="6" Grid.Column="1" Content="Actualizar" Margin="150,40,0,0" Click="BtnUpdate_Click" Style="{StaticResource BtnUpdate}"/>

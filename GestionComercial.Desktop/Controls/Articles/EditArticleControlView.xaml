@@ -36,10 +36,11 @@
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Código" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtCode"
-              Style="{StaticResource TextBoxSearch}"
-              Width="150"
-              VerticalAlignment="Center"                     
-              Text="{Binding Code}"/>
+                     Style="{StaticResource TextBoxSearch}"
+                     Width="150"
+                     VerticalAlignment="Center"
+                     MaxLength="8"
+                     Text="{Binding Code}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">
