@@ -165,9 +165,9 @@ namespace GestionComercial.Desktop.Controls.Sales
                         ArticleCache.Instance.FindByCodeOrBarCode(currentItem.Code.Substring(2, 4))
                         :
                         ArticleCache.Instance.FindByCodeOrBarCode(currentItem.Code);
+
                     if (article != null)
                     {
-                        //isProductWeight = article.IsWeight && code.Length > 8;
                         if (article.IsDeleted)
                         {
                             MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -178,15 +178,17 @@ namespace GestionComercial.Desktop.Controls.Sales
                             MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
-                        List<PriceListItemDto> priceLists = article.PriceLists;
-                        int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
+                        var priceLists = article.PriceLists;
+                        int defaultPriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+
+                        // Calcular cantidad en caso de producto por peso
                         if (isProductWeight)
                         {
                             if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
                             {
                                 string quantityString = currentItem.Code.Substring(7, 5);
-                                decimal price = priceLists.Where(pl => pl.Id == priceListId).First().FinalPrice;
+                                decimal price = priceLists.Where(pl => pl.Id == defaultPriceListId).First().FinalPrice;
                                 quantity = Math.Round(Convert.ToDecimal(quantityString) / price, 3);
                             }
                             else if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodeWeight)
@@ -196,45 +198,47 @@ namespace GestionComercial.Desktop.Controls.Sales
                             }
                         }
 
-
+                        // Asignar datos al item
                         currentItem.SmallMeasureDescription = article.Measures
                             .First(m => m.Id == article.MeasureId).SmallDescription;
                         currentItem.Quantity = quantity;
-                        // llenar la colección PriceLists de la fila (por fila)
+
+                        // llenar PriceLists de la fila
                         currentItem.PriceLists.Clear();
-                        foreach (var pl in article.PriceLists) // article.PriceLists es la colección que ya tenés
+                        foreach (var pl in article.PriceLists)
                             currentItem.PriceLists.Add(pl);
-                        // asignar descripción
+
                         currentItem.Description = article.Description;
                         currentItem.Code = article.Code;
-                        currentItem.PriceListId = priceListId; // esto actualiza Price via el setter
+
+                        // ✅ Forzar que quede la misma lista de precios seleccionada que en el combo principal
+                        if (currentItem.PriceLists.Any(pl => pl.Id == defaultPriceListId))
+                            currentItem.PriceListId = defaultPriceListId;
+                        else
+                            currentItem.PriceListId = currentItem.PriceLists.FirstOrDefault()?.Id ?? 0;
+
                         currentItem.Bonification = 0;
                         currentItem.Recalculate();
+
                         OnPropertyChanged(nameof(TotalItems));
                         OnPropertyChanged(nameof(TotalPrice));
 
-                        // ✅ Forzar foco en la celda "Cantidad"
+                        // ✅ Poner foco en la celda Cantidad
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             var dataGrid = (DataGrid)sender;
-                            dataGrid.CurrentCell = new DataGridCellInfo(currentItem, dataGrid.Columns.First(c => c.Header?.ToString() == "Cantidad"));
+                            dataGrid.CurrentCell = new DataGridCellInfo(
+                                currentItem,
+                                dataGrid.Columns.First(c => c.Header?.ToString() == "Cantidad")
+                            );
                             dataGrid.BeginEdit();
                         }), DispatcherPriority.Background);
 
-                       
-                    }
-                    else
-                    {
-                        MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                        // ✅ Forzar foco en la celda "Cantidad"
-                        Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            var dataGrid = (DataGrid)sender;
-                            dataGrid.CurrentCell = new DataGridCellInfo(currentItem, dataGrid.Columns.First(c => c.Header?.ToString() == "Código"));
-                            dataGrid.BeginEdit();
-                        }), DispatcherPriority.Background);
+                        if (ArticleItems.Last() == currentItem && chBarcode.IsChecked == false)
+                            ArticleItems.Add(new ArticleItem());
                     }
                 }
+
 
 
                 // Recalcular subtotal y total si cambió cantidad o bonificación
@@ -287,22 +291,24 @@ namespace GestionComercial.Desktop.Controls.Sales
                         var selectedArticle = searchWindow.SelectedArticle;
                         if (selectedArticle != null)
                         {
+                            int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
                             currentItem.Code = selectedArticle.Code;
                             currentItem.Description = selectedArticle.Description;
                             currentItem.Quantity = 1;
 
-                            currentItem.PriceLists.Clear();
+                            currentItem.PriceLists.Clear();                           
                             foreach (var pl in selectedArticle.PriceLists)
                                 currentItem.PriceLists.Add(pl);
 
-                            // Forzar que quede seleccionado el mismo ID que está en el combo principal
+                            //// Forzar que quede seleccionado el mismo ID que está en el combo principal
                             var defaultPriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+
                             if (currentItem.PriceLists.Any(pl => pl.Id == defaultPriceListId))
                                 currentItem.PriceListId = defaultPriceListId;
                             else
                                 currentItem.PriceListId = currentItem.PriceLists.FirstOrDefault()?.Id ?? 0;
 
-                            currentItem.PriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+                            currentItem.PriceListId = priceListId;
                             currentItem.Recalculate();
                             OnPropertyChanged(nameof(TotalItems));
                             OnPropertyChanged(nameof(TotalPrice));
@@ -314,8 +320,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                                 dataGrid.CurrentCell = new DataGridCellInfo(currentItem, dataGrid.Columns.First(c => c.Header?.ToString() == "Cantidad"));
                                 dataGrid.BeginEdit();
                             }), DispatcherPriority.Background);
-                            //if (ArticleItems.Last() == currentItem)
-                            //    ArticleItems.Add(new ArticleItem());
+                            
                         }
                     }
 

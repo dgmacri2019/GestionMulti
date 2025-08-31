@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using GestionComercial.Domain.DTOs.Stock;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -21,7 +22,7 @@ namespace GestionComercial.Domain.DTOs.Sale
         public string SmallMeasureDescription { get => _smallMeasureDescription; set => SetProperty(ref _smallMeasureDescription, value); }
 
         // Colección por fila con las price lists que trae el artículo
-        public ObservableCollection<object> PriceLists { get; set; } = [];
+        public ObservableCollection<PriceListItemDto> PriceLists { get; set; } = [];
 
         public int PriceListId
         {
@@ -30,24 +31,9 @@ namespace GestionComercial.Domain.DTOs.Sale
             {
                 if (SetProperty(ref _priceListId, value))
                 {
-                    // Buscar el pricelist seleccionado dentro de PriceLists y actualizar Price si existe
-                    if (PriceLists != null && PriceLists.Count > 0)
-                    {
-                        // asumimos que cada entry tiene propiedades Id y FinalPrice
-                        var found = PriceLists
-                            .FirstOrDefault(p => Convert.ToInt32(p.GetType().GetProperty("Id")?.GetValue(p) ?? 0) == value);
-
-                        if (found != null)
-                        {
-                            var fp = found.GetType().GetProperty("FinalPrice");
-                            if (fp != null)
-                            {
-                                var val = fp.GetValue(found);
-                                if (val != null)
-                                    Price = Convert.ToDecimal(val);
-                            }
-                        }
-                    }
+                    var found = PriceLists.FirstOrDefault(p => p.Id == value);
+                    if (found != null)
+                        Price = found.FinalPrice;
 
                     Recalculate();
                 }

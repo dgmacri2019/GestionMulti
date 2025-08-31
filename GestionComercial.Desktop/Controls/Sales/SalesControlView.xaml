@@ -194,7 +194,7 @@
                                     <ComboBox ItemsSource="{Binding PriceLists}" 
                                               DisplayMemberPath="Description" 
                                               SelectedValuePath="Id" 
-                                              SelectedValue="{Binding PriceListId, Mode=TwoWay}" 
+                                               SelectedValue="{Binding PriceListId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                               IsHitTestVisible="False" 
                                               Focusable="False"/>
                                 </DataTemplate>
