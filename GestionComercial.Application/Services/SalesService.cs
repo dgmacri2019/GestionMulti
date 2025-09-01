@@ -154,6 +154,10 @@ namespace GestionComercial.Applications.Services
                 Clients = clients,
                 SaleConditions = saleConditions,
                 PriceLists = priceLists,
+                Client = sale.Client,
+                Date = sale.SaleDate,
+                SaleCondition = sale.SaleCondition,
+
             }));
         }
     }

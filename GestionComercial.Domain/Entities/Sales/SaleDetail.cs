@@ -21,7 +21,7 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public int List { get; set; }
 
-        public int Discount { get; set; }
+        public decimal Discount { get; set; }
 
         public string Code { get; set; }
 

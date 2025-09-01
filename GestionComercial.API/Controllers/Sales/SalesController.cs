@@ -45,7 +45,7 @@ namespace GestionComercial.API.Controllers.Sales
 
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(sale.Id, sale.Client.BusinessName, ChangeType.Created);
+                await _notifier.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
 
                 return
                     Ok("Venta creada correctamente");

@@ -5,6 +5,9 @@ using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Helpers;
+using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -35,8 +38,6 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private readonly int Width;
         private readonly int Height;
-
-        // public ObservableCollection<ArticleItem> ArticleItems = new ObservableCollection<ArticleItem>();
 
         public SaleAddWindow(int saleId)
         {
@@ -86,103 +87,6 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 lblError.Text = result.Message;
             }
-        }
-
-        private void txtClientCode_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                ClearClient();
-                ClientViewModel? client = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text);
-                if (client != null)
-                {
-                    txtFansatyName.Text = string.IsNullOrEmpty(client.FantasyName) ? client.BusinessName : client.FantasyName;
-                    txtAddress.Text = $"{client.Address}\n{client.City}, {client.State}\nC.P.{client.PostalCode}";
-                    txtEmail.Text = !string.IsNullOrEmpty(client.Email) ? client.Email : string.Empty;
-                    chSendEmail.IsChecked = !string.IsNullOrEmpty(client.Email);
-
-                    cbPriceLists.ItemsSource = client.PriceLists;
-                    cbPriceLists.SelectedValue = client.PriceListId;
-
-                    cbSaleConditions.ItemsSource = client.SaleConditions;
-                    cbSaleConditions.SelectedValue = client.SaleConditionId;
-                    spArticles.Visibility = Visibility.Visible;
-                    spPostMethod.Visibility = Visibility.Visible;
-                    SetingFocus();
-                }
-                else
-                {
-                    MessageBox.Show("El código informado no existe", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                    spArticles.Visibility = Visibility.Hidden;
-                    spPostMethod.Visibility = Visibility.Hidden;
-                }
-
-
-            }
-            if (e.Key == Key.F5)
-            {
-                var searchWindow = new ClientSearchWindows(txtClientCode.Text) { Owner = Window.GetWindow(this) };
-                if (searchWindow.ShowDialog() == true)
-                {
-                    ClientViewModel? selectedClient = searchWindow.SelectedClient;
-                    if (selectedClient != null)
-                    {
-                        txtClientCode.Text = selectedClient.OptionalCode;
-                        txtFansatyName.Text = string.IsNullOrEmpty(selectedClient.FantasyName) ? selectedClient.BusinessName : selectedClient.FantasyName;
-                        txtAddress.Text = $"{selectedClient.Address}\n{selectedClient.City}, {selectedClient.State}\nC.P.{selectedClient.PostalCode}";
-                        txtEmail.Text = !string.IsNullOrEmpty(selectedClient.Email) ? selectedClient.Email : string.Empty;
-                        chSendEmail.IsChecked = !string.IsNullOrEmpty(selectedClient.Email);
-
-                        cbPriceLists.ItemsSource = selectedClient.PriceLists;
-                        cbPriceLists.SelectedValue = selectedClient.PriceListId;
-
-                        cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
-                        cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
-                        spArticles.Visibility = Visibility.Visible;
-                        spPostMethod.Visibility = Visibility.Visible;
-                        SetingFocus();
-
-                    }
-                }
-
-                e.Handled = true;
-            }
-        }
-
-        private void ClearClient()
-        {
-            txtFansatyName.Text = string.Empty;
-            txtAddress.Text = string.Empty;
-            txtEmail.Text = string.Empty;
-            chSendEmail.IsChecked = false;
-            cbPriceLists.SelectedValue = 0;
-            cbSaleConditions.SelectedValue = 0;
-        }
-
-        private void miUserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            txtClientCode.Focus();
-            lblError.MaxWidth = this.ActualWidth;
-
-            try
-            {
-                if (!UsePostMethod)
-                {
-                    // Inicializar la primera fila editable
-                    if (ArticleItems.Count == 0)
-                        ArticleItems.Add(new ArticleItem());
-                    dgArticles.SelectedIndex = 0;
-                    dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
-                    dgArticles.BeginEdit();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            }
-            dpDate.SelectedDate = DateTime.Now;
-            //dgArticles.Height = Height * 0.3;
         }
 
 
@@ -443,7 +347,6 @@ namespace GestionComercial.Desktop.Views.Sales
 
             }
         }
-
         private void dgArticles_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F5)
@@ -509,6 +412,70 @@ namespace GestionComercial.Desktop.Views.Sales
                 DataObject.AddPastingHandler(tb, new DataObjectPastingEventHandler(Quantity_Pasting));
             }
         }
+
+
+        private void txtClientCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ClearClient();
+                ClientViewModel? client = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text);
+                if (client != null)
+                {
+                    txtFansatyName.Text = string.IsNullOrEmpty(client.FantasyName) ? client.BusinessName : client.FantasyName;
+                    txtAddress.Text = $"{client.Address}\n{client.City}, {client.State}\nC.P.{client.PostalCode}";
+                    txtEmail.Text = !string.IsNullOrEmpty(client.Email) ? client.Email : string.Empty;
+                    chSendEmail.IsChecked = !string.IsNullOrEmpty(client.Email);
+
+                    cbPriceLists.ItemsSource = client.PriceLists;
+                    cbPriceLists.SelectedValue = client.PriceListId;
+
+                    cbSaleConditions.ItemsSource = client.SaleConditions;
+                    cbSaleConditions.SelectedValue = client.SaleConditionId;
+                    spArticles.Visibility = Visibility.Visible;
+                    spPostMethod.Visibility = Visibility.Visible;
+                    SetingFocus();
+                }
+                else
+                {
+                    MessageBox.Show("El código informado no existe", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    spArticles.Visibility = Visibility.Hidden;
+                    spPostMethod.Visibility = Visibility.Hidden;
+                }
+
+
+            }
+            if (e.Key == Key.F5)
+            {
+                var searchWindow = new ClientSearchWindows(txtClientCode.Text) { Owner = Window.GetWindow(this) };
+                if (searchWindow.ShowDialog() == true)
+                {
+                    ClientViewModel? selectedClient = searchWindow.SelectedClient;
+                    if (selectedClient != null)
+                    {
+                        txtClientCode.Text = selectedClient.OptionalCode;
+                        txtFansatyName.Text = string.IsNullOrEmpty(selectedClient.FantasyName) ? selectedClient.BusinessName : selectedClient.FantasyName;
+                        txtAddress.Text = $"{selectedClient.Address}\n{selectedClient.City}, {selectedClient.State}\nC.P.{selectedClient.PostalCode}";
+                        txtEmail.Text = !string.IsNullOrEmpty(selectedClient.Email) ? selectedClient.Email : string.Empty;
+                        chSendEmail.IsChecked = !string.IsNullOrEmpty(selectedClient.Email);
+
+                        cbPriceLists.ItemsSource = selectedClient.PriceLists;
+                        cbPriceLists.SelectedValue = selectedClient.PriceListId;
+
+                        cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
+                        cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
+                        spArticles.Visibility = Visibility.Visible;
+                        spPostMethod.Visibility = Visibility.Visible;
+                        SetingFocus();
+
+                    }
+                }
+
+                e.Handled = true;
+            }
+        }
+
+
         private void txtBarcode_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -689,20 +656,11 @@ namespace GestionComercial.Desktop.Views.Sales
             }
         }
 
-        private void Quantity_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                // selecciona todo el texto, para que al tipear se borre
-                textBox.SelectAll();
-            }
-        }
 
         private void chBarcode_Checked(object sender, RoutedEventArgs e)
         {
             txtBarcode.Focus();
         }
-
         private void chBarcode_Unchecked(object sender, RoutedEventArgs e)
         {
             if (dgArticles.Items.Count > 0)
@@ -713,15 +671,49 @@ namespace GestionComercial.Desktop.Views.Sales
             }
         }
 
+
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
         }
 
-        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            // Guardar venta (implementar según tu API)
+            lblError.Text = string.Empty;
+            try
+            {
+                if (ValidateSale())
+                {
+                    if (ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text) != null)
+                    {
+                        Sale sale = ToSale(saleViewModel, ArticleItems);
+
+                       GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
+                        if (resultAdd.Success)
+                        {
+                            ClearClient();
+                            ArticleItems.Clear();
+                            txtClientCode.Focus();
+                        }
+                        else
+                            lblError.Text = resultAdd.Message;
+
+                    }
+                    else
+                    {
+                        lblError.Text = "Cliente inválido";
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = ex.Message;
+            }
         }
+
 
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -729,6 +721,14 @@ namespace GestionComercial.Desktop.Views.Sales
         }
 
 
+        private void Quantity_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // selecciona todo el texto, para que al tipear se borre
+                textBox.SelectAll();
+            }
+        }
         private void Quantity_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (sender is not TextBox tb) return;
@@ -752,7 +752,6 @@ namespace GestionComercial.Desktop.Views.Sales
                 tb.SelectionLength = 0;
             }
         }
-
         private void Quantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (sender is not TextBox tb || string.IsNullOrEmpty(e.Text)) return;
@@ -778,7 +777,6 @@ namespace GestionComercial.Desktop.Views.Sales
             tb.SelectionStart = selStart + input.Length;
             tb.SelectionLength = 0;
         }
-
         private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is not TextBox tb) return;
@@ -792,7 +790,6 @@ namespace GestionComercial.Desktop.Views.Sales
                 tb.SelectionStart = Math.Min(caret, tb.Text.Length);
             }
         }
-
         private void Quantity_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             if (sender is not TextBox tb) return;
@@ -820,6 +817,8 @@ namespace GestionComercial.Desktop.Views.Sales
             tb.SelectionStart = selStart + final.Length;
             tb.SelectionLength = 0;
         }
+
+
 
 
         private void SetingFocus()
@@ -858,6 +857,145 @@ namespace GestionComercial.Desktop.Views.Sales
             dgArticles.Height = newHeight * 0.5;
             //dgArticles.Width = newWidth * 0.95;
         }
+
+
+        private void miUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            txtClientCode.Focus();
+            lblError.MaxWidth = this.ActualWidth;
+
+            try
+            {
+                if (!UsePostMethod)
+                {
+                    // Inicializar la primera fila editable
+                    if (ArticleItems.Count == 0)
+                        ArticleItems.Add(new ArticleItem());
+                    dgArticles.SelectedIndex = 0;
+                    dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
+                    dgArticles.BeginEdit();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+            dpDate.SelectedDate = DateTime.Now;
+            //dgArticles.Height = Height * 0.3;
+        }
+
+
+        private void ClearClient()
+        {
+            txtFansatyName.Text = string.Empty;
+            txtAddress.Text = string.Empty;
+            txtEmail.Text = string.Empty;
+            chSendEmail.IsChecked = false;
+            cbPriceLists.SelectedValue = 0;
+            cbSaleConditions.SelectedValue = 0;
+        }
+
+
+        private bool ValidateSale()
+        {
+            bool result = true;
+            if (Convert.ToInt32(cbPriceLists.SelectedValue) == 0)
+            {
+                result = false;
+                lblError.Text = "Seleccione la lista de precios";
+            }
+            if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
+            {
+                result = false;
+                lblError.Text = "Seleccione la condición de venta";
+            }
+            if (chSendEmail.IsChecked == true)
+                if (string.IsNullOrEmpty(txtEmail.Text))
+                {
+                    result = false;
+                    lblError.Text = "Ingrese el correo electrónico";
+                }
+                else if (!string.IsNullOrEmpty(txtEmail.Text) && !ValidatorHelper.ValidateEmail(txtEmail.Text))
+                {
+                    result = false;
+                    lblError.Text = "Ingrese un correo electrónico válido";
+                }
+            if (string.IsNullOrEmpty(txtClientCode.Text))
+            {
+                result = false;
+                lblError.Text = "Ingrese el código de cliente";
+            }
+            if (ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code)) <= 0)
+            {
+                result = false;
+                lblError.Text = "Debe ingresar al menos 1 artículo";
+            }
+            return result;
+        }
+
+
+
+
+
+        private Sale ToSale(SaleViewModel saleViewModel, ObservableCollection<ArticleItem> articleItems)
+        {
+            List<SaleDetail> saleDetails = [];
+            foreach (ArticleItem item in articleItems.Where(ai => !string.IsNullOrEmpty(ai.Code)))
+            {
+                ArticleViewModel article = ArticleCache.Instance.FindByCodeOrBarCode(item.Code);
+                if (article != null)
+                {
+                    saleDetails.Add(new SaleDetail
+                    {
+                        ArticleId = article.Id,
+                        Code = article.Code,
+                        CreateDate = DateTime.Now,
+                        CreateUser = App.UserName,
+                        Description = item.Description,
+                        Discount = item.Bonification,
+                        IsDeleted = false,
+                        IsEnabled = true,
+                        Price = item.Price,
+                        Quantity = item.Quantity,
+                        SubTotal = item.Subtotal,
+                        TotalItem = item.Total,
+                        TaxId = article.TaxId,
+                        List = item.PriceListId,
+                    });
+                }
+                else
+                    return null;
+
+            }
+
+
+            return new Sale
+            {
+                ClientId = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text).Id,
+                CreateDate = DateTime.Now,
+                CreateUser = App.UserName,
+                IsDeleted = false,
+                IsEnabled = true,
+                IsFinished = true,
+                SaleConditionId = saleViewModel.SaleConditionId,
+                SaleDate = (DateTime)dpDate.SelectedDate,
+                SalePoint = saleViewModel.SalePoint,
+                SaleNumber = saleViewModel.SaleNumber,
+                Total = TotalPrice,
+                SubTotal = TotalPrice,
+                SaleCondition = saleViewModel.SaleCondition,
+                BaseImp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem),
+                BaseImp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem),
+                BaseImp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem),
+                TotalIVA105 = saleDetails.Any(sd => sd.TaxId == 2) ? saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem) * 10.5m / 100 : 0,
+                TotalIVA21 = saleDetails.Any(sd => sd.TaxId == 3) ? saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem) * 21m / 100 : 0,
+                TotalIVA27 = saleDetails.Any(sd => sd.TaxId == 4) ? saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem) * 27m / 100 : 0,
+                SaleDetails = saleDetails,
+
+            };
+        }
+
     }
 
 }

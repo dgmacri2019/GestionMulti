@@ -11,7 +11,8 @@
         Loaded="miUserControl_Loaded" 
         Background="Gray"
         WindowStartupLocation="CenterScreen"
-        SizeChanged="miUserControl_SizeChanged">
+        SizeChanged="miUserControl_SizeChanged"
+        Title="Nueva Venta">
     <Window.Resources>
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>

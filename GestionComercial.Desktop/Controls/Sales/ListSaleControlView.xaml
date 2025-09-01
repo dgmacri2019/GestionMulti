@@ -68,6 +68,17 @@
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Número Venta" Width="auto" MinWidth="100" SortMemberPath="SaleNumberString">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding SaleNumberString}" 
+                               Style="{StaticResource LeftAlignedTextStyle}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
                 <DataGridTemplateColumn Header="Razón&#x0a;Social" Width="auto" MinWidth="100" SortMemberPath="BusinessName">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

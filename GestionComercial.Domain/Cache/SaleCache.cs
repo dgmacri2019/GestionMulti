@@ -26,8 +26,8 @@ namespace GestionComercial.Domain.Cache
                 return _sales != null ? _sales
                               .Where(a => a.IsEnabled == isEnabled
                                        && a.IsDeleted == isDeleted
-                                       && ((a.Client.BusinessName?.ToLower().Contains(clientBusinessName.ToLower()) ?? false)
-                                        || (a.Client.FantasyName?.ToLower().Contains(clientBusinessName.ToLower()) ?? false)))
+                                       && ((a.Clients.First(c => c.Id == a.ClientId).BusinessName?.ToLower().Contains(clientBusinessName.ToLower()) ?? false)
+                                        || (a.Clients.First(c => c.Id == a.ClientId).FantasyName?.ToLower().Contains(clientBusinessName.ToLower()) ?? false)))
                               .ToList()
                               :
                               [];

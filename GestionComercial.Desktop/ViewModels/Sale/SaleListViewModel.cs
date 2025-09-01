@@ -103,7 +103,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
                 SaleCache.Instance.SetSales(sales);
             }
 
-            var filtered = SaleCache.Instance.SearchSales(NameFilter, IsEnabledFilter, IsDeletedFilter);
+            var filtered = SaleCache.Instance.GetAllSales();
 
             App.Current.Dispatcher.Invoke(() =>
             {
