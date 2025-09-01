@@ -1,6 +1,10 @@
-﻿using GestionComercial.Desktop.Helpers;
+﻿using Azure;
+using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
+using GestionComercial.Domain.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +15,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -69,6 +74,47 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
+        internal async Task<List<PurchaseAndSalesListViewModel>> GetAllPcParametersAsync()
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetAllPcParametersAsync", new
+                {
+                    //IsDeleted = isDeleted,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    List<PurchaseAndSalesListViewModel>? pcParameters = JsonSerializer.Deserialize<List<PurchaseAndSalesListViewModel>>(jsonResponse, options);
+
+
+                    return pcParameters;
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         internal async Task<PcParameter> GetPcParameterAsync(string pcName)
         {
             try
@@ -107,6 +153,71 @@ namespace GestionComercial.Desktop.Services
             {
 
                 throw;
+            }
+        }
+
+        internal async Task<PcParameterResponse> GetPcParameterByIdAsync(int parameterId)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetPcParameterByIdAsync", new
+                {
+                    Id = parameterId,
+                    //IsEnabled = isEnabled,
+                });
+
+                JsonSerializerOptions options = new()
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return new PcParameterResponse
+                    {
+                        Success = true,
+                        PcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, options),
+                    };
+                else
+                    return new PcParameterResponse
+                    {
+                        Success = false,
+                        Message = $"Error: {response.StatusCode}\n{jsonResponse}",
+                    };
+
+            }
+            catch (Exception ex)
+            {
+                return new PcParameterResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}",
+                };
+            }
+        }
+
+        internal async Task<GeneralResponse> UpdatePcParameterAsync(PcParameter pcParameter)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdatePcParameterAsync", pcParameter);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
             }
         }
     }

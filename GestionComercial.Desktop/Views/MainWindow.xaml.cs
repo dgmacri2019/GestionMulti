@@ -14,6 +14,7 @@ using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
 using GestionComercial.Desktop.ViewModels.Parameter;
+using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -26,37 +27,6 @@ namespace GestionComercial.Desktop.Views
         {
             InitializeComponent();
             DataContext = new MainViewModel();
-        }
-
-
-
-
-
-
-
-        private void Stock_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new ListAticleControlView();
-        }
-
-        private void Client_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new ListClientControlView();
-        }
-
-        private void Provider_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new ListProviderControlView();
-        }
-
-        private void PriceList_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new ListPriceListControlView();
-        }
-
-        private void Bank_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new ListBankControlView();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -153,20 +123,21 @@ namespace GestionComercial.Desktop.Views
                     Children =
                     [
                         new() {
-                            Title = "Parametros",
+                            Title = "Parámetros",
                             Icon = "/Images/Setting Config 32.png",
                             Children =
                             [
                                 new() {
-                                    Title = "Generales",
+                                    Title = "Parámetros Generales",
                                     Icon ="/Images/Setting 32.png",
-                                    Children =
-                                    [
-                                         new() { Title = "Email", Icon = "/Images/Email Setting 32.png", Tag = "Email_Setup" },
-                                        new() { Title = "Sistema", Icon = "/Images/GetParameter 32.png", Tag = "System_Setup" },
-                                    ]
+                                    Tag = "GeneralParameter_Setup",
                                 },
-                                new() { Title = "Impresión", Icon = "/Images/Printer Setup 32.png", Tag = "Printer_Setup" },
+                                new() {
+                                    Title = "Parámetros de PC",
+                                    Icon ="/Images/Setting 32.png",
+                                    Tag = "PcParameter_Setup",
+                                },
+
 
                             ]
                         },
@@ -233,11 +204,10 @@ namespace GestionComercial.Desktop.Views
                         break;
                     case "Sales_Report":
                         break;
-                    case "Email_Setup":
-                        break;
-                    case "System_Setup":
-                        break;
-                    case "Printer_Setup":
+                    case "GeneralParameter_Setup":
+                        break;                    
+                    case "PcParameter_Setup":
+                        MainContent.Content = new PcParametersControlView();
                         break;
                     case "LogOut":
                         LogOut();

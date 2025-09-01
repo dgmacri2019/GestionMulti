@@ -1,6 +1,7 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
+using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
 using GestionComercial.Domain.DTOs.Parameter;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
@@ -122,6 +123,14 @@ namespace GestionComercial.API.Controllers.Admin
         {
             PcParameter? pcParameter = await _parameterService.GetPcParameterAsync(filter.PcName);
             return Ok(pcParameter);
+        }
+
+
+        [HttpPost("GetAllPcParametersAsync")]
+        public async Task<IActionResult> GetAllPcParametersAsync()
+        {
+            IEnumerable<PurchaseAndSalesListViewModel> pcParameters = await _parameterService.GetAllPcParametersAsync();
+            return Ok(pcParameters);
         }
 
 

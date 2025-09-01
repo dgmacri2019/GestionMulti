@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Helpers;
+﻿using Azure;
+using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
@@ -142,10 +143,13 @@ namespace GestionComercial.Desktop.Services
                         Message = $"Error: {response.StatusCode}\n{jsonResponse}",
                     };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new ClientResponse
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}",
+                };
             }
         }
 

@@ -1167,7 +1167,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\Maters\" />
     <Folder Include="ViewModels\Sale\" />
   </ItemGroup>
 

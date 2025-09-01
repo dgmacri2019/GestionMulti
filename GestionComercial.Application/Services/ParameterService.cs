@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace GestionComercial.Applications.Services
                 .Where(gp => gp.IsEnabled && !gp.IsDeleted)
                 .ToListAsync();
         }
+
         public async Task<GeneralParameter?> GetGeneralParameterByIdAsync(int id)
         {
             return await _context.GeneralParameters.FindAsync(id);
@@ -55,6 +57,31 @@ namespace GestionComercial.Applications.Services
             }
             return pcParameter;
 
+        }
+
+        public async Task<IEnumerable<PurchaseAndSalesListViewModel>> GetAllPcParametersAsync()
+        {
+            ICollection<PcParameter> pcParameters = await _context.PcParameters
+                .Where(pp => pp.IsEnabled && !pp.IsDeleted)
+                .ToListAsync();
+
+            return ToPurchaseAndSalesList(pcParameters);
+        }
+
+        private IEnumerable<PurchaseAndSalesListViewModel> ToPurchaseAndSalesList(ICollection<PcParameter> pcParameters)
+        {
+            return pcParameters.Select(pcParameter => new PurchaseAndSalesListViewModel
+            {
+                Id = pcParameter.Id,
+                CreateDate = pcParameter.CreateDate,
+                CreateUser = pcParameter.CreateUser,
+                IsDeleted = pcParameter.IsDeleted,
+                IsEnabled = pcParameter.IsEnabled,
+                PcName = pcParameter.PCName,
+                SalePoint = pcParameter.SalePoint,
+                UpdateDate = pcParameter.UpdateDate,
+                UpdateUser = pcParameter.UpdateUser,
+            });
         }
 
         public async Task<PcParameter?> GetPcParameterByIdAsync(int id)

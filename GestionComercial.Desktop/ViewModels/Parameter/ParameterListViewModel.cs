@@ -1,6 +1,8 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -13,7 +15,9 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         private readonly ParametersApiService _parametersApiService;
         private readonly GeneralParametersHubService _hubService;
 
-       
+
+        public ObservableCollection<PurchaseAndSalesListViewModel> PurchaseAndSaleViewModel { get; } = [];
+
 
         // 🔹 Propiedades de filtros
         private string _nameFilter = string.Empty;
@@ -90,12 +94,20 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
                 List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
                 ParameterCache.Instance.SetGeneralParameters(generalParameters);
             }
-            if(!ParameterCache.Instance.HasDataPCParameters)
+            if (!ParameterCache.Instance.HasDataPCParameters)
             {
                 PcParameter pcParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
                 ParameterCache.Instance.SetPCParameter(pcParameter);
             }
 
+            List<PurchaseAndSalesListViewModel> purchaseAndSales = await _parametersApiService.GetAllPcParametersAsync();
+           
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                PurchaseAndSaleViewModel.Clear();
+                foreach (var c in purchaseAndSales)
+                    PurchaseAndSaleViewModel.Add(c);
+            });
 
         }
 
