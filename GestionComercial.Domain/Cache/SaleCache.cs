@@ -6,14 +6,15 @@ namespace GestionComercial.Domain.Cache
     {
         private static SaleCache? _instance;
         public static SaleCache Instance => _instance ??= new SaleCache();
+
         private List<SaleViewModel>? _sales;
 
         private SaleCache()
         {
             CacheManager.Register(this);
         }
-        
-        
+
+
         public List<SaleViewModel>? GetAllSales()
         {
             return _sales;
@@ -80,6 +81,14 @@ namespace GestionComercial.Domain.Cache
         public void ClearCache()
         {
             _sales.Clear();
+        }
+
+        public int GetNextSaleNumnber(int salePoint)
+        {
+            return _sales.Where(s => s.SalePoint == salePoint).LastOrDefault() == null ?
+                1
+                :
+                _sales.Where(s => s.SalePoint == salePoint).Max(s => s.SaleNumber) + 1;
         }
 
         public bool HasData => _sales != null && _sales.Any();

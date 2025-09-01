@@ -268,6 +268,11 @@ namespace GestionComercial.Infrastructure.Persistence
               .IsUnique()
               .HasDatabaseName("State_Name_Index");
 
+            modelBuilder.Entity<Sale>()
+              .HasIndex(s => new { s.SalePoint, s.SaleNumber })
+              .IsUnique()
+              .HasDatabaseName("Sale_SalePoint-Number_Index");
+
             modelBuilder.Entity<City>()
               .HasIndex(c => new { c.Name, c.StateId, c.AfipId })
               .IsUnique()

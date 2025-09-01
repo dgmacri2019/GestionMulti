@@ -18,7 +18,7 @@ namespace GestionComercial.Desktop.Views.Searchs
             InitializeComponent();
 
             // Cargar todos los artículos desde tu cache/repositorio
-            _allArticles = ArticleCache.Instance.GetAllArticles();
+            _allArticles = ArticleCache.Instance.GetAllArticles().Where(a=>a.IsEnabled && !a.IsDeleted).ToList();
 
             // Llenar grilla
             dgArticles.ItemsSource = _allArticles;
@@ -29,6 +29,8 @@ namespace GestionComercial.Desktop.Views.Searchs
                 txtSearch.Text = searchText;
                 FilterArticles(searchText);
             }
+            txtSearch.Focus();
+            txtSearch.CaretIndex = txtSearch.Text.Length;
         }
 
         private void txtSearch_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)

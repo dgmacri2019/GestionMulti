@@ -55,7 +55,7 @@ namespace GestionComercial.Domain.Cache
         public ArticleViewModel? FindByCodeOrBarCode(string code)
         {
             return _articles != null && !string.IsNullOrEmpty(code) ? _articles
-                .Where(a => a.IsEnabled && !a.IsDeleted)
+                //.Where(a => a.IsEnabled && !a.IsDeleted)
                 .FirstOrDefault(a => a.Code?.ToLower() == code.ToLower()
                                   || a.BarCode?.ToLower() == code.ToLower())
                 :
@@ -65,7 +65,7 @@ namespace GestionComercial.Domain.Cache
         public ArticleViewModel? FindByBarCode(string barCode)
         {
             return _articles != null && !string.IsNullOrEmpty(barCode) ? _articles
-                .Where(a => a.IsEnabled && !a.IsDeleted)
+                //.Where(a => a.IsEnabled && !a.IsDeleted)
                 .FirstOrDefault(a => a.BarCode?.ToLower() == barCode.ToLower())
                 :
                 new ArticleViewModel();

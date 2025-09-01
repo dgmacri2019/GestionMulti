@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Views.Searchs;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
@@ -6,15 +7,15 @@ using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace GestionComercial.Desktop.Controls.Sales
+namespace GestionComercial.Desktop.Views.Sales
 {
-    public partial class SalesControlView : UserControl, INotifyPropertyChanged
+    public partial class SaleAddWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) =>
@@ -28,10 +29,16 @@ namespace GestionComercial.Desktop.Controls.Sales
         public int TotalItems => ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code));
         public decimal TotalPrice => ArticleItems.Sum(a => a.Total);
 
+        // Separador decimal según cultura actual (si querés forzar coma: const char DecSep = ',';)
+        private static readonly char DecSep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+        private static readonly char OtherSep = (DecSep == ',') ? '.' : ',';
+
+        private readonly int Width;
+        private readonly int Height;
 
         // public ObservableCollection<ArticleItem> ArticleItems = new ObservableCollection<ArticleItem>();
 
-        public SalesControlView(int saleId)
+        public SaleAddWindow(int saleId)
         {
             InitializeComponent();
             _salesApiService = new SalesApiService();
@@ -56,14 +63,23 @@ namespace GestionComercial.Desktop.Controls.Sales
 
             btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
             btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
+
+            var (width, height) = ScreenHelper.ObtenerResolucion(this);
+            Width = width;
+            Height = height;
         }
 
         private async Task LoadSaleAsync()
         {
-            var result = await _salesApiService.GetByIdAsync(SaleId);
+            var result = await _salesApiService.GetByIdAsync(SaleId, Environment.MachineName);
             if (result.Success)
             {
                 saleViewModel = result.SaleViewModel;
+                if (SaleId == 0)
+                {
+                    saleViewModel.SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
+                    saleViewModel.SaleNumber = SaleCache.Instance.GetNextSaleNumnber(saleViewModel.SalePoint);
+                }
                 DataContext = saleViewModel;
             }
             else
@@ -103,6 +119,34 @@ namespace GestionComercial.Desktop.Controls.Sales
 
 
             }
+            if (e.Key == Key.F5)
+            {
+                var searchWindow = new ClientSearchWindows(txtClientCode.Text) { Owner = Window.GetWindow(this) };
+                if (searchWindow.ShowDialog() == true)
+                {
+                    ClientViewModel? selectedClient = searchWindow.SelectedClient;
+                    if (selectedClient != null)
+                    {
+                        txtClientCode.Text = selectedClient.OptionalCode;
+                        txtFansatyName.Text = string.IsNullOrEmpty(selectedClient.FantasyName) ? selectedClient.BusinessName : selectedClient.FantasyName;
+                        txtAddress.Text = $"{selectedClient.Address}\n{selectedClient.City}, {selectedClient.State}\nC.P.{selectedClient.PostalCode}";
+                        txtEmail.Text = !string.IsNullOrEmpty(selectedClient.Email) ? selectedClient.Email : string.Empty;
+                        chSendEmail.IsChecked = !string.IsNullOrEmpty(selectedClient.Email);
+
+                        cbPriceLists.ItemsSource = selectedClient.PriceLists;
+                        cbPriceLists.SelectedValue = selectedClient.PriceListId;
+
+                        cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
+                        cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
+                        spArticles.Visibility = Visibility.Visible;
+                        spPostMethod.Visibility = Visibility.Visible;
+                        SetingFocus();
+
+                    }
+                }
+
+                e.Handled = true;
+            }
         }
 
         private void ClearClient()
@@ -138,7 +182,7 @@ namespace GestionComercial.Desktop.Controls.Sales
 
             }
             dpDate.SelectedDate = DateTime.Now;
-
+            //dgArticles.Height = Height * 0.3;
         }
 
 
@@ -172,11 +216,39 @@ namespace GestionComercial.Desktop.Controls.Sales
                         if (article.IsDeleted)
                         {
                             MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                var dataGrid = (DataGrid)sender;
+                                var nextRowIndex = ArticleItems.IndexOf(currentItem);
+                                if (nextRowIndex < ArticleItems.Count)
+                                {
+                                    ArticleItem nextRowItem = ArticleItems[nextRowIndex];
+                                    dataGrid.CurrentCell = new DataGridCellInfo(
+                                        nextRowItem,
+                                        dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
+                                    );
+                                    dataGrid.BeginEdit();
+                                }
+                            }), DispatcherPriority.Background);
                             return;
                         }
                         if (!article.IsEnabled)
                         {
                             MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                var dataGrid = (DataGrid)sender;
+                                var nextRowIndex = ArticleItems.IndexOf(currentItem);
+                                if (nextRowIndex < ArticleItems.Count)
+                                {
+                                    ArticleItem nextRowItem = ArticleItems[nextRowIndex];
+                                    dataGrid.CurrentCell = new DataGridCellInfo(
+                                        nextRowItem,
+                                        dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
+                                    );
+                                    dataGrid.BeginEdit();
+                                }
+                            }), DispatcherPriority.Background);
                             return;
                         }
 
@@ -237,9 +309,27 @@ namespace GestionComercial.Desktop.Controls.Sales
 
 
                     }
+                    else
+                    {
+                        MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            var dataGrid = (DataGrid)sender;
+                            var nextRowIndex = ArticleItems.IndexOf(currentItem);
+                            if (nextRowIndex < ArticleItems.Count)
+                            {
+                                ArticleItem nextRowItem = ArticleItems[nextRowIndex];
+                                dataGrid.CurrentCell = new DataGridCellInfo(
+                                    nextRowItem,
+                                    dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
+                                );
+                                dataGrid.BeginEdit();
+                            }
+                        }), DispatcherPriority.Background);
+                        return;
+                    }
+
                 }
-
-
 
                 // Recalcular precio si cambia la lista de precios
                 if (e.Column.Header is TextBlock headerTextBlock && headerTextBlock.Text == "Lista de Precios")
@@ -270,7 +360,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                         return;
                     }
 
-                    if(article != null && !article.PriceLists.Any(pl=>pl.Id == priceListId))
+                    if (article != null && !article.PriceLists.Any(pl => pl.Id == priceListId))
                     {
                         MessageBox.Show($"La lista de precios {priceListId}, no existe para este producto", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
                         Dispatcher.BeginInvoke(new Action(() =>
@@ -315,23 +405,36 @@ namespace GestionComercial.Desktop.Controls.Sales
                     currentItem.Recalculate();
                     OnPropertyChanged(nameof(TotalItems));
                     OnPropertyChanged(nameof(TotalPrice));
-                    if (ArticleItems.Last() == currentItem)
-                        ArticleItems.Add(new ArticleItem());
-                    // ✅ Forzar foco en la celda "Código" de la fila siguiente
-                    Dispatcher.BeginInvoke(new Action(() =>
+
+                    if (chBarcode.IsChecked == false)
                     {
-                        var dataGrid = (DataGrid)sender;
-                        var nextRowIndex = ArticleItems.IndexOf(currentItem) + 1;
-                        if (nextRowIndex < ArticleItems.Count)
+                        if (ArticleItems.Last() == currentItem)
+                            ArticleItems.Add(new ArticleItem());
+                        // ✅ Forzar foco en la celda "Código" de la fila siguiente
+                        // Evitar registros duplicados
+
+                        Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            ArticleItem nextRowItem = ArticleItems[nextRowIndex];
-                            dataGrid.CurrentCell = new DataGridCellInfo(
-                                nextRowItem,
-                                dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
-                            );
-                            dataGrid.BeginEdit();
-                        }
-                    }), DispatcherPriority.Background);
+                            var dataGrid = (DataGrid)sender;
+                            var nextRowIndex = ArticleItems.IndexOf(currentItem) + 1;
+                            if (nextRowIndex < ArticleItems.Count)
+                            {
+                                ArticleItem nextRowItem = ArticleItems[nextRowIndex];
+                                dataGrid.CurrentCell = new DataGridCellInfo(
+                                    nextRowItem,
+                                    dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
+                                );
+                                dataGrid.BeginEdit();
+                            }
+                        }), DispatcherPriority.Background);
+                    }
+                    else
+                    {
+                        // limpiar el textbox y volver a enfocarlo
+                        txtBarcode.Clear();
+                        txtBarcode.Focus();
+                    }
+                    dgArticles.ScrollIntoView(ArticleItems.Last());
                 }
             }
             catch (Exception ex)
@@ -396,8 +499,6 @@ namespace GestionComercial.Desktop.Controls.Sales
                 }
             }
         }
-
-        // Llamar esto desde el DataGrid PreparingCellForEdit para enganchar el handler de pegado
         private void dgArticles_PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
         {
             // Solo para la columna Cantidad (ajustá la comparación según tu header)
@@ -498,7 +599,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                             OnPropertyChanged(nameof(TotalItems));
                             OnPropertyChanged(nameof(TotalPrice));
                             ArticleItems.Add(newItem);
-
+                            dgArticles.ScrollIntoView(ArticleItems.Last());
                             // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
                             if (chBarcode.IsChecked == false)
                             {
@@ -515,6 +616,77 @@ namespace GestionComercial.Desktop.Controls.Sales
                     txtBarcode.Focus();
                 }
             }
+            if (e.Key == Key.F5)
+            {
+                var searchWindow = new ArticleSearchWindow(txtBarcode.Text) { Owner = Window.GetWindow(this) };
+                if (searchWindow.ShowDialog() == true)
+                {
+                    var article = searchWindow.SelectedArticle;
+                    if (article != null)
+                    {
+                        //isProductWeight = article.IsWeight && code.Length > 8;
+                        if (article.IsDeleted)
+                        {
+                            MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        if (!article.IsEnabled)
+                        {
+                            MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        var priceLists = article.PriceLists;
+                        int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+
+                        // Verificar si el artículo ya está en la grilla
+                        ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
+
+
+                        ArticleItem newItem = new()
+                        {
+                            Code = article.Code,
+                            Description = article.Description,
+                            SmallMeasureDescription = article.Measures.First(m => m.Id == article.MeasureId).SmallDescription,
+                            Quantity = 1,
+                            Bonification = 0,
+                        };
+
+                        // llenar PriceLists con las del artículo
+                        newItem.PriceLists.Clear();
+                        foreach (var pl in article.PriceLists)
+                            newItem.PriceLists.Add(pl);
+
+                        // determinar qué lista de precios usar
+                        if (cbPriceLists.SelectedValue != null)
+                            priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+                        else if (article.PriceLists.Any())
+                            priceListId = Convert.ToInt32(
+                                article.PriceLists.First().GetType().GetProperty("Id")
+                                      .GetValue(article.PriceLists.First()));
+
+                        // asignar lista de precios -> setter actualiza el Price
+                        newItem.PriceListId = priceListId;
+
+                        newItem.Recalculate();
+                        OnPropertyChanged(nameof(TotalItems));
+                        OnPropertyChanged(nameof(TotalPrice));
+                        ArticleItems.Add(newItem);
+                        dgArticles.ScrollIntoView(ArticleItems.Last());
+                        // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
+                        if (chBarcode.IsChecked == false)
+                        {
+                            ArticleItems.Add(new ArticleItem());
+                        }
+
+                    }
+
+                }
+
+                e.Handled = true;
+                // limpiar el textbox y volver a enfocarlo
+                txtBarcode.Clear();
+                txtBarcode.Focus();
+            }
         }
 
         private void Quantity_GotFocus(object sender, RoutedEventArgs e)
@@ -523,121 +695,8 @@ namespace GestionComercial.Desktop.Controls.Sales
             {
                 // selecciona todo el texto, para que al tipear se borre
                 textBox.SelectAll();
-                // limpiar todo el texbox:
-                // textBox.Clear();
             }
         }
-
-        // Permitir solo números y una coma, y normalizar '.' a ','
-        private void Quantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (sender is not TextBox tb || string.IsNullOrEmpty(e.Text)) return;
-
-            // Normalizar '.' a ','
-            string input = e.Text == "." ? "," : e.Text;
-
-            // Validar que el input sea dígito(s) o coma(s)
-            foreach (char ch in input)
-            {
-                if (!char.IsDigit(ch) && ch != ',')
-                {
-                    e.Handled = true;
-                    return;
-                }
-            }
-
-            int selStart = tb.SelectionStart;
-            int selLen = tb.SelectionLength;
-            string current = tb.Text ?? string.Empty;
-
-            // Construir el texto resultante si insertamos "input" en la selección actual
-            string preview = current.Substring(0, selStart) + input + current.Substring(Math.Min(current.Length, selStart + selLen));
-
-            // No permitir más de una coma
-            if (preview.Count(c => c == ',') > 1)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            // Insertar respetando selección y posicionar caret después de la inserción
-            e.Handled = true;
-            // Usamos SelectedText + forzamos la posición del caret para evitar sobrescrituras
-            tb.SelectedText = input;
-            tb.SelectionStart = selStart + input.Length;
-            tb.SelectionLength = 0;
-        }
-
-        // Normalizar si se pega texto con '.'
-        // TextChanged: normalizar si se pega texto con '.' (y ajustar caret)
-        private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (sender is not TextBox tb) return;
-
-            // Si hay puntos, reemplazamos por comas y preservamos caret lo mejor posible
-            if (tb.Text.Contains("."))
-            {
-                int caret = tb.SelectionStart;
-                tb.Text = tb.Text.Replace(".", ",");
-                tb.SelectionStart = Math.Min(caret, tb.Text.Length);
-            }
-        }
-
-        // Handler de pegado: limpiar el texto pegado y normalizar
-        private void Quantity_Pasting(object sender, DataObjectPastingEventArgs e)
-        {
-            if (sender is not TextBox tb) return;
-
-            if (!e.DataObject.GetDataPresent(DataFormats.Text))
-            {
-                e.CancelCommand();
-                return;
-            }
-
-            string pasted = e.DataObject.GetData(DataFormats.Text) as string ?? string.Empty;
-            pasted = pasted.Replace(".", ","); // normalizar
-
-            // Construir texto resultante si insertamos el pegado
-            int selStart = tb.SelectionStart;
-            int selLen = tb.SelectionLength;
-            string current = tb.Text ?? string.Empty;
-            string preview = current.Substring(0, selStart) + pasted + current.Substring(Math.Min(current.Length, selStart + selLen));
-
-            // Filtrar caracteres: solo dígitos y una coma
-            var sb = new System.Text.StringBuilder();
-            int commaCount = preview.Count(c => c == ',');
-            // but the preview count counts existing + pasted; we must ensure final <=1
-            // we'll allow first comma only
-            int existingComma = current.Count(c => c == ',') - current.Substring(selStart, Math.Min(selLen, Math.Max(0, current.Length - selStart))).Count(c => c == ','); // comas fuera de la selección
-                                                                                                                                                                           // Build safe pasted string
-            int allowedCommas = existingComma == 0 ? 1 : 0;
-
-            foreach (char ch in pasted)
-            {
-                if (char.IsDigit(ch))
-                    sb.Append(ch);
-                else if (ch == ',' && allowedCommas > 0)
-                {
-                    sb.Append(ch);
-                    allowedCommas--;
-                }
-                // ignorar otros caracteres
-            }
-
-            string final = sb.ToString();
-            if (string.IsNullOrEmpty(final))
-            {
-                e.CancelCommand();
-                return;
-            }
-
-            // Reemplazamos la selección por el texto limpio
-            e.CancelCommand();
-            tb.SelectedText = final;
-            tb.SelectionStart = selStart + final.Length;
-            tb.SelectionLength = 0;
-        }
-
 
         private void chBarcode_Checked(object sender, RoutedEventArgs e)
         {
@@ -656,8 +715,7 @@ namespace GestionComercial.Desktop.Controls.Sales
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Parent is ContentControl parent)
-                parent.Content = null;
+            DialogResult = false;
         }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -669,6 +727,100 @@ namespace GestionComercial.Desktop.Controls.Sales
         {
             // Actualizar venta (implementar según tu API)
         }
+
+
+        private void Quantity_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is not TextBox tb) return;
+
+            // Teclas de separador decimal que a veces no disparan TextInput
+            if (e.Key == Key.Decimal || e.Key == Key.OemPeriod || e.Key == Key.OemComma)
+            {
+                e.Handled = true;
+
+                int selStart = tb.SelectionStart;
+                int selLen = tb.SelectionLength;
+
+                string current = tb.Text ?? string.Empty;
+                string preview = current.Substring(0, selStart) + DecSep + current.Substring(Math.Min(current.Length, selStart + selLen));
+
+                // impedir más de un separador
+                if (preview.Count(ch => ch == DecSep) > 1) return;
+
+                tb.SelectedText = DecSep.ToString();
+                tb.SelectionStart = selStart + 1;
+                tb.SelectionLength = 0;
+            }
+        }
+
+        private void Quantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (sender is not TextBox tb || string.IsNullOrEmpty(e.Text)) return;
+
+            // Normalizar '.'/',' al separador decimal de la cultura
+            string input = (e.Text == "." || e.Text == ",") ? DecSep.ToString() : e.Text;
+
+            // Aceptar solo dígitos o el separador
+            foreach (char ch in input)
+                if (!char.IsDigit(ch) && ch != DecSep) { e.Handled = true; return; }
+
+            int selStart = tb.SelectionStart;
+            int selLen = tb.SelectionLength;
+            string current = tb.Text ?? string.Empty;
+            string preview = current.Substring(0, selStart) + input + current.Substring(Math.Min(current.Length, selStart + selLen));
+
+            // impedir más de un separador
+            if (preview.Count(ch => ch == DecSep) > 1) { e.Handled = true; return; }
+
+            // Insertar manualmente y marcar handled
+            e.Handled = true;
+            tb.SelectedText = input;
+            tb.SelectionStart = selStart + input.Length;
+            tb.SelectionLength = 0;
+        }
+
+        private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is not TextBox tb) return;
+
+            // Si se coló el separador "equivocado", normalizá
+            int idx = tb.Text.IndexOf(OtherSep);
+            if (idx >= 0)
+            {
+                int caret = tb.SelectionStart;
+                tb.Text = tb.Text.Replace(OtherSep, DecSep);
+                tb.SelectionStart = Math.Min(caret, tb.Text.Length);
+            }
+        }
+
+        private void Quantity_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (sender is not TextBox tb) return;
+            if (!e.DataObject.GetDataPresent(DataFormats.Text)) { e.CancelCommand(); return; }
+
+            string pasted = (e.DataObject.GetData(DataFormats.Text) as string) ?? string.Empty;
+
+            // Normalizar separadores y filtrar: dígitos + 1 separador
+            pasted = pasted.Replace(OtherSep, DecSep);
+            var clean = new System.Text.StringBuilder();
+            bool hasSep = (tb.Text?.Count(ch => ch == DecSep) ?? 0) - (tb.SelectedText?.Count(ch => ch == DecSep) ?? 0) > 0;
+
+            foreach (char ch in pasted)
+            {
+                if (char.IsDigit(ch)) clean.Append(ch);
+                else if (ch == DecSep && !hasSep) { clean.Append(ch); hasSep = true; }
+            }
+
+            string final = clean.ToString();
+            if (string.IsNullOrEmpty(final)) { e.CancelCommand(); return; }
+
+            e.CancelCommand();
+            int selStart = tb.SelectionStart;
+            tb.SelectedText = final;
+            tb.SelectionStart = selStart + final.Length;
+            tb.SelectionLength = 0;
+        }
+
 
         private void SetingFocus()
         {

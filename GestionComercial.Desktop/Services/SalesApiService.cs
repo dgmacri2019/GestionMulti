@@ -66,7 +66,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<SaleResponse> GetByIdAsync(int clientId)
+        internal async Task<SaleResponse> GetByIdAsync(int saleId, string pcName)
         {
             try
             {
@@ -74,7 +74,8 @@ namespace GestionComercial.Desktop.Services
 
                 var response = await _httpClient.PostAsJsonAsync("api/sales/GetByIdAsync", new
                 {
-                    Id = clientId,
+                    Id = saleId,
+                    PcName = pcName
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
                 });

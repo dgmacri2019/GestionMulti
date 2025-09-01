@@ -1,21 +1,12 @@
-﻿using Azure;
-using GestionComercial.Desktop.Helpers;
-using GestionComercial.Domain.DTOs.Client;
+﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
 
 namespace GestionComercial.Desktop.Services
 {

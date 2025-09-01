@@ -92,6 +92,12 @@ namespace GestionComercial.Infrastructure.Persistence
                 {
                     response.Message = "Ese código de barras ya se encuentra registrado";
                 }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Sale_SalePoint-Number_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Sale_SalePoint-Number_Index"))
+                {
+                    response.Message = "Ese punto de venta y número ya se ecuentra registrado";
+                }
                 else if ((ex.InnerException != null && ex.InnerException.Message.Contains("State_Name_Index")) ||
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
                     ex.InnerException.InnerException.Message.Contains("State_Name_Index"))
