@@ -15,6 +15,7 @@ using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
 using GestionComercial.Desktop.ViewModels.Parameter;
 using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
+using GestionComercial.Desktop.ViewModels.Sale;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -205,7 +206,7 @@ namespace GestionComercial.Desktop.Views
                     case "Sales_Report":
                         break;
                     case "GeneralParameter_Setup":
-                        break;                    
+                        break;
                     case "PcParameter_Setup":
                         MainContent.Content = new PcParametersControlView();
                         break;
@@ -245,6 +246,7 @@ namespace GestionComercial.Desktop.Views
             ClientListViewModel clientListViewModel = new();
             ArticleListViewModel articleListViewModel = new();
             ParameterListViewModel parameterListViewModel = new();
+            SaleListViewModel saleListViewModel = new();
         }
     }
 }

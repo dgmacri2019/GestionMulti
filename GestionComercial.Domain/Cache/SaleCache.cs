@@ -2,7 +2,7 @@
 
 namespace GestionComercial.Domain.Cache
 {
-    internal class SaleCache : ICache
+    public class SaleCache : ICache
     {
         private static SaleCache? _instance;
         public static SaleCache Instance => _instance ??= new SaleCache();

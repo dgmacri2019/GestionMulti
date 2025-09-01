@@ -1166,8 +1166,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\Sale\" />
-  </ItemGroup>
-
 </Project>

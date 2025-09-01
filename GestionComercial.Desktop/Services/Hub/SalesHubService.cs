@@ -19,7 +19,7 @@ namespace GestionComercial.Desktop.Services.Hub
                 .Build();
 
             // Aquí registramos el método que el servidor va a invocar
-            _connection.On<VentaChangeNotification>("VentassActualizados", (notification) =>
+            _connection.On<VentaChangeNotification>("VentasActualizados", (notification) =>
             {
                 VentaCambiado?.Invoke(notification);
             });
