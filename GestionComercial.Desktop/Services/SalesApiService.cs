@@ -25,7 +25,7 @@ namespace GestionComercial.Desktop.Services
         }
 
 
-        internal async Task<List<SaleViewModel>> GetAllAsync()
+        internal async Task<List<SaleViewModel>> GetAllAsync1()
         {
             try
             {
@@ -33,6 +33,49 @@ namespace GestionComercial.Desktop.Services
 
                 var response = await _httpClient.PostAsJsonAsync("api/sales/GetAllAsync", new
                 {
+                    //IsDeleted = isDeleted,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var sales = JsonSerializer.Deserialize<List<SaleViewModel>>(jsonResponse, options);
+
+
+                    return sales;
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        internal async Task<List<SaleViewModel>> GetAllBySalePointAsync(int salePoint)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/sales/GetAllBySalePointAsync", new
+                {
+                    SalePoint = salePoint,
+                    SaleDate = DateTime.Now.Date,
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
                 });

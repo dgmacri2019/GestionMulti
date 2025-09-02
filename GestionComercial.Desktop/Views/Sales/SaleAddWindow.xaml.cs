@@ -32,6 +32,9 @@ namespace GestionComercial.Desktop.Views.Sales
         public int TotalItems => ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code));
         public decimal TotalPrice => ArticleItems.Sum(a => a.Total);
 
+        private readonly int SalePoint;
+        private int SaleNumber = 0;
+
         // Separador decimal según cultura actual (si querés forzar coma: const char DecSep = ',';)
         private static readonly char DecSep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
         private static readonly char OtherSep = (DecSep == ',') ? '.' : ',';
@@ -64,6 +67,8 @@ namespace GestionComercial.Desktop.Views.Sales
 
             btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
             btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
+            SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
+            SaleNumber = SaleCache.Instance.GetNextSaleNumnber(SalePoint);
 
             var (width, height) = ScreenHelper.ObtenerResolucion(this);
             Width = width;
@@ -78,8 +83,8 @@ namespace GestionComercial.Desktop.Views.Sales
                 saleViewModel = result.SaleViewModel;
                 if (SaleId == 0)
                 {
-                    saleViewModel.SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
-                    saleViewModel.SaleNumber = SaleCache.Instance.GetNextSaleNumnber(saleViewModel.SalePoint);
+                    saleViewModel.SalePoint = SalePoint;
+                    saleViewModel.SaleNumber = SaleNumber;
                 }
                 DataContext = saleViewModel;
             }
@@ -688,12 +693,15 @@ namespace GestionComercial.Desktop.Views.Sales
                     {
                         Sale sale = ToSale(saleViewModel, ArticleItems);
 
-                       GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
+                        GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
                         if (resultAdd.Success)
                         {
                             ClearClient();
                             ArticleItems.Clear();
                             txtClientCode.Focus();
+                            txtClientCode.Text = string.Empty;
+                            SaleNumber++;
+                            await LoadSaleAsync();
                         }
                         else
                             lblError.Text = resultAdd.Message;
@@ -969,7 +977,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
             }
 
-
+            DateTime saleDate = (DateTime)dpDate.SelectedDate;
             return new Sale
             {
                 ClientId = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text).Id,
@@ -979,7 +987,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 IsEnabled = true,
                 IsFinished = true,
                 SaleConditionId = saleViewModel.SaleConditionId,
-                SaleDate = (DateTime)dpDate.SelectedDate,
+                SaleDate = saleDate.Date,
                 SalePoint = saleViewModel.SalePoint,
                 SaleNumber = saleViewModel.SaleNumber,
                 Total = TotalPrice,

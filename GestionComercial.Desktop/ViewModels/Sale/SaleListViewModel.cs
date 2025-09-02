@@ -112,7 +112,8 @@ namespace GestionComercial.Desktop.ViewModels.Sale
         {
             if (!SaleCache.Instance.HasData)
             {
-                List<SaleViewModel> sales = await _salesApiService.GetAllAsync();
+                int salePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
+                List<SaleViewModel> sales = await _salesApiService.GetAllBySalePointAsync(salePoint);
                 SaleCache.Instance.SetSales(sales);
             }
 
@@ -129,7 +130,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnVentaCambiado(VentaChangeNotification notification)
         {
-            List<SaleViewModel> sales = await _salesApiService.GetAllAsync();
+            List<SaleViewModel> sales = await _salesApiService.GetAllBySalePointAsync(ParameterCache.Instance.GetPcParameter().SalePoint);
 
             await App.Current.Dispatcher.InvokeAsync(() =>
             {

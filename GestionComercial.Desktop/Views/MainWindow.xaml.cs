@@ -244,9 +244,17 @@ namespace GestionComercial.Desktop.Views
         private void CargarCache(object? obj)
         {
             ClientListViewModel clientListViewModel = new();
+            while (!ClientCache.Instance.HasData)
+                Thread.Sleep(10);
             ArticleListViewModel articleListViewModel = new();
+            while (!ArticleCache.Instance.HasData)
+                Thread.Sleep(10);
             ParameterListViewModel parameterListViewModel = new();
+            while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters)
+                Thread.Sleep(10);
             SaleListViewModel saleListViewModel = new();
+            while (!ClientCache.Instance.HasData)
+                Thread.Sleep(10);
         }
     }
 }

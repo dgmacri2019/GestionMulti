@@ -61,19 +61,19 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual Client? Client { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual SaleCondition? SaleCondition { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<SaleDetail>? SaleDetails { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<SalePayMetodDetail>? SalePayMetodDetails { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<Acreditation>? Acreditations { get; set; }
 
     }

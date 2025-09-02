@@ -77,6 +77,14 @@ namespace GestionComercial.API.Controllers.Sales
         }
 
 
+        [HttpPost("GetAllBySalePointAsync")]
+        public async Task<IActionResult> GetAllBySalePointAsync([FromBody] SaleFilterDto filter)
+        {
+            IEnumerable<SaleViewModel> sales = await _saleService.GetAllBySalePointAsync(filter.SalePoint, (DateTime)filter.SaleDate);
+            return Ok(sales);
+        }
+
+
 
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] SaleFilterDto filter)

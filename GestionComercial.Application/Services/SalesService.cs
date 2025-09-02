@@ -65,6 +65,46 @@ namespace GestionComercial.Applications.Services
 
         }
 
+        public async Task<IEnumerable<SaleViewModel>> GetAllBySalePointAsync(int salePoint, DateTime saleDate)
+        {
+            List<IGrouping<string, Sale>> sales = await _context.Sales
+                .Include(c => c.Client)
+                .Include(sc => sc.SaleCondition)
+                .Include(sd => sd.SaleDetails)
+                .Include(spm => spm.SalePayMetodDetails)
+                .Include(a => a.Acreditations)
+                .Where(s => s.SalePoint == salePoint && s.SaleDate == saleDate)
+                .OrderBy(sp => sp.SalePoint).ThenBy(sn => sn.SaleNumber)
+                .GroupBy(c => c.Client.BusinessName)
+                .ToListAsync();
+
+            ObservableCollection<Client> clients = new ObservableCollection<Client>(await _context.Clients
+             .Include(c => c.PriceList)
+             .Include(c => c.State)
+             .Include(ic => ic.IvaCondition)
+             .Include(dt => dt.DocumentType)
+             .Include(sc => sc.SaleCondition)
+             .Where(p => p.IsEnabled && !p.IsDeleted)
+             .ToListAsync());
+
+            ObservableCollection<SaleCondition> saleConditions = new ObservableCollection<SaleCondition>(await _context.SaleConditions
+             .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+             .OrderBy(sc => sc.Description)
+             .ToListAsync());
+
+            ObservableCollection<PriceList> priceLists = new ObservableCollection<PriceList>(await _context.PriceLists
+             .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+             .OrderBy(pl => pl.Description)
+             .ToListAsync());
+
+
+            saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+            clients.Add(new Client { Id = 0, BusinessName = "Seleccione el cliente" });
+            priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
+
+            return ToSaleViewModelsList(sales, clients, saleConditions, priceLists);
+        }
+
         public async Task<SaleViewModel?> GetByIdAsync(int id)
         {
             ObservableCollection<Client> clients = new ObservableCollection<Client>(await _context.Clients
@@ -158,7 +198,7 @@ namespace GestionComercial.Applications.Services
                 Date = sale.SaleDate,
                 SaleCondition = sale.SaleCondition,
 
-            }));
+            })).OrderBy(s => s.SalePoint).ThenBy(s => s.SaleNumber);
         }
     }
 }
