@@ -9,7 +9,10 @@ using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
+using GestionComercial.Desktop.ViewModels.Client;
+using GestionComercial.Desktop.ViewModels.Parameter;
 using GestionComercial.Desktop.ViewModels.Sale;
+using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
@@ -240,9 +243,9 @@ namespace GestionComercial.Desktop.Views
 
         private void CargarCache(object? obj)
         {
-            //ClientListViewModel clientListViewModel = new();
-            //ArticleListViewModel articleListViewModel = new();
-            //ParameterListViewModel parameterListViewModel = new();
+            ClientListViewModel clientListViewModel = new();
+            ArticleListViewModel articleListViewModel = new();
+            ParameterListViewModel parameterListViewModel = new();
             SaleListViewModel saleListViewModel = new();
         }
     }
