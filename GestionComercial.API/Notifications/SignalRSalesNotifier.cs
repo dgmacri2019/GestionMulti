@@ -6,16 +6,18 @@ using static GestionComercial.Domain.Notifications.SaleChangeNotification;
 namespace GestionComercial.API.Notifications
 {
     public class SignalRSalesNotifier : ISalesNotifier
-    {//private readonly IHubContext<ClientsHub, IClientsClient> _hub;
+    {
         private readonly INotificationQueue _queue;
-        public SignalRSalesNotifier(/*IHubContext<ClientsHub, IClientsClient> hub*/INotificationQueue queue)
+        private readonly ILogger<SignalRSalesNotifier> _logger;
+        public SignalRSalesNotifier(INotificationQueue queue, ILogger<SignalRSalesNotifier> logger)
         {
             _queue = queue;
-            //_hub = hub;
+            _logger = logger;
         }
 
         public async Task NotifyAsync(int saleId, string nombre, ChangeType accion)
         {
+            _logger.LogInformation("NotifyAsync called for saleId={SaleId} action={Action}", saleId, accion);
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             VentaChangeNotification notification = accion switch
             {
@@ -27,6 +29,8 @@ namespace GestionComercial.API.Notifications
             //await _hub.Clients.All.ClientesActualizados(notification);
             // 👉 encolamos (rápido) y devolvemos el control al request
             await _queue.EnqueueAsync(new SaleChangedItem(notification));
+            _logger.LogDebug("SaleChangedItem enqueued for saleId={SaleId}", saleId);
+
         }
     }
 }

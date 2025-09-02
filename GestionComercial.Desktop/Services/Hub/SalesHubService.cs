@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using static GestionComercial.Domain.Notifications.SaleChangeNotification;
 
 namespace GestionComercial.Desktop.Services.Hub
@@ -9,25 +13,67 @@ namespace GestionComercial.Desktop.Services.Hub
 
         // Evento que levantamos cuando llega una notificación
         public event Action<VentaChangeNotification> VentaCambiado;
+        public event Action<string>? SalesChanged;
 
         public SalesHubService(string hubUrl)
         {
             _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
                 .WithAutomaticReconnect()
-                //.WithServerTimeout(new TimeSpan(100))
+                .ConfigureLogging(logging =>
+                {
+                    logging.SetMinimumLevel(LogLevel.Debug);
+                    logging.AddDebug();
+                })
                 .Build();
 
-            // Aquí registramos el método que el servidor va a invocar
+            _connection.Reconnecting += ex =>
+            {
+                Debug.WriteLine("[SalesHub] Reconnecting: " + ex?.Message);
+                return Task.CompletedTask;
+            };
+
+            _connection.Reconnected += id =>
+            {
+                Debug.WriteLine("[SalesHub] Reconnected: " + id);
+                return Task.CompletedTask;
+            };
+
+            _connection.Closed += ex =>
+            {
+                Debug.WriteLine("[SalesHub] Closed. Ex: " + ex?.Message);
+                return Task.CompletedTask;
+            };
+
             _connection.On<VentaChangeNotification>("VentasActualizados", (notification) =>
             {
-                VentaCambiado?.Invoke(notification);
+                Debug.WriteLine("[SalesHub] VentasActualizados received: " + (notification == null ? "NULL" : notification.ToString()));
+                try
+                {
+                    VentaCambiado?.Invoke(notification);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("[SalesHub] Handler VentaCambiado threw: " + ex);
+                }
             });
         }
 
         public async Task StartAsync()
         {
-            await _connection.StartAsync();
+            if (_connection.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await _connection.StartAsync();
+                    Debug.WriteLine("[SalesHub] Connected");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("[SalesHub] StartAsync failed: " + ex);
+                    throw;
+                }
+            }
         }
 
         public async Task StopAsync()

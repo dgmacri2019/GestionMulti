@@ -1,21 +1,18 @@
-﻿using GestionComercial.Domain.Cache;
-using GestionComercial.Desktop.Controls.Accounts;
+﻿using GestionComercial.Desktop.Controls.Accounts;
 using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
+using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
 using GestionComercial.Desktop.Controls.Permissions;
 using GestionComercial.Desktop.Controls.PriceLists;
 using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
-using GestionComercial.Desktop.ViewModels.Client;
-using GestionComercial.Desktop.ViewModels.Stock;
+using GestionComercial.Desktop.ViewModels.Sale;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
-using GestionComercial.Desktop.ViewModels.Parameter;
-using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
-using GestionComercial.Desktop.ViewModels.Sale;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -243,9 +240,9 @@ namespace GestionComercial.Desktop.Views
 
         private void CargarCache(object? obj)
         {
-            ClientListViewModel clientListViewModel = new();
-            ArticleListViewModel articleListViewModel = new();
-            ParameterListViewModel parameterListViewModel = new();
+            //ClientListViewModel clientListViewModel = new();
+            //ArticleListViewModel articleListViewModel = new();
+            //ParameterListViewModel parameterListViewModel = new();
             SaleListViewModel saleListViewModel = new();
         }
     }

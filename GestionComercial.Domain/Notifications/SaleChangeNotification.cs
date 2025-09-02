@@ -9,7 +9,7 @@ namespace GestionComercial.Domain.Notifications
         [JsonDerivedType(typeof(SaleActualizado), "updated")]
         [JsonDerivedType(typeof(SaleEliminado), "deleted")]
 
-        public abstract record VentaChangeNotification(int saleId, DateTimeOffset ServerTime);
+        public abstract record VentaChangeNotification(int SaleId, DateTimeOffset ServerTime);
 
         public record SaleCreado(int SaleId, DateTimeOffset ServerTime, string Nombre)
         : VentaChangeNotification(SaleId, ServerTime);

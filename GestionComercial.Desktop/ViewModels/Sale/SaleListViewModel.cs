@@ -4,6 +4,7 @@ using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Sale;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using static GestionComercial.Domain.Notifications.SaleChangeNotification;
 
@@ -78,10 +79,22 @@ namespace GestionComercial.Desktop.ViewModels.Sale
 
             _hubService = new SalesHubService(hubUrl);
             _hubService.VentaCambiado += OnVentaCambiado;
+            _hubService.SalesChanged += OnSalesChanged;
             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
             SearchCommand = new RelayCommand1(async _ => await LoadSalesAsync());
 
-            _ = _hubService.StartAsync();
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await _hubService.StartAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Error iniciando SalesHubService: " + ex);
+                    // podés mostrar un mensaje UI o log a archivo
+                }
+            });
             _ = LoadSalesAsync(); // carga inicial
         }
 
@@ -125,6 +138,13 @@ namespace GestionComercial.Desktop.ViewModels.Sale
 
                 _ = LoadSalesAsync();
             });
+        }
+
+        private void OnSalesChanged(string json)
+        {
+            // acá podés deserializar el objeto si lo necesitas
+            // var data = JsonConvert.DeserializeObject<ChangedItem<Sale>>(json);
+            // actualizar tu lista o disparar notificación visual
         }
     }
 }

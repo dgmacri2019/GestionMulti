@@ -1,5 +1,6 @@
 ﻿using GestionComercial.API.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 
 namespace GestionComercial.API.Notifications.Background
 {
@@ -34,6 +35,8 @@ namespace GestionComercial.API.Notifications.Background
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("NotificationDispatcher started");
+
             await foreach (var item in _queue.DequeueAllAsync(stoppingToken))
             {
                 try
@@ -58,7 +61,36 @@ namespace GestionComercial.API.Notifications.Background
                             await _providersHub.Clients.All.ProveedoresActualizados(a.Notification);
                             break;
                         case SaleChangedItem s:
-                            await _salesHub.Clients.All.VentasActualizados(s.Notification);
+                            try
+                            {
+                                _logger.LogInformation("Dispatching SaleChangedItem. SaleId={SaleId}", s.Notification?.SaleId ?? 0);
+                                // debug JSON serializado (útil para ver si serializa correctamente)
+                                try
+                                {
+                                    var json = JsonSerializer.Serialize(s.Notification);
+                                    _logger.LogDebug("VentaChangeNotification JSON: {Json}", json);
+                                }
+                                catch (Exception exJson)
+                                {
+                                    _logger.LogWarning(exJson, "No se pudo serializar VentaChangeNotification para debug");
+                                }
+
+                                await _salesHub.Clients.All.VentasActualizados(s.Notification);
+                                _logger.LogInformation("VentasActualizados invoked (typed) for SaleId={SaleId}", s.Notification?.SaleId ?? 0);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, "Typed VentasActualizados failed for SaleId={SaleId}, trying fallback SendAsync", s.Notification?.SaleId ?? 0);
+                                try
+                                {
+                                    await _salesHub.Clients.All.VentasActualizados(s.Notification);
+                                    _logger.LogInformation("Fallback SendAsync succeeded for VentasActualizados SaleId={SaleId}", s.Notification?.SaleId ?? 0);
+                                }
+                                catch (Exception ex2)
+                                {
+                                    _logger.LogError(ex2, "Fallback SendAsync ALSO failed for VentasActualizados SaleId={SaleId}", s.Notification?.SaleId ?? 0);
+                                }
+                            }
                             break;
                         case GeneralParameterChangedItem s:
                             await _parametersHub.Clients.All.ParametrosGeneralesActualizados(s.Notification);
@@ -74,6 +106,9 @@ namespace GestionComercial.API.Notifications.Background
                     _logger.LogError(ex, "Error difundiendo notificación {Type}", item.GetType().Name);
                 }
             }
+
+            _logger.LogInformation("NotificationDispatcher stopping");
+
         }
     }
 }
