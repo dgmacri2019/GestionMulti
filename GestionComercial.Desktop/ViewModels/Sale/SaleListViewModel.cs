@@ -73,7 +73,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
             _salesApiService = new SalesApiService();
 
             //var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:ClientsHubUrl"]);
-            var hubUrl = string.Format("{0}hubs/sale", App.Configuration["ApiSettings:BaseUrl"]);
+            var hubUrl = string.Format("{0}hubs/sales", App.Configuration["ApiSettings:BaseUrl"]);
 
 
             _hubService = new SalesHubService(hubUrl);
