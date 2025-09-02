@@ -104,19 +104,19 @@ namespace GestionComercial.Domain.DTOs.Sale
 
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual Entities.Masters.Client? Client { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual SaleCondition? SaleCondition { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<SaleDetail>? SaleDetails { get; set; }
 
-        [JsonIgnore]
+       // [JsonIgnore]
         public virtual ICollection<SalePayMetodDetail>? SalePayMetodDetails { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<Acreditation>? Acreditations { get; set; }
 
         public ObservableCollection<Entities.Masters.Client> Clients { get; set; } = [];

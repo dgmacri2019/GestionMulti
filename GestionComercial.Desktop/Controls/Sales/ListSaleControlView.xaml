@@ -83,7 +83,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding BusinessName}" 
+                                <TextBlock Text="{Binding Client.BusinessName}" 
                                Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
@@ -94,7 +94,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding FantasyName}" 
+                                <TextBlock Text="{Binding Client.FantasyName}" 
                                Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
@@ -105,7 +105,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding DocumentNumber}" 
+                                <TextBlock Text="{Binding Client.DocumentNumber}" 
                                Style="{StaticResource LeftAlignedTextStyle}"/>
                             </Border>
                         </DataTemplate>
