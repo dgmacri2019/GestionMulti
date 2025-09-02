@@ -131,7 +131,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<ArticlesHub>("/hubs/articles");
     endpoints.MapHub<BoxAndBanksHub>("/hubs/boxandbank");
     endpoints.MapHub<BankParametersHub>("/hubs/bankparameter");
-    endpoints.MapHub<SalesHub>("/hubs/sale");
+    endpoints.MapHub<SalesHub>("/hubs/sales");
     endpoints.MapHub<GeneralParametersHub>("/hubs/generalparameter");
 });
 using (var scope = app.Services.CreateScope())
