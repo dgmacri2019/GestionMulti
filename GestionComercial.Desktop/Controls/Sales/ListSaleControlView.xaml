@@ -35,6 +35,11 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Label x:Name="lblHeader" 
                        Grid.Row="0"
@@ -73,7 +78,29 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding SaleNumberString}" 
-                               Style="{StaticResource LeftAlignedTextStyle}"/>
+                               Style="{StaticResource CenteredTextStyle}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Fecha" Width="auto" SortMemberPath="SaleDate">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding SaleDate, StringFormat={}{0:dd/MM/yyyy}}" 
+                               Style="{StaticResource CenteredTextStyle}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Importe Total" Width="auto" SortMemberPath="Total">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding Total, StringFormat={}{0:C2}}" 
+                               Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -106,7 +133,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding Client.DocumentNumber}" 
-                               Style="{StaticResource LeftAlignedTextStyle}"/>
+                               Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

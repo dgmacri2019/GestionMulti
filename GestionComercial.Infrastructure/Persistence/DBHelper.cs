@@ -10,7 +10,7 @@ namespace GestionComercial.Infrastructure.Persistence
 
         }
 
-
+        /*
         public GeneralResponse SaveChanges(AppDbContext _context)
         {
             while (StaticCommon.ContextInUse)
@@ -170,7 +170,7 @@ namespace GestionComercial.Infrastructure.Persistence
             }
         }
 
-
+        */
         public async Task<GeneralResponse> SaveChangesAsync(AppDbContext _context)
         {
             while (StaticCommon.ContextInUse)
@@ -275,6 +275,12 @@ namespace GestionComercial.Infrastructure.Persistence
                     ex.InnerException.InnerException.Message.Contains("Product_BarCode_Index"))
                 {
                     response.Message = "Ese código de barras ya se encuentra registrado";
+                }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Sale_SalePoint-Number_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Sale_SalePoint-Number_Index"))
+                {
+                    response.Message = "Ese número de venta ya se encuentra ingresado para el punto de venta";
                 }
                 else if ((ex.InnerException != null && ex.InnerException.Message.Contains("State_Name_Index")) ||
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
