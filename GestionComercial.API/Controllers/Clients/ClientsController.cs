@@ -27,10 +27,10 @@ namespace GestionComercial.API.Controllers.Clients
             _notifier = notifier;
         }
 
-        [HttpPost("{id:int}/notify")]
-        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
+        [HttpPost("notify")]
+        public async Task<IActionResult> Notify(int id)
         {
-            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
+            await _notifier.NotifyAsync(id, "", ChangeType.Updated);
             return Ok();
         }
 
