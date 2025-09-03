@@ -10,6 +10,7 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -64,11 +65,12 @@ namespace GestionComercial.Desktop.Views.Sales
             //    //chBarcode.IsChecked = false;
             //}
             _ = LoadSaleAsync();
+                
 
             btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
             btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
             SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
-            SaleNumber = SaleCache.Instance.GetNextSaleNumnber(SalePoint);
+            SaleNumber = SaleCache.Instance.GetLastSaleNumber() + 1;
 
             var (width, height) = ScreenHelper.ObtenerResolucion(this);
             Width = width;

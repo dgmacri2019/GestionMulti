@@ -4,6 +4,8 @@ using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
+using GestionComercial.Domain.Response;
+using GestionComercial.Domain.Statics;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -23,6 +25,80 @@ namespace GestionComercial.Applications.Services
 
         }
 
+        public async Task<SaleResponse> AddAsync(Sale sale)
+        {
+            while (StaticCommon.ContextInUse)
+                await Task.Delay(100);
+
+            using (var transacction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    StaticCommon.ContextInUse = true;
+                    Client? client = await _context.Clients.FindAsync(sale.ClientId);
+                    if (client == null)
+                    {
+                        transacction.Rollback();
+                        return new SaleResponse
+                        {
+                            Message = "No se reconoce el cliente.",
+                            Success = false,
+                        };
+                    }
+                    if (sale.SaleDetails.Count <= 0)
+                    {
+                        transacction.Rollback();
+                        return new SaleResponse
+                        {
+                            Message = "No hay artículos cargados.",
+                            Success = false,
+                        };
+
+                    }
+                    foreach (SaleDetail saleDetail in sale.SaleDetails)
+                    {
+                        Article? article = await _context.Articles.FindAsync(saleDetail.ArticleId);
+                        if (article == null)
+                        {
+                            transacction.Rollback();
+                            return new SaleResponse
+                            {
+                                Message = "No se reconoce el artículo.",
+                                Success = false,
+                            };
+                        }
+                        if (article != null && article.StockCheck)
+                            article.Stock -= saleDetail.Quantity;
+                    }
+                    await _context.AddAsync(sale);
+                    StaticCommon.ContextInUse = false;
+                    GeneralResponse resultSave = await _dBHelper.SaveChangesAsync(_context);
+                    if (resultSave.Success)
+                    {
+                        StaticCommon.ContextInUse = true;
+                        transacction.Commit();
+                        StaticCommon.ContextInUse = false;
+                        return new SaleResponse { Success = true };                        
+                    }
+                    else
+                        return new SaleResponse { Success = false, Message = resultSave.Message };
+                }
+                catch (Exception ex)
+                {
+                    transacction.Rollback();
+                    return new SaleResponse
+                    {
+                        Message = ex.Message,
+                        Success = false,
+                    };
+                }
+                finally
+                {
+                    StaticCommon.ContextInUse = false;
+
+                }
+            }
+        }
 
         public async Task<IEnumerable<SaleViewModel>> GetAllAsync()
         {
@@ -73,7 +149,7 @@ namespace GestionComercial.Applications.Services
                 .Include(sd => sd.SaleDetails)
                 .Include(spm => spm.SalePayMetodDetails)
                 .Include(a => a.Acreditations)
-                .Where(s => s.SalePoint == salePoint && s.SaleDate == saleDate)
+                .Where(s => s.SalePoint == salePoint && s.SaleDate == saleDate.Date)
                 .OrderBy(sp => sp.SalePoint).ThenBy(sn => sn.SaleNumber)
                 .GroupBy(c => c.Client.BusinessName)
                 .ToListAsync();
@@ -152,9 +228,23 @@ namespace GestionComercial.Applications.Services
             return sale == null ? null : ConverterHelper.ToSaleViewModel(sale, clients, saleConditions, priceLists);
         }
 
+        public async Task<int> GetLastSaleNumber(int salePoint)
+        {
+            try
+            {
+                int? lastSaleNumber = await _context.Sales
+                    .Where(s => s.SalePoint == salePoint)
+                    .Select(s => (int?)s.SaleNumber) // usamos nullable para manejar el caso de que no haya registros
+                    .MaxAsync();
 
+                return lastSaleNumber == null ? 1 : lastSaleNumber.Value;
+            }
+            catch (Exception ex)
+            {
 
-
+                throw;
+            }
+        }
 
         private IEnumerable<SaleViewModel> ToSaleViewModelsList(List<IGrouping<string, Sale>> sales,
            ObservableCollection<Client> clients, ObservableCollection<SaleCondition> saleConditions, ObservableCollection<PriceList> priceLists)

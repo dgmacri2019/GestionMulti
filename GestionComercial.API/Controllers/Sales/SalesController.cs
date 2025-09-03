@@ -18,20 +18,22 @@ namespace GestionComercial.API.Controllers.Sales
     {
         private readonly ISalesService _saleService;
         private readonly IMasterService _masterService;
-        private readonly ISalesNotifier _notifier;
+        private readonly ISalesNotifier _notifierSales;
+        private readonly IArticlesNotifier _notifierArticles;
 
 
-        public SalesController(ISalesService saleService, IMasterService masterService, ISalesNotifier notifier)
+        public SalesController(ISalesService saleService, IMasterService masterService, ISalesNotifier notifierSales, IArticlesNotifier notifierArticles)
         {
             _saleService = saleService;
             _masterService = masterService;
-            _notifier = notifier;
+            _notifierSales = notifierSales;
+            _notifierArticles = notifierArticles;
         }
 
         [HttpPost("notify")]
         public async Task<IActionResult> Notify(int id)
         {
-            await _notifier.NotifyAsync(id, "VentasActualizados", ChangeType.Updated);
+            await _notifierSales.NotifyAsync(id, "VentasActualizados", ChangeType.Updated);
             return Ok();
         }
 
@@ -41,16 +43,19 @@ namespace GestionComercial.API.Controllers.Sales
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Sale sale)
         {
-            GeneralResponse resultAdd = await _masterService.AddAsync(sale);
+            //return BadRequest(new SaleResponse { Success = false, Message = "Mensaje de prueba de error" });
+
+            SaleResponse resultAdd = await _saleService.AddAsync(sale);
 
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
+                await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
+                await _notifierArticles.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Updated);
 
                 return
-                    Ok("Venta creada correctamente");
+                    Ok(resultAdd);
             }
-            else return BadRequest(resultAdd.Message);
+            else return BadRequest(resultAdd);
         }
 
 
@@ -60,7 +65,7 @@ namespace GestionComercial.API.Controllers.Sales
             GeneralResponse resultAdd = await _masterService.UpdateAsync(sale);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(sale.Id, sale.Client.BusinessName, ChangeType.Updated);
+                await _notifierSales.NotifyAsync(sale.Id, sale.Client.BusinessName, ChangeType.Updated);
 
                 return Ok("Venta actualizada correctamente");
             }
@@ -80,8 +85,25 @@ namespace GestionComercial.API.Controllers.Sales
         [HttpPost("GetAllBySalePointAsync")]
         public async Task<IActionResult> GetAllBySalePointAsync([FromBody] SaleFilterDto filter)
         {
-            IEnumerable<SaleViewModel> sales = await _saleService.GetAllBySalePointAsync(filter.SalePoint, (DateTime)filter.SaleDate);
-            return Ok(sales);
+            SaleResponse saleResponse = new()
+            {
+                Success = true
+            };
+            try
+            {
+                IEnumerable<SaleViewModel> sales = await _saleService.GetAllBySalePointAsync(filter.SalePoint, (DateTime)filter.SaleDate);
+                int lastSaleNumber = await _saleService.GetLastSaleNumber(filter.SalePoint);
+                saleResponse.LastSaleNumber = lastSaleNumber;
+                saleResponse.SaleViewModels = [.. sales];
+
+                return Ok(saleResponse);
+            }
+            catch (Exception ex)
+            {
+                saleResponse.Success = false;
+                saleResponse.Message = ex.Message;
+                return BadRequest(saleResponse);
+            }
         }
 
 

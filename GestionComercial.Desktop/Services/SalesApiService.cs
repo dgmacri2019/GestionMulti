@@ -14,7 +14,10 @@ namespace GestionComercial.Desktop.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
-
+        private readonly JsonSerializerOptions options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
         public SalesApiService()
         {
             _apiService = new ApiService();
@@ -25,7 +28,7 @@ namespace GestionComercial.Desktop.Services
         }
 
 
-        internal async Task<List<SaleViewModel>> GetAllAsync1()
+        internal async Task<List<SaleViewModel>> GetAllAsync()
         {
             try
             {
@@ -42,11 +45,6 @@ namespace GestionComercial.Desktop.Services
                 if (response.IsSuccessStatusCode)
                 {
 
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
                     var sales = JsonSerializer.Deserialize<List<SaleViewModel>>(jsonResponse, options);
 
 
@@ -66,7 +64,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<List<SaleViewModel>> GetAllBySalePointAsync(int salePoint)
+        internal async Task<SaleResponse> GetAllBySalePointAsync(int salePoint)
         {
             try
             {
@@ -80,32 +78,27 @@ namespace GestionComercial.Desktop.Services
                     //IsEnabled = isEnabled,
                 });
 
-                var jsonResponse = await response.Content.ReadAsStringAsync();
+                string jsonResponse = await response.Content.ReadAsStringAsync();
 
+                SaleResponse saleResponse = JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
                 if (response.IsSuccessStatusCode)
-                {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    var sales = JsonSerializer.Deserialize<List<SaleViewModel>>(jsonResponse, options);
-
-
-                    return sales;
-                }
+                    return saleResponse;
                 else
+                    return new SaleResponse
+                    {
+                        // Manejo de error
+                        Message = saleResponse.Message,
+                        Success = false,
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new SaleResponse
                 {
                     // Manejo de error
-                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
+                    Message = ex.Message,
+                    Success = false,
+                };
             }
         }
 
@@ -123,10 +116,7 @@ namespace GestionComercial.Desktop.Services
                     //IsEnabled = isEnabled,
                 });
 
-                JsonSerializerOptions options = new()
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -174,20 +164,26 @@ namespace GestionComercial.Desktop.Services
         {
             try
             {
-                // Llama al endpoint y deserializa la respuesta
+               var response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
+                var jsonResponse = await response.Content.ReadAsStringAsync();
 
-                var response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
-                var error = await response.Content.ReadAsStringAsync();
-                return new GeneralResponse
-                {
-                    Message = $"Error: {response.StatusCode}\n{error}",
-                    Success = response.IsSuccessStatusCode,
-                };
+                return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
+                //if (response.IsSuccessStatusCode)
+                //    return saleResponse;
+                //else
+                //    return new SaleResponse
+                //    {
+                //        Success = false,
+                //        Message = saleResponse.Message,
+                //    };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
             }
         }
 

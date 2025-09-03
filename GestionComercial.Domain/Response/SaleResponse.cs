@@ -6,5 +6,8 @@ namespace GestionComercial.Domain.Response
     {
 
         public SaleViewModel SaleViewModel { get; set; }
+        public List<SaleViewModel> SaleViewModels { get; set; }
+
+        public int LastSaleNumber { get; set; }
     }
 }

@@ -3,8 +3,11 @@ using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using static GestionComercial.Domain.Notifications.SaleChangeNotification;
 
@@ -17,6 +20,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
 
         // 🔹 Lista observable para bindear al DataGrid
         public ObservableCollection<SaleViewModel> Sales { get; } = [];
+        public ObservableCollection<SaleViewModel> SalesToday { get; } = [];
 
         // 🔹 Propiedades de filtros
         private string _nameFilter = string.Empty;
@@ -95,7 +99,21 @@ namespace GestionComercial.Desktop.ViewModels.Sale
                     // podés mostrar un mensaje UI o log a archivo
                 }
             });
-            _ = LoadSalesAsync(); // carga inicial
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await LoadSalesAsync();// carga inicial
+
+                    Debug.WriteLine("Iniciando Lista Ventas (LoadSalesAsync)");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Error iniciando Lista Ventas (LoadSalesAsync): " + ex);
+                    // podés mostrar un mensaje UI o log a archivo
+                }
+            });
+
         }
 
 
@@ -110,34 +128,49 @@ namespace GestionComercial.Desktop.ViewModels.Sale
         // 🔹 Carga clientes aplicando filtros
         public async Task LoadSalesAsync()
         {
-            if (!SaleCache.Instance.HasData)
+            try
             {
-                int salePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
-                List<SaleViewModel> sales = await _salesApiService.GetAllBySalePointAsync(salePoint);
-                SaleCache.Instance.SetSales(sales);
+                if (!SaleCache.Instance.HasData)
+                {
+                    while (!ParameterCache.Instance.HasDataPCParameters)
+                        await Task.Delay(10);
+                    int salePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
+                    SaleResponse resultSale = await _salesApiService.GetAllBySalePointAsync(salePoint);
+                    List<SaleViewModel> sales = resultSale.SaleViewModels;
+
+                    SaleCache.Instance.SetSales(sales);
+                    SaleCache.Instance.SetLastSaleNumber(resultSale.LastSaleNumber);
+                }
+
+                var filtered = SaleCache.Instance.GetAllSales();
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    Sales.Clear();
+                    foreach (var c in filtered)
+                        Sales.Add(c);
+                });
             }
-
-            var filtered = SaleCache.Instance.GetAllSales();
-
-            App.Current.Dispatcher.Invoke(() =>
+            catch (Exception ex)
             {
-                Sales.Clear();
-                foreach (var c in filtered)
-                    Sales.Add(c);
-            });
+                MessageBox.Show(ex.Message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
         }
+
 
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnVentaCambiado(VentaChangeNotification notification)
         {
-            List<SaleViewModel> sales = await _salesApiService.GetAllBySalePointAsync(ParameterCache.Instance.GetPcParameter().SalePoint);
-
-            await App.Current.Dispatcher.InvokeAsync(() =>
+            SaleResponse saleResponse = await _salesApiService.GetAllBySalePointAsync(ParameterCache.Instance.GetPcParameter().SalePoint);
+            if(saleResponse.Success)
+            await App.Current.Dispatcher.InvokeAsync(async () =>
             {
                 SaleCache.Instance.ClearCache();
-                SaleCache.Instance.SetSales(sales);
+                SaleCache.Instance.SetSales(saleResponse.SaleViewModels);
+                SaleCache.Instance.SetLastSaleNumber(saleResponse.LastSaleNumber);
 
-                _ = LoadSalesAsync();
+                await LoadSalesAsync();
             });
         }
 

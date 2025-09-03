@@ -9,6 +9,7 @@ namespace GestionComercial.Domain.Cache
 
         private List<SaleViewModel>? _sales;
 
+        private int _lastSaleNumber;
         private SaleCache()
         {
             CacheManager.Register(this);
@@ -61,6 +62,28 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
+        public void SetLastSaleNumber(int lastSaleNumber)
+        {
+            try
+            {
+                _lastSaleNumber = lastSaleNumber;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public int GetLastSaleNumber()
+        {
+            return _lastSaleNumber;
+            //return _sales.Where(s => s.SalePoint == salePoint).LastOrDefault() == null ?
+            //    1
+            //    :
+            //    _sales.Where(s => s.SalePoint == salePoint).Max(s => s.SaleNumber) + 1;
+        }
+
+
         public void UpdateSale(SaleViewModel sale)
         {
             try
@@ -83,13 +106,7 @@ namespace GestionComercial.Domain.Cache
             _sales.Clear();
         }
 
-        public int GetNextSaleNumnber(int salePoint)
-        {
-            return _sales.Where(s => s.SalePoint == salePoint).LastOrDefault() == null ?
-                1
-                :
-                _sales.Where(s => s.SalePoint == salePoint).Max(s => s.SaleNumber) + 1;
-        }
+
 
         public bool HasData => _sales != null && _sales.Any();
     }
