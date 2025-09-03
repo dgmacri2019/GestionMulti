@@ -38,6 +38,8 @@ namespace GestionComercial.Applications.Services
             if (string.IsNullOrEmpty(pcName))
                 return null;
 
+            List<PcParameter> pcParameters = await _context.PcParameters.ToListAsync();
+
             PcParameter? pcParameter = await _context.PcParameters
                  .Where(gp => gp.IsEnabled && !gp.IsDeleted && gp.PCName == pcName)
                  .FirstOrDefaultAsync();
@@ -50,7 +52,7 @@ namespace GestionComercial.Applications.Services
                     CreateUser = "System",
                     IsDeleted = false,
                     IsEnabled = true,
-                    SalePoint = 0,
+                    SalePoint = pcParameters == null || pcParameters.Count() == 0 ? 0 : pcParameters.Max(pc => pc.SalePoint) + 1,
                 };
                 await _context.AddAsync(pcParameter);
                 await _dBHelper.SaveChangesAsync(_context);
