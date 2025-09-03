@@ -500,6 +500,8 @@ namespace GestionComercial.Desktop.Views.Sales
 
                     if (article != null)
                     {
+                        
+
                         //isProductWeight = article.IsWeight && code.Length > 8;
                         if (article.IsDeleted)
                         {
@@ -551,6 +553,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                 SmallMeasureDescription = article.Measures.First(m => m.Id == article.MeasureId).SmallDescription,
                                 Quantity = quantity,
                                 Bonification = 0,
+                                IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
                             };
 
                             // llenar PriceLists con las del artículo

@@ -20,6 +20,7 @@ namespace GestionComercial.Domain.DTOs.Sale
         public string Code { get => _code; set => SetProperty(ref _code, value); }
         public string Description { get => _description; set => SetProperty(ref _description, value); }
         public string SmallMeasureDescription { get => _smallMeasureDescription; set => SetProperty(ref _smallMeasureDescription, value); }
+        public bool IsLowStock { get; set; }
 
         // Colección por fila con las price lists que trae el artículo
         public ObservableCollection<PriceListItemDto> PriceLists { get; set; } = [];
@@ -42,14 +43,14 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public decimal Price { get => _price; set { if (SetProperty(ref _price, value)) Recalculate(); } }
         public decimal Quantity { get => _quantity; set { if (SetProperty(ref _quantity, value)) Recalculate(); } }
-        public decimal Bonification 
-        { 
-            get => _bonification; 
-            set 
-            { 
-                if (SetProperty(ref _bonification, value)) 
-                    Recalculate(); 
-            } 
+        public decimal Bonification
+        {
+            get => _bonification;
+            set
+            {
+                if (SetProperty(ref _bonification, value))
+                    Recalculate();
+            }
         }
 
         public decimal Subtotal { get => _subtotal; private set => SetProperty(ref _subtotal, value); }

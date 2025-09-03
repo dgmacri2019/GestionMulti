@@ -247,12 +247,36 @@
 
                         <DataGridTextColumn Header="Cantidad" 
                                             Binding="{Binding Quantity, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
-                                            Width="60">                            
+                                            Width="60">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Description}" FontWeight="Bold"/>
+                                                    <TextBlock Text="El producto esta por debajo del stock mínimo "/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <!-- Fondo rojo si hay poco stock -->
+                                        <DataTrigger Binding="{Binding IsLowStock}" Value="True">
+                                            <Setter Property="Background" Value="LightCoral"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="TextAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>                                    
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                             <DataGridTextColumn.EditingElementStyle>
