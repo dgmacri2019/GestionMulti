@@ -6,6 +6,7 @@ using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
@@ -65,7 +66,7 @@ namespace GestionComercial.Desktop.Views.Sales
             //    //chBarcode.IsChecked = false;
             //}
             _ = LoadSaleAsync();
-                
+
 
             btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
             btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
@@ -194,7 +195,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         currentItem.Description = article.Description;
                         currentItem.Code = article.Code;
-
+                        currentItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
                         // ✅ Forzar que quede la misma lista de precios seleccionada que en el combo principal
                         if (currentItem.PriceLists.Any(pl => pl.Id == defaultPriceListId))
                             currentItem.PriceListId = defaultPriceListId;
@@ -202,6 +203,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             currentItem.PriceListId = currentItem.PriceLists.FirstOrDefault()?.Id ?? 0;
 
                         currentItem.Bonification = 0;
+                        currentItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
                         currentItem.Recalculate();
 
                         OnPropertyChanged(nameof(TotalItems));
@@ -376,6 +378,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             currentItem.Code = selectedArticle.Code;
                             currentItem.Description = selectedArticle.Description;
                             currentItem.Quantity = 1;
+                            currentItem.IsLowStock = selectedArticle.StockCheck && selectedArticle.Stock <= selectedArticle.MinimalStock;
 
                             currentItem.PriceLists.Clear();
                             foreach (var pl in selectedArticle.PriceLists)
@@ -500,7 +503,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                     if (article != null)
                     {
-                        
+
 
                         //isProductWeight = article.IsWeight && code.Length > 8;
                         if (article.IsDeleted)
@@ -539,6 +542,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         if (existingItem != null && ParameterCache.Instance.GetAllGeneralParameters().First().SumQuantityItems && !isProductWeight)
                         {
                             // Ya existe → solo aumentar la cantidad
+                            existingItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
                             existingItem.Quantity += 1;
                             existingItem.Recalculate();
                             OnPropertyChanged(nameof(TotalItems));
@@ -626,6 +630,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             SmallMeasureDescription = article.Measures.First(m => m.Id == article.MeasureId).SmallDescription,
                             Quantity = 1,
                             Bonification = 0,
+                            IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
                         };
 
                         // llenar PriceLists con las del artículo
