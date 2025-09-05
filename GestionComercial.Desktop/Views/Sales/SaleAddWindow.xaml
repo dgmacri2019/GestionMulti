@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Searchs"
-        xmlns:helpers="clr-namespace:GestionComercial.Desktop.Helpers"
         MinHeight="700"
         MinWidth="900"
         Width="900"
@@ -20,7 +19,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-        <helpers:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
+        
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>

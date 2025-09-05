@@ -25,13 +25,14 @@
                         Value="es-AR" />
             </Style>
 
-            
+
             <helpers:NegativoAFondoConverter x:Key="NegativoAFondoConverter"/>
             <helpers:NegativoATextoConverter x:Key="NegativoATextoConverter"/>
             <helpers:ValidationToEnabledConverter x:Key="ValidationToEnabledConverter"/>
             <helpers:StockMultiConverter x:Key="StockMultiConverter"/>
-            <!--<helpers:IsLastItemConverter x:Key="IsLastItemConverter"/>-->
+            <helpers:IsLastItemConverter x:Key="IsLastItemConverter"/>
+            <helpers:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
         </ResourceDictionary>
-        
+
     </Application.Resources>
 </Application>
