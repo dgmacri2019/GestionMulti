@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GestionComercial.Desktop.Views"
              xmlns:sys="clr-namespace:System.Windows.Markup;assembly=PresentationCore" 
-             xmlns:helpers="clr-namespace:GestionComercial.Desktop.Helpers">
+             xmlns:helpers="clr-namespace:GestionComercial.Desktop.Helpers"
+             xmlns:converters="clr-namespace:GestionComercial.Desktop.Converters">
     <!--StartupUri="LoginView.xaml">-->
     <!--xmlns:local="clr-namespace:GestionComercial.Desktop"-->
     <!--StartupUri="MainWindow.xaml">-->
@@ -26,12 +27,12 @@
             </Style>
 
 
-            <helpers:NegativoAFondoConverter x:Key="NegativoAFondoConverter"/>
-            <helpers:NegativoATextoConverter x:Key="NegativoATextoConverter"/>
-            <helpers:ValidationToEnabledConverter x:Key="ValidationToEnabledConverter"/>
-            <helpers:StockMultiConverter x:Key="StockMultiConverter"/>
-            <helpers:IsLastItemConverter x:Key="IsLastItemConverter"/>
-            <helpers:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
+            <converters:NegativoAFondoConverter x:Key="NegativoAFondoConverter"/>
+            <converters:NegativoATextoConverter x:Key="NegativoATextoConverter"/>
+            <converters:ValidationToEnabledConverter x:Key="ValidationToEnabledConverter"/>
+            <converters:StockMultiConverter x:Key="StockMultiConverter"/>
+            <converters:IsLastItemConverter x:Key="IsLastItemConverter"/>
+            <converters:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
         </ResourceDictionary>
 
     </Application.Resources>

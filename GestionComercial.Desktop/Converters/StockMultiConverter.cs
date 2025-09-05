@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace GestionComercial.Desktop.Helpers
+namespace GestionComercial.Desktop.Converters
 {
     public class StockMultiConverter : IMultiValueConverter
     {

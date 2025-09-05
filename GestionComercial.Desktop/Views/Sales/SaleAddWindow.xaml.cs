@@ -6,12 +6,10 @@ using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Sales;
-using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,6 +45,12 @@ namespace GestionComercial.Desktop.Views.Sales
         public SaleAddWindow(int saleId)
         {
             InitializeComponent();
+            while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters
+                || !ClientCache.Instance.HasData || !ArticleCache.Instance.HasData || !ClientCache.Instance.HasData)
+            {
+                Task.Delay(10);
+            }
+
             _salesApiService = new SalesApiService();
             DataContext = this;
             SaleId = saleId;
@@ -68,8 +72,8 @@ namespace GestionComercial.Desktop.Views.Sales
             _ = LoadSaleAsync();
 
 
-            btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
-            btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
+            //btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
+            //btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
             SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
             SaleNumber = SaleCache.Instance.GetLastSaleNumber() + 1;
 
@@ -104,13 +108,29 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 var currentItem = e.Row.Item as ArticleItem;
                 if (currentItem == null) return;
-
+                if (string.IsNullOrWhiteSpace(currentItem.Code) && !string.IsNullOrEmpty(currentItem.Description))
+                {
+                    MessageBox.Show("Código de artículo vacio", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // ✅ Poner foco en la celda Código
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        var dataGrid = (DataGrid)sender;
+                        dataGrid.CurrentCell = new DataGridCellInfo(
+                            currentItem,
+                            dataGrid.Columns.First(c => c.Header?.ToString() == "Código")
+                        );
+                        dataGrid.BeginEdit();
+                    }), DispatcherPriority.Background);
+                    return;
+                }
                 // Actualizar binding de la celda
                 if (e.EditingElement is TextBox tb)
                 {
                     var binding = tb.GetBindingExpression(TextBox.TextProperty);
                     binding?.UpdateSource();
                 }
+
+                
 
                 // Si cambió el código, buscar artículo
                 if (e.Column.Header.ToString() == "Código" && !string.IsNullOrWhiteSpace(currentItem.Code))
@@ -689,7 +709,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+             LogOut();
         }
 
 
@@ -922,9 +942,7 @@ namespace GestionComercial.Desktop.Views.Sales
         {
             if (e.Key == Key.Escape)
             {
-                // Esc → salir y cancelar
-                BtnCancel_Click(null, null);
-                BtnCancel_Click(null, null);
+                LogOut();
             }
             else if (e.Key == Key.F2)
             {
@@ -982,7 +1000,10 @@ namespace GestionComercial.Desktop.Views.Sales
         }
 
 
-
+        private void LogOut()
+        {
+            DialogResult = false;
+        }
 
 
         private Sale ToSale(SaleViewModel saleViewModel, ObservableCollection<ArticleItem> articleItems)

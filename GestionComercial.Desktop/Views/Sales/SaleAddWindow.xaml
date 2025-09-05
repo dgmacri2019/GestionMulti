@@ -10,7 +10,7 @@
         Height="700"
         Loaded="miUserControl_Loaded" 
         KeyDown="Window_KeyDown"
-        Background="Gray"
+        Background="LightGray"
         WindowStartupLocation="CenterScreen"
         SizeChanged="miUserControl_SizeChanged"
         Title="Nueva Venta">
@@ -30,53 +30,48 @@
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <Border Grid.Column="0" Background="#2D2D30">
+        <Border Grid.Column="0" Background="LightBlue">
             <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,20">
                 <!-- Salir -->
                 <Button x:Name="btnSalir" Width="40" Height="40" Margin="0,10"
                         ToolTip="Salir (ESC)"
                         Click="BtnCancel_Click">
-                    <TextBlock Text="⏻" FontSize="20" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image Source="/Images/Exit 24.png" Width="24" Height="24"/>
                 </Button>
 
                 <!-- Buscar -->
                 <Button x:Name="btnBuscar" Width="40" Height="40" Margin="0,10"
                         ToolTip="Buscar"
                         Click="BtnBuscar_Click">
-                    <TextBlock Text="🔍" FontSize="20" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image Source="/Images/search 24.png" Width="24" Height="24"/>
                 </Button>
 
                 <!-- Guardar -->
                 <Button x:Name="btnGuardar" Width="40" Height="40" Margin="0,10"
                         ToolTip="Guardar (F2)"
                         Click="BtnAdd_Click">
-                    <TextBlock Text="💾" FontSize="20" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image Source="/Images/Save File 24.png" Width="24" Height="24"/>
                 </Button>
 
                 <!-- Imprimir -->
                 <Button x:Name="btnImprimir" Width="40" Height="40" Margin="0,10"
                         ToolTip="Imprimir"
                         Click="BtnImprimir_Click">
-                    <TextBlock Text="🖨️" FontSize="20" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image Source="/Images/Print 24.png" Width="24" Height="24"/>
                 </Button>
 
-                <!-- Cancelar -->
+                <!-- Cancelar --><!--
                 <Button x:Name="btnCancelar" Width="40" Height="40" Margin="0,10"
                         ToolTip="Cancelar (ESC)"
                         Click="BtnCancel_Click">
-                    <TextBlock Text="❌" FontSize="20" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </Button>
+                    <Image Source="/Images/Exit 24.png" Width="24" Height="24"/>
+                </Button>-->
             </StackPanel>
         </Border>
 
         <!-- Contenido principal -->
 
-        <Grid x:Name="GridGeneral" Grid.Column="1" Margin="10" Background="Gray">
+        <Grid x:Name="GridGeneral" Grid.Column="1" Margin="10" Background="LightGray">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -223,6 +218,7 @@
                           ItemsSource="{Binding ArticleItems, RelativeSource={RelativeSource AncestorType=Window}}" 
                           AutoGenerateColumns="False" 
                           CanUserAddRows="False" 
+                      CanUserSortColumns="False"
                           HeadersVisibility="Column" 
                           Margin="5"
                       Visibility="Hidden"
@@ -433,7 +429,7 @@
                            Style="{StaticResource BlackNormal10}" Margin="5,0"/>
             </StackPanel>
 
-            <!-- Botones inferiores -->
+            <!-- Botones inferiores --><!--
             <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button x:Name="btnCancel" Content="Cancelar" Click="BtnCancel_Click"
                         Style="{StaticResource BtnCancel}" Margin="5,0"/>
@@ -441,10 +437,10 @@
                         Style="{StaticResource BtnUpdate}" Margin="5,0"/>
                 <Button x:Name="btnAdd" Content="Guardar" Click="BtnAdd_Click"
                         Style="{StaticResource BtnAdd}" Margin="5,0"/>
-            </StackPanel>
+            </StackPanel>-->
 
             <!-- Label error -->
-            <TextBlock x:Name="lblError" Grid.Row="8" Style="{StaticResource lblError}"
+            <TextBlock x:Name="lblError" Grid.Row="8" Style="{StaticResource lblError20}"
                        TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
         </Grid>
     </Grid>

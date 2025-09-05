@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace GestionComercial.Desktop.Helpers
+namespace GestionComercial.Desktop.Converters
 {
     public class LastRowByIndexConverter : IMultiValueConverter
     {

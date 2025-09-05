@@ -16,11 +16,25 @@ namespace GestionComercial.Domain.DTOs.Sale
         private decimal _bonification;
         private decimal _subtotal;
         private decimal _total;
+        private bool _isLowStock;
 
         public string Code { get => _code; set => SetProperty(ref _code, value); }
         public string Description { get => _description; set => SetProperty(ref _description, value); }
         public string SmallMeasureDescription { get => _smallMeasureDescription; set => SetProperty(ref _smallMeasureDescription, value); }
-        public bool IsLowStock { get; set; }
+
+       
+        public bool IsLowStock
+        {
+            get => _isLowStock;
+            set
+            {
+                if (_isLowStock != value)
+                {
+                    _isLowStock = value;
+                    OnPropertyChanged(nameof(IsLowStock));
+                }
+            }
+        }
 
         // Colección por fila con las price lists que trae el artículo
         public ObservableCollection<PriceListItemDto> PriceLists { get; set; } = [];
@@ -72,6 +86,11 @@ namespace GestionComercial.Domain.DTOs.Sale
             storage = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             return true;
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
