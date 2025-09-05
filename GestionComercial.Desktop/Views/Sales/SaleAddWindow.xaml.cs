@@ -442,15 +442,15 @@ namespace GestionComercial.Desktop.Views.Sales
 
                     cbSaleConditions.ItemsSource = client.SaleConditions;
                     cbSaleConditions.SelectedValue = client.SaleConditionId;
-                    spArticles.Visibility = Visibility.Visible;
-                    spPostMethod.Visibility = Visibility.Visible;
+                    dgArticles.Visibility = Visibility.Visible;
+                    dgPostMethod.Visibility = Visibility.Visible;
                     SetingFocus();
                 }
                 else
                 {
                     MessageBox.Show("El código informado no existe", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                    spArticles.Visibility = Visibility.Hidden;
-                    spPostMethod.Visibility = Visibility.Hidden;
+                    dgArticles.Visibility = Visibility.Hidden;
+                    dgPostMethod.Visibility = Visibility.Hidden;
                 }
 
 
@@ -474,8 +474,8 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
                         cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
-                        spArticles.Visibility = Visibility.Visible;
-                        spPostMethod.Visibility = Visibility.Visible;
+                        dgArticles.Visibility = Visibility.Visible;
+                        dgPostMethod.Visibility = Visibility.Visible;
                         SetingFocus();
 
                     }
@@ -692,6 +692,7 @@ namespace GestionComercial.Desktop.Views.Sales
             DialogResult = false;
         }
 
+
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             lblError.Text = string.Empty;
@@ -736,6 +737,20 @@ namespace GestionComercial.Desktop.Views.Sales
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
             // Actualizar venta (implementar según tu API)
+        }
+
+
+        private void BtnBuscar_Click(object sender, RoutedEventArgs e)
+        {
+            // lógica buscar
+            MessageBox.Show("Buscar...");
+        }
+
+
+        private void BtnImprimir_Click(object sender, RoutedEventArgs e)
+        {
+            // lógica imprimir
+            MessageBox.Show("Imprimiendo...");
         }
 
 
@@ -903,6 +918,20 @@ namespace GestionComercial.Desktop.Views.Sales
             //dgArticles.Height = Height * 0.3;
         }
 
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                // Esc → salir y cancelar
+                BtnCancel_Click(null, null);
+                BtnCancel_Click(null, null);
+            }
+            else if (e.Key == Key.F2)
+            {
+                // F2 → guardar
+                BtnAdd_Click(null, null);
+            }
+        }
 
         private void ClearClient()
         {

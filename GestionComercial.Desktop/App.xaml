@@ -30,7 +30,7 @@
             <helpers:NegativoATextoConverter x:Key="NegativoATextoConverter"/>
             <helpers:ValidationToEnabledConverter x:Key="ValidationToEnabledConverter"/>
             <helpers:StockMultiConverter x:Key="StockMultiConverter"/>
-            
+            <!--<helpers:IsLastItemConverter x:Key="IsLastItemConverter"/>-->
         </ResourceDictionary>
         
     </Application.Resources>

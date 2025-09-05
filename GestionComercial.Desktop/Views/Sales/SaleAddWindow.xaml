@@ -3,12 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Searchs"       
-        MinHeight="600"
-        MinWidth="860"
-        Width="860"
-        Height="600"
+        xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Searchs"
+        xmlns:helpers="clr-namespace:GestionComercial.Desktop.Helpers"
+        MinHeight="700"
+        MinWidth="900"
+        Width="900"
+        Height="700"
         Loaded="miUserControl_Loaded" 
+        KeyDown="Window_KeyDown"
         Background="Gray"
         WindowStartupLocation="CenterScreen"
         SizeChanged="miUserControl_SizeChanged"
@@ -18,194 +20,239 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
+        <helpers:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
     </Window.Resources>
-
-
-    <Grid x:Name="GridGeneral" 
-          HorizontalAlignment="Stretch" 
-          VerticalAlignment="Stretch" 
-          Margin="10" 
-          Background="Gray">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <!-- DataGrid artículos -->
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="70"/>
+            <!-- Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Contenido -->
         </Grid.ColumnDefinitions>
-        <!-- Fecha (fila 0, columna 0) -->
-        <StackPanel Orientation="Horizontal" 
-                    VerticalAlignment="Top" 
-                    Grid.Row="0" 
-                    Grid.Column="0" 
-                    Margin="10,0,20,8">
-            <TextBlock Text="Fecha" 
-                       VerticalAlignment="Center" 
-                       Style="{StaticResource BlueBold10}"/>
-            <DatePicker x:Name="dpDate" 
-                        VerticalAlignment="Center"
-                        Width="100" />
-        </StackPanel>
-        <!-- Numero de venta (Fila 1, columna 0 -->
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="1" 
-                    Grid.Column="0"
-                    VerticalAlignment="Top">
-            <TextBlock Text="Venta Nº" 
-                       VerticalAlignment="Center" 
-                       Style="{StaticResource BlueBold10}"/>
-            <TextBox x:Name="txtSaleNumber" 
-                     Style="{StaticResource TextBoxSearch}" 
-                     Width="auto" 
-                     VerticalAlignment="Center" 
-                     IsReadOnly="True" 
-                     Text="{Binding SaleNumberString, Mode=OneWay}"/>
-        </StackPanel>
-        <!-- Cliente y detalles (fila 0) -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="10,0,20,8">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="#2D2D30">
+            <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,20">
+                <!-- Salir -->
+                <Button x:Name="btnSalir" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Salir (ESC)"
+                        Click="BtnCancel_Click">
+                    <TextBlock Text="⏻" FontSize="20" Foreground="White"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+
+                <!-- Buscar -->
+                <Button x:Name="btnBuscar" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Buscar"
+                        Click="BtnBuscar_Click">
+                    <TextBlock Text="🔍" FontSize="20" Foreground="White"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+
+                <!-- Guardar -->
+                <Button x:Name="btnGuardar" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Guardar (F2)"
+                        Click="BtnAdd_Click">
+                    <TextBlock Text="💾" FontSize="20" Foreground="White"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+
+                <!-- Imprimir -->
+                <Button x:Name="btnImprimir" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Imprimir"
+                        Click="BtnImprimir_Click">
+                    <TextBlock Text="🖨️" FontSize="20" Foreground="White"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+
+                <!-- Cancelar -->
+                <Button x:Name="btnCancelar" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Cancelar (ESC)"
+                        Click="BtnCancel_Click">
+                    <TextBlock Text="❌" FontSize="20" Foreground="White"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- Contenido principal -->
+
+        <Grid x:Name="GridGeneral" Grid.Column="1" Margin="10" Background="Gray">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <!-- DataGrid -->
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Fecha -->
+            <Grid Grid.Row="0" Margin="0,0,0,5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" 
-                            Grid.Row="0" 
-                            Grid.Column="0">
-                    <TextBlock Text="Cliente" 
-                               VerticalAlignment="Center" 
-                               Style="{StaticResource BlueBold10}"/>
-                    <TextBox x:Name="txtClientCode" 
-                             Style="{StaticResource TextBoxSearch}" 
-                             Width="100" 
-                             VerticalAlignment="Center" 
-                             KeyDown="txtClientCode_KeyDown"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            Grid.Row="0" 
-                            Grid.Column="1"
-                            HorizontalAlignment="Right">
-                    <TextBox x:Name="txtFansatyName" 
-                             Style="{StaticResource TextBoxSearch}" 
-                             Width="250" 
-                             VerticalAlignment="Center" 
-                             IsReadOnly="True" 
-                             Text="{Binding FantasyName}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" 
-                            Grid.Row="1" 
-                            Grid.Column="0" 
-                            Grid.ColumnSpan="2" 
-                            Grid.RowSpan="2"
-                            Margin="0,2,0,0">
-                    <TextBox x:Name="txtAddress" 
+                <TextBlock Text="Fecha" 
+                       VerticalAlignment="Center" 
+                           Grid.Column="0"
+                       Style="{StaticResource BlueBold10}"/>
+            <DatePicker x:Name="dpDate" 
+                        Grid.Column="1" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="200" />
+            </Grid>
+
+
+            <!-- Venta Nº -->
+            <Grid Grid.Row="1" Margin="0,0,0,5" Height="18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Venta Nº" 
+                       VerticalAlignment="Center" 
+                           Grid.Column="0"
+                       Style="{StaticResource BlueBold10}"/>
+                <TextBox x:Name="txtSaleNumber" 
+                     Style="{StaticResource TextBoxSearch}" 
+                         Grid.Column="1"
+                         MinWidth="80"
+                     IsReadOnly="True"
+                         HorizontalAlignment="Left"
+                     Text="{Binding SaleNumberString, Mode=OneWay}"/>
+            </Grid>
+            <!-- Cliente y detalles -->
+            <Grid Grid.Row="2" Margin="0,0,0,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Cliente -->
+                <TextBlock Text="Cliente" Grid.Row="0" Grid.Column="0"
+                           VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+                <TextBox x:Name="txtClientCode" Grid.Row="0" Grid.Column="1"
+                         Style="{StaticResource TextBoxSearch}"
+                         MinWidth="80"
+                         HorizontalAlignment="Left"
+                         KeyDown="txtClientCode_KeyDown"/>
+
+                <!-- Nombre -->
+                <TextBox x:Name="txtFansatyName" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                         Style="{StaticResource TextBoxSearch}" 
+                         IsReadOnly="True"
+                         HorizontalAlignment="Stretch"
+                         Text="{Binding FantasyName}"/>
+
+                <!-- Dirección -->
+                <TextBox x:Name="txtAddress" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                         Style="{StaticResource TextBoxSearch}"
+                         Height="60"
+                         TextWrapping="Wrap"
+                         IsReadOnly="True"
+                         HorizontalAlignment="Stretch"
+                         Text="{Binding Address}"/>
+
+                <!-- Email + checkbox -->
+                <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtEmail" Grid.Column="0"
                              Style="{StaticResource TextBoxSearch}"
-                             Width="640" 
-                             Height="60" 
-                             VerticalAlignment="Center" 
-                             IsReadOnly="True" 
-                             Text="{Binding Address}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" 
-                            Grid.Row="3" 
-                            Grid.Column="0" 
-                            Grid.ColumnSpan="2"
-                            Margin="0,2,0,0">
-                    <TextBox x:Name="txtEmail" 
-                             Style="{StaticResource TextBoxSearch}" 
-                             Width="auto" 
-                             MinWidth="250" 
-                             VerticalAlignment="Center" 
+                             HorizontalAlignment="Stretch"
                              Text="{Binding Email}"/>
-                    <CheckBox x:Name="chSendEmail" 
-                              VerticalAlignment="Center" 
-                              Style="{StaticResource CheckBox}"/>
-                    <TextBlock Text="Enviar Comprobante por mail" 
-                               VerticalAlignment="Center" 
-                               Style="{StaticResource BlackNormal10}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" 
-                            Grid.Row="4" 
-                            Grid.Column="0" 
-                            Margin="0,2,20,8"
-                            HorizontalAlignment="Left">
-                    <TextBlock Text="Lista de Precios" 
-                               VerticalAlignment="Center" 
-                               Style="{StaticResource BlueBold10}"/>
+                    <CheckBox x:Name="chSendEmail" Grid.Column="1"
+                              Style="{StaticResource CheckBox}"
+                              VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Enviar Comprobante por mail" Grid.Column="2"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource BlackNormal10}" Margin="5,0"/>
+                </Grid>
+            </Grid>
+            <!-- Lista de precios y Condición de venta -->
+            <Grid Grid.Row="3" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <TextBlock Text="Lista de Precios" Style="{StaticResource BlueBold10}"
+                               VerticalAlignment="Center"/>
                     <ComboBox x:Name="cbPriceLists" 
                               Style="{StaticResource ComboBox}" 
-                              Width="Auto" 
-                              DisplayMemberPath="Description" 
-                              SelectedValuePath="Id"
+                              Margin="5,0"
+                              HorizontalAlignment="Stretch"
                               ItemsSource="{Binding PriceLists}"
+                              DisplayMemberPath="Description"
+                              SelectedValuePath="Id"
                               SelectedValue="{Binding PriceListId}"
                               IsEnabled="False"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" 
-                            Grid.Row="4" 
-                            Grid.Column="1" 
-                            Margin="0,2,20,8" 
-                            HorizontalAlignment="Right">
-                    <TextBlock Text="Condición de Venta" 
-                               VerticalAlignment="Center" 
-                               Style="{StaticResource BlueBold10}"/>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                    <TextBlock Text="Condición de Venta" Style="{StaticResource BlueBold10}"
+                               VerticalAlignment="Center"/>
                     <ComboBox x:Name="cbSaleConditions" 
                               Style="{StaticResource ComboBox}" 
-                              Width="Auto" 
-                              DisplayMemberPath="Description" 
-                              SelectedValuePath="Id" 
-                              ItemsSource="{Binding SaleConditions}" 
+                              Margin="5,0"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding SaleConditions}"
+                              DisplayMemberPath="Description"
+                              SelectedValuePath="Id"
                               SelectedValue="{Binding SaleConditionId}"/>
                 </StackPanel>
             </Grid>
-        </StackPanel>
-        
-        
-        <!-- DataGrid para artículos (fila 4) -->
-        <StackPanel x:Name="spArticles" 
-                    Orientation="Horizontal" 
-                    VerticalAlignment="Top" 
-                    Grid.Row="4" 
-                    Grid.Column="0" 
-                    Grid.ColumnSpan="4" 
-                    Visibility="Hidden" 
-                    Margin="10,0,20,8">
-            <StackPanel>
-                <DataGrid x:Name="dgArticles" 
+            <!-- DataGrid artículos -->        
+            <DataGrid x:Name="dgArticles" 
+                          Grid.Row="4"
                           ItemsSource="{Binding ArticleItems, RelativeSource={RelativeSource AncestorType=Window}}" 
                           AutoGenerateColumns="False" 
                           CanUserAddRows="False" 
                           HeadersVisibility="Column" 
-                          Margin="5" 
-                          Height="280"
+                          Margin="5"
+                      Visibility="Hidden"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
                           KeyDown="dgArticles_KeyDown" 
                           CellEditEnding="dgArticles_CellEditEnding"
                           PreparingCellForEdit="dgArticles_PreparingCellForEdit"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
-                          ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                    <DataGrid.Columns>
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      AlternationCount="1000000">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource LastRowByIndexConverter}">
+                                        <!-- Index de la fila -->
+                                        <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource Self}"/>
+                                        <!-- Cantidad de items -->
+                                        <Binding Path="Items.Count" RelativeSource="{RelativeSource AncestorType=DataGrid}"/>
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="Background" Value="LightGray"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
                         <DataGridTextColumn Header="Código" 
                                             Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" 
                                             Width="60">
@@ -354,59 +401,52 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-            </StackPanel>
-        </StackPanel>
-        <!-- Checkbox y TextBox para código de barras (fila 5) -->
-        <StackPanel x:Name="spPostMethod"
-                    Visibility="Hidden"
-                    Orientation="Horizontal" 
-                    Grid.Row="5" 
-                    Grid.Column="1" 
-                    Grid.ColumnSpan="2" 
-                    Margin="10,0,20,8" 
-                    HorizontalAlignment="Right" 
-                    VerticalAlignment="Bottom">
-            <CheckBox x:Name="chBarcode" 
+            <!-- Código de barras -->
+            <Grid x:Name="dgPostMethod" 
+                  Visibility="Hidden"
+                  Grid.Row="5"
+                  Margin="0,0,40,0"
+                  HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="chBarcode" 
                           Content="Método POS" 
-                          VerticalAlignment="Center" 
+                          Grid.Column="0" 
                           Checked="chBarcode_Checked" 
                           Unchecked="chBarcode_Unchecked"/>
-            <TextBox x:Name="txtBarcode" 
-                         Width="200" 
-                         Margin="10,0,0,0" 
-                         VerticalAlignment="Center" 
+                <TextBox x:Name="txtBarcode"
+                         Grid.Column="1"
+                         MinWidth="250"
                          KeyDown="txtBarcode_KeyDown"/>
-        </StackPanel>
+            </Grid>
 
-        <StackPanel Orientation="Horizontal" 
-                    Grid.Row="6" 
-                    Grid.Column="0" 
-                    Grid.ColumnSpan="4" 
-                    HorizontalAlignment="Right" 
-                    Margin="0,0,40,0">
-            <TextBlock Text="Cantidad de items: " 
-                       Style="{StaticResource BlueBold10}"
-                       VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding TotalItems, RelativeSource={RelativeSource AncestorType=Window}}" 
-                       Style="{StaticResource BlackNormal10}" 
-                       VerticalAlignment="Center" 
-                       Margin="5,0"/>
-            <TextBlock Text="Precio total: " 
-                       Style="{StaticResource BlueBold10}" 
-                       VerticalAlignment="Center" 
-                       Margin="20,0,0,0"/>
-            <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}, RelativeSource={RelativeSource AncestorType=Window}}" 
-                       Style="{StaticResource BlackNormal10}" 
-                       VerticalAlignment="Center" 
-                       Margin="5,0"/>
-        </StackPanel>
-       
-        <!-- Botones (fila 7) -->
-        <Button x:Name="btnCancel" Grid.Row="7" Grid.Column="1" Content="Cancelar" Margin="0,40,150,0" Click="BtnCancel_Click" Style="{StaticResource BtnCancel}"/>
-        <Button x:Name="btnUpdate" Grid.Row="7" Grid.Column="1" Content="Actualizar" Margin="150,40,0,0" Click="BtnUpdate_Click" Style="{StaticResource BtnUpdate}"/>
-        <Button x:Name="btnAdd" Grid.Row="7" Grid.Column="1" Content="Guardar" Margin="150,40,0,0" Click="BtnAdd_Click" Style="{StaticResource BtnAdd}"/>
 
-        <!-- LBL ERROR (fila 8) -->
-        <TextBlock x:Name="lblError" Grid.Row="8" Grid.ColumnSpan="6" Style="{StaticResource lblError}" TextWrapping="Wrap"/>
+            <!-- Barra inferior -->
+            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10">
+                <TextBlock Text="Cantidad de items:" Style="{StaticResource BlueBold10}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding TotalItems, RelativeSource={RelativeSource AncestorType=Window}}" 
+                           Style="{StaticResource BlackNormal10}" Margin="5,0"/>
+                <TextBlock Text="Precio total:" Style="{StaticResource BlueBold10}" Margin="20,0,0,0"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}, RelativeSource={RelativeSource AncestorType=Window}}" 
+                           Style="{StaticResource BlackNormal10}" Margin="5,0"/>
+            </StackPanel>
+
+            <!-- Botones inferiores -->
+            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button x:Name="btnCancel" Content="Cancelar" Click="BtnCancel_Click"
+                        Style="{StaticResource BtnCancel}" Margin="5,0"/>
+                <Button x:Name="btnUpdate" Content="Actualizar" Click="BtnUpdate_Click"
+                        Style="{StaticResource BtnUpdate}" Margin="5,0"/>
+                <Button x:Name="btnAdd" Content="Guardar" Click="BtnAdd_Click"
+                        Style="{StaticResource BtnAdd}" Margin="5,0"/>
+            </StackPanel>
+
+            <!-- Label error -->
+            <TextBlock x:Name="lblError" Grid.Row="8" Style="{StaticResource lblError}"
+                       TextWrapping="Wrap" HorizontalAlignment="Stretch"/>
+        </Grid>
     </Grid>
 </Window>
