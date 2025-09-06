@@ -10,6 +10,8 @@ namespace GestionComercial.Domain.Cache
         private List<SaleViewModel>? _sales;
 
         private int _lastSaleNumber;
+        public static bool Reading { get; set; } = false;
+
         private SaleCache()
         {
             CacheManager.Register(this);
@@ -108,6 +110,6 @@ namespace GestionComercial.Domain.Cache
 
 
 
-        public bool HasData => _sales != null && _sales.Any();
+        public bool HasData => _sales != null && _sales.Any() && !Reading;
     }
 }

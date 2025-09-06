@@ -8,6 +8,7 @@ using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -724,19 +725,35 @@ namespace GestionComercial.Desktop.Views.Sales
                     {
                         Sale sale = ToSale(saleViewModel, ArticleItems);
 
-                        GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
-                        if (resultAdd.Success)
+                        var payMethodWindows = new PayMethodWindow(Math.Round(sale.Total, 2));
+                        if (payMethodWindows.ShowDialog() == true)
                         {
-                            ClearClient();
-                            ArticleItems.Clear();
-                            txtClientCode.Focus();
-                            txtClientCode.Text = string.Empty;
-                            SaleNumber++;
-                            await LoadSaleAsync();
+                            var selectedMethods = payMethodWindows.MetodosPago;
+                            ICollection<SalePayMetodDetail> salePayMetodDetails = [];
+                            foreach (var pm in selectedMethods)
+                                salePayMetodDetails.Add(new SalePayMetodDetail
+                                {
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = App.UserName,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    Value = pm.Monto,
+                                    SaleConditionId = 4,
+                                });
+                            sale.SalePayMetodDetails = salePayMetodDetails;
+                            GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
+                            if (resultAdd.Success)
+                            {
+                                ClearClient();
+                                ArticleItems.Clear();
+                                txtClientCode.Focus();
+                                txtClientCode.Text = string.Empty;
+                                SaleNumber++;
+                                await LoadSaleAsync();
+                            }
+                            else
+                                lblError.Text = resultAdd.Message;
                         }
-                        else
-                            lblError.Text = resultAdd.Message;
-
                     }
                     else
                     {

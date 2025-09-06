@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.Text.Json.Serialization;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Sales
 {
@@ -8,7 +7,7 @@ namespace GestionComercial.Domain.Entities.Sales
     {
         public int SaleId { get; set; }
 
-        public SaleCondition SaleCondition { get; set; }
+        public int SaleConditionId { get; set; }
 
         public decimal Value { get; set; }
 
@@ -16,5 +15,7 @@ namespace GestionComercial.Domain.Entities.Sales
 
         [JsonIgnore] 
         public virtual Sale? Sale { get; set; }
+        [JsonIgnore]
+        public virtual SaleCondition? SaleCondition { get; set; }
     }
 }

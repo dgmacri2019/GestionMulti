@@ -97,8 +97,10 @@ namespace GestionComercial.Desktop.ViewModels.Client
         {
             if (!ClientCache.Instance.HasData)
             {
+                ClientCache.Reading = true;
                 var clients = await _clientsApiService.GetAllAsync();
                 ClientCache.Instance.SetClients(clients);
+                ClientCache.Reading = false;
             }
 
             var filtered = ClientCache.Instance.SearchClients(NameFilter, IsEnabledFilter, IsDeletedFilter);

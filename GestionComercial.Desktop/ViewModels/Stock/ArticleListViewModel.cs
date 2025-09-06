@@ -98,8 +98,10 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             {
                 if (!ArticleCache.Instance.HasData)
                 {
+                    ArticleCache.Reading = true;
                     List<ArticleViewModel> articles = await _articlesApiService.GetProductsWithPricesAsync();
                     ArticleCache.Instance.SetArticles(articles);
+                    ArticleCache.Reading = false;
                 }
 
                 var filtered = ArticleCache.Instance.SearchArticles(NameFilter, IsEnabledFilter, IsDeletedFilter);

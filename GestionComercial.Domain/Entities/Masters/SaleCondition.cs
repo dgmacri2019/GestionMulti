@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.BoxAndBank;
+using GestionComercial.Domain.Entities.Sales;
 using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Masters
@@ -11,11 +12,11 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<BankParameter>? BankParameters { get; set; }
         public virtual ICollection<Box>? Boxes { get; set; }
         public virtual ICollection<Client>? Clients { get; set; }
         public virtual ICollection<Provider>? Providers { get; set; }
-        //public virtual ICollection<Provider>? Providers { get; set; }
+        public virtual ICollection<SalePayMetodDetail>? SalePayMetodDetails { get; set; }
     }
 }

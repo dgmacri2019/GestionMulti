@@ -18,6 +18,8 @@ namespace GestionComercial.Domain.Cache
 
         private PcParameter? _pcParameter;
 
+        public static bool Reading { get; set; } = false;
+
         private ParameterCache()
         {
             CacheManager.Register(this);
@@ -72,7 +74,7 @@ namespace GestionComercial.Domain.Cache
             _pcParameter = null;
         }
 
-        public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any();
-        public bool HasDataPCParameters => _pcParameter != null;
+        public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any() && !Reading;
+        public bool HasDataPCParameters => _pcParameter != null && !Reading;
     }
 }

@@ -9,6 +9,7 @@ namespace GestionComercial.Domain.Cache
 
         private List<ClientViewModel>? _clients;
 
+        public static bool Reading { get; set; } = false;
         private ClientCache()
         {
             CacheManager.Register(this);
@@ -137,6 +138,6 @@ namespace GestionComercial.Domain.Cache
             _clients?.Clear();
         }
 
-        public bool HasData => _clients != null && _clients.Any();
+        public bool HasData => _clients != null && _clients.Any() && !Reading;
     }
 }

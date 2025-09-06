@@ -91,13 +91,17 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         {
             if (!ParameterCache.Instance.HasDataGeneralParameters)
             {
+                ParameterCache.Reading = true;
                 List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
                 ParameterCache.Instance.SetGeneralParameters(generalParameters);
+                ParameterCache.Reading = false;
             }
             if (!ParameterCache.Instance.HasDataPCParameters)
             {
+                ParameterCache.Reading = true;
                 PcParameter pcParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
                 ParameterCache.Instance.SetPCParameter(pcParameter);
+                ParameterCache.Reading = false;
             }
 
             List<PurchaseAndSalesListViewModel> purchaseAndSales = await _parametersApiService.GetAllPcParametersAsync();

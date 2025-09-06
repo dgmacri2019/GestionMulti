@@ -132,6 +132,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
             {
                 if (!SaleCache.Instance.HasData)
                 {
+                    SaleCache.Reading = true;
                     while (!ParameterCache.Instance.HasDataPCParameters)
                         await Task.Delay(10);
                     int salePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
@@ -140,6 +141,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
 
                     SaleCache.Instance.SetSales(sales);
                     SaleCache.Instance.SetLastSaleNumber(resultSale.LastSaleNumber);
+                    SaleCache.Reading = false;
                 }
 
                 var filtered = SaleCache.Instance.GetAllSales();

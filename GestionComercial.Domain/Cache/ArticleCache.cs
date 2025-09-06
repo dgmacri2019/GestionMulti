@@ -12,6 +12,8 @@ namespace GestionComercial.Domain.Cache
 
         private List<ArticleViewModel> _articles;
 
+        public static bool Reading { get; set; } = false;
+
         private ArticleCache()
         {
             CacheManager.Register(this);
@@ -130,7 +132,7 @@ namespace GestionComercial.Domain.Cache
         {
             _articles.Clear();
         }
-        public bool HasData => _articles != null && _articles.Any();
+        public bool HasData => _articles != null && _articles.Any() && !Reading;
 
 
 
