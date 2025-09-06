@@ -8,6 +8,20 @@
         <Setter Property="FontWeight" Value="Normal"/>
     </Style>
     
+    <Style x:Key="BlackNormal12" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="Foreground" Value="#3C3C3C" />
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+    
+    <Style x:Key="BlackBold12" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="Foreground" Value="#3C3C3C" />
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    
     <Style x:Key="BlueBold10" TargetType="TextBlock">
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="Margin" Value="0,0,5,0"/>

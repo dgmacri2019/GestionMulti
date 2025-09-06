@@ -10,6 +10,7 @@ namespace GestionComercial.Domain.DTOs.Client
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(300, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [Display(Name = "Razón social")]
         public string BusinessName { get; set; }
@@ -22,12 +23,14 @@ namespace GestionComercial.Domain.DTOs.Client
         [Display(Name = "Nombre Fantasía")]
         public string? FantasyName { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Tipo Documento")]
         public string DocumentTypeString { get; set; }
 
         [Display(Name = "Tipo Documento")]
         public int DocumentTypeId { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(13, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [MinLength(7, ErrorMessage = "El {0} no puede contener menos de {1} caracteres")]
         [Display(Name = "Número Documento")]
@@ -35,7 +38,7 @@ namespace GestionComercial.Domain.DTOs.Client
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
-        public string IvaConditionString { get; set; }
+        public string? IvaConditionString { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
@@ -87,14 +90,14 @@ namespace GestionComercial.Domain.DTOs.Client
         [DataType(DataType.MultilineText)]
         public string? Remark { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Display(Name = "Condición de Venta")]
-        public string SaleConditionString { get; set; }
+        //[Required(ErrorMessage = "El campo {0} es requerido")]
+        //[Display(Name = "Condición de Venta")]
+        //public string SaleConditionString { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Display(Name = "Condición de Venta")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public int SaleConditionId { get; set; }
+        //[Required(ErrorMessage = "El campo {0} es requerido")]
+        //[Display(Name = "Condición de Venta")]
+        //[Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
+        //public int SaleConditionId { get; set; }
 
         [Display(Name = "Día de pago")]
         [MaxLength(200, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
@@ -159,6 +162,11 @@ namespace GestionComercial.Domain.DTOs.Client
 
         [Display(Name = "Lista de precios")]
         public string PriceList { get; set; }
+
+        [Display(Name = "Limite de crédito")]
+        [Range(0, double.MaxValue, ErrorMessage = "El {0} no puede ser menor que 0")]
+        public decimal CreditLimit { get; set; }
+
 
 
         public List<PriceListItemDto> PriceListsDTO { get; set; }

@@ -104,7 +104,7 @@ namespace GestionComercial.Applications.Services
         {
             List<IGrouping<string, Sale>> sales = await _context.Sales
                 .Include(c => c.Client)
-                .Include(sc => sc.SaleCondition)
+                //.Include(sc => sc.SaleCondition)
                 .Include(sd => sd.SaleDetails)
                 .Include(spm => spm.SalePayMetodDetails)
                 .Include(a => a.Acreditations)
@@ -117,7 +117,7 @@ namespace GestionComercial.Applications.Services
              .Include(c => c.State)
              .Include(ic => ic.IvaCondition)
              .Include(dt => dt.DocumentType)
-             .Include(sc => sc.SaleCondition)
+             //.Include(sc => sc.SaleCondition)
              .Where(p => p.IsEnabled && !p.IsDeleted)
              .ToListAsync());
 
@@ -145,7 +145,7 @@ namespace GestionComercial.Applications.Services
         {
             List<IGrouping<string, Sale>> sales = await _context.Sales
                 .Include(c => c.Client)
-                .Include(sc => sc.SaleCondition)
+                //.Include(sc => sc.SaleCondition)
                 .Include(sd => sd.SaleDetails)
                 .Include(spm => spm.SalePayMetodDetails)
                 .Include(a => a.Acreditations)
@@ -159,7 +159,7 @@ namespace GestionComercial.Applications.Services
              .Include(c => c.State)
              .Include(ic => ic.IvaCondition)
              .Include(dt => dt.DocumentType)
-             .Include(sc => sc.SaleCondition)
+             //.Include(sc => sc.SaleCondition)
              .Where(p => p.IsEnabled && !p.IsDeleted)
              .ToListAsync());
 
@@ -188,7 +188,7 @@ namespace GestionComercial.Applications.Services
               .Include(c => c.State)
               .Include(ic => ic.IvaCondition)
               .Include(dt => dt.DocumentType)
-              .Include(sc => sc.SaleCondition)
+              //.Include(sc => sc.SaleCondition)
               .Where(p => p.IsEnabled && !p.IsDeleted)
               .ToListAsync());
 
@@ -210,7 +210,7 @@ namespace GestionComercial.Applications.Services
 
             Sale? sale = await _context.Sales
                 .Include(c => c.Client)
-                .Include(sc => sc.SaleCondition)
+                //.Include(sc => sc.SaleCondition)
                 .Include(sd => sd.SaleDetails)
                 .Include(spm => spm.SalePayMetodDetails)
                 .Include(a => a.Acreditations)
@@ -269,7 +269,6 @@ namespace GestionComercial.Applications.Services
                 IsFinished = sale.IsFinished,
                 PaidOut = sale.PaidOut,
                 PartialPay = sale.PartialPay,
-                SaleConditionId = sale.SaleConditionId,
                 SaleDate = sale.SaleDate,
                 SaleDetails = sale.SaleDetails,
                 SaleNumber = sale.SaleNumber,
@@ -286,7 +285,9 @@ namespace GestionComercial.Applications.Services
                 PriceLists = priceLists,
                 Client = sale.Client,
                 Date = sale.SaleDate,
-                SaleCondition = sale.SaleCondition,
+                //SaleCondition = sale.SaleCondition,
+                //SaleConditionId = sale.SaleConditionId,
+
 
             })).OrderBy(s => s.SalePoint).ThenBy(s => s.SaleNumber);
         }

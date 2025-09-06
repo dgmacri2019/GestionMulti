@@ -19,6 +19,23 @@
 
 
 
+    <Style x:Key="TextBlack12" TargetType="TextBox">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0,0,15,0"/>
+        <Setter Property="Foreground" Value="#3C3C3C" />
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self},
+                                    Path=(Validation.Errors)[0].ErrorContent}" />
+                <Setter Property="BorderBrush" Value="Red"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+
 
 
 </ResourceDictionary>

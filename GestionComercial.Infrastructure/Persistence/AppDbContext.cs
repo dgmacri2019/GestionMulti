@@ -155,7 +155,8 @@ namespace GestionComercial.Infrastructure.Persistence
             modelBuilder.Entity<Article>().Property(x => x.Replacement).HasPrecision(18, 4);
             modelBuilder.Entity<Article>().Property(x => x.Stock).HasPrecision(18, 4);
             modelBuilder.Entity<Article>().Property(x => x.Umbral).HasPrecision(18, 4);
-            modelBuilder.Entity<Client>().Property(x => x.Sold).HasPrecision(18, 4);
+            modelBuilder.Entity<Client>().Property(x => x.Sold).HasPrecision(18, 2);
+            modelBuilder.Entity<Client>().Property(x => x.CreditLimit).HasPrecision(18, 2);
             modelBuilder.Entity<PriceList>().Property(x => x.Utility).HasPrecision(18, 4);
             modelBuilder.Entity<Provider>().Property(x => x.Sold).HasPrecision(18, 4);
 

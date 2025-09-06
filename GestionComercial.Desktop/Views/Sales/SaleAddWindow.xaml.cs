@@ -130,7 +130,7 @@ namespace GestionComercial.Desktop.Views.Sales
                     binding?.UpdateSource();
                 }
 
-                
+
 
                 // Si cambió el código, buscar artículo
                 if (e.Column.Header.ToString() == "Código" && !string.IsNullOrWhiteSpace(currentItem.Code))
@@ -460,8 +460,8 @@ namespace GestionComercial.Desktop.Views.Sales
                     cbPriceLists.ItemsSource = client.PriceLists;
                     cbPriceLists.SelectedValue = client.PriceListId;
 
-                    cbSaleConditions.ItemsSource = client.SaleConditions;
-                    cbSaleConditions.SelectedValue = client.SaleConditionId;
+                    //cbSaleConditions.ItemsSource = client.SaleConditions;
+                    //cbSaleConditions.SelectedValue = client.SaleConditionId;
                     dgArticles.Visibility = Visibility.Visible;
                     dgPostMethod.Visibility = Visibility.Visible;
                     SetingFocus();
@@ -492,8 +492,8 @@ namespace GestionComercial.Desktop.Views.Sales
                         cbPriceLists.ItemsSource = selectedClient.PriceLists;
                         cbPriceLists.SelectedValue = selectedClient.PriceListId;
 
-                        cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
-                        cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
+                        //cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
+                        //cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
                         dgArticles.Visibility = Visibility.Visible;
                         dgPostMethod.Visibility = Visibility.Visible;
                         SetingFocus();
@@ -709,7 +709,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-             LogOut();
+            LogOut();
         }
 
 
@@ -958,7 +958,7 @@ namespace GestionComercial.Desktop.Views.Sales
             txtEmail.Text = string.Empty;
             chSendEmail.IsChecked = false;
             cbPriceLists.SelectedValue = 0;
-            cbSaleConditions.SelectedValue = 0;
+            //cbSaleConditions.SelectedValue = 0;
         }
 
 
@@ -970,11 +970,11 @@ namespace GestionComercial.Desktop.Views.Sales
                 result = false;
                 lblError.Text = "Seleccione la lista de precios";
             }
-            if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
-            {
-                result = false;
-                lblError.Text = "Seleccione la condición de venta";
-            }
+            //if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
+            //{
+            //    result = false;
+            //    lblError.Text = "Seleccione la condición de venta";
+            //}
             if (chSendEmail.IsChecked == true)
                 if (string.IsNullOrEmpty(txtEmail.Text))
                 {
@@ -1046,13 +1046,13 @@ namespace GestionComercial.Desktop.Views.Sales
                 IsDeleted = false,
                 IsEnabled = true,
                 IsFinished = true,
-                SaleConditionId = saleViewModel.SaleConditionId,
+                //SaleConditionId = saleViewModel.SaleConditionId,
                 SaleDate = saleDate.Date,
                 SalePoint = saleViewModel.SalePoint,
                 SaleNumber = saleViewModel.SaleNumber,
                 Total = TotalPrice,
                 SubTotal = TotalPrice,
-                SaleCondition = saleViewModel.SaleCondition,
+                //SaleCondition = saleViewModel.SaleCondition,
                 BaseImp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem),
                 BaseImp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem),
                 BaseImp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem),

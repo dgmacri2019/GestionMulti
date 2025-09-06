@@ -47,7 +47,7 @@ namespace GestionComercial.Applications.Services
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
-                 .Include(sc => sc.SaleCondition)
+                 //.Include(sc => sc.SaleCondition)
                  //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .OrderBy(c => c.BusinessName)
                  .GroupBy(c => c.PriceList.Description)
@@ -168,7 +168,6 @@ namespace GestionComercial.Applications.Services
                 Email = client.Email,
                 WebSite = client.WebSite,
                 Remark = client.Remark,
-                SaleConditionString = client.SaleCondition.Description,
                 PayDay = client.PayDay,
                 LegendInvoices = client.LegendInvoices,
                 LastPuchase = client.LastPuchase,
@@ -178,7 +177,9 @@ namespace GestionComercial.Applications.Services
                 Sold = client.Sold,
                 PriceListId = client.PriceListId,
                 DocumentTypeId = client.DocumentTypeId,
-                SaleConditionId = client.SaleConditionId,
+                //SaleConditionId = client.SaleConditionId,
+                //SaleConditionString = client.SaleCondition.Description,
+                CreditLimit = client.CreditLimit,
                 IvaConditionId = client.IvaConditionId,
                 State = client.State.Name,
                 PriceList = client.PriceList.Description,

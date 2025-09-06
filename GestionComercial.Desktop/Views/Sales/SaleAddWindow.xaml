@@ -70,7 +70,6 @@
         </Border>
 
         <!-- Contenido principal -->
-
         <Grid x:Name="GridGeneral" Grid.Column="1" Margin="10" Background="LightGray">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -114,7 +113,7 @@
                            Grid.Column="0"
                        Style="{StaticResource BlueBold10}"/>
                 <TextBox x:Name="txtSaleNumber" 
-                     Style="{StaticResource TextBoxSearch}" 
+                     Style="{StaticResource TextBlack12}" 
                          Grid.Column="1"
                          MinWidth="80"
                      IsReadOnly="True"
@@ -138,36 +137,33 @@
                 <TextBlock Text="Cliente" Grid.Row="0" Grid.Column="0"
                            VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
                 <TextBox x:Name="txtClientCode" Grid.Row="0" Grid.Column="1"
-                         Style="{StaticResource TextBoxSearch}"
+                         Style="{StaticResource TextBlack12}"
                          MinWidth="80"
                          HorizontalAlignment="Left"
                          KeyDown="txtClientCode_KeyDown"/>
-
                 <!-- Nombre -->
-                <TextBox x:Name="txtFansatyName" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                         Style="{StaticResource TextBoxSearch}" 
+                <TextBox x:Name="txtFansatyName" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1"
+                         Style="{StaticResource TextBlack12}" 
                          IsReadOnly="True"
                          HorizontalAlignment="Stretch"
                          Text="{Binding FantasyName}"/>
-
                 <!-- Dirección -->
-                <TextBox x:Name="txtAddress" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                         Style="{StaticResource TextBoxSearch}"
+                <TextBox x:Name="txtAddress" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1"
+                         Style="{StaticResource TextBlack12}"
                          Height="60"
                          TextWrapping="Wrap"
                          IsReadOnly="True"
                          HorizontalAlignment="Stretch"
                          Text="{Binding Address}"/>
-
                 <!-- Email + checkbox -->
-                <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="txtEmail" Grid.Column="0"
-                             Style="{StaticResource TextBoxSearch}"
+                             Style="{StaticResource TextBlack12}"
                              HorizontalAlignment="Stretch"
                              Text="{Binding Email}"/>
                     <CheckBox x:Name="chSendEmail" Grid.Column="1"
@@ -175,11 +171,11 @@
                               VerticalAlignment="Center" Margin="5,0"/>
                     <TextBlock Text="Enviar Comprobante por mail" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Style="{StaticResource BlackNormal10}" Margin="5,0"/>
+                               Style="{StaticResource BlackNormal12}" Margin="5,0"/>
                 </Grid>
             </Grid>
             <!-- Lista de precios y Condición de venta -->
-            <Grid Grid.Row="3" Margin="0,0,0,10">
+            <Grid Grid.Row="3" Margin="0,0,0,10" Visibility="Hidden">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -199,7 +195,7 @@
                               IsEnabled="False"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                <!--<StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
                     <TextBlock Text="Condición de Venta" Style="{StaticResource BlueBold10}"
                                VerticalAlignment="Center"/>
                     <ComboBox x:Name="cbSaleConditions" 
@@ -210,7 +206,7 @@
                               DisplayMemberPath="Description"
                               SelectedValuePath="Id"
                               SelectedValue="{Binding SaleConditionId}"/>
-                </StackPanel>
+                </StackPanel>-->
             </Grid>
             <!-- DataGrid artículos -->        
             <DataGrid x:Name="dgArticles" 
@@ -422,11 +418,11 @@
             <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10">
                 <TextBlock Text="Cantidad de items:" Style="{StaticResource BlueBold10}" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding TotalItems, RelativeSource={RelativeSource AncestorType=Window}}" 
-                           Style="{StaticResource BlackNormal10}" Margin="5,0"/>
+                           Style="{StaticResource BlackNormal12}" Margin="5,0"/>
                 <TextBlock Text="Precio total:" Style="{StaticResource BlueBold10}" Margin="20,0,0,0"
                            VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}, RelativeSource={RelativeSource AncestorType=Window}}" 
-                           Style="{StaticResource BlackNormal10}" Margin="5,0"/>
+                           Style="{StaticResource BlackBold12}" Margin="5,0"/>
             </StackPanel>
 
             <!-- Botones inferiores --><!--

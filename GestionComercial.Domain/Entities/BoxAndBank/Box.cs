@@ -7,9 +7,10 @@ namespace GestionComercial.Domain.Entities.BoxAndBank
 {
     public class Box : CommonEntity
     {
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(300, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [Display(Name = "Nombre")]
-        public string BoxName { get; set; }
+        public required string BoxName { get; set; }
 
         [Display(Name = "Por Debitar")]
         public decimal FromDebit { get; set; }

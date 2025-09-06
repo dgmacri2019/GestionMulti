@@ -7,6 +7,7 @@ namespace GestionComercial.Domain.Entities.Masters
 {
     public class Client : CommonEntity
     {
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(300, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [Display(Name = "Razón social")]
         public string BusinessName { get; set; }
@@ -22,10 +23,11 @@ namespace GestionComercial.Domain.Entities.Masters
         [Display(Name = "Tipo Documento")]
         public int DocumentTypeId { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(13, ErrorMessage = "El {0} no puede contener mas de {1} caracteres")]
         [MinLength(7, ErrorMessage = "El {0} no puede contener menos de {1} caracteres")]
         [Display(Name = "Número Documento")]
-        public string DocumentNumber { get; set; }
+        public  string DocumentNumber { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
@@ -35,12 +37,12 @@ namespace GestionComercial.Domain.Entities.Masters
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Dirección")]
         [MaxLength(100, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
-        public string Address { get; set; }
+        public  string Address { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Código Postal")]
         [MaxLength(8, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
-        public string PostalCode { get; set; }
+        public  string PostalCode { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Provincia")]
@@ -50,7 +52,7 @@ namespace GestionComercial.Domain.Entities.Masters
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Localidad")]
         [MaxLength(500, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
-        public string City { get; set; }
+        public  string City { get; set; }
 
         [Display(Name = "Teléfono / Fax")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
@@ -77,10 +79,10 @@ namespace GestionComercial.Domain.Entities.Masters
         [DataType(DataType.MultilineText)]
         public string? Remark { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Display(Name = "Condición de Venta")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public int SaleConditionId { get; set; }
+        //[Required(ErrorMessage = "El campo {0} es requerido")]
+        //[Display(Name = "Condición de Venta")]
+        //[Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
+        //public int SaleConditionId { get; set; }
 
         [Display(Name = "Día de pago")]
         [MaxLength(200, ErrorMessage = "El campo {0} no puede contener mas de {1} caracteres")]
@@ -116,26 +118,30 @@ namespace GestionComercial.Domain.Entities.Masters
         [Display(Name = "Saldo")]
         public decimal Sold { get; set; }
 
+        [Display(Name = "Limite de crédito")]
+        [Range(0, double.MaxValue, ErrorMessage = "El {0} no puede ser menor que 0")]
+        public decimal CreditLimit { get; set; }
+
 
 
 
 
         //public virtual City City { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual PriceList? PriceList { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual State? State { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual DocumentType? DocumentType { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual IvaCondition? IvaCondition { get; set; }
 
-        [JsonIgnore]
-        public virtual SaleCondition? SaleCondition { get; set; }
+        //[JsonIgnore]
+        //public virtual SaleCondition? SaleCondition { get; set; }
 
 
 

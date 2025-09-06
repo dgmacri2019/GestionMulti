@@ -15,9 +15,9 @@ namespace GestionComercial.Domain.Entities.Sales
         [Display(Name = "Fecha de venta")]
         public DateTime SaleDate { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Display(Name = "Forma de pago")]
-        public int SaleConditionId { get; set; }
+        //[Required(ErrorMessage = "El campo {0} es requerido")]
+        //[Display(Name = "Forma de pago")]
+        //public int SaleConditionId { get; set; }
 
         [Display(Name = "Importe total de la venta")]
         public decimal Total { get; set; }
@@ -65,7 +65,7 @@ namespace GestionComercial.Domain.Entities.Sales
         public virtual Client? Client { get; set; }
 
         //[JsonIgnore]
-        public virtual SaleCondition? SaleCondition { get; set; }
+        //public virtual SaleCondition? SaleCondition { get; set; }
 
         //[JsonIgnore]
         public virtual ICollection<SaleDetail>? SaleDetails { get; set; }

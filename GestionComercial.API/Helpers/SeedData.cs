@@ -66,7 +66,7 @@ namespace GestionComercial.API.Helpers
                         Enabled = true
                     };
 
-                    IdentityResult result = await userManager.CreateAsync(user, "@Admin123");
+                    IdentityResult result = await userManager.CreateAsync(user, "admin");
                     if (result.Succeeded)
                     {
                         await userManager.AddToRoleAsync(user, "ADMINISTRADOR");

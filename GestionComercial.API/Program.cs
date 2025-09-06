@@ -31,9 +31,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configuración de Identity
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    // Configuración de contraseñas
+    options.Password.RequireDigit = false;             // Números obligatorios
+    options.Password.RequireLowercase = false;         // Minúsculas obligatorias
+    options.Password.RequireUppercase = false;         // Mayúsculas obligatorias
+    options.Password.RequireNonAlphanumeric = false;   // Símbolos obligatorios
+    options.Password.RequiredLength = 4;               // Mínimo de caracteres
+    options.Password.RequiredUniqueChars = 1;          // Caracteres únicos
+
+
+    // Configuración de bloqueo (opcional)
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+
+    // Configuración de usuarios
+    options.User.RequireUniqueEmail = false;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
 
 // SignalR
 builder.Services.AddSignalR(options =>

@@ -4,6 +4,7 @@ using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComercial.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250906125921_Clients_and_Users")]
+    partial class Clients_and_Users
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3462,6 +3465,9 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("PartialPay")
                         .HasColumnType("bit");
 
+                    b.Property<int>("SaleConditionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
@@ -3499,6 +3505,8 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("SaleConditionId");
 
                     b.HasIndex("SalePoint", "SaleNumber")
                         .IsUnique()
@@ -4820,7 +4828,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                        .WithMany()
+                        .HasForeignKey("SaleConditionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetail", b =>
