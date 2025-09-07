@@ -738,9 +738,15 @@ namespace GestionComercial.Desktop.Views.Sales
                                     IsDeleted = false,
                                     IsEnabled = true,
                                     Value = pm.Monto,
-                                    SaleConditionId = 4,
+                                    SaleConditionId = pm.MetodoId,
                                 });
+                            decimal totalpay = salePayMetodDetails.Sum(sp => sp.Value);
                             sale.SalePayMetodDetails = salePayMetodDetails;
+                            sale.Sold = sale.Total - totalpay;
+                            sale.PaidOut = sale.Total == totalpay;
+                            sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
+                            
+
                             GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
                             if (resultAdd.Success)
                             {

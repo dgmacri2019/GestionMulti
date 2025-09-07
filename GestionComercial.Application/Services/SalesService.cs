@@ -68,8 +68,14 @@ namespace GestionComercial.Applications.Services
                             };
                         }
                         if (article != null && article.StockCheck)
+                        {
                             article.Stock -= saleDetail.Quantity;
+                            _context.Update(article);
+                        }
                     }
+                    client.Sold += sale.Total - sale.SalePayMetodDetails.Sum(sp => sp.Value);
+                    _context.Update(client);
+
                     await _context.AddAsync(sale);
                     StaticCommon.ContextInUse = false;
                     GeneralResponse resultSave = await _dBHelper.SaveChangesAsync(_context);

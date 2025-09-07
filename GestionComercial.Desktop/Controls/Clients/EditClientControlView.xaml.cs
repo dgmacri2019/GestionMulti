@@ -194,11 +194,11 @@ namespace GestionComercial.Desktop.Controls.Clients
                 msgError("Seleccione la condición de I.V.A.");
                 result = false;
             }
-            if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
-            {
-                msgError("Seleccione la condición de venta");
-                result = false;
-            }
+            //if (Convert.ToInt32(cbSaleConditions.SelectedValue) == 0)
+            //{
+            //    msgError("Seleccione la condición de venta");
+            //    result = false;
+            //}
 
             if (Convert.ToInt32(cbStates.SelectedValue) == 0)
             {
@@ -215,5 +215,36 @@ namespace GestionComercial.Desktop.Controls.Clients
             lblError.Text = msg;
         }
 
+        private void txtSold_GotKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+                tb.SelectAll();
+        }
+
+        private void txtSold_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
+            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;   // Consumí este clic
+                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
+            }
+        }
+
+        private void txtSold_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            string textoIngresado = e.Text;
+            bool result = false;
+            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
+                result = false;
+            else
+                result = true;
+            e.Handled = result;
+        }
+
+        private void txtSold_LostFocus(object sender, RoutedEventArgs e)
+        {
+            txtSold.Text = txtSold.Text.Replace(".", ",");
+        }
     }
 }

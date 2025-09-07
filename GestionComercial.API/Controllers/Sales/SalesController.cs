@@ -20,14 +20,17 @@ namespace GestionComercial.API.Controllers.Sales
         private readonly IMasterService _masterService;
         private readonly ISalesNotifier _notifierSales;
         private readonly IArticlesNotifier _notifierArticles;
+        private readonly IClientsNotifier _notifierClients;
 
 
-        public SalesController(ISalesService saleService, IMasterService masterService, ISalesNotifier notifierSales, IArticlesNotifier notifierArticles)
+        public SalesController(ISalesService saleService, IMasterService masterService, 
+            ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients)
         {
             _saleService = saleService;
             _masterService = masterService;
             _notifierSales = notifierSales;
             _notifierArticles = notifierArticles;
+            _notifierClients = notifierClients;
         }
 
         [HttpPost("notify")]
@@ -51,6 +54,7 @@ namespace GestionComercial.API.Controllers.Sales
             {
                 await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
                 await _notifierArticles.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Updated);
+                await _notifierClients.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Updated);
 
                 return
                     Ok(resultAdd);

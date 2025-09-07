@@ -23,18 +23,38 @@
                 <DataGridTemplateColumn Header="Método" Width="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Metodo}"/>
+                            <TextBlock Text="{Binding MetodoId}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.AvailableMetodos, RelativeSource={RelativeSource AncestorType=Window}}"
-                      SelectedItem="{Binding Metodo, UpdateSourceTrigger=PropertyChanged}" />
+                      DisplayMemberPath="Nombre"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding MetodoId, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Caja" Binding="{Binding Caja}" Width="200" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat={}{0:C2}}" Width="*" />
+                <!--<DataGridTextColumn Header="Caja" Binding="{Binding Caja}" Width="200" IsReadOnly="True"/>-->
+                <DataGridTextColumn Header="Monto" 
+                                    Binding="{Binding Monto, StringFormat={}{0:C2},UpdateSourceTrigger=LostFocus, Mode=TwoWay}" 
+                                    Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="TextAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    <DataGridTextColumn.EditingElementStyle>
+                        <Style TargetType="TextBox">
+                            <EventSetter Event="GotFocus" Handler="Monto_GotFocus"/>
+                            <EventSetter Event="PreviewKeyDown" Handler="Monto_PreviewKeyDown"/>
+                            <EventSetter Event="PreviewTextInput" Handler="Monto_PreviewTextInput"/>
+                            <EventSetter Event="TextChanged" Handler="Monto_TextChanged"/>
+                        </Style>
+                    </DataGridTextColumn.EditingElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 

@@ -326,6 +326,7 @@
                                 </Style>
                             </DataGridTextColumn.EditingElementStyle>
                         </DataGridTextColumn>
+                    
                         <DataGridTextColumn Binding="{Binding SmallMeasureDescription, UpdateSourceTrigger=PropertyChanged}"
                                             Width="60">
                             <DataGridTextColumn.Header>
