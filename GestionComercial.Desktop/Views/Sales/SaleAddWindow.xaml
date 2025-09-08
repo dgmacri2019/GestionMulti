@@ -369,7 +369,7 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="Bonif (%)" 
                                             Binding="{Binding Bonification, UpdateSourceTrigger=PropertyChanged}"
-                                            Width="70">
+                                            Width="65">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Center"/>

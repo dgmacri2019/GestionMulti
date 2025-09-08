@@ -95,7 +95,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                 throw;
             }
         }
-        
+
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -125,7 +125,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                 //txtCost.Text = txtCost.Text.Replace(".", ",");
                 decimal cost = txtCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtCost.Text.Replace(".", ","));
                 decimal porcent = Convert.ToDecimal(txtBonification.Text);
-                decimal value = cost + (cost * porcent / 100);
+                decimal value = cost - (cost * porcent / 100);
                 //txtCost.Text = string.Format("{0:C2}", cost);
                 txtRealCost.Text = string.Format("{0}", value);
             }
@@ -166,22 +166,78 @@ namespace GestionComercial.Desktop.Controls.Articles
             }
         }
 
+        private void txtPriceWithTax_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+                tb.SelectAll();
+        }
+
+        private void txtPriceWithTax_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                //e.Handled = true;
+            }
+        }
+
+        private void txtPriceWithTax_LostFocus(object sender, RoutedEventArgs e)
+        {
+            txtPriceWithTax.Text = txtPriceWithTax.Text.Replace(".", ",");
+        }
+
+        private void txtPriceWithTax_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
+            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true;   // Consumí este clic
+                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
+            }
+        }
+
+        private void txtPriceWithTax_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            string textoIngresado = e.Text;
+            bool result = false;
+            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
+                result = false;
+            else
+                result = true;
+            e.Handled = result;
+        }
+
+        private void txtPriceWithTax_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (txtPriceWithTax.IsFocused && ValidatorHelper.IsNumeric(txtPriceWithTax.Text))
+            {
+                decimal costWithTax = txtPriceWithTax.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtPriceWithTax.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtPriceWithTax.Text.Replace(".", ","));
+
+                decimal cost = txtCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtCost.Text.Replace(".", ","));
+                decimal porcent = Convert.ToDecimal(txtBonification.Text);
+                decimal value = cost - (cost * porcent / 100);
+                //txtCost.Text = string.Format("{0:C2}", cost);
+                txtRealCost.Text = string.Format("{0}", value);
+            }
+        }
+
 
         private void txtBonification_TextChanged(object sender, TextChangedEventArgs e)
         {
             try
             {
-                if (txtBonification.Text.Length > 0 && txtBonification.Text.Substring(0, 1) == "-")
-                    txtBonification.Foreground = new SolidColorBrush(Colors.Red);
-                else
-                    txtBonification.Foreground = new SolidColorBrush(Color.FromRgb(84, 84, 84));
-
                 if (txtBonification.Text.Length > 0 && txtBonification.IsFocused && EsTextoNumerico(txtBonification.Text))
                 {
+                    decimal porcent = Convert.ToDecimal(txtBonification.Text);
+                    if (porcent > 0)
+                        txtBonification.Foreground = new SolidColorBrush(Colors.Red);
+                    else
+                        txtBonification.Foreground = new SolidColorBrush(Color.FromRgb(84, 84, 84));
+
+
                     string costString = txtCost.Text.Substring(0, 1) == "$" ? txtCost.Text.Substring(1) : txtCost.Text;
                     decimal cost = !ValidatorHelper.IsNumeric(costString) ? 0 : Convert.ToDecimal(costString);
-                    decimal porcent = txtBonification.Text.Substring(0, 1) == "-" && txtBonification.Text.Length == 1 ? 0 : Convert.ToDecimal(txtBonification.Text);
-                    decimal value = cost + (cost * porcent / 100);
+                    //decimal porcent = txtBonification.Text.Substring(0, 1) == "-" && txtBonification.Text.Length == 1 ? 0 : Convert.ToDecimal(txtBonification.Text);
+                    decimal value = cost - (cost * porcent / 100);
                     txtRealCost.Text = string.Format("{0}", value);
                 }
             }
@@ -195,7 +251,7 @@ namespace GestionComercial.Desktop.Controls.Articles
         {
             string textoIngresado = e.Text;
             bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "-" || textoIngresado == ".")
+            if (ValidatorHelper.IsNumeric(textoIngresado) /*|| textoIngresado == "-" || textoIngresado == "."*/)
                 result = false;
             else
                 result = true;
@@ -209,7 +265,7 @@ namespace GestionComercial.Desktop.Controls.Articles
         {
             if (string.IsNullOrEmpty(txtBonification.Text))
                 txtBonification.Text = "0";
-            txtBonification.Text = txtBonification.Text.Replace(".", ",");
+            //txtBonification.Text = txtBonification.Text.Replace(".", ",");
         }
 
 
@@ -292,10 +348,10 @@ namespace GestionComercial.Desktop.Controls.Articles
         }
 
 
-        private void txtUmbral_LostFocus(object sender, RoutedEventArgs e)
-        {
-            txtUmbral.Text = txtUmbral.Text.Replace(".", ",");
-        }
+        //private void txtUmbral_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    txtUmbral.Text = txtUmbral.Text.Replace(".", ",");
+        //}
         private void txtUmbral_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             string textoIngresado = e.Text;

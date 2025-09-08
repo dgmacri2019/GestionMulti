@@ -101,7 +101,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Costo" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+            <TextBlock Text="Costo sin IVA" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtCost"
                      Style="{StaticResource TextBoxSearch}"
                      Width="100"
@@ -117,7 +117,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Bonificación / Recargo %" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+            <TextBlock Text="Bonificación" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtBonification"
                      Style="{StaticResource TextBoxSearch}"
                      Width="80"
@@ -126,25 +126,42 @@
                      TextChanged="txtBonification_TextChanged" 
                      TextInput="txtBonification_TextInput" 
                      ToolTip="El valor indicado aquí, generará un descuento si antepone el '-' o un recargo en caso contrario"
-                     MaxLength="6"
+                     MaxLength="2"
                      PreviewTextInput="txtBonification_PreviewTextInput" 
                      LostFocus="txtBonification_LostFocus"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10,0,20,8">
-            <TextBlock Text="Precio final de compra" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+            <TextBlock Text="Costo con bonifcación" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtRealCost"
                      Style="{StaticResource TextBoxSearch}"
                      Width="100"
-                     VerticalAlignment="Center"                     
+                     VerticalAlignment="Center" 
+                     IsReadOnly="True"
                      Text="{Binding RealCost}" 
                      PreviewTextInput="txtRealCost_PreviewTextInput" 
                      LostFocus="txtRealCost_LostFocus" 
                      PreviewMouseLeftButtonDown="txtRealCost_PreviewMouseLeftButtonDown" 
                      GotKeyboardFocus="txtRealCost_GotKeyboardFocus"/>
         </StackPanel>
-
+        
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Margin="10,0,20,8">
+            <TextBlock Text="Costo con IVA" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtPriceWithTax"
+                     Style="{StaticResource TextBoxSearch}"
+                     Width="100"
+                     VerticalAlignment="Center" 
+                     IsReadOnly="True"
+                     Text="{Binding PriceWithTax}" 
+                     TextChanged="txtPriceWithTax_TextChanged" 
+                     PreviewTextInput="txtPriceWithTax_PreviewTextInput"
+                     LostFocus="txtPriceWithTax_LostFocus" 
+                     KeyDown="txtPriceWithTax_KeyDown" 
+                     GotKeyboardFocus="txtPriceWithTax_GotKeyboardFocus"
+                     PreviewMouseLeftButtonDown="txtPriceWithTax_PreviewMouseLeftButtonDown"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Impuestos internos %" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtInternalTax"
                      Style="{StaticResource TextBoxSearch}"
@@ -155,7 +172,7 @@
                      PreviewTextInput="txtInternalTax_PreviewTextInput"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Puntos por compra" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtSalePoint"
                      Style="{StaticResource TextBoxSearch}"
@@ -165,7 +182,7 @@
                      PreviewTextInput="txtSalePoint_PreviewTextInput"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Puntos por canje" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtChangePoint"
                      Style="{StaticResource TextBoxSearch}"
@@ -175,7 +192,7 @@
                      PreviewTextInput="txtChangePoint_PreviewTextInput"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Stock" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtStock"
                      Style="{StaticResource TextBoxSearch}"
@@ -187,7 +204,7 @@
                      PreviewTextInput="txtStock_PreviewTextInput"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Stock mínimo" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtMinimalStock"
                      Style="{StaticResource TextBoxSearch}"
@@ -199,7 +216,7 @@
                      PreviewTextInput="txtMinimalStock_PreviewTextInput"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" Margin="10,0,20,8">
             <TextBlock Text="Reposición" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtReplacement"
                      Style="{StaticResource TextBoxSearch}"
@@ -211,7 +228,7 @@
                      ToolTip="Las notas de pedido a proveedores automáticas se cargarán con la cantidad indicada aquí"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Margin="10,0,20,8">
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Umbral" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtUmbral"
                      Style="{StaticResource TextBoxSearch}"
@@ -221,10 +238,10 @@
                      LostFocus="txtUmbral_LostFocus" 
                      ToolTip="Las notas de pedido a proveedores automáticas se cargarán cuando el valor sea igual o inferior al indicado aquí"
                      PreviewTextInput="txtUmbral_PreviewTextInput"/>
-        </StackPanel>
+        </StackPanel>-->
 
 
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0" Margin="10,0,20,8">
             <TextBlock Text="Verifica stock" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <CheckBox x:Name="chbStockCheck"
                       Style="{StaticResource CheckBox }"
@@ -233,7 +250,7 @@
                       IsChecked="{Binding StockCheck}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" Margin="10,0,20,8">
             <TextBlock Text="Es Pesable" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <CheckBox x:Name="chbIsWeight"
                       Style="{StaticResource CheckBox}"
@@ -242,7 +259,7 @@
                       IsChecked="{Binding IsWeight}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0" Margin="10,0,20,8">
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2" Margin="10,0,20,8">
             <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <CheckBox x:Name="chbIsEnabled"
                       Style="{StaticResource CheckBox}"
@@ -251,7 +268,7 @@
                       IsChecked="{Binding IsEnabled}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" 
+        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" 
                     Margin="10,0,20,0">
             <TextBlock Text="Observaciones" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtRemark"
@@ -266,7 +283,7 @@
         </StackPanel>
 
 
-        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" 
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" 
                     Margin="10,10,20,0">
             <TextBlock Text="Aclaraciones" VerticalAlignment="Center" 
                        Style="{StaticResource BlueBold10}"/>
@@ -283,7 +300,7 @@
 
         <Button 
             x:Name="btnCancel"
-            Grid.Row="8" 
+            Grid.Row="9" 
             Grid.Column="1" 
             Content="Cancelar"  
             Margin="0,40,150,0" 
@@ -291,7 +308,7 @@
             Style="{StaticResource BtnCancel}"/>
         <Button 
             x:Name="btnUpdate"
-            Grid.Row="8" 
+            Grid.Row="9" 
             Grid.Column="1" 
             Content="Actualizar" 
             Margin="150,40,0,0"  
@@ -299,7 +316,7 @@
             Style="{StaticResource BtnUpdate}"/>
         <Button 
             x:Name="btnAdd"
-            Grid.Row="8" 
+            Grid.Row="9" 
             Grid.Column="1" 
             Content="Guardar" 
             Margin="150,40,0,0"  
@@ -308,9 +325,9 @@
 
         <TextBlock 
             x:Name="lblError"
-            Grid.Row="9" 
+            Grid.Row="10" 
             Grid.ColumnSpan="3"
-            Style="{StaticResource lblError}"
+            Style="{StaticResource lblError12}"
             TextWrapping="Wrap"
             />
     </Grid>
