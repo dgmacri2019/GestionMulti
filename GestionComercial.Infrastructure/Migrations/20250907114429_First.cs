@@ -189,6 +189,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     WeightIdentificator = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BudgetValidDays = table.Column<int>(type: "int", nullable: false),
                     UsePostMethod = table.Column<bool>(type: "bit", nullable: false),
+                    SumQuantityItems = table.Column<bool>(type: "bit", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -229,6 +230,7 @@ namespace GestionComercial.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    SmallDescription = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -259,6 +261,26 @@ namespace GestionComercial.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Optionals", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PcParameters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PCName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SalePoint = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PcParameters", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -328,26 +350,6 @@ namespace GestionComercial.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PrinterParameters", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SaleConditions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AfipId = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SaleConditions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -598,7 +600,7 @@ namespace GestionComercial.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     BarCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Cost = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
@@ -730,7 +732,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     FromDebit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FromCredit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Sold = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -746,12 +747,6 @@ namespace GestionComercial.Infrastructure.Migrations
                         name: "FK_Boxes_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Boxes_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -858,73 +853,6 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Providers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BusinessName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    FantasyName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    DocumentTypeId = table.Column<int>(type: "int", nullable: false),
-                    DocumentNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Phone1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Phone2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    StateId = table.Column<int>(type: "int", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    WebSite = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Remark = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastPuchase = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Sold = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    PayDay = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
-                    IvaConditionId = table.Column<int>(type: "int", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Providers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Providers_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Providers_DocumentTypes_DocumentTypeId",
-                        column: x => x.DocumentTypeId,
-                        principalTable: "DocumentTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Providers_IvaConditions_IvaConditionId",
-                        column: x => x.IvaConditionId,
-                        principalTable: "IvaConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Providers_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Providers_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PriceLists",
                 columns: table => new
                 {
@@ -957,7 +885,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BankId = table.Column<int>(type: "int", nullable: false),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
                     Rate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AcreditationDay = table.Column<int>(type: "int", nullable: false),
                     DebitationDay = table.Column<int>(type: "int", nullable: false),
@@ -975,12 +902,6 @@ namespace GestionComercial.Infrastructure.Migrations
                         name: "FK_BankParameters_Banks_BankId",
                         column: x => x.BankId,
                         principalTable: "Banks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BankParameters_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1156,6 +1077,420 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SaleConditions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    AfipId = table.Column<int>(type: "int", nullable: false),
+                    SmallDescription = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    BoxId = table.Column<int>(type: "int", nullable: false),
+                    BankParameterId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaleConditions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SaleConditions_BankParameters_BankParameterId",
+                        column: x => x.BankParameterId,
+                        principalTable: "BankParameters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SaleConditions_Boxes_BoxId",
+                        column: x => x.BoxId,
+                        principalTable: "Boxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BusinessName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    FantasyName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    OptionalCode = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    DocumentTypeId = table.Column<int>(type: "int", nullable: false),
+                    DocumentNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    IvaConditionId = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Phone1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Phone2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    WebSite = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Remark = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PayDay = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    LegendInvoices = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LegendRemit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LegendBudget = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LegendOrder = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastPuchase = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PriceListId = table.Column<int>(type: "int", nullable: false),
+                    Sold = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    CreditLimit = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    SaleConditionId = table.Column<int>(type: "int", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_DocumentTypes_DocumentTypeId",
+                        column: x => x.DocumentTypeId,
+                        principalTable: "DocumentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clients_IvaConditions_IvaConditionId",
+                        column: x => x.IvaConditionId,
+                        principalTable: "IvaConditions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clients_PriceLists_PriceListId",
+                        column: x => x.PriceListId,
+                        principalTable: "PriceLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clients_SaleConditions_SaleConditionId",
+                        column: x => x.SaleConditionId,
+                        principalTable: "SaleConditions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Clients_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Providers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BusinessName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    FantasyName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    OptionalCode = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    DocumentTypeId = table.Column<int>(type: "int", nullable: false),
+                    DocumentNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Phone1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Phone2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    WebSite = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Remark = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastPuchase = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Sold = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    PayDay = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
+                    IvaConditionId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Providers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Providers_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Providers_DocumentTypes_DocumentTypeId",
+                        column: x => x.DocumentTypeId,
+                        principalTable: "DocumentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Providers_IvaConditions_IvaConditionId",
+                        column: x => x.IvaConditionId,
+                        principalTable: "IvaConditions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Providers_SaleConditions_SaleConditionId",
+                        column: x => x.SaleConditionId,
+                        principalTable: "SaleConditions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Providers_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BudgetDetailTmps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    TaxId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotalWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    List = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BudgetDetailTmps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BudgetDetailTmps_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BudgetDetailTmps_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BudgetDetailTmps_Taxes_TaxId",
+                        column: x => x.TaxId,
+                        principalTable: "Taxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Budgets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    BudgetDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GeneralDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    InternalTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
+                    BudgetNumber = table.Column<int>(type: "int", nullable: false),
+                    BudgetPoint = table.Column<int>(type: "int", nullable: false),
+                    ValidTo = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Budgets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Budgets_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Budgets_SaleConditions_SaleConditionId",
+                        column: x => x.SaleConditionId,
+                        principalTable: "SaleConditions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReservationDetailTmps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    TaxId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotalWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    List = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReservationDetailTmps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReservationDetailTmps_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReservationDetailTmps_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReservationDetailTmps_Taxes_TaxId",
+                        column: x => x.TaxId,
+                        principalTable: "Taxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SaleDetailTmps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    TaxId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotalWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    List = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaleDetailTmps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SaleDetailTmps_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SaleDetailTmps_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SaleDetailTmps_Taxes_TaxId",
+                        column: x => x.TaxId,
+                        principalTable: "Taxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sales",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GeneralDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    InternalTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Sold = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaidOut = table.Column<bool>(type: "bit", nullable: false),
+                    PartialPay = table.Column<bool>(type: "bit", nullable: false),
+                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
+                    AutorizationCode = table.Column<int>(type: "int", nullable: false),
+                    SaleNumber = table.Column<int>(type: "int", nullable: false),
+                    SalePoint = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sales", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sales_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PurchaseOrderDetailTmps",
                 columns: table => new
                 {
@@ -1276,35 +1611,23 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clients",
+                name: "BudgetDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BusinessName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    FantasyName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    DocumentTypeId = table.Column<int>(type: "int", nullable: false),
-                    DocumentNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    IvaConditionId = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Phone1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Phone2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    WebSite = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Remark = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
-                    PayDay = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    LegendInvoices = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LegendRemit = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LegendBudget = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LegendOrder = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastPuchase = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PriceListId = table.Column<int>(type: "int", nullable: false),
-                    Sold = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    BudgetId = table.Column<int>(type: "int", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    TaxId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    List = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PriceDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1314,37 +1637,221 @@ namespace GestionComercial.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.PrimaryKey("PK_BudgetDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clients_DocumentTypes_DocumentTypeId",
-                        column: x => x.DocumentTypeId,
-                        principalTable: "DocumentTypes",
+                        name: "FK_BudgetDetails_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Clients_IvaConditions_IvaConditionId",
+                        name: "FK_BudgetDetails_Budgets_BudgetId",
+                        column: x => x.BudgetId,
+                        principalTable: "Budgets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BudgetDetails_Taxes_TaxId",
+                        column: x => x.TaxId,
+                        principalTable: "Taxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    Cuit = table.Column<long>(type: "bigint", nullable: false),
+                    TaxConditionId = table.Column<int>(type: "int", nullable: false),
+                    PtoVenta = table.Column<int>(type: "int", nullable: false),
+                    CompTypeId = table.Column<int>(type: "int", nullable: false),
+                    CompNro = table.Column<long>(type: "bigint", nullable: false),
+                    InvoiceDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ServDesde = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ServHasta = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VtoPago = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DocType = table.Column<int>(type: "int", nullable: false),
+                    DocNro = table.Column<long>(type: "bigint", nullable: false),
+                    ImpTotal = table.Column<double>(type: "float", nullable: false),
+                    ImpTotalConc = table.Column<double>(type: "float", nullable: false),
+                    ImpNeto = table.Column<double>(type: "float", nullable: false),
+                    ImpTotalIVA = table.Column<double>(type: "float", nullable: false),
+                    CBU = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Alias = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CAE = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaVtoCAE = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaProceso = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IvaConditionId = table.Column<int>(type: "int", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_IvaConditions_IvaConditionId",
                         column: x => x.IvaConditionId,
                         principalTable: "IvaConditions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invoices_Sales_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sales",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    GeneralDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    InternalTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalIVA27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    BaseImp27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Sold = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaidOut = table.Column<bool>(type: "bit", nullable: false),
+                    PartialPay = table.Column<bool>(type: "bit", nullable: false),
+                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
+                    AutorizationCode = table.Column<int>(type: "int", nullable: false),
+                    ReservationNumber = table.Column<int>(type: "int", nullable: false),
+                    ReservationPoint = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Clients_PriceLists_PriceListId",
-                        column: x => x.PriceListId,
-                        principalTable: "PriceLists",
+                        name: "FK_Reservations_SaleConditions_SaleConditionId",
+                        column: x => x.SaleConditionId,
+                        principalTable: "SaleConditions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Sales_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sales",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SaleDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false),
+                    TaxId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    List = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PriceDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaleDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SaleDetails_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Clients_SaleConditions_SaleConditionId",
+                        name: "FK_SaleDetails_Sales_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sales",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SaleDetails_Taxes_TaxId",
+                        column: x => x.TaxId,
+                        principalTable: "Taxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SalePayMetodDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SalePayMetodDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SalePayMetodDetails_SaleConditions_SaleConditionId",
                         column: x => x.SaleConditionId,
                         principalTable: "SaleConditions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Clients_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
+                        name: "FK_SalePayMetodDetails_Sales_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sales",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -1555,495 +2062,6 @@ namespace GestionComercial.Infrastructure.Migrations
                         name: "FK_PurchasePayMetodDetails_SaleConditions_SaleConditionId",
                         column: x => x.SaleConditionId,
                         principalTable: "SaleConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BudgetDetailTmps",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ArticleId = table.Column<int>(type: "int", nullable: false),
-                    TaxId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PriceWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotalWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    List = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BudgetDetailTmps", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BudgetDetailTmps_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BudgetDetailTmps_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BudgetDetailTmps_Taxes_TaxId",
-                        column: x => x.TaxId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Budgets",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    SaleId = table.Column<int>(type: "int", nullable: false),
-                    BudgetDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    GeneralDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InternalTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
-                    BudgetNumber = table.Column<int>(type: "int", nullable: false),
-                    BudgetPoint = table.Column<int>(type: "int", nullable: false),
-                    ValidTo = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Budgets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Budgets_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Budgets_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReservationDetailTmps",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ArticleId = table.Column<int>(type: "int", nullable: false),
-                    TaxId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PriceWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotalWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    List = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReservationDetailTmps", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReservationDetailTmps_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReservationDetailTmps_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReservationDetailTmps_Taxes_TaxId",
-                        column: x => x.TaxId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SaleDetailTmps",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ArticleId = table.Column<int>(type: "int", nullable: false),
-                    TaxId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PriceWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotalWhithTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    List = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SaleDetailTmps", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SaleDetailTmps_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SaleDetailTmps_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SaleDetailTmps_Taxes_TaxId",
-                        column: x => x.TaxId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sales",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    GeneralDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InternalTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Sold = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaidOut = table.Column<bool>(type: "bit", nullable: false),
-                    PartialPay = table.Column<bool>(type: "bit", nullable: false),
-                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
-                    AutorizationCode = table.Column<int>(type: "int", nullable: false),
-                    SaleNumber = table.Column<int>(type: "int", nullable: false),
-                    SalePoint = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sales", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Sales_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Sales_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BudgetDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BudgetId = table.Column<int>(type: "int", nullable: false),
-                    ArticleId = table.Column<int>(type: "int", nullable: false),
-                    TaxId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    List = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PriceDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BudgetDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BudgetDetails_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BudgetDetails_Budgets_BudgetId",
-                        column: x => x.BudgetId,
-                        principalTable: "Budgets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BudgetDetails_Taxes_TaxId",
-                        column: x => x.TaxId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Invoices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    SaleId = table.Column<int>(type: "int", nullable: false),
-                    Cuit = table.Column<long>(type: "bigint", nullable: false),
-                    TaxConditionId = table.Column<int>(type: "int", nullable: false),
-                    PtoVenta = table.Column<int>(type: "int", nullable: false),
-                    CompTypeId = table.Column<int>(type: "int", nullable: false),
-                    CompNro = table.Column<long>(type: "bigint", nullable: false),
-                    InvoiceDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ServDesde = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ServHasta = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VtoPago = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocType = table.Column<int>(type: "int", nullable: false),
-                    DocNro = table.Column<long>(type: "bigint", nullable: false),
-                    ImpTotal = table.Column<double>(type: "float", nullable: false),
-                    ImpTotalConc = table.Column<double>(type: "float", nullable: false),
-                    ImpNeto = table.Column<double>(type: "float", nullable: false),
-                    ImpTotalIVA = table.Column<double>(type: "float", nullable: false),
-                    CBU = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Alias = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CAE = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FechaVtoCAE = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FechaProceso = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IvaConditionId = table.Column<int>(type: "int", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invoices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invoices_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Invoices_IvaConditions_IvaConditionId",
-                        column: x => x.IvaConditionId,
-                        principalTable: "IvaConditions",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Invoices_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reservations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    SaleId = table.Column<int>(type: "int", nullable: false),
-                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    GeneralDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InternalTax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalIVA27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp21 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp105 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BaseImp27 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Sold = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaidOut = table.Column<bool>(type: "bit", nullable: false),
-                    PartialPay = table.Column<bool>(type: "bit", nullable: false),
-                    IsFinished = table.Column<bool>(type: "bit", nullable: false),
-                    AutorizationCode = table.Column<int>(type: "int", nullable: false),
-                    ReservationNumber = table.Column<int>(type: "int", nullable: false),
-                    ReservationPoint = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reservations_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SaleDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SaleId = table.Column<int>(type: "int", nullable: false),
-                    ArticleId = table.Column<int>(type: "int", nullable: false),
-                    TaxId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    List = table.Column<int>(type: "int", nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PriceDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalItem = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SaleDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SaleDetails_Articles_ArticleId",
-                        column: x => x.ArticleId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SaleDetails_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SaleDetails_Taxes_TaxId",
-                        column: x => x.TaxId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SalePayMetodDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SaleId = table.Column<int>(type: "int", nullable: false),
-                    SaleConditionId = table.Column<int>(type: "int", nullable: false),
-                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateUser = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SalePayMetodDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SalePayMetodDetails_SaleConditions_SaleConditionId",
-                        column: x => x.SaleConditionId,
-                        principalTable: "SaleConditions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SalePayMetodDetails_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
@@ -2341,15 +2359,9 @@ namespace GestionComercial.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "Bank_SaleCondition_Index",
+                name: "IX_BankParameters_BankId",
                 table: "BankParameters",
-                columns: new[] { "BankId", "SaleConditionId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BankParameters_SaleConditionId",
-                table: "BankParameters",
-                column: "SaleConditionId");
+                column: "BankId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Banks_AccountId",
@@ -2370,11 +2382,6 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "IX_Boxes_AccountId",
                 table: "Boxes",
                 column: "AccountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Boxes_SaleConditionId",
-                table: "Boxes",
-                column: "SaleConditionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BudgetDetails_ArticleId",
@@ -2425,6 +2432,19 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "State_Name_Index",
                 table: "Cities",
                 columns: new[] { "Name", "StateId", "AfipId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "Client_Code_Index",
+                table: "Clients",
+                column: "OptionalCode",
+                unique: true,
+                filter: "[OptionalCode] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "Client_Document_Index",
+                table: "Clients",
+                columns: new[] { "DocumentNumber", "DocumentTypeId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -2538,6 +2558,19 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "IX_Providers_StateId",
                 table: "Providers",
                 column: "StateId");
+
+            migrationBuilder.CreateIndex(
+                name: "Provider_Code_Index",
+                table: "Providers",
+                column: "OptionalCode",
+                unique: true,
+                filter: "[OptionalCode] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "Provider_Document_Index",
+                table: "Providers",
+                columns: new[] { "DocumentNumber", "DocumentTypeId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PurchaseDetails_ArticleId",
@@ -2691,6 +2724,16 @@ namespace GestionComercial.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SaleConditions_BankParameterId",
+                table: "SaleConditions",
+                column: "BankParameterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SaleConditions_BoxId",
+                table: "SaleConditions",
+                column: "BoxId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SaleDetails_ArticleId",
                 table: "SaleDetails",
                 column: "ArticleId");
@@ -2736,9 +2779,10 @@ namespace GestionComercial.Infrastructure.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sales_SaleConditionId",
+                name: "Sale_SalePoint-Number_Index",
                 table: "Sales",
-                column: "SaleConditionId");
+                columns: new[] { "SalePoint", "SaleNumber" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "State_Name_Index",
@@ -2802,13 +2846,7 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BankParameters");
-
-            migrationBuilder.DropTable(
                 name: "Billings");
-
-            migrationBuilder.DropTable(
-                name: "Boxes");
 
             migrationBuilder.DropTable(
                 name: "BudgetDetails");
@@ -2836,6 +2874,9 @@ namespace GestionComercial.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Optionals");
+
+            migrationBuilder.DropTable(
+                name: "PcParameters");
 
             migrationBuilder.DropTable(
                 name: "PrinterParameters");
@@ -2895,9 +2936,6 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "Budgets");
 
             migrationBuilder.DropTable(
-                name: "Banks");
-
-            migrationBuilder.DropTable(
                 name: "Invoices");
 
             migrationBuilder.DropTable(
@@ -2919,16 +2957,10 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "Permissions");
 
             migrationBuilder.DropTable(
-                name: "Accounts");
-
-            migrationBuilder.DropTable(
                 name: "Providers");
 
             migrationBuilder.DropTable(
                 name: "Sales");
-
-            migrationBuilder.DropTable(
-                name: "AccountTypes");
 
             migrationBuilder.DropTable(
                 name: "Cities");
@@ -2949,10 +2981,13 @@ namespace GestionComercial.Infrastructure.Migrations
                 name: "SaleConditions");
 
             migrationBuilder.DropTable(
-                name: "States");
+                name: "Articles");
 
             migrationBuilder.DropTable(
-                name: "Articles");
+                name: "BankParameters");
+
+            migrationBuilder.DropTable(
+                name: "Boxes");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -2962,6 +2997,18 @@ namespace GestionComercial.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Taxes");
+
+            migrationBuilder.DropTable(
+                name: "Banks");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "States");
+
+            migrationBuilder.DropTable(
+                name: "AccountTypes");
         }
     }
 }

@@ -147,7 +147,7 @@ namespace GestionComercial.Applications.Services
                 Box? box = await _context.Boxes
                 .Where(b => b.Id == id)
                 .Include(a => a.Account)
-                .Include(sc => sc.SaleCondition)
+                //.Include(sc => sc.SaleCondition)
                 .FirstOrDefaultAsync();
 
                 return new BoxViewModel
@@ -164,7 +164,7 @@ namespace GestionComercial.Applications.Services
                     Id = box.Id,
                     IsDeleted = box.IsDeleted,
                     IsEnabled = box.IsEnabled,
-                    SaleConditionId = box.SaleConditionId,
+                    //SaleConditionId = box.SaleConditionId,
                     Sold = box.Sold,
                     SaleConditions = saleConditions,
                 };
@@ -188,7 +188,7 @@ namespace GestionComercial.Applications.Services
 
             List<Box> boxes = await _context.Boxes
                  .Include(a => a.Account)
-                .Include(sc => sc.SaleCondition)
+                //.Include(sc => sc.SaleCondition)
                 .ToListAsync();
 
             StaticCommon.ContextInUse = false;
@@ -202,11 +202,11 @@ namespace GestionComercial.Applications.Services
                     BankName = b.BoxName,
                     FromCredit = b.FromCredit,
                     FromDebit = b.FromDebit,
-                    SaleConditionId = b.SaleConditionId,
+                    //SaleConditionId = b.SaleConditionId,
                     AccountId = b.AccountId,
                     Sold = b.Sold,
                     IsBank = false,
-                    SaleConditionString = b.SaleCondition.Description,
+                   // SaleConditionString = b.SaleCondition.Description,
                 });
             foreach (Bank b in banks)
                 bankAndBoxes.Add(new BankAndBoxViewModel
@@ -253,7 +253,7 @@ namespace GestionComercial.Applications.Services
             List<BankParameter> bankParameters = await _context.BankParameters
                 .Where(a => a.IsEnabled && !a.IsDeleted)
                 .Include(s => s.Bank)
-                .Include(sc => sc.SaleCondition)
+                //.Include(sc => sc.SaleCondition)
                 .ToListAsync();
 
             List<SaleCondition> saleConditions = await _context.SaleConditions
@@ -298,7 +298,7 @@ namespace GestionComercial.Applications.Services
                 BankParameter? bankParameter = await _context.BankParameters
                  .Where(b => b.Id == id)
                  .Include(a => a.Bank)
-                 .Include(sc => sc.SaleCondition)
+                // .Include(sc => sc.SaleCondition)
                  .FirstOrDefaultAsync();
 
                 return new BankParameterViewModel
@@ -316,9 +316,9 @@ namespace GestionComercial.Applications.Services
                     BankId = bankParameter.BankId,
                     DebitationDay = bankParameter.DebitationDay,
                     Rate = bankParameter.Rate,
-                    SaleConditionId = bankParameter.SaleConditionId,
+                    //SaleConditionId = bankParameter.SaleConditionId,
                     BankName = bankParameter.Bank.BankName,
-                    SaleConditionString = bankParameter.SaleCondition.Description,
+                   // SaleConditionString = bankParameter.SaleCondition.Description,
                 };
             }
         }
@@ -332,7 +332,7 @@ namespace GestionComercial.Applications.Services
             return bankParameters.Select(bankParameter => new BankParameterViewModel
             {
                 Id = bankParameter.Id,
-                SaleConditionId = bankParameter.SaleConditionId,
+                //SaleConditionId = bankParameter.SaleConditionId,
                 CreateDate = bankParameter.CreateDate,
                 CreateUser = bankParameter.CreateUser,
                 UpdateDate = bankParameter.UpdateDate,
@@ -346,7 +346,7 @@ namespace GestionComercial.Applications.Services
                 BankId = bankParameter.BankId,
                 DebitationDay = bankParameter.DebitationDay,
                 Rate = bankParameter.Rate,
-                SaleConditionString = bankParameter.SaleCondition.Description,
+                //SaleConditionString = bankParameter.SaleCondition.Description,
             });
         }
     }

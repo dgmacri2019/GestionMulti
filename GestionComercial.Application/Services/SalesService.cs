@@ -243,7 +243,7 @@ namespace GestionComercial.Applications.Services
                     .Select(s => (int?)s.SaleNumber) // usamos nullable para manejar el caso de que no haya registros
                     .MaxAsync();
 
-                return lastSaleNumber == null ? 1 : lastSaleNumber.Value;
+                return lastSaleNumber == null ? 0 : lastSaleNumber.Value;
             }
             catch (Exception ex)
             {

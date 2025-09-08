@@ -358,7 +358,7 @@ namespace GestionComercial.Domain.Helpers
                 BoxName = boxViewModel.BoxName,
                 FromCredit = boxViewModel.FromCredit,
                 FromDebit = boxViewModel.FromDebit,
-                SaleConditionId = boxViewModel.SaleConditionId,
+                //SaleConditionId = boxViewModel.SaleConditionId,
                 Sold = boxViewModel.Sold,
             };
         }
@@ -378,7 +378,7 @@ namespace GestionComercial.Domain.Helpers
                 UpdateUser = bankParameterViewModel.UpdateUser,
                 DebitationDay = bankParameterViewModel.DebitationDay,
                 Rate = bankParameterViewModel.Rate,
-                SaleConditionId = bankParameterViewModel.SaleConditionId,
+                //SaleConditionId = bankParameterViewModel.SaleConditionId,
             };
         }
 

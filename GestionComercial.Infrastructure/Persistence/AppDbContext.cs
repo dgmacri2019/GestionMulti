@@ -197,15 +197,15 @@ namespace GestionComercial.Infrastructure.Persistence
                .IsUnique()
                .HasDatabaseName("AccountVinculation_AccountId_ViculatedAccountId_Index");
 
-            modelBuilder.Entity<BankParameter>()
-              .HasIndex(bp => new
+            //modelBuilder.Entity<BankParameter>()
+            //  .HasIndex(bp => new
 
-              {
-                  bp.BankId,
-                  bp.SaleConditionId,
-              })
-              .IsUnique()
-              .HasDatabaseName("Bank_SaleCondition_Index");
+            //  {
+            //      bp.BankId,
+            //      bp.SaleConditionId,
+            //  })
+            //  .IsUnique()
+            //  .HasDatabaseName("Bank_SaleCondition_Index");
 
 
             modelBuilder.Entity<Purchase>()

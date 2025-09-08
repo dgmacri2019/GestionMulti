@@ -1,4 +1,4 @@
-using GestionComercial.Api.Notifications;
+锘縰sing GestionComercial.Api.Notifications;
 using GestionComercial.API.Helpers;
 using GestionComercial.API.Hubs;
 using GestionComercial.API.Notifications;
@@ -26,27 +26,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Agregar la configuraci髇 de la base de datos
+// Agregar la configuraci贸n de la base de datos
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configuraci髇 de Identity
+// Configuraci贸n de Identity
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    // Configuraci髇 de contrase馻s
-    options.Password.RequireDigit = false;             // N鷐eros obligatorios
-    options.Password.RequireLowercase = false;         // Min鷖culas obligatorias
-    options.Password.RequireUppercase = false;         // May鷖culas obligatorias
-    options.Password.RequireNonAlphanumeric = false;   // S韒bolos obligatorios
-    options.Password.RequiredLength = 4;               // M韓imo de caracteres
-    options.Password.RequiredUniqueChars = 1;          // Caracteres 鷑icos
+    // Configuraci贸n de contrase帽as
+    options.Password.RequireDigit = false;             // N煤meros obligatorios
+    options.Password.RequireLowercase = false;         // Min煤sculas obligatorias
+    options.Password.RequireUppercase = false;         // May煤sculas obligatorias
+    options.Password.RequireNonAlphanumeric = false;   // S铆mbolos obligatorios
+    options.Password.RequiredLength = 4;               // M铆nimo de caracteres
+    options.Password.RequiredUniqueChars = 1;          // Caracteres 煤nicos
 
 
-    // Configuraci髇 de bloqueo (opcional)
+    // Configuraci贸n de bloqueo (opcional)
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 
-    // Configuraci髇 de usuarios
+    // Configuraci贸n de usuarios
     options.User.RequireUniqueEmail = false;
 })
 .AddEntityFrameworkStores<AppDbContext>()
@@ -57,8 +57,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
-    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);   // detecci髇 de clientes colgados
-    options.KeepAliveInterval = TimeSpan.FromSeconds(10);   // ping peri骴ico
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);   // detecci贸n de clientes colgados
+    options.KeepAliveInterval = TimeSpan.FromSeconds(10);   // ping peri贸dico
     options.MaximumParallelInvocationsPerClient = 10;            // defensivo
 });
 
@@ -66,7 +66,7 @@ builder.Services.AddSignalR(options =>
 builder.Services.AddSingleton<INotificationQueue, NotificationQueue>();
 builder.Services.AddHostedService<NotificationDispatcher>();
 
-// Inyecci髇 de dependencias
+// Inyecci贸n de dependencias
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -136,7 +136,7 @@ if (app.Environment.IsDevelopment())
 // Primero enrutamiento
 app.UseRouting();
 
-// Luego autenticaci髇 y autorizaci髇
+// Luego autenticaci贸n y autorizaci贸n
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -158,15 +158,22 @@ using (var scope = app.Services.CreateScope())
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
+        var context = services.GetRequiredService<AppDbContext>();
+
+        // 馃憞 Esto crea la base de datos si no existe y aplica todas las migraciones
+        context.Database.Migrate();
+
+        // 馃憞 Luego corr茅s tu seed
         GeneralResponse result = await SeedData.InitializeAsync(services);
+
         if (result.Success)
-            logger.LogInformation("Finalizo SeedData");
+            logger.LogInformation("Finaliz贸 SeedData");
         else
             logger.LogError(result.Message);
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error al ejecutar el SeedData");
+        logger.LogError(ex, "Error al ejecutar migraciones o SeedData");
     }
 }
 

@@ -52,7 +52,7 @@ namespace GestionComercial.Applications.Services
                     CreateUser = "System",
                     IsDeleted = false,
                     IsEnabled = true,
-                    SalePoint = pcParameters == null || pcParameters.Count() == 0 ? 0 : pcParameters.Max(pc => pc.SalePoint) + 1,
+                    SalePoint = pcParameters == null || pcParameters.Count() == 0 ? 1 : pcParameters.Max(pc => pc.SalePoint) + 1,
                 };
                 await _context.AddAsync(pcParameter);
                 await _dBHelper.SaveChangesAsync(_context);

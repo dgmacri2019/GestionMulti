@@ -119,7 +119,7 @@ namespace GestionComercial.API.Controllers.Admin
 
 
         [HttpPost("GetPcParameterAsync")]
-        public async Task<IActionResult> GetAllPcParametersAsync([FromBody] ParameterFilterDto filter)
+        public async Task<IActionResult> GetPcParameterAsync([FromBody] ParameterFilterDto filter)
         {
             PcParameter? pcParameter = await _parameterService.GetPcParameterAsync(filter.PcName);
             return Ok(pcParameter);

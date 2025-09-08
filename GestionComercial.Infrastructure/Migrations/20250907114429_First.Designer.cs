@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComercial.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250824121226_ClientAndProviderOptionalCode")]
-    partial class ClientAndProviderOptionalCode
+    [Migration("20250907114429_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -825,9 +825,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SaleConditionId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
@@ -837,11 +834,7 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SaleConditionId");
-
-                    b.HasIndex("BankId", "SaleConditionId")
-                        .IsUnique()
-                        .HasDatabaseName("Bank_SaleCondition_Index");
+                    b.HasIndex("BankId");
 
                     b.ToTable("BankParameters");
                 });
@@ -882,9 +875,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SaleConditionId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Sold")
                         .HasColumnType("decimal(18,2)");
 
@@ -898,8 +888,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("SaleConditionId");
 
                     b.ToTable("Boxes");
                 });
@@ -1407,6 +1395,10 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<decimal>("CreditLimit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("DocumentNumber")
                         .IsRequired()
                         .HasMaxLength(13)
@@ -1478,12 +1470,12 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SaleConditionId")
+                    b.Property<int?>("SaleConditionId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Sold")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("StateId")
                         .HasColumnType("int");
@@ -1736,6 +1728,9 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("ProductBarCodeWeight")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("SumQuantityItems")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
@@ -1752,6 +1747,47 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GeneralParameters");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Configuration.PcParameter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PCName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SalePoint")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PcParameters");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Configuration.PrinterParameter", b =>
@@ -1879,93 +1915,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PrinterParameters");
-                });
-
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Measure", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Measures");
-                });
-
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.PriceList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ArticleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreateUser")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdateUser")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("Utility")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.ToTable("PriceLists");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
@@ -2114,6 +2063,12 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<int>("AfipId")
                         .HasColumnType("int");
 
+                    b.Property<int>("BankParameterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BoxId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -2132,6 +2087,10 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<string>("SmallDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
@@ -2140,6 +2099,10 @@ namespace GestionComercial.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BankParameterId");
+
+                    b.HasIndex("BoxId");
 
                     b.ToTable("SaleConditions");
                 });
@@ -3504,9 +3467,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Property<bool>("PartialPay")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SaleConditionId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
@@ -3545,7 +3505,9 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("SaleConditionId");
+                    b.HasIndex("SalePoint", "SaleNumber")
+                        .IsUnique()
+                        .HasDatabaseName("Sale_SalePoint-Number_Index");
 
                     b.ToTable("Sales");
                 });
@@ -3577,8 +3539,8 @@ namespace GestionComercial.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -3782,8 +3744,8 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<decimal>("Cost")
                         .HasPrecision(18, 4)
@@ -3917,6 +3879,98 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Measure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SmallDescription")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Measures");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.PriceList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreateUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Utility")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.ToTable("PriceLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -4167,15 +4221,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
-                        .WithMany("BankParameters")
-                        .HasForeignKey("SaleConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Bank");
-
-                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Box", b =>
@@ -4186,15 +4232,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
-                        .WithMany("Boxes")
-                        .HasForeignKey("SaleConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Account");
-
-                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Debitation", b =>
@@ -4325,17 +4363,15 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionComercial.Domain.Entities.Masters.PriceList", "PriceList")
+                    b.HasOne("GestionComercial.Domain.Entities.Stock.PriceList", "PriceList")
                         .WithMany()
                         .HasForeignKey("PriceListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
+                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", null)
                         .WithMany("Clients")
-                        .HasForeignKey("SaleConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SaleConditionId");
 
                     b.HasOne("GestionComercial.Domain.Entities.Masters.State", "State")
                         .WithMany()
@@ -4348,8 +4384,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("IvaCondition");
 
                     b.Navigation("PriceList");
-
-                    b.Navigation("SaleCondition");
 
                     b.Navigation("State");
                 });
@@ -4377,13 +4411,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("IvaCondition");
 
                     b.Navigation("State");
-                });
-
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.PriceList", b =>
-                {
-                    b.HasOne("GestionComercial.Domain.Entities.Stock.Article", null)
-                        .WithMany("PriceLists")
-                        .HasForeignKey("ArticleId");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
@@ -4423,6 +4450,25 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("SaleCondition");
 
                     b.Navigation("State");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.SaleCondition", b =>
+                {
+                    b.HasOne("GestionComercial.Domain.Entities.BoxAndBank.BankParameter", "BankParameter")
+                        .WithMany("SaleConditions")
+                        .HasForeignKey("BankParameterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestionComercial.Domain.Entities.BoxAndBank.Box", "Box")
+                        .WithMany("SaleConditions")
+                        .HasForeignKey("BoxId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BankParameter");
+
+                    b.Navigation("Box");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.RolePermission", b =>
@@ -4782,15 +4828,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
-                        .WithMany()
-                        .HasForeignKey("SaleConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Client");
-
-                    b.Navigation("SaleCondition");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SaleDetail", b =>
@@ -4850,7 +4888,7 @@ namespace GestionComercial.Infrastructure.Migrations
             modelBuilder.Entity("GestionComercial.Domain.Entities.Sales.SalePayMetodDetail", b =>
                 {
                     b.HasOne("GestionComercial.Domain.Entities.Masters.SaleCondition", "SaleCondition")
-                        .WithMany()
+                        .WithMany("SalePayMetodDetails")
                         .HasForeignKey("SaleConditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -4874,7 +4912,7 @@ namespace GestionComercial.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionComercial.Domain.Entities.Masters.Measure", "Measure")
+                    b.HasOne("GestionComercial.Domain.Entities.Stock.Measure", "Measure")
                         .WithMany("Articles")
                         .HasForeignKey("MeasureId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -4891,6 +4929,13 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("Measure");
 
                     b.Navigation("Tax");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.PriceList", b =>
+                {
+                    b.HasOne("GestionComercial.Domain.Entities.Stock.Article", null)
+                        .WithMany("PriceLists")
+                        .HasForeignKey("ArticleId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -4985,6 +5030,16 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("Debitations");
                 });
 
+            modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.BankParameter", b =>
+                {
+                    b.Navigation("SaleConditions");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.BoxAndBank.Box", b =>
+                {
+                    b.Navigation("SaleConditions");
+                });
+
             modelBuilder.Entity("GestionComercial.Domain.Entities.Budget.Budget", b =>
                 {
                     b.Navigation("BudgetDetails");
@@ -5002,11 +5057,6 @@ namespace GestionComercial.Infrastructure.Migrations
                     b.Navigation("Billings");
                 });
 
-            modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Measure", b =>
-                {
-                    b.Navigation("Articles");
-                });
-
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Provider", b =>
                 {
                     b.Navigation("Purcheases");
@@ -5014,13 +5064,11 @@ namespace GestionComercial.Infrastructure.Migrations
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.SaleCondition", b =>
                 {
-                    b.Navigation("BankParameters");
-
-                    b.Navigation("Boxes");
-
                     b.Navigation("Clients");
 
                     b.Navigation("Providers");
+
+                    b.Navigation("SalePayMetodDetails");
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Masters.Security.Permission", b =>
@@ -5091,6 +5139,11 @@ namespace GestionComercial.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Category", b =>
+                {
+                    b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("GestionComercial.Domain.Entities.Stock.Measure", b =>
                 {
                     b.Navigation("Articles");
                 });

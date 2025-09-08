@@ -28,29 +28,39 @@ namespace GestionComercial.Desktop.Views.Sales
         private readonly SalesApiService _salesApiService;
         private readonly int SaleId;
         private SaleViewModel saleViewModel;
-        private readonly bool UsePostMethod;
+        private bool UsePostMethod;
         public ObservableCollection<ArticleItem> ArticleItems { get; set; }
         public int TotalItems => ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code));
         public decimal TotalPrice => ArticleItems.Sum(a => a.Total);
 
-        private readonly int SalePoint;
+        private int SalePoint;
         private int SaleNumber = 0;
 
         // Separador decimal según cultura actual (si querés forzar coma: const char DecSep = ',';)
         private static readonly char DecSep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
         private static readonly char OtherSep = (DecSep == ',') ? '.' : ',';
 
-        private readonly int Width;
-        private readonly int Height;
+        private int Width;
+        private int Height;
 
         public SaleAddWindow(int saleId)
         {
             InitializeComponent();
-            while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters
-                || !ClientCache.Instance.HasData || !ArticleCache.Instance.HasData || !ClientCache.Instance.HasData)
-            {
-                Task.Delay(10);
-            }
+            //int cont = 0;
+            //while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters
+            //    || !ClientCache.Instance.HasData || !ArticleCache.Instance.HasData || !ClientCache.Instance.HasData)
+            //{
+            //    Task.Delay(10);
+            //    cont++;
+            //    if (cont == 500)
+            //    {
+            //        MessageBox.Show("Error de While", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            //    }
+
+            //}
+
+            InitializeComponent();
 
             _salesApiService = new SalesApiService();
             DataContext = this;
@@ -62,19 +72,28 @@ namespace GestionComercial.Desktop.Views.Sales
                 OnPropertyChanged(nameof(TotalPrice));
             };
 
+            // Llamamos a un método async sin bloquear
+            Loaded += async (s, e) => await InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            // Esperamos hasta que los parámetros estén listos o 5 segundos máximo
+            bool ready = await WaitForDataAsync(TimeSpan.FromSeconds(5));
+
+            if (!ready)
+            {
+                MessageBox.Show("Error cargando datos iniciales", "Aviso al operador",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+                this.Close(); // 👈 Cerramos la ventana
+                return;
+            }
+
             UsePostMethod = ParameterCache.Instance.GetAllGeneralParameters().First().UsePostMethod;
 
-            //if (!UsePostMethod)
-            //{
-            //    // Agregar fila inicial en blanco
-            //    ArticleItems.Add(new ArticleItem());
-            //    //chBarcode.IsChecked = false;
-            //}
             _ = LoadSaleAsync();
 
-
-            //btnAdd.Visibility = SaleId == 0 ? Visibility.Visible : Visibility.Hidden;
-            //btnUpdate.Visibility = SaleId == 0 ? Visibility.Hidden : Visibility.Visible;
             SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
             SaleNumber = SaleCache.Instance.GetLastSaleNumber() + 1;
 
@@ -82,6 +101,25 @@ namespace GestionComercial.Desktop.Views.Sales
             Width = width;
             Height = height;
         }
+
+        private async Task<bool> WaitForDataAsync(TimeSpan timeout)
+        {
+            var start = DateTime.Now;
+
+            while (!ParameterCache.Instance.HasDataPCParameters ||
+                   !ParameterCache.Instance.HasDataGeneralParameters ||
+                   !ClientCache.Instance.HasData ||
+                   !ArticleCache.Instance.HasData)
+            {
+                if (DateTime.Now - start > timeout)
+                    return false;
+
+                await Task.Delay(50); // 👈 Libera la UI mientras espera
+            }
+
+            return true;
+        }
+
 
         private async Task LoadSaleAsync()
         {
@@ -463,6 +501,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                     //cbSaleConditions.ItemsSource = client.SaleConditions;
                     //cbSaleConditions.SelectedValue = client.SaleConditionId;
+                    ArticleItems.Clear();
                     dgArticles.Visibility = Visibility.Visible;
                     dgPostMethod.Visibility = Visibility.Visible;
                     SetingFocus();
@@ -745,7 +784,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             sale.Sold = sale.Total - totalpay;
                             sale.PaidOut = sale.Total == totalpay;
                             sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
-                            
+
 
                             GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
                             if (resultAdd.Success)
