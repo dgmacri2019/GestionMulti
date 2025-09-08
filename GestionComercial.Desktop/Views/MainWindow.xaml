@@ -8,7 +8,10 @@
         mc:Ignorable="d"
         Title="Sistema de Gestión Comercial"
         Icon="/Images/090906_Tienda2.png"
-        Height="600" Width="900"
+        Height="768" 
+        Width="1024"
+        MinHeight="768"
+        MinWidth="1024"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized" 
         Loaded="Window_Loaded">

@@ -1,11 +1,17 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Stock;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionComercial.Domain.DTOs.Stock
 {
-    public class ArticleViewModel
+    public class ArticleViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private decimal _cost, _bonification, _realCost, _priceWithTax;
+        private int _taxId;
+
+
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Id { get; set; }
 
@@ -27,22 +33,70 @@ namespace GestionComercial.Domain.DTOs.Stock
         [Display(Name = "Precio de compra")]
         [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
         //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public decimal Cost { get; set; }
+        public decimal Cost
+        {
+            get => _cost;
+            set
+            {
+                if (_cost != value)
+                {
+                    _cost = value;
+                    OnPropertyChanged(nameof(Cost));
+                    RecalcularDesdeCostoSinIVA();
+                }
+            }
+        }
 
         [Required(ErrorMessage = "El Campo {0} es requerido")]
         [Display(Name = "Bonificación / Recargo")]
         [Range(-100, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public decimal Bonification { get; set; }
+        public decimal Bonification
+        {
+            get => _bonification;
+            set
+            {
+                if (_bonification != value)
+                {
+                    _bonification = value;
+                    OnPropertyChanged(nameof(Bonification));
+                    RecalcularDesdeCostoSinIVA();
+                }
+            }
+        }
 
         [Display(Name = "Precio de compra")]
         [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
         //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public decimal RealCost { get; set; }
+        public decimal RealCost
+        {
+            get => _realCost;
+            set
+            {
+                if (_realCost != value)
+                {
+                    _realCost = value;
+                    OnPropertyChanged(nameof(RealCost));
+                    RecalcularDesdeCostoConBonificacion();
+                }
+            }
+        }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar un {0}")]
         [Display(Name = "Tipo de IVA")]
-        public int TaxId { get; set; }
+        public int TaxId
+        {
+            get => _taxId;
+            set
+            {
+                if (_taxId != value)
+                {
+                    _taxId = value;
+                    OnPropertyChanged(nameof(TaxId));
+                    RecalcularDesdeCostoConBonificacion();
+                }
+            }
+        }
 
         [Required(ErrorMessage = "El Campo {0} es requerido")]
         [Display(Name = "Impuestos Internos")]
@@ -125,14 +179,75 @@ namespace GestionComercial.Domain.DTOs.Stock
         [Display(Name = "Habilitado?")]
         public bool IsEnabled { get; set; }
 
-        
+
         public List<PriceListItemDto> PriceLists { get; set; } = [];
         public List<TaxePriceDto> TaxesPrice { get; set; } = [];
 
         public string Category { get; set; } = string.Empty;
         public string CategoryColor { get; set; } = string.Empty;
-        public decimal PriceWithTax { get; set; }
+       
+        //[DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
+        public decimal PriceWithTax
+        {
+            get => _priceWithTax;
+            set
+            {
+                if (_priceWithTax != value)
+                {
+                    _priceWithTax = value;
+                    OnPropertyChanged(nameof(PriceWithTax));
+                    RecalcularDesdeCostoConIVA();
+                }
+            }
+        }
 
+
+        private bool _isUpdating = false;
+
+        private void RecalcularDesdeCostoSinIVA()
+        {
+            if (_isUpdating || TaxId == 0 || Taxes == null) return;
+            _isUpdating = true;
+
+            Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                RealCost = Cost * (1 - Bonification / 100);
+                PriceWithTax = RealCost * (1 + tax.Rate / 100);
+            }
+            _isUpdating = false;
+        }
+
+        private void RecalcularDesdeCostoConBonificacion()
+        {
+            if (_isUpdating || TaxId == 0 || Taxes == null) return;
+            _isUpdating = true;
+            Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                Cost = RealCost / (1 - Bonification / 100);
+                PriceWithTax = RealCost * (1 + tax.Rate / 100);
+            }
+            _isUpdating = false;
+        }
+
+        private void RecalcularDesdeCostoConIVA()
+        {
+            if (_isUpdating || TaxId == 0 || Taxes == null) return;
+            _isUpdating = true;
+            Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                RealCost = PriceWithTax / (1 + tax.Rate / 100);
+                Cost = RealCost / (1 - Bonification / 100);
+            }
+            _isUpdating = false;
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public virtual ICollection<Tax> Taxes { get; set; }
         public virtual ICollection<Measure> Measures { get; set; }

@@ -33,6 +33,7 @@
             <converters:StockMultiConverter x:Key="StockMultiConverter"/>
             <converters:IsLastItemConverter x:Key="IsLastItemConverter"/>
             <converters:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
+            <converters:DecimalCommaConverter x:Key="DecimalCommaConverter"/>
         </ResourceDictionary>
 
     </Application.Resources>

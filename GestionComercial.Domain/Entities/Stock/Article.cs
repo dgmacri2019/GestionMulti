@@ -109,7 +109,7 @@ namespace GestionComercial.Domain.Entities.Stock
 
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Tax? Tax { get; set; }
 
         [JsonIgnore]

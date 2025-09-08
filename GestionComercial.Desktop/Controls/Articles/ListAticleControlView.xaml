@@ -78,15 +78,16 @@
                      Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
-        <DataGrid x:Name="DgArticles" Background="Gray"
-          Grid.Row="2" 
-          ItemsSource="{Binding Articles}" 
-          AutoGenerateColumns="False"                  
-          CanUserAddRows="False"
-          CanUserSortColumns="True"
-          ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
-          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-          MouseDoubleClick="DataGrid_MouseDoubleClick">
+        <DataGrid x:Name="DgArticles" 
+                  Background="Gray"
+                  Grid.Row="2" 
+                  ItemsSource="{Binding Articles}" 
+                  AutoGenerateColumns="False"       
+                  CanUserAddRows="False"
+                  CanUserSortColumns="True"
+                  ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Categoría" Width="100" SortMemberPath="Category">
                     <DataGridTemplateColumn.CellTemplate>
@@ -155,11 +156,17 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Costo" Width="auto" SortMemberPath="Cost">
+                <DataGridTemplateColumn Width="100" SortMemberPath="Cost">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Costo sin IVA"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding Cost, StringFormat={}{0:C4}}" 
+                                <TextBlock Text="{Binding Cost, StringFormat={}{0:C3}}" 
                                    Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
@@ -180,11 +187,17 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="SubTotal" Width="auto" SortMemberPath="RealCost">
+                <DataGridTemplateColumn Width="100" SortMemberPath="RealCost">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="SubTotal sin IVA"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding RealCost, StringFormat={}{0:C4}}" 
+                                <TextBlock Text="{Binding RealCost, StringFormat={}{0:C3}}" 
                                    Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
@@ -210,18 +223,30 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Costo Real" Width="auto" SortMemberPath="PriceWithTax">
+                <DataGridTemplateColumn Width="100" SortMemberPath="PriceWithTax">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Costo con IVA"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding PriceWithTax, StringFormat={}{0:C2}}" 
+                                <TextBlock Text="{Binding PriceWithTax, StringFormat={}{0:C3}}" 
                                    Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Listas de Precios" Width="auto">
+                <DataGridTemplateColumn Width="120">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Listas de Precios con IVA"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding PriceLists}">

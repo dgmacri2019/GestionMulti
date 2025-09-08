@@ -346,7 +346,7 @@ namespace GestionComercial.Applications.Services
                 UpdateUser = article.UpdateUser,
                 Categories = categories,
                 Measures = measures,
-                Taxes = taxes,
+                Taxes = taxes,                
                 TaxesPrice =
                 [
                      new TaxePriceDto

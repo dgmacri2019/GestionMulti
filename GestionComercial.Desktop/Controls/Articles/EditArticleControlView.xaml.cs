@@ -45,20 +45,26 @@ namespace GestionComercial.Desktop.Controls.Articles
 
         private async Task FindArticleAsync()
         {
-            ArticleResponse result = await _articlesApiService.GetByIdAsync(ArticleId);
-
-            articleViewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
-            if (result.Success)
+            //ArticleResponse result = await _articlesApiService.GetByIdAsync(ArticleId);
+            if (ArticleId == 0)
             {
-                articleViewModel = result.ArticleViewModel;
-                if (ArticleId == 0)
+                articleViewModel = new ArticleViewModel
                 {
-                    articleViewModel.CreateUser = App.UserName;
-                }
-                DataContext = articleViewModel;
+                    CreateUser = App.UserName
+                };
             }
             else
-                lblError.Text = result.Message;
+            {
+                articleViewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
+                if (articleViewModel != null)
+                {
+                    //articleViewModel = result.ArticleViewModel;
+
+                    DataContext = articleViewModel;
+                }
+                else
+                    lblError.Text = "No se reconoce el artículo";
+            }
         }
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
@@ -118,185 +124,36 @@ namespace GestionComercial.Desktop.Controls.Articles
             }
         }
 
-        private void txtCost_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (txtCost.IsFocused && ValidatorHelper.IsNumeric(txtCost.Text))
-            {
-                //txtCost.Text = txtCost.Text.Replace(".", ",");
-                decimal cost = txtCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtCost.Text.Replace(".", ","));
-                decimal porcent = Convert.ToDecimal(txtBonification.Text);
-                decimal value = cost - (cost * porcent / 100);
-                //txtCost.Text = string.Format("{0:C2}", cost);
-                txtRealCost.Text = string.Format("{0}", value);
-            }
-        }
-        private void txtCost_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void TextBox_SelectAll(object sender, RoutedEventArgs e)
         {
             if (sender is TextBox tb)
-                tb.SelectAll();
-        }
-        private void txtCost_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
-            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
             {
-                e.Handled = true;   // Consumí este clic
-                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
+                tb.SelectAll();
             }
         }
-        private void txtCost_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-        private void txtCost_LostFocus(object sender, RoutedEventArgs e)
-        {
-            txtCost.Text = txtCost.Text.Replace(".", ",");
-        }
-        private void txtCost_KeyDown(object sender, KeyEventArgs e)
+
+        // Salta al siguiente control al presionar Enter
+        private void TextBox_KeyDown_MoveNext(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                //e.Handled = true;
-            }
-        }
-
-        private void txtPriceWithTax_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (sender is TextBox tb)
-                tb.SelectAll();
-        }
-
-        private void txtPriceWithTax_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                //e.Handled = true;
-            }
-        }
-
-        private void txtPriceWithTax_LostFocus(object sender, RoutedEventArgs e)
-        {
-            txtPriceWithTax.Text = txtPriceWithTax.Text.Replace(".", ",");
-        }
-
-        private void txtPriceWithTax_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
-            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
-            {
-                e.Handled = true;   // Consumí este clic
-                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
-            }
-        }
-
-        private void txtPriceWithTax_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-
-        private void txtPriceWithTax_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (txtPriceWithTax.IsFocused && ValidatorHelper.IsNumeric(txtPriceWithTax.Text))
-            {
-                decimal costWithTax = txtPriceWithTax.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtPriceWithTax.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtPriceWithTax.Text.Replace(".", ","));
-
-                decimal cost = txtCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtCost.Text.Replace(".", ","));
-                decimal porcent = Convert.ToDecimal(txtBonification.Text);
-                decimal value = cost - (cost * porcent / 100);
-                //txtCost.Text = string.Format("{0:C2}", cost);
-                txtRealCost.Text = string.Format("{0}", value);
-            }
-        }
-
-
-        private void txtBonification_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            try
-            {
-                if (txtBonification.Text.Length > 0 && txtBonification.IsFocused && EsTextoNumerico(txtBonification.Text))
+                e.Handled = true; // evita el sonido del Enter
+                if (sender is UIElement element)
                 {
-                    decimal porcent = Convert.ToDecimal(txtBonification.Text);
-                    if (porcent > 0)
-                        txtBonification.Foreground = new SolidColorBrush(Colors.Red);
-                    else
-                        txtBonification.Foreground = new SolidColorBrush(Color.FromRgb(84, 84, 84));
-
-
-                    string costString = txtCost.Text.Substring(0, 1) == "$" ? txtCost.Text.Substring(1) : txtCost.Text;
-                    decimal cost = !ValidatorHelper.IsNumeric(costString) ? 0 : Convert.ToDecimal(costString);
-                    //decimal porcent = txtBonification.Text.Substring(0, 1) == "-" && txtBonification.Text.Length == 1 ? 0 : Convert.ToDecimal(txtBonification.Text);
-                    decimal value = cost - (cost * porcent / 100);
-                    txtRealCost.Text = string.Format("{0}", value);
+                    element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                 }
             }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
-        private void txtBonification_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) /*|| textoIngresado == "-" || textoIngresado == "."*/)
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-        private void txtBonification_TextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !EsTextoNumerico(e.Text);
-        }
-        private void txtBonification_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtBonification.Text))
-                txtBonification.Text = "0";
-            //txtBonification.Text = txtBonification.Text.Replace(".", ",");
         }
 
-
-        private void txtRealCost_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        // Selecciona todo al hacer click con el mouse (si aún no tenía foco)
+        private void TextBox_PreviewMouseLeftButtonDown_SelectAll(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-        private void txtRealCost_LostFocus(object sender, RoutedEventArgs e)
-        {
-            string costString = txtRealCost.Text.Substring(0, 1) == "$" ? txtRealCost.Text.Substring(1) : txtRealCost.Text;
-            txtRealCost.Text = string.Format("{0:C4}", !ValidatorHelper.IsNumeric(costString) ? 0 : costString);
-        }
-        private void txtRealCost_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // Si el TextBox aún no tiene el foco, prevení que el clic mueva el caret
             if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
             {
-                e.Handled = true;   // Consumí este clic
-                tb.Focus();         // Forzá el foco -> dispara GotKeyboardFocus -> SelectAll()
-            }
-        }
-        private void txtRealCost_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (sender is TextBox tb)
+                e.Handled = true; // evita que WPF cambie el foco primero
+                tb.Focus();
                 tb.SelectAll();
+            }
         }
 
 
