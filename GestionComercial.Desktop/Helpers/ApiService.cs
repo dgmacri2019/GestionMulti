@@ -15,7 +15,7 @@ namespace GestionComercial.Desktop.Helpers
             _client = new HttpClient
             {
                 BaseAddress = new Uri(baseUrl),
-                Timeout = TimeSpan.FromMilliseconds(10000),                
+                //Timeout = TimeSpan.FromMilliseconds(10000),                
                 /*, MaxResponseContentBufferSize = 100_000_000*/
             };
         }
