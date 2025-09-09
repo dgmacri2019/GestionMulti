@@ -21,7 +21,7 @@ namespace GestionComercial.Desktop.Services
             string token = App.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
-            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
+            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(5000));
         }
 
 
@@ -68,46 +68,54 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<List<ClientViewModel>> GetAllAsync()
+        internal async Task<List<ClientViewModel>> GetAllAsync(int pageSize = 100)
         {
+            var allClients = new List<ClientViewModel>();
+            int page = 1;
+            bool moreData = true;
+
             try
             {
-                // Llama al endpoint y deserializa la respuesta
-
-                var response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
+                var options = new JsonSerializerOptions
                 {
-                    //IsDeleted = isDeleted,
-                    //IsEnabled = isEnabled,
-                });
+                    PropertyNameCaseInsensitive = true
+                };
 
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
+                while (moreData)
                 {
-
-                    var options = new JsonSerializerOptions
+                    // Enviar la solicitud al endpoint con parámetros de paginación
+                    var response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
                     {
-                        PropertyNameCaseInsensitive = true
-                    };
+                        Page = page,
+                        PageSize = pageSize
+                    });
 
-                    var articles = JsonSerializer.Deserialize<List<ClientViewModel>>(jsonResponse, options);
+                    response.EnsureSuccessStatusCode();
 
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using var stream = await response.Content.ReadAsStreamAsync();
+                    List<ClientViewModel>? clients = await JsonSerializer.DeserializeAsync<List<ClientViewModel>>(stream, options);
 
-                    return articles;
+                    if (clients == null || clients.Count == 0)
+                    {
+                        moreData = false; // no quedan más datos
+                    }
+                    else
+                    {
+                        allClients.AddRange(clients);
+                        page++; // siguiente página
+                    }
                 }
-                else
-                {
-                    // Manejo de error
-                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                    return null;
-                }
+
+                return allClients;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MessageBox.Show($"Error al obtener clientes: {ex.Message}");
                 throw;
             }
         }
+
 
         internal async Task<ClientResponse> GetByIdAsync(int clientId)
         {

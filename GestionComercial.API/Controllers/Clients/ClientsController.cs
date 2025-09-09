@@ -84,7 +84,7 @@ namespace GestionComercial.API.Controllers.Clients
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync([FromBody] ClientFilterDto filter)
         {
-            IEnumerable<ClientViewModel> clients = await _clienService.GetAllAsync();
+            IEnumerable<ClientViewModel> clients = await _clienService.GetAllAsync(filter.Page, filter.PageSize);
             return Ok(clients);
         }
 

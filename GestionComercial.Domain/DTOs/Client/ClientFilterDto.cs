@@ -9,5 +9,8 @@
         public string FansatyName { get; set; } = string.Empty;
         public string FansatyDescription { get; set; } = string.Empty;
         public string BusinessName { get; set; } = string.Empty;
+
+        public int Page { get; set; } = 1;       // página por defecto
+        public int PageSize { get; set; } = 100; // tamaño por defecto
     }
 }

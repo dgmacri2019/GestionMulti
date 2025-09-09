@@ -8,6 +8,7 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace GestionComercial.Applications.Services
 {
@@ -35,21 +36,23 @@ namespace GestionComercial.Applications.Services
             return new GeneralResponse { Success = false, Message = "Cliente no encontrado" };
         }
 
-        public async Task<IEnumerable<ClientViewModel>> GetAllAsync()
+        public async Task<IEnumerable<ClientViewModel>> GetAllAsync(int page, int pageSize)
         {
             // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
             ICollection<PriceList> priceLists = await _context.PriceLists
               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
               .ToListAsync();
-
+                   // orden obligatorio para paginación consistente
+   
             List<IGrouping<string, Client>> clients = await _context.Clients
                  .Include(c => c.PriceList)
                  .Include(c => c.State)
                  .Include(ic => ic.IvaCondition)
                  .Include(dt => dt.DocumentType)
-                 //.Include(sc => sc.SaleCondition)
-                 //.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
-                 .OrderBy(c => c.BusinessName)
+                 .OrderBy(c => c.Id)
+                 .ThenBy(c => c.BusinessName)
+                 .Skip((page - 1) * pageSize)
+                 .Take(pageSize)
                  .GroupBy(c => c.PriceList.Description)
                  .ToListAsync();
 
@@ -78,6 +81,7 @@ namespace GestionComercial.Applications.Services
 
             return ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions);
         }
+               
 
         public async Task<ClientViewModel?> GetByIdAsync(int id)
         {

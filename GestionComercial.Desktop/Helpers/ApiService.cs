@@ -11,7 +11,7 @@ namespace GestionComercial.Desktop.Helpers
             var config = ConfigurationHelper.GetConfiguration();
             string baseUrl = config["ApiSettings:BaseUrl"];
 
-            _client = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            _client = new HttpClient { BaseAddress = new Uri(baseUrl)/*, MaxResponseContentBufferSize = 100_000_000*/ };
         }
 
         public HttpClient GetHttpClient() => _client;
