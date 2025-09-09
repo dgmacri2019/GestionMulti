@@ -63,9 +63,13 @@ namespace GestionComercial.Desktop.Views.Searchs
                 dgClients.ItemsSource = _allClients;
             else
                 dgClients.ItemsSource = _allClients
-                    .Where(a => a.OptionalCode.ToLower().Contains(text.ToLower()) || a.FantasyName.ToLower().Contains(text.ToLower())
-                    || a.BusinessName.ToLower().Contains(text.ToLower()) || a.DocumentNumber.ToLower().Contains(text.ToLower()))
-                    .ToList();
+            .Where(a =>
+                (a.OptionalCode ?? "").ToLower().Contains(text.ToLower()) ||
+                (a.FantasyName ?? "").ToLower().Contains(text.ToLower()) ||
+                (a.BusinessName ?? "").ToLower().Contains(text.ToLower()) ||
+                (a.DocumentNumber ?? "").ToLower().Contains(text.ToLower())
+            )
+            .ToList();
         }
 
     }

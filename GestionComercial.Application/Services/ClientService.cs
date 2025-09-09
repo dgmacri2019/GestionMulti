@@ -8,7 +8,6 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace GestionComercial.Applications.Services
 {
@@ -42,8 +41,8 @@ namespace GestionComercial.Applications.Services
             ICollection<PriceList> priceLists = await _context.PriceLists
               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
               .ToListAsync();
-                   // orden obligatorio para paginación consistente
-   
+            // orden obligatorio para paginación consistente
+
             List<IGrouping<string, Client>> clients = await _context.Clients
                  .Include(c => c.PriceList)
                  .Include(c => c.State)
@@ -81,7 +80,7 @@ namespace GestionComercial.Applications.Services
 
             return ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions);
         }
-               
+
 
         public async Task<ClientViewModel?> GetByIdAsync(int id)
         {

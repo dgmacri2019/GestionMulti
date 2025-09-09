@@ -8,7 +8,6 @@ using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -19,6 +18,7 @@ using System.Windows.Threading;
 
 namespace GestionComercial.Desktop.Views.Sales
 {
+    //TODO: SignalR debe informar cambios solo en IDs moficidados
     public partial class SaleAddWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -532,6 +532,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         cbPriceLists.ItemsSource = selectedClient.PriceLists;
                         cbPriceLists.SelectedValue = selectedClient.PriceListId;
 
+
                         //cbSaleConditions.ItemsSource = selectedClient.SaleConditions;
                         //cbSaleConditions.SelectedValue = selectedClient.SaleConditionId;
                         dgArticles.Visibility = Visibility.Visible;
@@ -938,28 +939,38 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private void SetingFocus()
         {
-            if (UsePostMethod)
+            try
             {
-                chBarcode.IsChecked = true;
-                txtBarcode.Focus();
-            }
-            else
-            {
-                if (ArticleItems == null)
-                    ArticleItems = new ObservableCollection<ArticleItem>();
-
-                if (ArticleItems.Count == 0)
-                    ArticleItems.Add(new ArticleItem());
-                dgArticles.Dispatcher.BeginInvoke(new System.Action(() =>
+                if (UsePostMethod)
                 {
-                    if (dgArticles.Items.Count > 0 && dgArticles.Columns.Count > 0)
+                    if (ArticleItems != null && string.IsNullOrEmpty(ArticleItems[0].Code))
+                        ArticleItems.Clear();
+                    chBarcode.IsChecked = true;
+                    txtBarcode.Focus();
+
+                }
+                else
+                {
+                    if (ArticleItems == null)
+                        ArticleItems = new ObservableCollection<ArticleItem>();
+
+                    if (ArticleItems.Count == 0)
+                        ArticleItems.Add(new ArticleItem());
+                    dgArticles.Dispatcher.BeginInvoke(new System.Action(() =>
                     {
-                        dgArticles.SelectedIndex = 0;
-                        dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
-                        dgArticles.ScrollIntoView(dgArticles.Items[0]);
-                        dgArticles.BeginEdit();
-                    }
-                }), System.Windows.Threading.DispatcherPriority.Input);
+                        if (dgArticles.Items.Count > 0 && dgArticles.Columns.Count > 0)
+                        {
+                            dgArticles.SelectedIndex = 0;
+                            dgArticles.CurrentCell = new DataGridCellInfo(dgArticles.Items[0], dgArticles.Columns[0]);
+                            dgArticles.ScrollIntoView(dgArticles.Items[0]);
+                            dgArticles.BeginEdit();
+                        }
+                    }), System.Windows.Threading.DispatcherPriority.Input);
+                }
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = ex.Message;
             }
         }
 
