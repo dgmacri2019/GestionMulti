@@ -17,7 +17,7 @@ namespace GestionComercial.Domain.Cache
 
         public List<ClientViewModel> GetAllClients()
         {
-            return _clients;
+            return _clients.OrderBy(c => c.BusinessName).ToList();
         }
         public List<ClientViewModel> SearchClients(string name, bool isEnabled, bool isDeleted)
         {
@@ -29,6 +29,7 @@ namespace GestionComercial.Domain.Cache
                                        && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
                                         || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)
                                         || (p.DocumentNumber?.ToLower().Contains(name.ToLower()) ?? false)))
+                              .OrderBy(c => c.BusinessName)
                               .ToList()
                               :
                               new List<ClientViewModel>();
@@ -110,6 +111,21 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
+        public ClientViewModel? FindClientById(int id)
+        {
+            try
+            {
+                return _clients != null ?
+                                _clients.FirstOrDefault(c => c.Id == id)
+                               :
+                               null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public List<ClientViewModel>? FindClientsByName(string name)
         {
             try
@@ -119,6 +135,7 @@ namespace GestionComercial.Domain.Cache
                                       && !p.IsDeleted
                                       && ((p.BusinessName?.ToLower().Contains(name.ToLower()) ?? false)
                                        || (p.FantasyName?.ToLower().Contains(name.ToLower()) ?? false)))
+                             .OrderBy(c => c.BusinessName)
                              .ToList()
                              :
                              null;

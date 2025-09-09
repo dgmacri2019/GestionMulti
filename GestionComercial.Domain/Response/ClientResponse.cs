@@ -8,5 +8,9 @@ namespace GestionComercial.Domain.Response
         public string FantasyName { get; set; } = string.Empty;
 
         public ClientViewModel ClientViewModel { get; set; }
+
+        public IEnumerable<ClientViewModel> ClientViewModels { get; set; }
+
+        public int TotalRegisters { get; set; }
     }
 }

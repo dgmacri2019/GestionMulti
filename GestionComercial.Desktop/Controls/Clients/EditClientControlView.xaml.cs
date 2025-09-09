@@ -1,7 +1,9 @@
-﻿using GestionComercial.Domain.Cache;
-using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Windows;
@@ -42,21 +44,23 @@ namespace GestionComercial.Desktop.Controls.Clients
 
         private async Task FindClientAsync()
         {
-            ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId);
+            //  ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId);
 
-            clientViewModel = ClientCache.Instance.GetAllClients().FirstOrDefault(c => c.Id == ClientId);
-
-            if (result.Success)
+            if (ClientId == 0)
             {
-                if (ClientId == 0)
+                clientViewModel = new ClientViewModel
                 {
-                    clientViewModel = result.ClientViewModel;
-                    clientViewModel.CreateUser = App.UserName;
-                }
-                DataContext = clientViewModel;
+                    CreateUser = App.UserName
+                };
             }
             else
-                lblError.Text = result.Message;
+            {
+                clientViewModel = ClientCache.Instance.GetAllClients().FirstOrDefault(c => c.Id == ClientId);
+                if (clientViewModel != null)
+                     DataContext = clientViewModel;
+                else
+                    lblError.Text = "No se reconoce al cliente";
+            }
         }
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)

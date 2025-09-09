@@ -28,9 +28,15 @@ namespace GestionComercial.API.Controllers.Clients
         }
 
         [HttpPost("notify")]
-        public async Task<IActionResult> Notify(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Notify([FromBody] ClientFilterDto filter)
         {
-            await _notifier.NotifyAsync(id, "", ChangeType.Updated);
+            if (filter.Id == 5)
+                await _notifier.NotifyAsync(filter.Id, "Prueba", ChangeType.Created);
+            else if (filter.Id == 6)
+                await _notifier.NotifyAsync(filter.Id, "Prueba", ChangeType.Updated);
+            else
+                await _notifier.NotifyAsync(filter.Id, "Prueba", ChangeType.Deleted);
             return Ok();
         }
 
@@ -84,24 +90,17 @@ namespace GestionComercial.API.Controllers.Clients
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync([FromBody] ClientFilterDto filter)
         {
-            IEnumerable<ClientViewModel> clients = await _clienService.GetAllAsync(filter.Page, filter.PageSize);
-            return Ok(clients);
+            ClientResponse clientResponse = await _clienService.GetAllAsync(filter.Page, filter.PageSize);
+            return clientResponse.Success ? Ok(clientResponse) : BadRequest(clientResponse.Message);
         }
 
-
-        //[HttpPost("SearchToListAsync")]
-        //public async Task<IActionResult> SearchToListAsync([FromBody] ClientFilterDto filter)
-        //{
-        //    IEnumerable<ClientViewModel> articles = await _clienService.SearchToListAsync(filter.Name, filter.IsEnabled, filter.IsDeleted);
-        //    return Ok(articles);
-        //}
 
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] ClientFilterDto filter)
         {
             ClientViewModel? client = await _clienService.GetByIdAsync(filter.Id);
             if (client == null)
-                return NotFound();
+                return NotFound("Cliente no encontrado");
 
             return Ok(client);
         }

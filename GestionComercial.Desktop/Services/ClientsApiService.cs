@@ -2,11 +2,11 @@
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Windows;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -21,62 +21,18 @@ namespace GestionComercial.Desktop.Services
             string token = App.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
-            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(5000));
         }
 
 
-
-        internal async Task<List<ClientViewModel>> SearchAsync(string name, bool isEnabled, bool isDeleted)
+        internal async Task<ClientResponse> GetAllAsync(int pageSize = 100)
         {
-            try
-            {
-                // Llama al endpoint y deserializa la respuesta
-
-                var response = await _httpClient.PostAsJsonAsync("api/clients/SearchToListAsync", new
-                {
-                    Name = name,
-                    IsDeleted = isDeleted,
-                    IsEnabled = isEnabled,
-                });
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    var articles = JsonSerializer.Deserialize<List<ClientViewModel>>(jsonResponse, options);
-
-
-                    return articles;
-                }
-                else
-                {
-                    // Manejo de error
-                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        internal async Task<List<ClientViewModel>> GetAllAsync(int pageSize = 100)
-        {
-            var allClients = new List<ClientViewModel>();
+            List<ClientViewModel> allClients = [];
             int page = 1;
             bool moreData = true;
 
             try
             {
-                var options = new JsonSerializerOptions
+                JsonSerializerOptions options = new()
                 {
                     PropertyNameCaseInsensitive = true
                 };
@@ -84,38 +40,56 @@ namespace GestionComercial.Desktop.Services
                 while (moreData)
                 {
                     // Enviar la solicitud al endpoint con parámetros de paginación
-                    var response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
                     {
                         Page = page,
                         PageSize = pageSize
                     });
-
-                    response.EnsureSuccessStatusCode();
-
-                    // Leer el contenido como stream para no cargar todo en memoria
-                    using var stream = await response.Content.ReadAsStreamAsync();
-                    List<ClientViewModel>? clients = await JsonSerializer.DeserializeAsync<List<ClientViewModel>>(stream, options);
-
-                    if (clients == null || clients.Count == 0)
+                    if (response.IsSuccessStatusCode)
                     {
-                        moreData = false; // no quedan más datos
+                        response.EnsureSuccessStatusCode();
+
+                        // Leer el contenido como stream para no cargar todo en memoria
+                        using Stream? stream = await response.Content.ReadAsStreamAsync();
+
+                        ClientResponse? result = await JsonSerializer.DeserializeAsync<ClientResponse>(stream, options);
+                        if (result.Success)
+                            if (result.ClientViewModels == null || result.ClientViewModels.Count() == 0)
+                            {
+                                moreData = false; // no quedan más datos
+                            }
+                            else
+                            {
+                                allClients.AddRange(result.ClientViewModels);
+                                page++; // siguiente página
+                            }
                     }
                     else
                     {
-                        allClients.AddRange(clients);
-                        page++; // siguiente página
+                        return new ClientResponse
+                        {
+                            Success = false,
+                            Message = await response.Content.ReadAsStringAsync(),
+                        };
                     }
                 }
 
-                return allClients;
+                return new ClientResponse
+                {
+                    Success = true,
+                    ClientViewModels = allClients,
+                };
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al obtener clientes: {ex.Message}");
-                throw;
+                return new ClientResponse
+                {
+                    Success = false,
+                    Message = $"Error al obtener clientes, el error fue:\n {ex.Message}",
+                };
             }
         }
-
 
         internal async Task<ClientResponse> GetByIdAsync(int clientId)
         {
@@ -123,7 +97,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/clients/GetByIdAsync", new
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/GetByIdAsync", new
                 {
                     Id = clientId,
                     //IsDeleted = isDeleted,
@@ -134,7 +108,7 @@ namespace GestionComercial.Desktop.Services
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                var jsonResponse = await response.Content.ReadAsStringAsync();
+                string jsonResponse = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                     return new ClientResponse
@@ -146,7 +120,7 @@ namespace GestionComercial.Desktop.Services
                     return new ClientResponse
                     {
                         Success = false,
-                        Message = $"Error: {response.StatusCode}\n{jsonResponse}",
+                        Message = $"Error al obtener cliente, el error fue:\n{jsonResponse}",
                     };
             }
             catch (Exception ex)
@@ -154,7 +128,7 @@ namespace GestionComercial.Desktop.Services
                 return new ClientResponse
                 {
                     Success = false,
-                    Message = $"Error: {ex.Message}",
+                    Message = $"Error al obtener cliente, el error fue:\n {ex.Message}",
                 };
             }
         }
@@ -165,18 +139,21 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/clients/UpdateAsync", client);
-                var error = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/UpdateAsync", client);
+                string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
-                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Message = $"Error al actualizar cliente, el error fue: \n{error}",
                     Success = response.IsSuccessStatusCode,
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new GeneralResponse
+                {
+                    Message = $"Error al actualizar cliente, el error fue: \n{ex.Message}",
+                    Success = false,
+                };
             }
         }
 
@@ -186,18 +163,21 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/clients/AddAsync", client);
-                var error = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/AddAsync", client);
+                string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
-                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Message = $"Error al guardar cliente, el error fue:\n{error}",
                     Success = response.IsSuccessStatusCode,
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new GeneralResponse
+                {
+                    Message = $"Error al guardar cliente, el error fue: \n{ex.Message}",
+                    Success = false,
+                };
             }
         }
     }

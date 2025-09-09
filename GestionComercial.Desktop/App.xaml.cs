@@ -10,6 +10,10 @@ namespace GestionComercial.Desktop
     /// </summary>
     public partial class App : Application
     {
+        //TODO: SignalR debe informar cambios solo en Ids creados y/o modificados
+        //TODO: Paginar Consultas a Db
+        //TODO: Resolver demora en consulta clientsGettAll
+
         public static string AuthToken { get; set; }
         public static string Password { get; set; }
         public static string UserName { get; set; }

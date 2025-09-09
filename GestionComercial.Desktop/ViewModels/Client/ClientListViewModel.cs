@@ -6,6 +6,8 @@ using GestionComercial.Domain.DTOs.Client;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using static GestionComercial.Domain.Notifications.ClientChangeNotification;
+using GestionComercial.Domain.Response;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.ViewModels.Client
 {
@@ -98,8 +100,9 @@ namespace GestionComercial.Desktop.ViewModels.Client
             if (!ClientCache.Instance.HasData)
             {
                 ClientCache.Reading = true;
-                var clients = await _clientsApiService.GetAllAsync();
-                ClientCache.Instance.SetClients(clients);
+                ClientResponse clientResponse = await _clientsApiService.GetAllAsync();
+                if (clientResponse.Success)
+                    ClientCache.Instance.SetClients(clientResponse.ClientViewModels.ToList());
                 ClientCache.Reading = false;
             }
 
@@ -116,15 +119,58 @@ namespace GestionComercial.Desktop.ViewModels.Client
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnClienteCambiado(ClienteChangeNotification notification)
         {
-            var clients = await _clientsApiService.GetAllAsync();
-
-            await App.Current.Dispatcher.InvokeAsync(() =>
+            switch (notification.action)
             {
-                ClientCache.Instance.ClearCache();
-                ClientCache.Instance.SetClients(clients);
+                case ChangeType.Created:
+                    {
+                        ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(notification.ClientId);
+                        if (clientResponse.Success)
+                            await App.Current.Dispatcher.InvokeAsync(async () =>
+                            {
+                                // ClientCache.Instance.ClearCache();
+                                ClientCache.Instance.SetClient(clientResponse.ClientViewModel);
+                                //Clients.Add(clientResponse.ClientViewModel);
+                                await LoadClientsAsync();
+                            });
+                        break;
+                    }
 
-                _ = LoadClientsAsync();
-            });
+                case ChangeType.Updated:
+                    {
+                        ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(notification.ClientId);
+                        if (clientResponse.Success)
+                            await App.Current.Dispatcher.InvokeAsync(async () =>
+                            {
+                                ClientViewModel? viewModel = ClientCache.Instance.FindClientById(notification.ClientId);
+                                if (viewModel != null)
+                                {
+                                    ClientCache.Instance.UpdateClient(clientResponse.ClientViewModel);
+                                    //Clients.Remove(viewModel);
+                                    //Clients.Add(clientResponse.ClientViewModel);
+                                    await LoadClientsAsync();
+                                }
+                            });
+                        break;
+                    }
+                case ChangeType.Deleted:
+                    {
+                        await App.Current.Dispatcher.InvokeAsync(async () =>
+                        {
+                            ClientViewModel? viewModel = ClientCache.Instance.FindClientById(notification.ClientId);
+                            if (viewModel != null)
+                            {
+                                ClientCache.Instance.RemoveClient(viewModel);
+                                //Clients.Remove(viewModel);
+                                await LoadClientsAsync();
+                            }
+                        });
+                        break;
+                    }
+                default:
+                    break;
+            }
         }
     }
+
 }
+

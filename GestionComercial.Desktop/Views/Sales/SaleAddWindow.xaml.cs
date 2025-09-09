@@ -18,7 +18,6 @@ using System.Windows.Threading;
 
 namespace GestionComercial.Desktop.Views.Sales
 {
-    //TODO: SignalR debe informar cambios solo en IDs moficidados
     public partial class SaleAddWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;

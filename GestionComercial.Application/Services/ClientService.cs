@@ -8,6 +8,7 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace GestionComercial.Applications.Services
 {
@@ -35,50 +36,66 @@ namespace GestionComercial.Applications.Services
             return new GeneralResponse { Success = false, Message = "Cliente no encontrado" };
         }
 
-        public async Task<IEnumerable<ClientViewModel>> GetAllAsync(int page, int pageSize)
+        public async Task<ClientResponse> GetAllAsync(int page, int pageSize)
         {
-            // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
-            ICollection<PriceList> priceLists = await _context.PriceLists
-              .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-              .ToListAsync();
-            // orden obligatorio para paginación consistente
+            try
+            {
+                // Incluimos las listas de precios; asegúrate de que la propiedad esté activa en Product
+                ICollection<PriceList> priceLists = await _context.PriceLists
+                  .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                  .ToListAsync();
+                // orden obligatorio para paginación consistente
 
-            List<IGrouping<string, Client>> clients = await _context.Clients
-                 .Include(c => c.PriceList)
-                 .Include(c => c.State)
-                 .Include(ic => ic.IvaCondition)
-                 .Include(dt => dt.DocumentType)
-                 .OrderBy(c => c.Id)
-                 .ThenBy(c => c.BusinessName)
-                 .Skip((page - 1) * pageSize)
-                 .Take(pageSize)
-                 .GroupBy(c => c.PriceList.Description)
-                 .ToListAsync();
+                List<IGrouping<string, Client>> clients = await _context.Clients
+                     .Include(c => c.PriceList)
+                     .Include(c => c.State)
+                     .Include(ic => ic.IvaCondition)
+                     .Include(dt => dt.DocumentType)
+                     .OrderBy(c => c.Id)
+                     .ThenBy(c => c.BusinessName)
+                     .Skip((page - 1) * pageSize)
+                     .Take(pageSize)
+                     .GroupBy(c => c.PriceList.Description)
+                     .ToListAsync();
 
-            ICollection<State> states = await _context.States
-               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-               .ToListAsync();
+                ICollection<State> states = await _context.States
+                   .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                   .ToListAsync();
 
-            ICollection<IvaCondition> ivaConditions = await _context.IvaConditions
-               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-               .ToListAsync();
+                ICollection<IvaCondition> ivaConditions = await _context.IvaConditions
+                   .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                   .ToListAsync();
 
-            ICollection<DocumentType> documentTypes = await _context.DocumentTypes
-               .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-               .ToListAsync();
+                ICollection<DocumentType> documentTypes = await _context.DocumentTypes
+                   .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                   .ToListAsync();
 
-            ICollection<SaleCondition> saleConditions = await _context.SaleConditions
-                .Where(sc => sc.IsEnabled && !sc.IsDeleted)
-                .OrderBy(sc => sc.Description)
-                .ToListAsync();
+                ICollection<SaleCondition> saleConditions = await _context.SaleConditions
+                    .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                    .OrderBy(sc => sc.Description)
+                    .ToListAsync();
 
-            saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
-            states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
-            priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
-            ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
-            documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
+                saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+                states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
+                priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
+                ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
+                documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
 
-            return ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions);
+                return new ClientResponse
+                {
+                    Success = true,
+                    ClientViewModels = ToClientViewModelAndPriceList(clients, priceLists, documentTypes, saleConditions, states, ivaConditions),
+                    TotalRegisters = clients.Count
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ClientResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
         }
 
 
@@ -197,7 +214,6 @@ namespace GestionComercial.Applications.Services
                 SaleConditions = saleConditions,
                 States = states,
                 IvaConditions = ivaConditions,
-
 
                 PriceListsDTO = priceLists.Select(pl => new PriceListItemDto
                 {

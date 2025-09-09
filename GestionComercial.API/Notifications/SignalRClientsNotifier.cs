@@ -20,9 +20,9 @@ namespace GestionComercial.Api.Notifications
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             ClienteChangeNotification notification = accion switch
             {
-                ChangeType.Created => new ClientCreado(clienteId, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Updated => new ClientActualizado(clienteId, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Deleted => new ClientEliminado(clienteId, DateTimeOffset.UtcNow),
+                ChangeType.Created => new ClientCreado(clienteId, DateTimeOffset.UtcNow, /*nombre,*/ accion),
+                ChangeType.Updated => new ClientActualizado(clienteId, DateTimeOffset.UtcNow/*, nombre*/, accion),
+                ChangeType.Deleted => new ClientEliminado(clienteId, DateTimeOffset.UtcNow, accion),
                 _ => throw new ArgumentException("Acción inválida")
             };
             //await _hub.Clients.All.ClientesActualizados(notification);
