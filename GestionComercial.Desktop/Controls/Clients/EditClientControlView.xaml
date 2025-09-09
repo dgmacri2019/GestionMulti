@@ -56,7 +56,7 @@
                          VerticalAlignment="Center">
                     <TextBox.Text>
                         <Binding 
-                            Path="BusinessName" 
+                            Path="Client.BusinessName" 
                             UpdateSourceTrigger="PropertyChanged" 
                             ValidatesOnDataErrors="True" 
                             NotifyOnValidationError="True">
@@ -74,7 +74,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="150"
                          VerticalAlignment="Center"                     
-                         Text="{Binding FantasyName}"/>
+                         Text="{Binding Client.FantasyName}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Margin="10,0,20,8">
@@ -83,7 +83,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="100"
                          VerticalAlignment="Center"
-                         Text="{Binding OptionalCode}" />
+                         Text="{Binding Client.OptionalCode}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
@@ -94,7 +94,7 @@
                           DisplayMemberPath="Description"
                           SelectedValuePath="Id"
                           ItemsSource="{Binding DocumentTypes}"
-                          SelectedValue="{Binding DocumentTypeId}"/>
+                          SelectedValue="{Binding Client.DocumentTypeId}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
@@ -105,7 +105,7 @@
                          VerticalAlignment="Center" >
                     <TextBox.Text>
                         <Binding 
-                            Path="DocumentNumber" 
+                            Path="Client.DocumentNumber" 
                             UpdateSourceTrigger="PropertyChanged" 
                             ValidatesOnDataErrors="True" 
                             NotifyOnValidationError="True">
@@ -125,7 +125,7 @@
                          VerticalAlignment="Center"   >
                     <TextBox.Text>
                         <Binding 
-                            Path="Address" 
+                            Path="Client.Address" 
                             UpdateSourceTrigger="PropertyChanged" 
                             ValidatesOnDataErrors="True" 
                             NotifyOnValidationError="True">
@@ -146,7 +146,7 @@
                          MaxLength="8">
                     <TextBox.Text>
                         <Binding 
-                            Path="PostalCode" 
+                            Path="Client.PostalCode" 
                             UpdateSourceTrigger="PropertyChanged" 
                             ValidatesOnDataErrors="True" 
                             NotifyOnValidationError="True">
@@ -167,7 +167,7 @@
                           ItemsSource="{Binding States}"
                           DisplayMemberPath="Name"
                           SelectedValuePath="Id"
-                          SelectedValue="{Binding StateId}"/>
+                          SelectedValue="{Binding Client.StateId}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Margin="10,0,20,8">
@@ -178,7 +178,7 @@
                          VerticalAlignment="Center"  >
                     <TextBox.Text>
                         <Binding 
-                            Path="City" 
+                            Path="Client.City" 
                             UpdateSourceTrigger="PropertyChanged" 
                             ValidatesOnDataErrors="True" 
                             NotifyOnValidationError="True">
@@ -196,7 +196,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="120"
                          VerticalAlignment="Center"                     
-                         Text="{Binding Phone}"
+                         Text="{Binding Client.Phone}"
                          />
             </StackPanel>
 
@@ -206,7 +206,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="120"
                          VerticalAlignment="Center"                     
-                         Text="{Binding Phone1}" 
+                         Text="{Binding Client.Phone1}" 
                   />
             </StackPanel>
 
@@ -216,7 +216,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="80"
                          VerticalAlignment="Center"                     
-                         Text="{Binding Phone2}" 
+                         Text="{Binding Client.Phone2}" 
                          />
             </StackPanel>
 
@@ -228,7 +228,7 @@
                          VerticalAlignment="Center">
                     <TextBox.Text>
                         <Binding 
-                            Path="Email" 
+                            Path="Client.Email" 
                             UpdateSourceTrigger="PropertyChanged" 
                             ValidatesOnDataErrors="True" 
                             NotifyOnValidationError="True">
@@ -246,7 +246,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="80"
                          VerticalAlignment="Center"
-                         Text="{Binding Sold, StringFormat={}{0:C2}}" GotKeyboardFocus="txtSold_GotKeyboardFocus" PreviewMouseLeftButtonDown="txtSold_PreviewMouseLeftButtonDown" PreviewTextInput="txtSold_PreviewTextInput" LostFocus="txtSold_LostFocus"/>
+                         Text="{Binding Client.Sold, StringFormat={}{0:C2}}" GotKeyboardFocus="txtSold_GotKeyboardFocus" PreviewMouseLeftButtonDown="txtSold_PreviewMouseLeftButtonDown" PreviewTextInput="txtSold_PreviewTextInput" LostFocus="txtSold_LostFocus"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="2" Margin="10,0,20,8">
@@ -255,7 +255,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="100"
                          VerticalAlignment="Center"                     
-                         Text="{Binding PayDay}" 
+                         Text="{Binding Client.PayDay}" 
                          ToolTip="El valor indicado aquí, generará el arlerta de reposición"
                          />
             </StackPanel>
@@ -268,7 +268,7 @@
                           DisplayMemberPath="Description"
                           SelectedValuePath="Id"
                           ItemsSource="{Binding IvaConditions}"
-                          SelectedValue="{Binding IvaConditionId}"/>
+                          SelectedValue="{Binding Client.IvaConditionId}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" Margin="10,0,20,8">
@@ -279,7 +279,7 @@
                           ItemsSource="{Binding PriceLists}"
                           DisplayMemberPath="Description"
                           SelectedValuePath="Id"
-                          SelectedValue="{Binding PriceListId}"/>
+                          SelectedValue="{Binding Client.PriceListId}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="2" Margin="10,0,20,8">
@@ -288,7 +288,7 @@
                          Style="{StaticResource TextBoxSearch}"
                          Width="170"
                          VerticalAlignment="Center"
-                         Text="{Binding WebSite}"/>
+                         Text="{Binding Client.WebSite}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
@@ -301,7 +301,7 @@
                          TextWrapping="Wrap" 
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"                        
-                         Text="{Binding Remark}"/>
+                         Text="{Binding Client.Remark}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="2" Margin="10,0,20,8">
@@ -310,7 +310,7 @@
                           Style="{StaticResource CheckBox}"
                           Width="50"
                           VerticalAlignment="Center"
-                          IsChecked="{Binding IsEnabled}"/>
+                          IsChecked="{Binding Client.IsEnabled}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
@@ -323,7 +323,7 @@
                          TextWrapping="Wrap" 
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"                        
-                         Text="{Binding LegendInvoices}"/>
+                         Text="{Binding Client.LegendInvoices}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
@@ -336,7 +336,7 @@
                          TextWrapping="Wrap" 
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"   
-                         Text="{Binding LegendRemit}"/>
+                         Text="{Binding Client.LegendRemit}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
@@ -349,7 +349,7 @@
                          TextWrapping="Wrap" 
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"   
-                         Text="{Binding LegendBudget}"/>
+                         Text="{Binding Client.LegendBudget}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Margin="10,0,20,8">
@@ -362,7 +362,7 @@
                          TextWrapping="Wrap" 
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"   
-                         Text="{Binding LegendOrder}"/>
+                         Text="{Binding Client.LegendOrder}"/>
             </StackPanel>
 
 

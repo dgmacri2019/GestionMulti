@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <NuGetAuditMode>all</NuGetAuditMode>
     <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+    <AssemblyName>Gestion Comercial</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

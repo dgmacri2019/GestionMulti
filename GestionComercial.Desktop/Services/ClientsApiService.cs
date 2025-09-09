@@ -28,8 +28,11 @@ namespace GestionComercial.Desktop.Services
         {
             List<ClientViewModel> allClients = [];
             int page = 1;
-            bool moreData = true;
-
+            bool moreData = true, hasPriceList = false, hasStates = false, hasSaleConditions = false, hasIvaConditions = false, hasDocumentTypes = false;
+            ClientResponse clientResponse = new()
+            {
+                Success = false
+            };
             try
             {
                 JsonSerializerOptions options = new()
@@ -54,6 +57,32 @@ namespace GestionComercial.Desktop.Services
 
                         ClientResponse? result = await JsonSerializer.DeserializeAsync<ClientResponse>(stream, options);
                         if (result.Success)
+                        {
+                            if (!hasPriceList)
+                            {
+                                hasPriceList = true;
+                                clientResponse.PriceLists = result.PriceLists;
+                            }
+                            if (!hasStates)
+                            {
+                                hasStates = true;
+                                clientResponse.States = result.States;
+                            }
+                            if (!hasSaleConditions)
+                            {
+                                hasSaleConditions = true;
+                                clientResponse.SaleConditions = result.SaleConditions;
+                            }
+                            if (!hasIvaConditions)
+                            {
+                                hasIvaConditions = true;
+                                clientResponse.IvaConditions = result.IvaConditions;
+                            }
+                            if (!hasDocumentTypes)
+                            {
+                                hasDocumentTypes = true;
+                                clientResponse.DocumentTypes = result.DocumentTypes;
+                            }
                             if (result.ClientViewModels == null || result.ClientViewModels.Count() == 0)
                             {
                                 moreData = false; // no quedan más datos
@@ -63,31 +92,24 @@ namespace GestionComercial.Desktop.Services
                                 allClients.AddRange(result.ClientViewModels);
                                 page++; // siguiente página
                             }
+                        }
                     }
                     else
                     {
-                        return new ClientResponse
-                        {
-                            Success = false,
-                            Message = await response.Content.ReadAsStringAsync(),
-                        };
+                        clientResponse.Message = await response.Content.ReadAsStringAsync();
+                        return clientResponse;
                     }
                 }
 
-                return new ClientResponse
-                {
-                    Success = true,
-                    ClientViewModels = allClients,
-                };
+                clientResponse.Success = true;
+                clientResponse.ClientViewModels = allClients;
+                return clientResponse;
 
             }
             catch (Exception ex)
             {
-                return new ClientResponse
-                {
-                    Success = false,
-                    Message = $"Error al obtener clientes, el error fue:\n {ex.Message}",
-                };
+                clientResponse.Message = $"Error al obtener clientes, el error fue:\n {ex.Message}";
+                return clientResponse;
             }
         }
 

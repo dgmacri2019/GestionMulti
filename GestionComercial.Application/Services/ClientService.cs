@@ -35,7 +35,7 @@ namespace GestionComercial.Applications.Services
             }
             return new GeneralResponse { Success = false, Message = "Cliente no encontrado" };
         }
-
+        /*
         public async Task<ClientResponse> GetAllAsync(int page, int pageSize)
         {
             try
@@ -97,7 +97,7 @@ namespace GestionComercial.Applications.Services
                 };
             }
         }
-
+        */
 
         public async Task<ClientViewModel?> GetByIdAsync(int id)
         {
@@ -162,6 +162,131 @@ namespace GestionComercial.Applications.Services
         }
 
 
+        public async Task<ClientResponse> GetAllAsync(int page, int pageSize)
+        {
+            try
+            {
+                var priceLists = await _context.PriceLists
+      .AsNoTracking()
+      .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+      .ToListAsync();
+
+                var states = await _context.States
+                    .AsNoTracking()
+                    .Where(s => s.IsEnabled && !s.IsDeleted)
+                    .ToListAsync();
+
+                var ivaConditions = await _context.IvaConditions
+                    .AsNoTracking()
+                    .Where(i => i.IsEnabled && !i.IsDeleted)
+                    .ToListAsync();
+
+                var documentTypes = await _context.DocumentTypes
+                    .AsNoTracking()
+                    .Where(d => d.IsEnabled && !d.IsDeleted)
+                    .ToListAsync();
+
+                var saleConditions = await _context.SaleConditions
+                    .AsNoTracking()
+                    .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                    .OrderBy(sc => sc.Description)
+                    .ToListAsync();
+
+                var clients = await _context.Clients
+                    .AsNoTracking()
+                    .Include(c => c.PriceList)
+                    .Include(c => c.State)
+                    .Include(c => c.IvaCondition)
+                    .Include(c => c.DocumentType)
+                    .OrderBy(c => c.PriceList.Description)
+                    .ThenBy(c => c.Id)
+                    .ThenBy(c => c.BusinessName)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                var totalRegisters = await _context.Clients.AsNoTracking().CountAsync();
+
+               
+
+                saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+                states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
+                priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
+                ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
+                documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
+
+                
+
+                // mapeo a ViewModel
+                var clientViewModels = clients.Select(client => new ClientViewModel
+                {
+                    Id = client.Id,
+                    BusinessName = client.BusinessName,
+                    FantasyName = client.FantasyName,
+                    OptionalCode = client.OptionalCode,
+                    DocumentTypeString = client.DocumentType.Description,
+                    DocumentNumber = client.DocumentNumber,
+                    IvaConditionString = client.IvaCondition.Description,
+                    Address = client.Address,
+                    PostalCode = client.PostalCode,
+                    City = client.City,
+                    StateId = client.StateId,
+                    Phone = client.Phone,
+                    Phone1 = client.Phone1,
+                    Phone2 = client.Phone2,
+                    Email = client.Email,
+                    WebSite = client.WebSite,
+                    Remark = client.Remark,
+                    PayDay = client.PayDay,
+                    LegendInvoices = client.LegendInvoices,
+                    LastPuchase = client.LastPuchase,
+                    LegendBudget = client.LegendBudget,
+                    LegendOrder = client.LegendOrder,
+                    LegendRemit = client.LegendRemit,
+                    Sold = client.Sold,
+                    PriceListId = client.PriceListId,
+                    DocumentTypeId = client.DocumentTypeId,
+                    CreditLimit = client.CreditLimit,
+                    IvaConditionId = client.IvaConditionId,
+                    State = client.State.Name,
+                    PriceList = client.PriceList.Description,
+                    CreateDate = client.CreateDate,
+                    CreateUser = client.CreateUser,
+                    UpdateDate = client.UpdateDate,
+                    UpdateUser = client.UpdateUser,
+                    IsDeleted = client.IsDeleted,
+                    IsEnabled = client.IsEnabled,
+
+                    PriceListsDTO = priceLists.Select(pl => new PriceListItemDto
+                    {
+                        Description = pl.Description,
+                        Utility = pl.Utility,
+                    })
+                    .OrderBy(pl => pl.Utility)
+                    .ToList()
+                }).ToList();
+
+                return new ClientResponse
+                {
+                    Success = true,
+                    ClientViewModels = clientViewModels,
+                    PriceLists = priceLists,
+                    States = states,
+                    IvaConditions = ivaConditions,
+                    DocumentTypes = documentTypes,
+                    SaleConditions = saleConditions,
+                    TotalRegisters = totalRegisters
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ClientResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
+        }
 
 
 

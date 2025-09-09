@@ -1,9 +1,7 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Masters;
-using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Windows;
@@ -19,7 +17,7 @@ namespace GestionComercial.Desktop.Controls.Clients
         private readonly ClientsApiService _clientsApiService;
         private readonly int ClientId;
 
-        private ClientViewModel clientViewModel { get; set; }
+        private EditClientViewModel editVM = new();
 
         public event Action ClienteActualizado;
 
@@ -29,17 +27,30 @@ namespace GestionComercial.Desktop.Controls.Clients
             InitializeComponent();
             _clientsApiService = new ClientsApiService();
             ClientId = clientId;
-            _ = FindClientAsync();
-            if (ClientId > 0)
+
+            editVM.PriceLists = MasterCahe.Instance.GetPriceLists();
+            editVM.States = MasterCahe.Instance.GetStates();
+            editVM.SaleConditions = MasterCahe.Instance.GetSaleConditions();
+            editVM.IvaConditions = MasterCahe.Instance.GetIvaConditions();
+            editVM.DocumentTypes = MasterCahe.Instance.GetDocumentTypes();
+
+            if (ClientId == 0)
             {
-                btnAdd.Visibility = Visibility.Hidden;
-                btnUpdate.Visibility = Visibility.Visible;
-            }
-            else
-            {
+                editVM.Client = new ClientViewModel { CreateUser = App.UserName };
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
             }
+            else
+            {
+                editVM.Client = ClientCache.Instance.GetAllClients()
+                                      .FirstOrDefault(c => c.Id == ClientId);
+                btnAdd.Visibility = Visibility.Hidden;
+                btnUpdate.Visibility = Visibility.Visible;
+                if (editVM.Client == null)
+                    lblError.Text = "No se reconoce al cliente";
+            }
+
+            DataContext = editVM;
         }
 
         private async Task FindClientAsync()
@@ -48,16 +59,13 @@ namespace GestionComercial.Desktop.Controls.Clients
 
             if (ClientId == 0)
             {
-                clientViewModel = new ClientViewModel
-                {
-                    CreateUser = App.UserName
-                };
+                editVM.Client.CreateUser = App.UserName;
             }
             else
             {
-                clientViewModel = ClientCache.Instance.GetAllClients().FirstOrDefault(c => c.Id == ClientId);
-                if (clientViewModel != null)
-                     DataContext = clientViewModel;
+                editVM.Client = ClientCache.Instance.GetAllClients().FirstOrDefault(c => c.Id == ClientId);
+                if (editVM != null)
+                    DataContext = editVM;
                 else
                     lblError.Text = "No se reconoce al cliente";
             }
@@ -84,10 +92,10 @@ namespace GestionComercial.Desktop.Controls.Clients
                 {
                     btnUpdate.IsEnabled = false;
                     lblError.Text = string.Empty;
-                    clientViewModel.UpdateUser = App.UserName;
-                    clientViewModel.UpdateDate = DateTime.Now;
+                    editVM.Client.UpdateUser = App.UserName;
+                    editVM.Client.UpdateDate = DateTime.Now;
 
-                    Client client = ConverterHelper.ToClient(clientViewModel, clientViewModel.Id == 0);
+                    Client client = ConverterHelper.ToClient(editVM.Client, editVM.Client.Id == 0);
                     GeneralResponse resultUpdate = await _clientsApiService.UpdateAsync(client);
                     if (resultUpdate.Success)
                         ClienteActualizado?.Invoke(); // para notificar a la vista principal
@@ -115,7 +123,7 @@ namespace GestionComercial.Desktop.Controls.Clients
                     //clientViewModel.SaleCondition = (SaleCondition)Convert.ToInt32(cbSaleConditions.SelectedValue);
                     btnAdd.IsEnabled = false;
                     lblError.Text = string.Empty;
-                    Client client = ConverterHelper.ToClient(clientViewModel, clientViewModel.Id == 0);
+                    Client client = ConverterHelper.ToClient(editVM.Client, editVM.Client.Id == 0);
                     GeneralResponse resultUpdate = await _clientsApiService.AddAsync(client);
                     if (resultUpdate.Success)
                         ClienteActualizado?.Invoke(); // para notificar a la vista principal

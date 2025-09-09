@@ -1,13 +1,14 @@
-﻿using GestionComercial.Domain.Cache;
-using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using static GestionComercial.Domain.Notifications.ClientChangeNotification;
 using GestionComercial.Domain.Response;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 using static GestionComercial.Domain.Constant.Enumeration;
+using static GestionComercial.Domain.Notifications.ClientChangeNotification;
 
 namespace GestionComercial.Desktop.ViewModels.Client
 {
@@ -102,7 +103,14 @@ namespace GestionComercial.Desktop.ViewModels.Client
                 ClientCache.Reading = true;
                 ClientResponse clientResponse = await _clientsApiService.GetAllAsync();
                 if (clientResponse.Success)
-                    ClientCache.Instance.SetClients(clientResponse.ClientViewModels.ToList());
+                {
+                    ClientCache.Instance.SetClients(clientResponse.ClientViewModels);
+                    MasterCahe.Instance.SetData(clientResponse.PriceLists, clientResponse.States,
+                        clientResponse.SaleConditions, clientResponse.IvaConditions, clientResponse.DocumentTypes);
+                }
+                else
+                    MessageBox.Show($"Error al cargar clientes, el error fue:\n{clientResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 ClientCache.Reading = false;
             }
 
