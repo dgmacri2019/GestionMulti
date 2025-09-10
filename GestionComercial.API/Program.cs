@@ -101,6 +101,7 @@ builder.Services.AddScoped<IMasterService, MasterService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IParameterService, ParameterService>();
+builder.Services.AddScoped<IMasterClassService, MasterClassService>();
 
 
 

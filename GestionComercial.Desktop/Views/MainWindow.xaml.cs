@@ -10,6 +10,7 @@ using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.ViewModels;
 using GestionComercial.Desktop.ViewModels.Client;
+using GestionComercial.Desktop.ViewModels.Master;
 using GestionComercial.Desktop.ViewModels.Parameter;
 using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.ViewModels.Stock;
@@ -243,6 +244,9 @@ namespace GestionComercial.Desktop.Views
 
         private void CargarCache(object? obj)
         {
+            MasterClassListViewModel masterClassListViewModel = new();
+            while (!MasterCache.Instance.HasData)
+                Thread.Sleep(10);
             ClientListViewModel clientListViewModel = new();
             while (!ClientCache.Instance.HasData)
                 Thread.Sleep(10);

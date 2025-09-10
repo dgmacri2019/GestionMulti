@@ -5,7 +5,9 @@ using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
@@ -90,11 +92,11 @@ namespace GestionComercial.Desktop.Views.Sales
             }
 
             UsePostMethod = ParameterCache.Instance.GetAllGeneralParameters().First().UsePostMethod;
-
-            _ = LoadSaleAsync();
-
             SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
             SaleNumber = SaleCache.Instance.GetLastSaleNumber() + 1;
+            _ = LoadSaleAsync();
+
+            
 
             var (width, height) = ScreenHelper.ObtenerResolucion(this);
             Width = width;
@@ -122,21 +124,29 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private async Task LoadSaleAsync()
         {
-            var result = await _salesApiService.GetByIdAsync(SaleId, Environment.MachineName);
-            if (result.Success)
+
+            if (SaleId == 0)
             {
-                saleViewModel = result.SaleViewModel;
-                if (SaleId == 0)
+                saleViewModel = new SaleViewModel
                 {
-                    saleViewModel.SalePoint = SalePoint;
-                    saleViewModel.SaleNumber = SaleNumber;
-                }
-                DataContext = saleViewModel;
+                    SalePoint = SalePoint,
+                    SaleNumber = SaleNumber,
+                    //saleViewModel.Clients = ClientCache.Instance.GetAllClients().ToList();
+                    PriceLists = new ObservableCollection<PriceList>(MasterCache.Instance.GetPriceLists()),
+                    SaleConditions = new ObservableCollection<SaleCondition>(MasterCache.Instance.GetSaleConditions())
+                };
             }
             else
             {
-                lblError.Text = result.Message;
+                var result = await _salesApiService.GetByIdAsync(SaleId, Environment.MachineName);
+
+                if (result.Success)
+                    saleViewModel = result.SaleViewModel;
+                else
+                    lblError.Text = result.Message;
             }
+
+            DataContext = saleViewModel;
         }
 
 
@@ -942,7 +952,7 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 if (UsePostMethod)
                 {
-                    if (ArticleItems != null && string.IsNullOrEmpty(ArticleItems[0].Code))
+                    if (ArticleItems != null && ArticleItems.Count > 0 && string.IsNullOrEmpty(ArticleItems[0].Code))
                         ArticleItems.Clear();
                     chBarcode.IsChecked = true;
                     txtBarcode.Focus();

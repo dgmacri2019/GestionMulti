@@ -67,11 +67,19 @@ namespace GestionComercial.Domain.Cache
 
         public void ClearCache()
         {
-            _priceLists.Clear();
-            _states.Clear();
-            _saleConditions.Clear();
-            _ivaConditions.Clear();
-            _documentTypes.Clear();
+            try
+            {
+                _priceLists.Clear();
+                _states.Clear();
+                _saleConditions.Clear();
+                _ivaConditions.Clear();
+                _documentTypes.Clear();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
     }

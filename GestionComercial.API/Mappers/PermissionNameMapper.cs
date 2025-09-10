@@ -23,7 +23,8 @@
                 "Budgets" => "Presupuestos",
                 "Payments" => "Pagos y Cobranzas",
                 "DataBases" => "Base de Datos",
-                "Permissions" => "Permisos",                
+                "Permissions" => "Permisos",
+                "MasterClass" => "Parametros",
                 _ => controller
             };
         }

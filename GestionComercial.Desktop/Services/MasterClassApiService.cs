@@ -54,6 +54,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
 
                     List<PriceList>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceList>>(stream, options);
+                    priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
                     masterClassResponse.PriceLists = priceLists;
                 }
                 else
@@ -76,6 +77,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responseStates.Content.ReadAsStreamAsync();
 
                     List<State>? states = await JsonSerializer.DeserializeAsync<List<State>>(stream, options);
+                    states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
                     masterClassResponse.States = states;
                 }
                 else
@@ -98,6 +100,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responseDocumentType.Content.ReadAsStreamAsync();
 
                     List<DocumentType>? documentTypes = await JsonSerializer.DeserializeAsync<List<DocumentType>>(stream, options);
+                    documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
                     masterClassResponse.DocumentTypes = documentTypes;
                 }
                 else
@@ -120,6 +123,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responseIvaCondition.Content.ReadAsStreamAsync();
 
                     List<IvaCondition>? ivaConditions = await JsonSerializer.DeserializeAsync<List<IvaCondition>>(stream, options);
+                    ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
                     masterClassResponse.IvaConditions = ivaConditions;
                 }
                 else
@@ -142,6 +146,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responseSaleCondition.Content.ReadAsStreamAsync();
 
                     List<SaleCondition>? saleConditions = await JsonSerializer.DeserializeAsync<List<SaleCondition>>(stream, options);
+                    saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
                     masterClassResponse.SaleConditions = saleConditions;
                 }
                 else
