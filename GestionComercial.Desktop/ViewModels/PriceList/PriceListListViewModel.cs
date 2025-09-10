@@ -1,12 +1,6 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.DTOs.PriceLists;
-using GestionComercial.Domain.DTOs.Provider;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestionComercial.Desktop.ViewModels.PriceList
 {

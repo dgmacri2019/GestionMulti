@@ -14,11 +14,6 @@ namespace GestionComercial.Domain.Response
 
         public List<ClientViewModel> ClientViewModels { get; set; }
 
-        public int TotalRegisters { get; set; }
-        public List<PriceList> PriceLists { get; set; }
-        public List<State> States { get; set; }
-        public List<IvaCondition> IvaConditions { get; set; }
-        public List<DocumentType> DocumentTypes { get; set; }
-        public List<SaleCondition> SaleConditions { get; set; }
+        public int TotalRegisters { get; set; }      
     }
 }

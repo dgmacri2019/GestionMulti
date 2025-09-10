@@ -5,12 +5,12 @@ using System.Xml.Linq;
 
 namespace GestionComercial.Domain.Cache
 {
-    public class MasterCahe : ICache
+    public class MasterCache : ICache
     {
 
-        private static MasterCahe _instance;
+        private static MasterCache _instance;
 
-        public static MasterCahe Instance => _instance ??= new MasterCahe();
+        public static MasterCache Instance => _instance ??= new MasterCache();
 
         private List<PriceList> _priceLists;
         private List<State> _states;
@@ -18,7 +18,10 @@ namespace GestionComercial.Domain.Cache
         private List<IvaCondition> _ivaConditions;
         private List<DocumentType> _documentTypes;
 
-        public MasterCahe()
+        public static bool Reading { get; set; } = false;
+
+
+        public MasterCache()
         {
             CacheManager.Register(this);
         }
@@ -59,8 +62,8 @@ namespace GestionComercial.Domain.Cache
             _documentTypes = documentTypes;
         }
 
-        public bool HasData => (_priceLists != null && _priceLists.Any()) || (_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
-            || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any());
+        public bool HasData => ((_priceLists != null && _priceLists.Any()) || (_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
+            || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any())) && !Reading;
 
         public void ClearCache()
         {

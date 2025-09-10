@@ -15,12 +15,14 @@ namespace GestionComercial.API.Notifications.Background
         private readonly IHubContext<ProvidersHub, IProvidersClient> _providersHub;
         private readonly IHubContext<SalesHub, ISalesClient> _salesHub;
         private readonly IHubContext<GeneralParametersHub, IParametersClient> _parametersHub;
+        private readonly IHubContext<MasterClassHub, IMasterClassClient> _masterClassHub;
         // inyectá aquí también otros hubs si los vas a usar
 
         public NotificationDispatcher(INotificationQueue queue, ILogger<NotificationDispatcher> logger, IHubContext<ArticlesHub, IArticlesClient> articlesHub,
             IHubContext<BankParametersHub, IBankParametersClient> bankParametersHub, IHubContext<BoxAndBanksHub, IBoxAndBanksClient> boxAndBankHub,
             IHubContext<ClientsHub, IClientsClient> clientsHub, IHubContext<ProvidersHub, IProvidersClient> providersHub, 
-            IHubContext<SalesHub, ISalesClient> salesHub, IHubContext<GeneralParametersHub, IParametersClient> parametersHub)
+            IHubContext<SalesHub, ISalesClient> salesHub, IHubContext<GeneralParametersHub, IParametersClient> parametersHub,
+            IHubContext<MasterClassHub, IMasterClassClient> masterClassHub)
         {
             _queue = queue;
             _logger = logger;
@@ -31,6 +33,7 @@ namespace GestionComercial.API.Notifications.Background
             _providersHub = providersHub;
             _salesHub = salesHub;
             _parametersHub = parametersHub;
+            _masterClassHub = masterClassHub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -95,7 +98,30 @@ namespace GestionComercial.API.Notifications.Background
                         case GeneralParameterChangedItem s:
                             await _parametersHub.Clients.All.ParametrosGeneralesActualizados(s.Notification);
                             break;
+                        case MasterClassChangedItem s:
+                            try
+                            {
+                                _logger.LogInformation("Dispatching MasterClassChangedItem", s.Notification?.id ?? 0);
+                                // debug JSON serializado (útil para ver si serializa correctamente)
+                                try
+                                {
+                                    var json = JsonSerializer.Serialize(s.Notification);
+                                    _logger.LogDebug("MasterClassChangeNotification JSON: {Json}", json);
+                                }
+                                catch (Exception exJson)
+                                {
+                                    _logger.LogWarning(exJson, "No se pudo serializar MasterClassChangeNotification para debug");
+                                }
 
+                                await _masterClassHub.Clients.All.ClaseMaestraActualizados(s.Notification);
+                                _logger.LogInformation("MasterClassActualizados invoked (typed) ", s.Notification?.id ?? 0);
+                            }
+                            catch (Exception ex)
+                            {
+
+                                throw;
+                            }
+                            break;
                         default:
                             _logger.LogWarning("Notification item no reconocido: {Type}", item.GetType().Name);
                             break;

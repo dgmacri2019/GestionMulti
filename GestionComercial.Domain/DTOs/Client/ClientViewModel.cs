@@ -169,7 +169,7 @@ namespace GestionComercial.Domain.DTOs.Client
 
 
 
-        public List<PriceListItemDto> PriceListsDTO { get; set; }
+        //public List<PriceListItemDto> PriceListsDTO { get; set; }
 
 
         public ICollection<PriceList> PriceLists { get; set; }

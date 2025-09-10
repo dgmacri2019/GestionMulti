@@ -28,11 +28,11 @@ namespace GestionComercial.Desktop.Controls.Clients
             _clientsApiService = new ClientsApiService();
             ClientId = clientId;
 
-            editVM.PriceLists = MasterCahe.Instance.GetPriceLists();
-            editVM.States = MasterCahe.Instance.GetStates();
-            editVM.SaleConditions = MasterCahe.Instance.GetSaleConditions();
-            editVM.IvaConditions = MasterCahe.Instance.GetIvaConditions();
-            editVM.DocumentTypes = MasterCahe.Instance.GetDocumentTypes();
+            editVM.PriceLists = MasterCache.Instance.GetPriceLists();
+            editVM.States = MasterCache.Instance.GetStates();
+            editVM.SaleConditions = MasterCache.Instance.GetSaleConditions();
+            editVM.IvaConditions = MasterCache.Instance.GetIvaConditions();
+            editVM.DocumentTypes = MasterCache.Instance.GetDocumentTypes();
 
             if (ClientId == 0)
             {

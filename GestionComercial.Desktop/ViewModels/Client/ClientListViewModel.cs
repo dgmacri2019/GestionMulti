@@ -105,8 +105,8 @@ namespace GestionComercial.Desktop.ViewModels.Client
                 if (clientResponse.Success)
                 {
                     ClientCache.Instance.SetClients(clientResponse.ClientViewModels);
-                    MasterCahe.Instance.SetData(clientResponse.PriceLists, clientResponse.States,
-                        clientResponse.SaleConditions, clientResponse.IvaConditions, clientResponse.DocumentTypes);
+                    //MasterCahe.Instance.SetData(clientResponse.PriceLists, clientResponse.States,
+                    //    clientResponse.SaleConditions, clientResponse.IvaConditions, clientResponse.DocumentTypes);
                 }
                 else
                     MessageBox.Show($"Error al cargar clientes, el error fue:\n{clientResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);

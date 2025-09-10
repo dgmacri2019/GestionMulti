@@ -167,32 +167,32 @@ namespace GestionComercial.Applications.Services
             try
             {
                 var priceLists = await _context.PriceLists
-      .AsNoTracking()
-      .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-      .ToListAsync();
-
-                var states = await _context.States
                     .AsNoTracking()
-                    .Where(s => s.IsEnabled && !s.IsDeleted)
+                    .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                     .ToListAsync();
 
-                var ivaConditions = await _context.IvaConditions
-                    .AsNoTracking()
-                    .Where(i => i.IsEnabled && !i.IsDeleted)
-                    .ToListAsync();
+                //var states = await _context.States
+                //    .AsNoTracking()
+                //    .Where(s => s.IsEnabled && !s.IsDeleted)
+                //    .ToListAsync();
 
-                var documentTypes = await _context.DocumentTypes
-                    .AsNoTracking()
-                    .Where(d => d.IsEnabled && !d.IsDeleted)
-                    .ToListAsync();
+                //var ivaConditions = await _context.IvaConditions
+                //    .AsNoTracking()
+                //    .Where(i => i.IsEnabled && !i.IsDeleted)
+                //    .ToListAsync();
 
-                var saleConditions = await _context.SaleConditions
-                    .AsNoTracking()
-                    .Where(sc => sc.IsEnabled && !sc.IsDeleted)
-                    .OrderBy(sc => sc.Description)
-                    .ToListAsync();
+                //var documentTypes = await _context.DocumentTypes
+                //    .AsNoTracking()
+                //    .Where(d => d.IsEnabled && !d.IsDeleted)
+                //    .ToListAsync();
 
-                var clients = await _context.Clients
+                //var saleConditions = await _context.SaleConditions
+                //    .AsNoTracking()
+                //    .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                //    .OrderBy(sc => sc.Description)
+                //    .ToListAsync();
+
+                List<Client> clients = await _context.Clients
                     .AsNoTracking()
                     .Include(c => c.PriceList)
                     .Include(c => c.State)
@@ -207,18 +207,18 @@ namespace GestionComercial.Applications.Services
 
                 var totalRegisters = await _context.Clients.AsNoTracking().CountAsync();
 
-               
 
-                saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
-                states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
+
+                // saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
+                // states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
                 priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
-                ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
-                documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
+                // ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
+                // documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
 
-                
+
 
                 // mapeo a ViewModel
-                var clientViewModels = clients.Select(client => new ClientViewModel
+                List<ClientViewModel> clientViewModels = clients.Select(client => new ClientViewModel
                 {
                     Id = client.Id,
                     BusinessName = client.BusinessName,
@@ -257,24 +257,26 @@ namespace GestionComercial.Applications.Services
                     IsDeleted = client.IsDeleted,
                     IsEnabled = client.IsEnabled,
 
-                    PriceListsDTO = priceLists.Select(pl => new PriceListItemDto
-                    {
-                        Description = pl.Description,
-                        Utility = pl.Utility,
-                    })
-                    .OrderBy(pl => pl.Utility)
-                    .ToList()
-                }).ToList();
+                    //PriceListsDTO = priceLists.Select(pl => new PriceListItemDto
+                    //{
+                    //    Description = pl.Description,
+                    //    Utility = pl.Utility,
+                    //})
+                    //.OrderBy(pl => pl.Utility)
+                    //.ToList()
+                })
+                    .OrderBy(c => c.BusinessName)
+                    .ToList();
 
                 return new ClientResponse
                 {
                     Success = true,
                     ClientViewModels = clientViewModels,
-                    PriceLists = priceLists,
-                    States = states,
-                    IvaConditions = ivaConditions,
-                    DocumentTypes = documentTypes,
-                    SaleConditions = saleConditions,
+                    //PriceLists = priceLists,
+                    //States = states,
+                    //IvaConditions = ivaConditions,
+                    //DocumentTypes = documentTypes,
+                    //SaleConditions = saleConditions,
                     TotalRegisters = totalRegisters
                 };
             }
@@ -289,7 +291,7 @@ namespace GestionComercial.Applications.Services
         }
 
 
-
+        /*
         private IEnumerable<ClientViewModel> ToClientViewModelAndPriceList(List<IGrouping<string, Client>> clients,
             ICollection<PriceList> priceLists, ICollection<DocumentType> documentTypes, ICollection<SaleCondition> saleConditions,
             ICollection<State> states, ICollection<IvaCondition> ivaConditions)
@@ -349,5 +351,7 @@ namespace GestionComercial.Applications.Services
                 .ToList()// Ordenamos para que la lista 1 (utility=0) aparezca primero, luego las que ofrecen descuentos
             }));
         }
+
+        */
     }
 }

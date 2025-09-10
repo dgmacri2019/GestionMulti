@@ -33,14 +33,14 @@ namespace GestionComercial.Applications.Services
             return new GeneralResponse { Success = false, Message = "Lista de precios no encontrada" };
         }
 
-        public async Task<IEnumerable<PriceListViewModel>> GetAllAsync(bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<PriceList>> GetAllAsync(bool isEnabled, bool isDeleted)
         {
-            List<PriceList> priceLists = await _context.PriceLists
+            return await _context.PriceLists
                  .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                  .ToListAsync();
 
 
-            return ToPriceListViewModelList(priceLists);
+            //return ToPriceListViewModelList(priceLists);
         }
 
         public async Task<PriceListViewModel?> GetByIdAsync(int id, bool isEnabled, bool isDeleted)

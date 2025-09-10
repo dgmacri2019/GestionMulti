@@ -75,13 +75,8 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] PriceListFilterDto filter)
         {
-            PriceListViewModel? article = await _priceListService.GetByIdAsync(filter.Id, filter.IsEnabled, filter.IsDeleted);
-            return article == null ? NotFound() : Ok(article);
-
-            if (article == null)
-                return NotFound();
-
-            return Ok(article);
+            PriceListViewModel? priceList = await _priceListService.GetByIdAsync(filter.Id, filter.IsEnabled, filter.IsDeleted);
+            return priceList == null ? NotFound() : Ok(priceList);
         }
 
 
