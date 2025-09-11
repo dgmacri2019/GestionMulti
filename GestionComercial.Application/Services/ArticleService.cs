@@ -43,17 +43,20 @@ namespace GestionComercial.Applications.Services
                 List<PriceList> priceLists = await _context.PriceLists
                        .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                        .ToListAsync();
-
-                List<IGrouping<string, Article>> articles = await _context.Articles
+                List<Article> articles = await _context.Articles
                     .AsNoTracking()
                     .Include(p => p.Tax)
                     .Include(m => m.Measure)
                     .Include(c => c.Category)
                     .OrderBy(a => a.Description)
-                    .GroupBy(c => c.Category.Description)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
+
+                List<IGrouping<string, Article>> articlesGrouped = articles
+                    .GroupBy(c => c.Category.Description)
+                    .ToList();
+
 
                 var totalRegisters = await _context.Articles.AsNoTracking().CountAsync();
 
@@ -61,7 +64,7 @@ namespace GestionComercial.Applications.Services
                 {
                     Success = true,
                     TotalRegisters = totalRegisters,
-                    ArticleViewModels = ToListPriceDto(articles, priceLists),
+                    ArticleViewModels = ToListPriceDto(articlesGrouped, priceLists),
                 };
             }
             catch (Exception ex)
