@@ -58,32 +58,7 @@ namespace GestionComercial.Desktop.Services
 
                         ClientResponse? result = await JsonSerializer.DeserializeAsync<ClientResponse>(stream, options);
                         if (result.Success)
-                        {
-                            //if (!hasPriceList)
-                            //{
-                            //    hasPriceList = true;
-                            //    clientResponse.PriceLists = result.PriceLists;
-                            //}
-                            //if (!hasStates)
-                            //{
-                            //    hasStates = true;
-                            //    clientResponse.States = result.States;
-                            //}
-                            //if (!hasSaleConditions)
-                            //{
-                            //    hasSaleConditions = true;
-                            //    clientResponse.SaleConditions = result.SaleConditions;
-                            //}
-                            //if (!hasIvaConditions)
-                            //{
-                            //    hasIvaConditions = true;
-                            //    clientResponse.IvaConditions = result.IvaConditions;
-                            //}
-                            //if (!hasDocumentTypes)
-                            //{
-                            //    hasDocumentTypes = true;
-                            //    clientResponse.DocumentTypes = result.DocumentTypes;
-                            //}
+                        {                            
                             if (result.ClientViewModels == null || result.ClientViewModels.Count() == 0)
                             {
                                 moreData = false; // no quedan más datos

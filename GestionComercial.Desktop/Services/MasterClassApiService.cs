@@ -155,6 +155,75 @@ namespace GestionComercial.Desktop.Services
                     return masterClassResponse;
                 }
 
+                // Enviar la solicitud al endpoint Rubros
+                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllCategoriesAsync", new
+                {
+                    IsEnabled = true,
+                    IsDeleted = false
+                });
+                if (responseCategory.IsSuccessStatusCode)
+                {
+                    responseCategory.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
+
+                    List<Category>? categories = await JsonSerializer.DeserializeAsync<List<Category>>(stream, options);
+                    categories.Add(new Category { Id = 0, Description = "Seleccione el rubro" });
+                    masterClassResponse.Categories = categories;
+                }
+                else
+                {
+                    masterClassResponse.Message = await responseSaleCondition.Content.ReadAsStringAsync();
+                    return masterClassResponse;
+                }
+
+                // Enviar la solicitud al endpoint Unidades de medida
+                HttpResponseMessage responseMeasure = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllMeasuresAsync", new
+                {
+                    IsEnabled = true,
+                    IsDeleted = false
+                });
+                if (responseMeasure.IsSuccessStatusCode)
+                {
+                    responseMeasure.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responseMeasure.Content.ReadAsStreamAsync();
+
+                    List<Measure>? measures = await JsonSerializer.DeserializeAsync<List<Measure>>(stream, options);
+                    measures.Add(new Measure { Id = 0, Description = "Seleccione la unidad de medida" });
+                    masterClassResponse.Measures = measures;
+                }
+                else
+                {
+                    masterClassResponse.Message = await responseSaleCondition.Content.ReadAsStringAsync();
+                    return masterClassResponse;
+                }
+
+                // Enviar la solicitud al endpoint Tipos de IVA
+                HttpResponseMessage responseTax = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllTaxesAsync", new
+                {
+                    IsEnabled = true,
+                    IsDeleted = false
+                });
+                if (responseTax.IsSuccessStatusCode)
+                {
+                    responseTax.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responseTax.Content.ReadAsStreamAsync();
+
+                    List<Tax>? taxes = await JsonSerializer.DeserializeAsync<List<Tax>>(stream, options);
+                    taxes.Add(new Tax { Id = 0, Description = "Seleccione el tipo de IVA" });
+                    masterClassResponse.Taxes = taxes;
+                }
+                else
+                {
+                    masterClassResponse.Message = await responseSaleCondition.Content.ReadAsStringAsync();
+                    return masterClassResponse;
+                }
+
 
 
 

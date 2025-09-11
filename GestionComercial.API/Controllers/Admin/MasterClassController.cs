@@ -4,6 +4,7 @@ using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -147,6 +148,93 @@ namespace GestionComercial.API.Controllers.Admin
         }
 
 
+        [HttpPost("AddMeasureAsync")]
+        public async Task<IActionResult> AddMeasureAsync([FromBody] Measure measure)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(measure);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(measure.Id, "Unidad de medida creada", ChangeType.Created);
+
+                return
+                    Ok("Unidad de medida creada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("UpdateMeasureAsync")]
+        public async Task<IActionResult> UpdateMeasureAsync([FromBody] Measure measure)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(measure);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(measure.Id, "Unidad de medida actualizada", ChangeType.Updated);
+
+                return
+                    Ok("Unidad de medida actualizada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+        [HttpPost("AddTaxAsync")]
+        public async Task<IActionResult> AddTaxAsync([FromBody] Tax tax)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(tax);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(tax.Id, "Tipo de IVA creado", ChangeType.Created);
+
+                return
+                    Ok("Tipo de IVA creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("UpdateTaxAsync")]
+        public async Task<IActionResult> UpdateTaxAsync([FromBody] Tax tax)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(tax);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(tax.Id, "Tipo de IVA actualizado", ChangeType.Updated);
+
+                return
+                    Ok("Tipo de IVA actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+        [HttpPost("AddCategoryAsync")]
+        public async Task<IActionResult> AddCategoryAsync([FromBody] Category category)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(category);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created);
+
+                return
+                    Ok("Rubro creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("UpdateCategoryAsync")]
+        public async Task<IActionResult> UpdateCategoryAsync([FromBody] Category category)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(category);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated);
+
+                return
+                    Ok("Rubro actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
 
 
 
@@ -171,11 +259,30 @@ namespace GestionComercial.API.Controllers.Admin
             return Ok(await _masterClassService.GetAllIvaConditionsAsync(filter.IsEnabled, filter.IsDeleted));
         }
 
+        [HttpPost("GetAllCategoriesAsync")]
+        public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllCategoriesAsync(filter.IsEnabled, filter.IsDeleted));
+        }
+
+        [HttpPost("GetAllMeasuresAsync")]
+        public async Task<IActionResult> GetAllMeasuresAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllMeasuresAsync(filter.IsEnabled, filter.IsDeleted));
+        }
+
+        [HttpPost("GetAllTaxesAsync")]
+        public async Task<IActionResult> GetAllTaxesAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllTaxesAsync(filter.IsEnabled, filter.IsDeleted));
+        }
+
         [HttpPost("GetAllSaleConditionsAsync")]
         public async Task<IActionResult> GetAllSaleConditionsAsync([FromBody] PriceListFilterDto filter)
         {
             return Ok(await _masterClassService.GetAllSaleConditionsAsync(filter.IsEnabled, filter.IsDeleted));
         }
 
+        
     }
 }

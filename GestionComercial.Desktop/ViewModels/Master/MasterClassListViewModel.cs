@@ -37,7 +37,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 if (result.Success)
                 {
                     MasterCache.Instance.SetData(result.PriceLists, result.States,
-                        result.SaleConditions, result.IvaConditions, result.DocumentTypes);
+                        result.SaleConditions, result.IvaConditions, result.DocumentTypes, result.Categories, result.Measures, result.Taxes);
                 }
                 else
                     MessageBox.Show($"Error al cargar clientes, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -45,7 +45,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 MasterCache.Reading = false;
             }
 
-            
+
         }
 
         // 🔹 SignalR recibe notificación y actualiza cache + lista
@@ -56,7 +56,8 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 await App.Current.Dispatcher.InvokeAsync(() =>
                 {
                     MasterCache.Instance.ClearCache();
-                    MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions, result.DocumentTypes);
+                    MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions,
+                        result.DocumentTypes, result.Categories, result.Measures, result.Taxes);
 
                     _ = LoadMastersAsync();
                 });

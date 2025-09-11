@@ -11,5 +11,8 @@ namespace GestionComercial.Domain.Response
         public List<DocumentType>? DocumentTypes { get; set; }
         public List<IvaCondition>? IvaConditions { get; set; }
         public List<SaleCondition>? SaleConditions { get; set; }
+        public List<Category>? Categories { get; set; }
+        public List<Measure>? Measures { get; set; }
+        public List<Tax>? Taxes { get; set; }
     }
 }

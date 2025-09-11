@@ -1,5 +1,4 @@
-﻿using GestionComercial.Domain.Constant;
-using GestionComercial.Domain.DTOs.Accounts;
+﻿using GestionComercial.Domain.DTOs.Accounts;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
@@ -13,8 +12,6 @@ using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
-using System.Collections.ObjectModel;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Helpers
 {
@@ -56,7 +53,7 @@ namespace GestionComercial.Domain.Helpers
             };
         }
 
-        public static ArticleViewModel ToArticleViewModel(Article? article, ICollection<Tax> taxes, ICollection<Measure> measures, ICollection<Category> categories)
+        public static ArticleViewModel ToArticleViewModel(Article? article)
         {
             return new ArticleViewModel
             {
@@ -87,9 +84,9 @@ namespace GestionComercial.Domain.Helpers
                 Umbral = article.Umbral,
                 UpdateDate = article.UpdateDate,
                 UpdateUser = article.UpdateUser,
-                Categories = categories,
-                Measures = measures,
-                Taxes = taxes,
+                //Categories = categories,
+                //Measures = measures,
+                //Taxes = taxes,
             };
         }
 
@@ -127,19 +124,17 @@ namespace GestionComercial.Domain.Helpers
                 PostalCode = clientViewModel.PostalCode,
                 PriceListId = clientViewModel.PriceListId,
                 Remark = clientViewModel.Remark,
-                //SaleConditionId = clientViewModel.SaleConditionId,
                 CreditLimit = clientViewModel.CreditLimit,
                 Sold = clientViewModel.Sold,
                 StateId = clientViewModel.StateId,
                 IvaConditionId = clientViewModel.IvaConditionId,
                 UpdateDate = clientViewModel.UpdateDate,
                 UpdateUser = clientViewModel.UpdateUser,
+                //SaleConditionId = clientViewModel.SaleConditionId,
             };
         }
 
-        public static ClientViewModel ToClientViewModel(Client client, ICollection<PriceList> priceLists,
-            ICollection<State> states, ICollection<SaleCondition> saleConditions, ICollection<IvaCondition> ivaConditions,
-            ICollection<DocumentType> documentTypes)
+        public static ClientViewModel ToClientViewModel(Client client)
         {
             return new ClientViewModel
             {
@@ -149,7 +144,6 @@ namespace GestionComercial.Domain.Helpers
                 City = client.City,
                 DocumentNumber = client.DocumentNumber,
                 DocumentTypeId = client.DocumentTypeId,
-                DocumentTypes = documentTypes,
                 DocumentTypeString = client.DocumentType.Description,
                 Email = client.Email,
                 FantasyName = client.FantasyName,
@@ -165,17 +159,11 @@ namespace GestionComercial.Domain.Helpers
                 Phone2 = client.Phone2,
                 PostalCode = client.PostalCode,
                 PriceListId = client.PriceListId,
-                PriceLists = priceLists,
                 Remark = client.Remark,
-                //SaleConditionId = client.SaleConditionId,
-                //SaleConditionString = client.SaleCondition.Description,
                 CreditLimit = client.CreditLimit,
-                SaleConditions = saleConditions,
                 Sold = client.Sold,
                 StateId = client.StateId,
-                States = states,
                 IvaConditionId = client.IvaConditionId,
-                IvaConditions = ivaConditions,
                 IvaConditionString = client.IvaCondition.Description,
                 WebSite = client.WebSite,
                 CreateUser = client.CreateUser,
@@ -186,7 +174,13 @@ namespace GestionComercial.Domain.Helpers
                 IsDeleted = client.IsDeleted,
                 PriceList = client.PriceList.Description,
                 State = client.State.Name,
-
+                //SaleConditionId = client.SaleConditionId,
+                //SaleConditionString = client.SaleCondition.Description,
+                //DocumentTypes = documentTypes,
+                //States = states,
+                //SaleConditions = saleConditions,
+                //IvaConditions = ivaConditions,
+                //PriceLists = priceLists,
             };
         }
 
@@ -474,7 +468,7 @@ namespace GestionComercial.Domain.Helpers
         #endregion
 
         #region Sales
-        public static SaleViewModel? ToSaleViewModel(Sale sale, ObservableCollection<Client> clients, ObservableCollection<SaleCondition> saleConditions, ObservableCollection<PriceList> priceLists)
+        public static SaleViewModel? ToSaleViewModel(Sale sale)
         {
             return new SaleViewModel
             {
@@ -496,7 +490,6 @@ namespace GestionComercial.Domain.Helpers
                 IsFinished = sale.IsFinished,
                 PaidOut = sale.PaidOut,
                 PartialPay = sale.PartialPay,
-                //SaleConditionId = sale.SaleConditionId,
                 SaleDate = sale.SaleDate,
                 SaleDetails = sale.SaleDetails,
                 SaleNumber = sale.SaleNumber,
@@ -507,10 +500,11 @@ namespace GestionComercial.Domain.Helpers
                 Total = sale.Total,
                 TotalIVA105 = sale.TotalIVA105,
                 TotalIVA21 = sale.TotalIVA21,
-                TotalIVA27 = sale.TotalIVA27,
-                Clients = clients,
-                SaleConditions = saleConditions,
-                PriceLists = priceLists,
+                TotalIVA27 = sale.TotalIVA27
+                //SaleConditionId = sale.SaleConditionId,
+                //Clients = clients,
+                //SaleConditions = saleConditions,
+                //PriceLists = priceLists,
             };
         }
 

@@ -11,5 +11,10 @@
         public int Id { get; set; } = 0;
         public string BarCode { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
+
+
+
+        public int Page { get; set; } = 1;       // página por defecto
+        public int PageSize { get; set; } = 100; // tamaño por defecto
     }
 }

@@ -2,6 +2,7 @@
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -26,37 +27,68 @@ namespace GestionComercial.Desktop.Services
 
 
 
-        internal async Task<List<ArticleViewModel>> GetProductsWithPricesAsync()
+        internal async Task<ArticleResponse> GetAllAsync(int pageSize = 100)
         {
             // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/articles/GetAllAsync", new
+            List<ArticleViewModel> allArticles = [];
+            int page = 1;
+            bool moreData = true;
+            ArticleResponse articleResponse = new()
             {
-
-            });
-
-            if (response.IsSuccessStatusCode)
+                Success = false,
+            };
+            try
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
+                JsonSerializerOptions options = new()
                 {
                     PropertyNameCaseInsensitive = true
                 };
 
-                var articles = JsonSerializer.Deserialize<List<ArticleViewModel>>(jsonResponse, options);
+                while (moreData)
+                {
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/articles/GetAllAsync", new
+                    {
+                        Page = page,
+                        PageSize = pageSize
+                    });
 
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
 
-                return articles;
+                        // Leer el contenido como stream para no cargar todo en memoria
+                        using Stream? stream = await response.Content.ReadAsStreamAsync();
+
+                        ArticleResponse? result = await JsonSerializer.DeserializeAsync<ArticleResponse>(stream, options);
+                        if (result.Success)
+                        {
+                            if (result.ArticleViewModels == null || result.ArticleViewModels.Count() == 0)
+                            {
+                                moreData = false; // no quedan más datos
+                            }
+                            else
+                            {
+                                allArticles.AddRange(result.ArticleViewModels);
+                                page++; // siguiente página
+                            }
+                        }
+                    }
+                    else
+                    {
+                        articleResponse.Message = await response.Content.ReadAsStringAsync();
+                        return articleResponse;
+                    }                    
+                }
+                articleResponse.Success = true;
+                articleResponse.ArticleViewModels= allArticles;
+                return articleResponse;
+
             }
-            else
+            catch (Exception ex)
             {
-                // Manejo de error
-                var error = await response.Content.ReadAsStringAsync();
-                MessageBox.Show($"Error: {response.StatusCode}\n{error}");
-                return null;
+                articleResponse.Message = $"Error al obtener articulos, el error fue:\n {ex.Message}";
+                return articleResponse;
             }
-
-
         }
 
         internal async Task<ArticleResponse> GetByIdAsync(int articleId)

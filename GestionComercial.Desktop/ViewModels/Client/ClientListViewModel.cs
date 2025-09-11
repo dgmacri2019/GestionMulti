@@ -74,11 +74,7 @@ namespace GestionComercial.Desktop.ViewModels.Client
         public ClientListViewModel()
         {
             _clientsApiService = new ClientsApiService();
-
-            //var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:ClientsHubUrl"]);
             var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:BaseUrl"]);
-
-
             _hubService = new ClientsHubService(hubUrl);
             _hubService.ClienteCambiado += OnClienteCambiado;
             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
@@ -142,7 +138,6 @@ namespace GestionComercial.Desktop.ViewModels.Client
                             });
                         break;
                     }
-
                 case ChangeType.Updated:
                     {
                         ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(notification.ClientId);

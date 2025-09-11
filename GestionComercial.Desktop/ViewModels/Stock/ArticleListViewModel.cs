@@ -1,10 +1,14 @@
-﻿using GestionComercial.Domain.Cache;
-using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
+using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
+using static GestionComercial.Domain.Constant.Enumeration;
 using static GestionComercial.Domain.Notifications.ArticleChangeNotification;
 
 namespace GestionComercial.Desktop.ViewModels.Stock
@@ -71,7 +75,6 @@ namespace GestionComercial.Desktop.ViewModels.Stock
         {
             _articlesApiService = new ArticlesApiService();
             var hubUrl = string.Format("{0}hubs/articles", App.Configuration["ApiSettings:BaseUrl"]);
-
             _hubService = new ArticlesHubService(hubUrl);
             _hubService.ArticuloCambiado += OnArticuloCambiado;
             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
@@ -99,8 +102,14 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                 if (!ArticleCache.Instance.HasData)
                 {
                     ArticleCache.Reading = true;
-                    List<ArticleViewModel> articles = await _articlesApiService.GetProductsWithPricesAsync();
-                    ArticleCache.Instance.SetArticles(articles);
+
+                    ArticleResponse articleResponse = await _articlesApiService.GetAllAsync();
+                    if (articleResponse.Success)
+                        ArticleCache.Instance.SetArticles(articleResponse.ArticleViewModels);
+                    else
+                        MessageBox.Show($"Error al articulos, el error fue:\n{articleResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+
+
                     ArticleCache.Reading = false;
                 }
 
@@ -122,15 +131,52 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
         private async void OnArticuloCambiado(ArticuloChangeNotification notification)
         {
-            List<ArticleViewModel> articles = await _articlesApiService.GetProductsWithPricesAsync();
 
-            await App.Current.Dispatcher.InvokeAsync(() =>
+            switch (notification.action)
             {
-                ArticleCache.Instance.ClearCache();
-                ArticleCache.Instance.SetArticles(articles);
+                case ChangeType.Created:
+                    {
+                        ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
+                        if (articleResponse.Success)
+                            await App.Current.Dispatcher.InvokeAsync(async () =>
+                            {
+                                ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
 
-                _ = LoadArticlesAsync();
-            });
+                                await LoadArticlesAsync();
+                            });
+                        break;
+                    }
+                case ChangeType.Updated:
+                    {
+                        ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
+                        if (articleResponse.Success)
+                            await App.Current.Dispatcher.InvokeAsync(async () =>
+                            {
+                                ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(notification.ClientId);
+                                if (viewModel != null)
+                                {
+                                    ArticleCache.Instance.UpdateArticle(articleResponse.ArticleViewModel);
+                                    await LoadArticlesAsync();
+                                }
+                            });
+                        break;
+                    }
+                case ChangeType.Deleted:
+                    {
+                        await App.Current.Dispatcher.InvokeAsync(async () =>
+                        {
+                            ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(notification.ClientId);
+                            if (viewModel != null)
+                            {
+                                ArticleCache.Instance.RemoveArticle(viewModel);
+                                await LoadArticlesAsync();
+                            }
+                        });
+                        break;
+                    }
+                default:
+                    break;
+            }
         }
 
 

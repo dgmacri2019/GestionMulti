@@ -77,10 +77,10 @@ namespace GestionComercial.API.Controllers.Stock
 
 
         [HttpPost("GetAllAsync")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromBody] ArticleFilterDto filter)
         {
-            IEnumerable<ArticleViewModel> articles = await _artcicleService.GetAllAsync();
-            return Ok(articles);
+            ArticleResponse articleResponse = await _artcicleService.GetAllAsync(filter.Page, filter.PageSize);
+            return articleResponse.Success ? Ok(articleResponse) : BadRequest(articleResponse.Message);
         }
 
         [HttpPost("GetByIdAsync")]
@@ -93,32 +93,7 @@ namespace GestionComercial.API.Controllers.Stock
             return Ok(article);
         }
 
-        [HttpPost("FindByCodeOrBarCodeAsync")]
-        public async Task<IActionResult> FindByCodeOrBarCodeAsync([FromBody] ArticleFilterDto filter)
-        {
-            ArticleViewModel? article = await _artcicleService.FindByCodeOrBarCodeAsync(filter.Code);
-            if (article == null)
-                return NotFound();
-
-            return Ok(article);
-        }
-
-        [HttpPost("FindByBarCodeAsync")]
-        public async Task<IActionResult> FindByBarCodeAsync([FromBody] ArticleFilterDto filter)
-        {
-            ArticleViewModel? article = await _artcicleService.FindByBarCodeAsync(filter.BarCode);
-            if (article == null)
-                return NotFound();
-
-            return Ok(article);
-        }
-
-        [HttpPost("SearchToListAsync")]
-        public async Task<IActionResult> SearchToListAsync([FromBody] ArticleFilterDto filter)
-        {
-            IEnumerable<ArticleViewModel> articles = await _artcicleService.SearchToListAsync(filter.Description);
-            return Ok(articles);
-        }
+        
 
 
         [HttpPost("UpdatePricesAsync")]

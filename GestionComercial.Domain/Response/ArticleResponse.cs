@@ -7,5 +7,9 @@ namespace GestionComercial.Domain.Response
         public string BarCode { get; set; } = string.Empty;
 
         public ArticleViewModel ArticleViewModel { get; set; }
+
+        public List<ArticleViewModel> ArticleViewModels { get; set; }
+
+        public int TotalRegisters { get; set; }
     }
 }

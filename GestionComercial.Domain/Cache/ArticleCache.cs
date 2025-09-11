@@ -1,4 +1,6 @@
-﻿using GestionComercial.Domain.DTOs.Stock;
+﻿using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
@@ -127,6 +129,55 @@ namespace GestionComercial.Domain.Cache
             }
         }
 
+        public ArticleViewModel? FindArticleById(int id)
+        {
+            try
+            {
+                return _articles != null ?
+                                _articles.FirstOrDefault(c => c.Id == id)
+                               :
+                               null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void UpdateArticle(ArticleViewModel article)
+        {
+            try
+            {
+                ArticleViewModel? articleViewModel = _articles.FirstOrDefault(c => c.Id == article.Id);
+                if (articleViewModel != null)
+                {
+                    _articles.Remove(articleViewModel);
+                    _articles.Add(article);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public void RemoveArticle(ArticleViewModel article)
+        {
+            try
+            {
+                ArticleViewModel? articleViewModel = _articles.FirstOrDefault(c => c.Id == article.Id);
+                if (articleViewModel != null)
+                    _articles.Remove(articleViewModel);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
 
         public void ClearCache()
         {
@@ -170,5 +221,7 @@ namespace GestionComercial.Domain.Cache
                 return -1;
             }
         }
+
+        
     }
 }

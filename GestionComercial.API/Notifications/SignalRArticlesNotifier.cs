@@ -20,9 +20,9 @@ namespace GestionComercial.API.Notifications
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             ArticuloChangeNotification notification = accion switch
             {
-                ChangeType.Created => new ArticleCreado(articleId, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Updated => new ArticleActualizado(articleId, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Deleted => new ArticleEliminado(articleId, DateTimeOffset.UtcNow),
+                ChangeType.Created => new ArticleCreado(articleId, DateTimeOffset.UtcNow, nombre, accion),
+                ChangeType.Updated => new ArticleActualizado(articleId, DateTimeOffset.UtcNow, nombre, accion),
+                ChangeType.Deleted => new ArticleEliminado(articleId, DateTimeOffset.UtcNow, accion),
                 _ => throw new ArgumentException("Acción inválida")
             };
             //await _hub.Clients.All.ArticulosActualizados(notification);
