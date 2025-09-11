@@ -107,7 +107,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     if (articleResponse.Success)
                         ArticleCache.Instance.SetArticles(articleResponse.ArticleViewModels);
                     else
-                        MessageBox.Show($"Error al articulos, el error fue:\n{articleResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Error al cargar articulos, el error fue:\n{articleResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
 
 
                     ArticleCache.Reading = false;
@@ -136,14 +136,18 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             {
                 case ChangeType.Created:
                     {
-                        ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
-                        if (articleResponse.Success)
-                            await App.Current.Dispatcher.InvokeAsync(async () =>
-                            {
-                                ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
+                        var result = ArticleCache.Instance.FindArticleById(notification.ClientId);
+                        if ( result == null)
+                        {
+                            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
+                            if (articleResponse.Success)
+                                await App.Current.Dispatcher.InvokeAsync(async () =>
+                                {
+                                    ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
 
-                                await LoadArticlesAsync();
-                            });
+                                    await LoadArticlesAsync();
+                                });
+                        }
                         break;
                     }
                 case ChangeType.Updated:

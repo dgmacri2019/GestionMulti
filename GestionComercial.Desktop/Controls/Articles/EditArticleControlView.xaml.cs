@@ -30,17 +30,33 @@ namespace GestionComercial.Desktop.Controls.Articles
             InitializeComponent();
             _articlesApiService = new ArticlesApiService();
             ArticleId = articleId;
-            _ = FindArticleAsync();
-            if (ArticleId > 0)
-            {
-                btnAdd.Visibility = Visibility.Hidden;
-                btnUpdate.Visibility = Visibility.Visible;
-            }
-            else
+
+            // _ = FindArticleAsync();
+            if (ArticleId == 0)
             {
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
+                articleViewModel = new ArticleViewModel { CreateUser = App.UserName, IsEnabled = true };
             }
+            else
+            {
+                ArticleViewModel? viewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
+                if (viewModel != null)
+                {
+                    articleViewModel = viewModel;
+                    btnAdd.Visibility = Visibility.Hidden;
+                    btnUpdate.Visibility = Visibility.Visible;
+                }
+                else
+                    lblError.Text = "No se reconoce el artículo";
+            }
+            if (articleViewModel != null)
+            {
+                articleViewModel.Taxes = MasterCache.Instance.GetTaxes();
+                articleViewModel.Measures = MasterCache.Instance.GetMeasures();
+                articleViewModel.Categories = MasterCache.Instance.GetCategories();
+            }
+            DataContext = articleViewModel;
         }
 
         private async Task FindArticleAsync()

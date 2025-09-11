@@ -79,6 +79,9 @@ namespace GestionComercial.Applications.Services
 
         public async Task<ArticleViewModel?> GetByIdAsync(int id)
         {
+            List<PriceList> priceLists = await _context.PriceLists
+                       .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                       .ToListAsync();
             Article? article = await _context.Articles
                .AsNoTracking()
                .Include(c => c.Category)
@@ -95,7 +98,7 @@ namespace GestionComercial.Applications.Services
                     CreateDate = DateTime.Now,
                 }
                 :
-                ConverterHelper.ToArticleViewModel(article);
+                ConverterHelper.ToArticleViewModel(article, priceLists);
         }
 
         public async Task<GeneralResponse> UpdatePricesAsync(IProgress<int> progress, int categoryId, int percentage)

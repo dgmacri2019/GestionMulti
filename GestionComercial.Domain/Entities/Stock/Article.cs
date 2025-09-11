@@ -112,22 +112,22 @@ namespace GestionComercial.Domain.Entities.Stock
         //[JsonIgnore] 
         public virtual Tax? Tax { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual Measure? Measure { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Category? Category { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual ICollection<PriceList>? PriceLists { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<SaleDetail>? SaleDetails { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<SaleDetailTmp>? SaleDetailTmps { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual ICollection<PurchaseDetail>? PurcheaseDetails { get; set; }
         
         [JsonIgnore]

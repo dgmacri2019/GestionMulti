@@ -53,32 +53,35 @@ namespace GestionComercial.Domain.Helpers
             };
         }
 
-        public static ArticleViewModel ToArticleViewModel(Article? article)
+        public static ArticleViewModel ToArticleViewModel(Article? article, List<PriceList> priceLists)
         {
             return new ArticleViewModel
             {
                 Id = article.Id,
+                Stock = article.Stock,
+                Code = article.Code,
+                Description = article.Description,
+                Category = article.Category.Description,
+                CategoryColor = article.Category.Color,
+                PriceWithTax = article.PriceWithTaxes,
+                Cost = article.Cost,
+                Bonification = article.Bonification,
+                RealCost = article.RealCost,
                 BarCode = article.BarCode,
-                Bonification = article.Bonification * 100,
                 CategoryId = article.CategoryId,
                 ChangePoint = article.ChangePoint,
                 Clarifications = article.Clarifications,
-                Code = article.Code,
-                Cost = article.Cost,
                 CreateDate = article.CreateDate,
                 CreateUser = article.CreateUser,
-                Description = article.Description,
                 InternalTax = article.InternalTax,
                 IsDeleted = article.IsDeleted,
                 IsEnabled = article.IsEnabled,
                 IsWeight = article.IsWeight,
                 MeasureId = article.MeasureId,
                 MinimalStock = article.MinimalStock,
-                RealCost = article.RealCost,
                 Remark = article.Remark,
                 Replacement = article.Replacement,
                 SalePoint = article.SalePoint,
-                Stock = article.Stock,
                 StockCheck = article.StockCheck,
                 TaxId = article.TaxId,
                 Umbral = article.Umbral,
@@ -87,6 +90,31 @@ namespace GestionComercial.Domain.Helpers
                 //Categories = categories,
                 //Measures = measures,
                 //Taxes = taxes,
+                TaxesPrice =
+                    [
+                        new TaxePriceDto
+                        {
+                            Description = $"I.V.A. {article.Tax.Description}",
+                            Utility = article.Tax.Rate,
+                            Price = article.RealCost * article.Tax.Rate /100,
+                        },
+                        new TaxePriceDto
+                        {
+                            Description = string.Format("Impuestos internos {0}%", article.InternalTax),
+                            Utility =article.InternalTax,
+                            Price = article.RealCost * article.InternalTax /100,
+                        }
+                    ],
+                PriceLists = priceLists
+                    .Select(pl => new PriceListItemDto
+                    {
+                        Id = pl.Id,
+                        Description = pl.Description,
+                        Utility = pl.Utility,
+                        FinalPrice = article.PriceWithTaxes + (article.PriceWithTaxes * pl.Utility / 100)
+                    })
+                    .OrderBy(pl => pl.Utility)
+                    .ToList()// Ordenamos para que la lista 1 (utility=0) aparezca primero, luego las que ofrecen descuentos
             };
         }
 
