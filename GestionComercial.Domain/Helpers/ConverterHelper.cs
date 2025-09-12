@@ -50,6 +50,10 @@ namespace GestionComercial.Domain.Helpers
                 Remark = articleViewModel.Remark,
                 Replacement = articleViewModel.Replacement,
                 SalePoint = articleViewModel.SalePoint,
+                Utility = articleViewModel.Utility,
+                CostWithTaxes = articleViewModel.CostWithTaxes,
+                SalePrice = articleViewModel.SalePrice,
+                SalePriceWithTaxes = articleViewModel.SalePriceWithTaxes,
             };
         }
 
@@ -63,7 +67,7 @@ namespace GestionComercial.Domain.Helpers
                 Description = article.Description,
                 Category = article.Category.Description,
                 CategoryColor = article.Category.Color,
-                PriceWithTax = article.PriceWithTaxes,
+                CostWithTaxes = article.CostWithTaxes,
                 Cost = article.Cost,
                 Bonification = article.Bonification,
                 RealCost = article.RealCost,
@@ -87,6 +91,9 @@ namespace GestionComercial.Domain.Helpers
                 Umbral = article.Umbral,
                 UpdateDate = article.UpdateDate,
                 UpdateUser = article.UpdateUser,
+                Utility = article.Utility,
+                SalePrice = article.SalePrice,
+                SalePriceWithTaxes = article.SalePriceWithTaxes,
                 //Categories = categories,
                 //Measures = measures,
                 //Taxes = taxes,
@@ -100,7 +107,7 @@ namespace GestionComercial.Domain.Helpers
                         },
                         new TaxePriceDto
                         {
-                            Description = string.Format("Impuestos internos {0}%", article.InternalTax),
+                            Description = string.Format("Imp. int. {0}%", article.InternalTax),
                             Utility =article.InternalTax,
                             Price = article.RealCost * article.InternalTax /100,
                         }
@@ -111,7 +118,7 @@ namespace GestionComercial.Domain.Helpers
                         Id = pl.Id,
                         Description = pl.Description,
                         Utility = pl.Utility,
-                        FinalPrice = article.PriceWithTaxes + (article.PriceWithTaxes * pl.Utility / 100)
+                        FinalPrice = article.SalePriceWithTaxes + (article.SalePriceWithTaxes * pl.Utility / 100),
                     })
                     .OrderBy(pl => pl.Utility)
                     .ToList()// Ordenamos para que la lista 1 (utility=0) aparezca primero, luego las que ofrecen descuentos

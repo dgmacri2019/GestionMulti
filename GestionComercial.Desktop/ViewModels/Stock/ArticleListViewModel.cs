@@ -113,12 +113,16 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     ArticleCache.Reading = false;
                 }
 
-                var filtered = ArticleCache.Instance.SearchArticles(NameFilter, IsEnabledFilter, IsDeletedFilter);
+                List<ArticleViewModel> filtered = ArticleCache.Instance.SearchArticles(NameFilter, IsEnabledFilter, IsDeletedFilter);
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     Articles.Clear();
-                    foreach (var p in filtered)
+                    foreach (var p in filtered
+                                        .OrderBy(a => a.Category)
+                                        .ThenBy(a => a.Code)
+                                        .ThenBy(a=>a.Description))
+
                         Articles.Add(p);
                 });
             }
@@ -131,19 +135,18 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
         private async void OnArticuloCambiado(ArticuloChangeNotification notification)
         {
-
             switch (notification.action)
             {
                 case ChangeType.Created:
                     {
-                        var result = ArticleCache.Instance.FindArticleById(notification.ClientId);
-                        if ( result == null)
+                        if (ArticleCache.Instance.FindArticleById(notification.ClientId) == null)
                         {
                             ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
                             if (articleResponse.Success)
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
+                                    if (ArticleCache.Instance.FindArticleById(notification.ClientId) == null)
+                                        ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
 
                                     await LoadArticlesAsync();
                                 });

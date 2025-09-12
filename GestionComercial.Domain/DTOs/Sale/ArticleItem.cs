@@ -37,7 +37,7 @@ namespace GestionComercial.Domain.DTOs.Sale
         }
 
         // Colección por fila con las price lists que trae el artículo
-        public ObservableCollection<PriceListItemDto> PriceLists { get; set; } = [];
+        public ObservableCollection<PriceListItemDto>? PriceLists { get; set; } = [];
 
         public int PriceListId
         {

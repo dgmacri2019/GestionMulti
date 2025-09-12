@@ -8,7 +8,7 @@ namespace GestionComercial.Domain.DTOs.Stock
     public class ArticleViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private decimal _cost, _bonification, _realCost, _priceWithTax;
+        private decimal _cost, _bonification, _realCost, _costWithTaxes, _internalTax, _utility, _salePrice, _salePriceWithTaxes;
         private int _taxId;
 
 
@@ -42,14 +42,14 @@ namespace GestionComercial.Domain.DTOs.Stock
                 {
                     _cost = value;
                     OnPropertyChanged(nameof(Cost));
-                    RecalcularDesdeCostoSinIVA();
+                    RecalculateFromCost();
                 }
             }
         }
 
         [Required(ErrorMessage = "El Campo {0} es requerido")]
         [Display(Name = "Bonificación / Recargo")]
-        [Range(-100, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
+        [Range(0, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public decimal Bonification
         {
             get => _bonification;
@@ -59,7 +59,7 @@ namespace GestionComercial.Domain.DTOs.Stock
                 {
                     _bonification = value;
                     OnPropertyChanged(nameof(Bonification));
-                    RecalcularDesdeCostoSinIVA();
+                    RecalculateFromCost();
                 }
             }
         }
@@ -76,7 +76,24 @@ namespace GestionComercial.Domain.DTOs.Stock
                 {
                     _realCost = value;
                     OnPropertyChanged(nameof(RealCost));
-                    RecalcularDesdeCostoConBonificacion();
+                    RecalculateFromRealCost();
+                }
+            }
+        }
+
+        [Display(Name = "Utilidad")]
+        [DisplayFormat(DataFormatString = "{0:P0}", ApplyFormatInEditMode = false)]
+        [Range(0, 99999, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
+        public decimal Utility
+        {
+            get => _utility;
+            set
+            {
+                if (_utility != value)
+                {
+                    _utility = value;
+                    OnPropertyChanged(nameof(Utility));
+                    RecalculateSalePricesFromUtility();
                 }
             }
         }
@@ -93,7 +110,7 @@ namespace GestionComercial.Domain.DTOs.Stock
                 {
                     _taxId = value;
                     OnPropertyChanged(nameof(TaxId));
-                    RecalcularDesdeCostoConBonificacion();
+                    RecalculateFromRealCost();
                 }
             }
         }
@@ -102,7 +119,19 @@ namespace GestionComercial.Domain.DTOs.Stock
         [Display(Name = "Impuestos Internos")]
         [DisplayFormat(DataFormatString = "{0:P0}", ApplyFormatInEditMode = false)]
         [Range(0, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public int InternalTax { get; set; }
+        public decimal InternalTax
+        {
+            get => _internalTax;
+            set
+            {
+                if (_internalTax != value)
+                {
+                    _internalTax = value;
+                    OnPropertyChanged(nameof(InternalTax));
+                    RecalculateFromCost();
+                }
+            }
+        }
 
         //[Required(ErrorMessage = "El Campo {0} es requerido")]
         //[DisplayFormat(DataFormatString = "{0:P2}", ApplyFormatInEditMode = false)]
@@ -185,26 +214,53 @@ namespace GestionComercial.Domain.DTOs.Stock
 
         public string Category { get; set; } = string.Empty;
         public string CategoryColor { get; set; } = string.Empty;
-       
+
         //[DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
-        public decimal PriceWithTax
+        public decimal CostWithTaxes
         {
-            get => _priceWithTax;
+            get => _costWithTaxes;
             set
             {
-                if (_priceWithTax != value)
+                if (_costWithTaxes != value)
                 {
-                    _priceWithTax = value;
-                    OnPropertyChanged(nameof(PriceWithTax));
-                    RecalcularDesdeCostoConIVA();
+                    _costWithTaxes = value;
+                    OnPropertyChanged(nameof(CostWithTaxes));
+                    RecalculateFromCostWithTaxes();
                 }
             }
         }
 
+        public decimal SalePrice
+        {
+            get => _salePrice;
+            set
+            {
+                if (_salePrice != value)
+                {
+                    _salePrice = value;
+                    OnPropertyChanged(nameof(SalePrice));
+                    RecalculateUtilityFromSalePrice();
+                }
+            }
+        }
+
+        public decimal SalePriceWithTaxes
+        {
+            get => _salePriceWithTaxes;
+            set
+            {
+                if (_salePriceWithTaxes != value)
+                {
+                    _salePriceWithTaxes = value;
+                    OnPropertyChanged(nameof(SalePriceWithTaxes));
+                    RecalculateUtilityFromSalePriceWithTaxes();
+                }
+            }
+        }
 
         private bool _isUpdating = false;
 
-        private void RecalcularDesdeCostoSinIVA()
+        private void RecalculateFromCost()
         {
             if (_isUpdating || TaxId == 0 || Taxes == null) return;
             _isUpdating = true;
@@ -212,42 +268,161 @@ namespace GestionComercial.Domain.DTOs.Stock
             Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
             if (tax != null)
             {
-                RealCost = Cost * (1 - Bonification / 100);
-                PriceWithTax = RealCost * (1 + tax.Rate / 100);
+                decimal bonifFactor = 1m - (_bonification / 100m);
+                decimal internalFactor = 1m + (_internalTax / 100m);
+                decimal ivaFactor = 1m + (tax.Rate / 100m);
+                decimal utilityFactor = 1m + (_utility / 100m);
+
+                _realCost = Round2(_cost * bonifFactor * internalFactor);
+                _costWithTaxes = Round2(_realCost * ivaFactor);
+
+                _salePrice = Round2(_realCost * utilityFactor);
+                _salePriceWithTaxes = Round2(_salePrice * ivaFactor);
+
+                NotifyAll(nameof(RealCost), nameof(CostWithTaxes), nameof(SalePrice), nameof(SalePriceWithTaxes));
+
             }
             _isUpdating = false;
         }
 
-        private void RecalcularDesdeCostoConBonificacion()
+        private void RecalculateFromRealCost()
         {
             if (_isUpdating || TaxId == 0 || Taxes == null) return;
             _isUpdating = true;
             Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
             if (tax != null)
             {
-                Cost = RealCost / (1 - Bonification / 100);
-                PriceWithTax = RealCost * (1 + tax.Rate / 100);
+                decimal bonifFactor = 1m - (_bonification / 100m);
+                decimal internalFactor = 1m + (_internalTax / 100m);
+                decimal ivaFactor = 1m + (tax.Rate / 100m);
+                decimal utilityFactor = 1m + (_utility / 100m);
+
+                decimal denom = bonifFactor * internalFactor;
+                _cost = denom != 0m ? Round2(_realCost / denom) : 0m;
+
+                _costWithTaxes = Round2(_realCost * ivaFactor);
+
+                _salePrice = Round2(_realCost * utilityFactor);
+                _salePriceWithTaxes = Round2(_salePrice * ivaFactor);
+
+                NotifyAll(nameof(Cost), nameof(CostWithTaxes), nameof(SalePrice), nameof(SalePriceWithTaxes));
+
             }
             _isUpdating = false;
         }
 
-        private void RecalcularDesdeCostoConIVA()
+        private void RecalculateFromCostWithTaxes()
         {
             if (_isUpdating || TaxId == 0 || Taxes == null) return;
             _isUpdating = true;
             Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
             if (tax != null)
             {
-                RealCost = PriceWithTax / (1 + tax.Rate / 100);
-                Cost = RealCost / (1 - Bonification / 100);
+                decimal ivaFactor = 1m + (tax.Rate / 100m);
+                decimal bonifFactor = 1m - (_bonification / 100m);
+                decimal internalFactor = 1m + (_internalTax / 100m);
+                decimal utilityFactor = 1m + (_utility / 100m);
+
+                _realCost = Round2(_costWithTaxes / ivaFactor);
+
+                decimal denom = bonifFactor * internalFactor;
+                _cost = denom != 0m ? Round2(_realCost / denom) : 0m;
+
+                _salePrice = Round2(_realCost * utilityFactor);
+                _salePriceWithTaxes = Round2(_salePrice * ivaFactor);
+
+                NotifyAll(nameof(RealCost), nameof(Cost), nameof(SalePrice), nameof(SalePriceWithTaxes));
+
             }
             _isUpdating = false;
         }
 
-        private void OnPropertyChanged(string propertyName)
+        private void RecalculateSalePricesFromUtility()
         {
+            if (_isUpdating || TaxId == 0 || Taxes == null) return;
+            _isUpdating = true;
+            Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                decimal ivaFactor = 1m + (tax.Rate / 100m);
+                decimal utilityFactor = 1m + (_utility / 100m);
+
+                _salePrice = Round2(_realCost * utilityFactor);
+                _salePriceWithTaxes = Round2(_salePrice * ivaFactor);
+
+                NotifyAll(nameof(SalePrice), nameof(SalePriceWithTaxes));
+            }
+            _isUpdating = false;
+        }
+
+        private void RecalculateUtilityFromSalePrice()
+        {
+            if (_isUpdating || TaxId == 0 || Taxes == null) return;
+            _isUpdating = true;
+            Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                decimal ivaFactor = 1m + (tax.Rate / 100m);
+                decimal utilityFactor = 1m + (_utility / 100m);
+                // Si el costo está en 0, lo calculamos a partir del SalePrice
+                if (_cost == 0m)
+                {
+                    decimal bonifFactor = 1m - (_bonification / 100m);
+                    decimal internalFactor = 1m + (_internalTax / 100m);
+
+                    _realCost = Round2(_salePrice / utilityFactor);
+                    _cost = bonifFactor * internalFactor != 0m ? Round2(_realCost / (bonifFactor * internalFactor)) : 0m;
+                    _costWithTaxes = Round2(_realCost * ivaFactor);
+                }
+                _utility = _realCost != 0m ? Round2((_salePrice / _realCost - 1m) * 100m) : 0m;
+                _salePriceWithTaxes = Round2(_salePrice * ivaFactor);
+
+                NotifyAll(nameof(Utility), nameof(SalePriceWithTaxes), nameof(RealCost), nameof(Cost), nameof(CostWithTaxes));
+
+            }
+            _isUpdating = false;
+        }
+
+        private void RecalculateUtilityFromSalePriceWithTaxes()
+        {
+            if (_isUpdating || TaxId == 0 || Taxes == null) return;
+            _isUpdating = true;
+            Tax? tax = Taxes.FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                decimal ivaFactor = 1m + (tax.Rate / 100m);
+                decimal utilityFactor = 1m + (_utility / 100m);
+                _salePrice = Round2(_salePriceWithTaxes / ivaFactor);
+                // Si el costo está en 0, lo calculamos a partir del SalePrice
+                if (_cost == 0m)
+                {
+                    decimal bonifFactor = 1m - (_bonification / 100m);
+                    decimal internalFactor = 1m + (_internalTax / 100m);
+
+                    _realCost = Round2(_salePrice / utilityFactor);
+                    _cost = bonifFactor * internalFactor != 0m ? Round2(_realCost / (bonifFactor * internalFactor)) : 0m;
+                    _costWithTaxes = Round2(_realCost * ivaFactor);
+                }
+                
+                
+                _utility = _realCost != 0m ? Round2((_salePrice / _realCost - 1m) * 100m) : 0m;
+
+                NotifyAll(nameof(SalePrice), nameof(Utility), nameof(RealCost), nameof(Cost), nameof(CostWithTaxes));
+            }
+            _isUpdating = false;
+        }
+
+        // Auxiliar
+        private decimal Round2(decimal value) => decimal.Round(value, 4, MidpointRounding.AwayFromZero);
+
+        private void NotifyAll(params string[] propertyNames)
+        {
+            foreach (var name in propertyNames)
+                OnPropertyChanged(name);
+        }
+
+        private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public virtual ICollection<Tax> Taxes { get; set; }
         public virtual ICollection<Measure> Measures { get; set; }

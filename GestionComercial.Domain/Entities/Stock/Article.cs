@@ -24,26 +24,45 @@ namespace GestionComercial.Domain.Entities.Stock
         public string? BarCode { get; set; }
 
         [Required(ErrorMessage = "El Campo {0} es requerido")]
-        [Display(Name = "Precio de compra")]
+        [Display(Name = "Costo sin impuestos")]
         [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
         //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public decimal Cost { get; set; }
 
         [Required(ErrorMessage = "El Campo {0} es requerido")]
-        [Display(Name = "Bonificación / Recargo")]
+        [Display(Name = "Bonificación")]
         [DisplayFormat(DataFormatString = "{0:P0}", ApplyFormatInEditMode = false)]
-        [Range(-100, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
+        [Range(0, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public decimal Bonification { get; set; }
 
-        [Display(Name = "Precio de compra")]
+        [Display(Name = "Costo con bonificación sin impuestos")]
         [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
         //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public decimal RealCost { get; set; }
 
-        [Display(Name = "Precio con impuestos")]
+        [Display(Name = "Precio de venta sin impuestos")]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
+        public decimal SalePrice { get; set; }
+
+        [Display(Name = "Precio de venta con impuestos")]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
+        public decimal SalePriceWithTaxes { get; set; }
+
+        [Display(Name = "Precio de compra con impuestos")]
         [DisplayFormat(DataFormatString = "{0:C4}", ApplyFormatInEditMode = false)]
         //[Range(0, double.MaxValue, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public decimal PriceWithTaxes => Tax != null ? RealCost + (RealCost * Tax.Rate / 100) + (RealCost * InternalTax /100) : 0;
+        public decimal CostWithTaxes { get; set; }
+
+        [Display(Name = "Utilidad")]
+        [DisplayFormat(DataFormatString = "{0:P0}", ApplyFormatInEditMode = false)]
+        [Range(0, 99999, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
+        public decimal Utility { get; set; }
+
+
+
+
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar un {0}")]
@@ -54,7 +73,7 @@ namespace GestionComercial.Domain.Entities.Stock
         [Display(Name = "Impuestos Internos")]
         [DisplayFormat(DataFormatString = "{0:P0}", ApplyFormatInEditMode = false)]
         [Range(0, 100, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
-        public int InternalTax { get; set; }
+        public decimal InternalTax { get; set; }
 
         //[Required(ErrorMessage = "El Campo {0} es requerido")]
         //[DisplayFormat(DataFormatString = "{0:P2}", ApplyFormatInEditMode = false)]
@@ -62,8 +81,7 @@ namespace GestionComercial.Domain.Entities.Stock
         [Range(0, 99999999, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public int SalePoint { get; set; }
 
-        //[Required(ErrorMessage = "El Campo {0} es requerido")]
-        //[DisplayFormat(DataFormatString = "{0:P2}", ApplyFormatInEditMode = false)]
+
         [Display(Name = "Puntos para canje")]
         [Range(0, 99999999, ErrorMessage = "Debe seleccion un {0} entre {1} y {2}")]
         public int ChangePoint { get; set; }
@@ -129,7 +147,7 @@ namespace GestionComercial.Domain.Entities.Stock
 
         //[JsonIgnore]
         public virtual ICollection<PurchaseDetail>? PurcheaseDetails { get; set; }
-        
+
         [JsonIgnore]
         public virtual ICollection<PurchaseDetailTmp>? PurcheaseDetailTmps { get; set; }
 

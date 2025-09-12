@@ -47,26 +47,11 @@ namespace GestionComercial.Desktop.Views.Sales
         public SaleAddWindow(int saleId)
         {
             InitializeComponent();
-            //int cont = 0;
-            //while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters
-            //    || !ClientCache.Instance.HasData || !ArticleCache.Instance.HasData || !ClientCache.Instance.HasData)
-            //{
-            //    Task.Delay(10);
-            //    cont++;
-            //    if (cont == 500)
-            //    {
-            //        MessageBox.Show("Error de While", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            //    }
-
-            //}
-
-            InitializeComponent();
-
+          
             _salesApiService = new SalesApiService();
             DataContext = this;
             SaleId = saleId;
-            ArticleItems = new ObservableCollection<ArticleItem>();
+            ArticleItems = [];
             ArticleItems.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(TotalItems));
@@ -94,9 +79,9 @@ namespace GestionComercial.Desktop.Views.Sales
             UsePostMethod = ParameterCache.Instance.GetAllGeneralParameters().First().UsePostMethod;
             SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
             SaleNumber = SaleCache.Instance.GetLastSaleNumber() + 1;
-            _ = LoadSaleAsync();
+            await LoadSaleAsync();
 
-            
+
 
             var (width, height) = ScreenHelper.ObtenerResolucion(this);
             Width = width;
@@ -153,6 +138,7 @@ namespace GestionComercial.Desktop.Views.Sales
         private void dgArticles_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             try
+            
             {
                 var currentItem = e.Row.Item as ArticleItem;
                 if (currentItem == null) return;
@@ -252,7 +238,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         }
 
                         // Asignar datos al item
-                        currentItem.SmallMeasureDescription = article.Measures
+                        currentItem.SmallMeasureDescription = MasterCache.Instance.GetMeasures()
                             .First(m => m.Id == article.MeasureId).SmallDescription;
                         currentItem.Quantity = quantity;
 
@@ -287,7 +273,6 @@ namespace GestionComercial.Desktop.Views.Sales
                             );
                             dataGrid.BeginEdit();
                         }), DispatcherPriority.Background);
-
 
                     }
                     else
@@ -361,13 +346,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         return;
                     }
-
-                    //currentItem.Recalculate();
-                    //OnPropertyChanged(nameof(TotalItems));
-                    //OnPropertyChanged(nameof(TotalPrice));
-                    //if (ArticleItems.Last() == currentItem)
-                    //    ArticleItems.Add(new ArticleItem());
-
+                                       
                     // ✅ Poner foco en la celda Cantidad
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -558,76 +537,152 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private void txtBarcode_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            try
             {
-                string code = txtBarcode.Text.Trim();
-                if (!string.IsNullOrEmpty(code))
+                if (e.Key == Key.Enter)
                 {
-                    bool isProductWeight = code.Substring(0, 2) == "20" && code.Length > 8;
-                    decimal quantity = 1m;
-
-                    ArticleViewModel? article = isProductWeight ?
-                        ArticleCache.Instance.FindByCodeOrBarCode(code.Substring(2, 4))
-                        :
-                        ArticleCache.Instance.FindByCodeOrBarCode(code);
-
-                    if (article != null)
+                    string code = txtBarcode.Text.Trim();
+                    if (!string.IsNullOrEmpty(code))
                     {
+                        bool isProductWeight = code.Substring(0, 2) == "20" && code.Length > 8;
+                        decimal quantity = 1m;
+
+                        ArticleViewModel? article = isProductWeight ?
+                            ArticleCache.Instance.FindByCodeOrBarCode(code.Substring(2, 4))
+                            :
+                            ArticleCache.Instance.FindByCodeOrBarCode(code);
+
+                        if (article != null)
+                        {
 
 
-                        //isProductWeight = article.IsWeight && code.Length > 8;
-                        if (article.IsDeleted)
-                        {
-                            MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-                        if (!article.IsEnabled)
-                        {
-                            MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-                        var priceLists = article.PriceLists;
-                        int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
-
-                        if (isProductWeight)
-                        {
-                            if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
+                            //isProductWeight = article.IsWeight && code.Length > 8;
+                            if (article.IsDeleted)
                             {
-                                string quantityString = code.Substring(7, 5);
-                                decimal price = priceLists.Where(pl => pl.Id == priceListId).First().FinalPrice;
-                                quantity = Math.Round(Convert.ToDecimal(quantityString) / price, 3);
+                                MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
                             }
-                            else if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodeWeight)
+                            if (!article.IsEnabled)
                             {
-                                string quantityString = code.Substring(7, 5);
-                                quantity = Math.Round(Convert.ToDecimal(quantityString) / 1000, 3);
+                                MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
                             }
-                        }
+                            var priceLists = article.PriceLists;
+                            int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+
+                            if (isProductWeight)
+                            {
+                                if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
+                                {
+                                    string quantityString = code.Substring(7, 5);
+                                    decimal price = priceLists.Where(pl => pl.Id == priceListId).First().FinalPrice;
+                                    quantity = Math.Round(Convert.ToDecimal(quantityString) / price, 3);
+                                }
+                                else if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodeWeight)
+                                {
+                                    string quantityString = code.Substring(7, 5);
+                                    quantity = Math.Round(Convert.ToDecimal(quantityString) / 1000, 3);
+                                }
+                            }
 
 
 
-                        // Verificar si el artículo ya está en la grilla
-                        ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
+                            // Verificar si el artículo ya está en la grilla
+                            ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
 
-                        if (existingItem != null && ParameterCache.Instance.GetAllGeneralParameters().First().SumQuantityItems && !isProductWeight)
-                        {
-                            // Ya existe → solo aumentar la cantidad
-                            existingItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
-                            existingItem.Quantity += 1;
-                            existingItem.Recalculate();
-                            OnPropertyChanged(nameof(TotalItems));
-                            OnPropertyChanged(nameof(TotalPrice));
+                            if (existingItem != null && ParameterCache.Instance.GetAllGeneralParameters().First().SumQuantityItems && !isProductWeight)
+                            {
+                                // Ya existe → solo aumentar la cantidad
+                                existingItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
+                                existingItem.Quantity += 1;
+                                existingItem.Recalculate();
+                                OnPropertyChanged(nameof(TotalItems));
+                                OnPropertyChanged(nameof(TotalPrice));
+                            }
+                            else
+                            {
+                                ArticleItem newItem = new()
+                                {
+                                    Code = article.Code,
+                                    Description = article.Description,
+                                    SmallMeasureDescription = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription,
+                                    Quantity = quantity,
+                                    Bonification = 0,
+                                    IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
+                                };
+
+                                // llenar PriceLists con las del artículo
+                                newItem.PriceLists.Clear();
+                                foreach (var pl in article.PriceLists)
+                                    newItem.PriceLists.Add(pl);
+
+                                // determinar qué lista de precios usar
+                                if (cbPriceLists.SelectedValue != null)
+                                    priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+                                else if (article.PriceLists.Any())
+                                    priceListId = Convert.ToInt32(
+                                        article.PriceLists.First().GetType().GetProperty("Id")
+                                              .GetValue(article.PriceLists.First()));
+
+                                // asignar lista de precios -> setter actualiza el Price
+                                newItem.PriceListId = priceListId;
+
+                                newItem.Recalculate();
+                                OnPropertyChanged(nameof(TotalItems));
+                                OnPropertyChanged(nameof(TotalPrice));
+                                ArticleItems.Add(newItem);
+                                dgArticles.ScrollIntoView(ArticleItems.Last());
+                                // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
+                                if (chBarcode.IsChecked == false)
+                                {
+                                    ArticleItems.Add(new ArticleItem());
+                                }
+                            }
                         }
                         else
                         {
+                            MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        // limpiar el textbox y volver a enfocarlo
+                        txtBarcode.Clear();
+                        txtBarcode.Focus();
+                    }
+                }
+                if (e.Key == Key.F5)
+                {
+                    var searchWindow = new ArticleSearchWindow(txtBarcode.Text) { Owner = Window.GetWindow(this) };
+                    if (searchWindow.ShowDialog() == true)
+                    {
+                        var article = searchWindow.SelectedArticle;
+                        if (article != null)
+                        {
+                            //isProductWeight = article.IsWeight && code.Length > 8;
+                            if (article.IsDeleted)
+                            {
+                                MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+                            if (!article.IsEnabled)
+                            {
+                                MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+                            var priceLists = article.PriceLists;
+                            int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+
+                            // Verificar si el artículo ya está en la grilla
+                            ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
+
+
                             ArticleItem newItem = new()
                             {
                                 Code = article.Code,
                                 Description = article.Description,
-                                SmallMeasureDescription = article.Measures.First(m => m.Id == article.MeasureId).SmallDescription,
-                                Quantity = quantity,
+                                SmallMeasureDescription = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription,
+                                Quantity = 1,
                                 Bonification = 0,
                                 IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
+                                 
                             };
 
                             // llenar PriceLists con las del artículo
@@ -656,88 +711,21 @@ namespace GestionComercial.Desktop.Views.Sales
                             {
                                 ArticleItems.Add(new ArticleItem());
                             }
+
                         }
+
                     }
-                    else
-                    {
-                        MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+
+                    e.Handled = true;
                     // limpiar el textbox y volver a enfocarlo
                     txtBarcode.Clear();
                     txtBarcode.Focus();
                 }
             }
-            if (e.Key == Key.F5)
+            catch (Exception ex)
             {
-                var searchWindow = new ArticleSearchWindow(txtBarcode.Text) { Owner = Window.GetWindow(this) };
-                if (searchWindow.ShowDialog() == true)
-                {
-                    var article = searchWindow.SelectedArticle;
-                    if (article != null)
-                    {
-                        //isProductWeight = article.IsWeight && code.Length > 8;
-                        if (article.IsDeleted)
-                        {
-                            MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-                        if (!article.IsEnabled)
-                        {
-                            MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-                        var priceLists = article.PriceLists;
-                        int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
+                MessageBox.Show($"Error: {ex.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                        // Verificar si el artículo ya está en la grilla
-                        ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
-
-
-                        ArticleItem newItem = new()
-                        {
-                            Code = article.Code,
-                            Description = article.Description,
-                            SmallMeasureDescription = article.Measures.First(m => m.Id == article.MeasureId).SmallDescription,
-                            Quantity = 1,
-                            Bonification = 0,
-                            IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
-                        };
-
-                        // llenar PriceLists con las del artículo
-                        newItem.PriceLists.Clear();
-                        foreach (var pl in article.PriceLists)
-                            newItem.PriceLists.Add(pl);
-
-                        // determinar qué lista de precios usar
-                        if (cbPriceLists.SelectedValue != null)
-                            priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
-                        else if (article.PriceLists.Any())
-                            priceListId = Convert.ToInt32(
-                                article.PriceLists.First().GetType().GetProperty("Id")
-                                      .GetValue(article.PriceLists.First()));
-
-                        // asignar lista de precios -> setter actualiza el Price
-                        newItem.PriceListId = priceListId;
-
-                        newItem.Recalculate();
-                        OnPropertyChanged(nameof(TotalItems));
-                        OnPropertyChanged(nameof(TotalPrice));
-                        ArticleItems.Add(newItem);
-                        dgArticles.ScrollIntoView(ArticleItems.Last());
-                        // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
-                        if (chBarcode.IsChecked == false)
-                        {
-                            ArticleItems.Add(new ArticleItem());
-                        }
-
-                    }
-
-                }
-
-                e.Handled = true;
-                // limpiar el textbox y volver a enfocarlo
-                txtBarcode.Clear();
-                txtBarcode.Focus();
             }
         }
 

@@ -101,8 +101,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                 lblError.Text = string.Empty;
                 articleViewModel.UpdateUser = App.UserName;
                 articleViewModel.UpdateDate = DateTime.Now;
-                articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1)) : Convert.ToDecimal(txtRealCost.Text);
-
+                //articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1)) : Convert.ToDecimal(txtRealCost.Text);
                 Article article = ConverterHelper.ToArticle(articleViewModel, articleViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _articlesApiService.UpdateAsync(article);
                 if (resultUpdate.Success)
@@ -124,7 +123,7 @@ namespace GestionComercial.Desktop.Controls.Articles
             {
                 btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
-                articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtRealCost.Text.Replace(".", ","));
+                //articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtRealCost.Text.Replace(".", ","));
                 Article article = ConverterHelper.ToArticle(articleViewModel, articleViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _articlesApiService.AddAsync(article);
                 if (resultUpdate.Success)
@@ -205,10 +204,6 @@ namespace GestionComercial.Desktop.Controls.Articles
         }
 
 
-        private void txtReplacement_LostFocus(object sender, RoutedEventArgs e)
-        {
-            txtReplacement.Text = txtReplacement.Text.Replace(".", ",");
-        }
         private void txtReplacement_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             string textoIngresado = e.Text;
