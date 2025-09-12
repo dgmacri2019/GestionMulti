@@ -6,20 +6,29 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.DTOs.Sale
 {
     public class SaleViewModel : INotifyPropertyChanged
     {
-        public int Id { get; set; }
 
-        private DateTime date = DateTime.Today;
+        private DateTime _date = DateTime.Today;
+
+        private decimal _generalDiscount;
+
         public DateTime Date
         {
-            get => date;
-            set { date = value; OnPropertyChanged(); }
+            get => _date;
+            set { _date = value; OnPropertyChanged(); }
         }
+
+        public decimal GeneralDiscount
+        {
+            get => _generalDiscount;
+            set { _generalDiscount = value; OnPropertyChanged(); }
+        }
+
+        public int Id { get; set; }
 
 
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm}", ApplyFormatInEditMode = true)]
@@ -67,7 +76,7 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public decimal SubTotal { get; set; }
 
-        public decimal GeneralDiscount { get; set; }
+
 
         public decimal InternalTax { get; set; }
 
@@ -113,7 +122,7 @@ namespace GestionComercial.Domain.DTOs.Sale
         //[JsonIgnore]
         public virtual ICollection<SaleDetail>? SaleDetails { get; set; }
 
-       // [JsonIgnore]
+        // [JsonIgnore]
         public virtual ICollection<SalePayMetodDetail>? SalePayMetodDetails { get; set; }
 
         //[JsonIgnore]
@@ -123,7 +132,7 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public ObservableCollection<PriceList> PriceLists { get; set; } = [];
 
-       // public ObservableCollection<ArticleItem> ArticleItems { get; set; } = [];
+        // public ObservableCollection<ArticleItem> ArticleItems { get; set; } = [];
         public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];
 
 

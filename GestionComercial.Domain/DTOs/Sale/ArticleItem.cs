@@ -1,4 +1,6 @@
-﻿using GestionComercial.Domain.DTOs.Stock;
+﻿using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Afip;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -17,11 +19,15 @@ namespace GestionComercial.Domain.DTOs.Sale
         private decimal _subtotal;
         private decimal _total;
         private bool _isLowStock;
+        private decimal _iva;
+
+        public decimal TaxId { get; set; }
+        public decimal Iva { get => _iva; private set => SetProperty(ref _iva, value); }
 
         public string Code { get => _code; set => SetProperty(ref _code, value); }
         public string Description { get => _description; set => SetProperty(ref _description, value); }
         public string SmallMeasureDescription { get => _smallMeasureDescription; set => SetProperty(ref _smallMeasureDescription, value); }
-       
+
         public bool IsLowStock
         {
             get => _isLowStock;
@@ -46,8 +52,9 @@ namespace GestionComercial.Domain.DTOs.Sale
                 if (SetProperty(ref _priceListId, value))
                 {
                     var found = PriceLists.FirstOrDefault(p => p.Id == value);
-                    if (found != null)
-                        Price = found.FinalPrice;
+                    Tax? tax = MasterCache.Instance.GetTaxes().FirstOrDefault(t => t.Id == TaxId);
+                    if (found != null && tax != null)
+                        Price = found.FinalPrice / (1 + tax.Rate / 100);
 
                     Recalculate();
                 }
@@ -72,8 +79,13 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public void Recalculate()
         {
-            Subtotal = Price * Quantity;
-            Total = Subtotal - (Subtotal * Bonification / 100m);
+            Tax? tax = MasterCache.Instance.GetTaxes().FirstOrDefault(t => t.Id == TaxId);
+            if (tax != null)
+            {
+                Subtotal = Price * Quantity;
+                Iva = (Subtotal - (Subtotal * Bonification / 100m)) * tax.Rate / 100;
+                Total = Subtotal - (Subtotal * Bonification / 100m) + Iva;
+            }
         }
     }
 

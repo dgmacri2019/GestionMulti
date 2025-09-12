@@ -5,6 +5,7 @@ using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
@@ -26,6 +27,20 @@ namespace GestionComercial.Desktop.Views.Sales
         private void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        private decimal _bonificationPrice;
+        public decimal BonificationPrice
+        {
+            get => _bonificationPrice;
+            set
+            {
+                if (_bonificationPrice != value)
+                {
+                    _bonificationPrice = value;
+                    OnPropertyChanged(nameof(BonificationPrice));
+                }
+            }
+        }
+
         private readonly SalesApiService _salesApiService;
         private readonly int SaleId;
         private SaleViewModel SaleViewModel;
@@ -34,7 +49,7 @@ namespace GestionComercial.Desktop.Views.Sales
         public int TotalItems => ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code));
         public decimal SubTotalPrice => ArticleItems.Sum(a => a.Total);
         //public decimal GeneralDiscount { get; set; }
-        public decimal TotalPrice => SaleViewModel != null? SubTotalPrice - (SubTotalPrice * SaleViewModel.GeneralDiscount / 100) : 0;
+        public decimal TotalPrice => SaleViewModel != null ? SubTotalPrice - (SubTotalPrice * SaleViewModel.GeneralDiscount / 100) : 0;
 
         private int SalePoint;
         private int SaleNumber = 0;
@@ -56,10 +71,13 @@ namespace GestionComercial.Desktop.Views.Sales
             ArticleItems = [];
             ArticleItems.CollectionChanged += (s, e) =>
             {
+                if (SaleViewModel != null)
+                    _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
+
                 OnPropertyChanged(nameof(TotalItems));
                 OnPropertyChanged(nameof(TotalPrice));
                 OnPropertyChanged(nameof(SubTotalPrice));
-                //OnPropertyChanged(nameof(Bonification));
+                OnPropertyChanged(nameof(BonificationPrice));
             };
 
             // Llamamos a un método async sin bloquear
@@ -221,6 +239,11 @@ namespace GestionComercial.Desktop.Views.Sales
                             }), DispatcherPriority.Background);
                             return;
                         }
+                        if (article.SalePrice == 0 || article.SalePriceWithTaxes == 0)
+                        {
+                            MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
                         var priceLists = article.PriceLists;
                         int defaultPriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
@@ -244,6 +267,8 @@ namespace GestionComercial.Desktop.Views.Sales
                         currentItem.SmallMeasureDescription = MasterCache.Instance.GetMeasures()
                             .First(m => m.Id == article.MeasureId).SmallDescription;
                         currentItem.Quantity = quantity;
+                        currentItem.TaxId = article.TaxId;
+
 
                         // llenar PriceLists de la fila
                         currentItem.PriceLists.Clear();
@@ -262,11 +287,12 @@ namespace GestionComercial.Desktop.Views.Sales
                         currentItem.Bonification = 0;
                         currentItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
                         currentItem.Recalculate();
+                        _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
 
                         OnPropertyChanged(nameof(TotalItems));
                         OnPropertyChanged(nameof(TotalPrice));
                         OnPropertyChanged(nameof(SubTotalPrice));
-                        //OnPropertyChanged(nameof(Bonification));
+                        OnPropertyChanged(nameof(BonificationPrice));
 
                         // ✅ Poner foco en la celda Cantidad
                         Dispatcher.BeginInvoke(new Action(() =>
@@ -368,10 +394,11 @@ namespace GestionComercial.Desktop.Views.Sales
                 if (e.Column.Header.ToString() == "Cantidad" || e.Column.Header.ToString() == "Bonif (%)")
                 {
                     currentItem.Recalculate();
+                    _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
                     OnPropertyChanged(nameof(TotalItems));
                     OnPropertyChanged(nameof(TotalPrice));
                     OnPropertyChanged(nameof(SubTotalPrice));
-                    //OnPropertyChanged(nameof(Bonification));
+                    OnPropertyChanged(nameof(BonificationPrice));
 
                     if (chBarcode.IsChecked == false)
                     {
@@ -428,12 +455,17 @@ namespace GestionComercial.Desktop.Views.Sales
                         var selectedArticle = searchWindow.SelectedArticle;
                         if (selectedArticle != null)
                         {
+                            if(selectedArticle.SalePrice == 0 || selectedArticle.SalePriceWithTaxes == 0)
+                            {
+                                MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
                             int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
                             currentItem.Code = selectedArticle.Code;
                             currentItem.Description = selectedArticle.Description;
                             currentItem.Quantity = 1;
                             currentItem.IsLowStock = selectedArticle.StockCheck && selectedArticle.Stock <= selectedArticle.MinimalStock;
-
+                            currentItem.TaxId = selectedArticle.TaxId;
                             currentItem.PriceLists.Clear();
                             foreach (var pl in selectedArticle.PriceLists)
                                 currentItem.PriceLists.Add(pl);
@@ -448,10 +480,11 @@ namespace GestionComercial.Desktop.Views.Sales
 
                             currentItem.PriceListId = priceListId;
                             currentItem.Recalculate();
+                            _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
                             OnPropertyChanged(nameof(TotalItems));
                             OnPropertyChanged(nameof(TotalPrice));
                             OnPropertyChanged(nameof(SubTotalPrice));
-                            //OnPropertyChanged(nameof(Bonification));
+                            OnPropertyChanged(nameof(BonificationPrice));
 
                             // ✅ Forzar foco en la celda "Cantidad"
                             Dispatcher.BeginInvoke(new Action(() =>
@@ -574,6 +607,11 @@ namespace GestionComercial.Desktop.Views.Sales
                                 MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
                             }
+                            if (article.SalePrice == 0 || article.SalePriceWithTaxes == 0)
+                            {
+                                MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
                             var priceLists = article.PriceLists;
                             int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
@@ -603,10 +641,11 @@ namespace GestionComercial.Desktop.Views.Sales
                                 existingItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
                                 existingItem.Quantity += 1;
                                 existingItem.Recalculate();
+                                _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
                                 OnPropertyChanged(nameof(TotalItems));
-                                OnPropertyChanged(nameof(TotalPrice)); 
+                                OnPropertyChanged(nameof(TotalPrice));
                                 OnPropertyChanged(nameof(SubTotalPrice));
-                                //OnPropertyChanged(nameof(Bonification));
+                                OnPropertyChanged(nameof(BonificationPrice));
                             }
                             else
                             {
@@ -617,7 +656,8 @@ namespace GestionComercial.Desktop.Views.Sales
                                     SmallMeasureDescription = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription,
                                     Quantity = quantity,
                                     Bonification = 0,
-                                     IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
+                                    IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
+                                    TaxId = article.TaxId,
                                 };
 
                                 // llenar PriceLists con las del artículo
@@ -637,10 +677,11 @@ namespace GestionComercial.Desktop.Views.Sales
                                 newItem.PriceListId = priceListId;
 
                                 newItem.Recalculate();
+                                _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
                                 OnPropertyChanged(nameof(TotalItems));
                                 OnPropertyChanged(nameof(TotalPrice));
                                 OnPropertyChanged(nameof(SubTotalPrice));
-                                //OnPropertyChanged(nameof(Bonification));
+                                OnPropertyChanged(nameof(BonificationPrice));
                                 ArticleItems.Add(newItem);
                                 dgArticles.ScrollIntoView(ArticleItems.Last());
                                 // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
@@ -678,6 +719,12 @@ namespace GestionComercial.Desktop.Views.Sales
                                 MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
                             }
+                            if (article.SalePrice == 0 || article.SalePriceWithTaxes == 0)
+                            {
+                                MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+
                             var priceLists = article.PriceLists;
                             int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
@@ -694,7 +741,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                 Quantity = 1,
                                 Bonification = 0,
                                 IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
-
+                                TaxId = article.TaxId,
                             };
 
                             // llenar PriceLists con las del artículo
@@ -714,6 +761,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             newItem.PriceListId = priceListId;
 
                             newItem.Recalculate();
+                            _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
                             OnPropertyChanged(nameof(TotalItems));
                             OnPropertyChanged(nameof(TotalPrice));
                             OnPropertyChanged(nameof(SubTotalPrice));
@@ -848,7 +896,7 @@ namespace GestionComercial.Desktop.Views.Sales
         }
 
 
-        private void Quantity_GotFocus(object sender, RoutedEventArgs e)
+        private void TextBox_SelectAll(object sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBox)
             {
@@ -856,7 +904,18 @@ namespace GestionComercial.Desktop.Views.Sales
                 textBox.SelectAll();
             }
         }
-        private void Quantity_PreviewKeyDown(object sender, KeyEventArgs e)
+
+        // Selecciona todo al hacer click con el mouse (si aún no tenía foco)
+        private void TextBox_PreviewMouseLeftButtonDown_SelectAll(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true; // evita que WPF cambie el foco primero
+                tb.Focus();
+                tb.SelectAll();
+            }
+        }
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (sender is not TextBox tb) return;
 
@@ -879,7 +938,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 tb.SelectionLength = 0;
             }
         }
-        private void Quantity_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (sender is not TextBox tb || string.IsNullOrEmpty(e.Text)) return;
 
@@ -904,6 +963,39 @@ namespace GestionComercial.Desktop.Views.Sales
             tb.SelectionStart = selStart + input.Length;
             tb.SelectionLength = 0;
         }
+
+
+        private void txtGeneralDiscount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                string textoIngresado = txtGeneralDiscount.Text;
+                if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
+                {
+                    _bonificationPrice = SubTotalPrice * SaleViewModel.GeneralDiscount / 100m;
+                    OnPropertyChanged(nameof(TotalPrice));
+                    OnPropertyChanged(nameof(SubTotalPrice));
+                    OnPropertyChanged(nameof(BonificationPrice));
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        private void txtGeneralDiscount_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !ValidatorHelper.IsNumeric(e.Text);
+        }
+        private void txtGeneralDiscount_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtGeneralDiscount.Text))
+                SaleViewModel.GeneralDiscount = 0;
+        }
+
+
+
         private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is not TextBox tb) return;
@@ -1123,14 +1215,14 @@ namespace GestionComercial.Desktop.Views.Sales
 
             DateTime saleDate = (DateTime)dpDate.SelectedDate;
 
-            decimal baseimp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem);
-            decimal baseimp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem);
-            decimal baseimp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem);
-            decimal iva105 = saleDetails.Any(sd => sd.TaxId == 2) ? saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem) * 10.5m / 100 : 0;
-            decimal iva21 = saleDetails.Any(sd => sd.TaxId == 3) ? saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem) * 21m / 100 : 0;
-            decimal iva27 = saleDetails.Any(sd => sd.TaxId == 4) ? saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem) * 27m / 100 : 0;
+            decimal baseimp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem) / 1.105m;
+            decimal baseimp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem) / 1.21m;
+            decimal baseimp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem) / 1.27m;
+            decimal iva105 = saleDetails.Any(sd => sd.TaxId == 2) ? saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem / 1.105m) * 10.5m / 100 : 0;
+            decimal iva21 = saleDetails.Any(sd => sd.TaxId == 3) ? saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem / 1.21m) * 21m / 100 : 0;
+            decimal iva27 = saleDetails.Any(sd => sd.TaxId == 4) ? saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem / 1.27m) * 27m / 100 : 0;
 
-            decimal subTotal = TotalPrice - iva105 - iva21 - iva27;
+            decimal subTotal = baseimp105 + baseimp21 + baseimp27;
 
             return new Sale
             {
@@ -1146,7 +1238,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 SalePoint = saleViewModel.SalePoint,
                 SaleNumber = saleViewModel.SaleNumber,
                 SubTotal = subTotal,
-                Total = subTotal - (subTotal * saleViewModel.GeneralDiscount / 100),
+                Total = subTotal + iva105 + iva21 + iva27 - (subTotal * saleViewModel.GeneralDiscount / 100),
                 //SaleCondition = saleViewModel.SaleCondition,
                 BaseImp105 = baseimp105 - (baseimp105 * saleViewModel.GeneralDiscount / 100),
                 BaseImp21 = baseimp21 - (baseimp21 * saleViewModel.GeneralDiscount / 100),
@@ -1159,6 +1251,9 @@ namespace GestionComercial.Desktop.Views.Sales
             };
         }
 
+
     }
 
 }
+
+
