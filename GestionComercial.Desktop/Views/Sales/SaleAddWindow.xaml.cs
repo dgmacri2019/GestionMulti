@@ -28,11 +28,13 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private readonly SalesApiService _salesApiService;
         private readonly int SaleId;
-        private SaleViewModel saleViewModel;
+        private SaleViewModel SaleViewModel;
         private bool UsePostMethod;
         public ObservableCollection<ArticleItem> ArticleItems { get; set; }
         public int TotalItems => ArticleItems.Count(a => !string.IsNullOrEmpty(a.Code));
-        public decimal TotalPrice => ArticleItems.Sum(a => a.Total);
+        public decimal SubTotalPrice => ArticleItems.Sum(a => a.Total);
+        //public decimal GeneralDiscount { get; set; }
+        public decimal TotalPrice => SaleViewModel != null? SubTotalPrice - (SubTotalPrice * SaleViewModel.GeneralDiscount / 100) : 0;
 
         private int SalePoint;
         private int SaleNumber = 0;
@@ -47,7 +49,7 @@ namespace GestionComercial.Desktop.Views.Sales
         public SaleAddWindow(int saleId)
         {
             InitializeComponent();
-          
+
             _salesApiService = new SalesApiService();
             DataContext = this;
             SaleId = saleId;
@@ -56,6 +58,8 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 OnPropertyChanged(nameof(TotalItems));
                 OnPropertyChanged(nameof(TotalPrice));
+                OnPropertyChanged(nameof(SubTotalPrice));
+                //OnPropertyChanged(nameof(Bonification));
             };
 
             // Llamamos a un método async sin bloquear
@@ -112,7 +116,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
             if (SaleId == 0)
             {
-                saleViewModel = new SaleViewModel
+                SaleViewModel = new SaleViewModel
                 {
                     SalePoint = SalePoint,
                     SaleNumber = SaleNumber,
@@ -126,19 +130,19 @@ namespace GestionComercial.Desktop.Views.Sales
                 var result = await _salesApiService.GetByIdAsync(SaleId, Environment.MachineName);
 
                 if (result.Success)
-                    saleViewModel = result.SaleViewModel;
+                    SaleViewModel = result.SaleViewModel;
                 else
                     lblError.Text = result.Message;
             }
 
-            DataContext = saleViewModel;
+            DataContext = SaleViewModel;
         }
 
 
         private void dgArticles_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             try
-            
+
             {
                 var currentItem = e.Row.Item as ArticleItem;
                 if (currentItem == null) return;
@@ -217,7 +221,6 @@ namespace GestionComercial.Desktop.Views.Sales
                             }), DispatcherPriority.Background);
                             return;
                         }
-
                         var priceLists = article.PriceLists;
                         int defaultPriceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
@@ -262,6 +265,8 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         OnPropertyChanged(nameof(TotalItems));
                         OnPropertyChanged(nameof(TotalPrice));
+                        OnPropertyChanged(nameof(SubTotalPrice));
+                        //OnPropertyChanged(nameof(Bonification));
 
                         // ✅ Poner foco en la celda Cantidad
                         Dispatcher.BeginInvoke(new Action(() =>
@@ -346,7 +351,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         return;
                     }
-                                       
+
                     // ✅ Poner foco en la celda Cantidad
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -365,6 +370,8 @@ namespace GestionComercial.Desktop.Views.Sales
                     currentItem.Recalculate();
                     OnPropertyChanged(nameof(TotalItems));
                     OnPropertyChanged(nameof(TotalPrice));
+                    OnPropertyChanged(nameof(SubTotalPrice));
+                    //OnPropertyChanged(nameof(Bonification));
 
                     if (chBarcode.IsChecked == false)
                     {
@@ -443,6 +450,8 @@ namespace GestionComercial.Desktop.Views.Sales
                             currentItem.Recalculate();
                             OnPropertyChanged(nameof(TotalItems));
                             OnPropertyChanged(nameof(TotalPrice));
+                            OnPropertyChanged(nameof(SubTotalPrice));
+                            //OnPropertyChanged(nameof(Bonification));
 
                             // ✅ Forzar foco en la celda "Cantidad"
                             Dispatcher.BeginInvoke(new Action(() =>
@@ -554,8 +563,6 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         if (article != null)
                         {
-
-
                             //isProductWeight = article.IsWeight && code.Length > 8;
                             if (article.IsDeleted)
                             {
@@ -597,7 +604,9 @@ namespace GestionComercial.Desktop.Views.Sales
                                 existingItem.Quantity += 1;
                                 existingItem.Recalculate();
                                 OnPropertyChanged(nameof(TotalItems));
-                                OnPropertyChanged(nameof(TotalPrice));
+                                OnPropertyChanged(nameof(TotalPrice)); 
+                                OnPropertyChanged(nameof(SubTotalPrice));
+                                //OnPropertyChanged(nameof(Bonification));
                             }
                             else
                             {
@@ -608,7 +617,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                     SmallMeasureDescription = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription,
                                     Quantity = quantity,
                                     Bonification = 0,
-                                    IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
+                                     IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
                                 };
 
                                 // llenar PriceLists con las del artículo
@@ -630,6 +639,8 @@ namespace GestionComercial.Desktop.Views.Sales
                                 newItem.Recalculate();
                                 OnPropertyChanged(nameof(TotalItems));
                                 OnPropertyChanged(nameof(TotalPrice));
+                                OnPropertyChanged(nameof(SubTotalPrice));
+                                //OnPropertyChanged(nameof(Bonification));
                                 ArticleItems.Add(newItem);
                                 dgArticles.ScrollIntoView(ArticleItems.Last());
                                 // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
@@ -671,7 +682,8 @@ namespace GestionComercial.Desktop.Views.Sales
                             int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
 
                             // Verificar si el artículo ya está en la grilla
-                            ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
+
+                            //ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
 
 
                             ArticleItem newItem = new()
@@ -682,7 +694,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                 Quantity = 1,
                                 Bonification = 0,
                                 IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
-                                 
+
                             };
 
                             // llenar PriceLists con las del artículo
@@ -704,6 +716,8 @@ namespace GestionComercial.Desktop.Views.Sales
                             newItem.Recalculate();
                             OnPropertyChanged(nameof(TotalItems));
                             OnPropertyChanged(nameof(TotalPrice));
+                            OnPropertyChanged(nameof(SubTotalPrice));
+                            //OnPropertyChanged(nameof(Bonification));
                             ArticleItems.Add(newItem);
                             dgArticles.ScrollIntoView(ArticleItems.Last());
                             // 🚫 Solo agregamos fila en blanco si NO está tildado el checkbox de código de barras
@@ -760,7 +774,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 {
                     if (ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text) != null)
                     {
-                        Sale sale = ToSale(saleViewModel, ArticleItems);
+                        Sale sale = ToSale(SaleViewModel, ArticleItems);
 
                         var payMethodWindows = new PayMethodWindow(Math.Round(sale.Total, 2));
                         if (payMethodWindows.ShowDialog() == true)
@@ -1108,6 +1122,16 @@ namespace GestionComercial.Desktop.Views.Sales
             }
 
             DateTime saleDate = (DateTime)dpDate.SelectedDate;
+
+            decimal baseimp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem);
+            decimal baseimp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem);
+            decimal baseimp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem);
+            decimal iva105 = saleDetails.Any(sd => sd.TaxId == 2) ? saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem) * 10.5m / 100 : 0;
+            decimal iva21 = saleDetails.Any(sd => sd.TaxId == 3) ? saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem) * 21m / 100 : 0;
+            decimal iva27 = saleDetails.Any(sd => sd.TaxId == 4) ? saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem) * 27m / 100 : 0;
+
+            decimal subTotal = TotalPrice - iva105 - iva21 - iva27;
+
             return new Sale
             {
                 ClientId = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text).Id,
@@ -1117,18 +1141,19 @@ namespace GestionComercial.Desktop.Views.Sales
                 IsEnabled = true,
                 IsFinished = true,
                 //SaleConditionId = saleViewModel.SaleConditionId,
+                GeneralDiscount = saleViewModel.GeneralDiscount,
                 SaleDate = saleDate.Date,
                 SalePoint = saleViewModel.SalePoint,
                 SaleNumber = saleViewModel.SaleNumber,
-                Total = TotalPrice,
-                SubTotal = TotalPrice,
+                SubTotal = subTotal,
+                Total = subTotal - (subTotal * saleViewModel.GeneralDiscount / 100),
                 //SaleCondition = saleViewModel.SaleCondition,
-                BaseImp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem),
-                BaseImp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem),
-                BaseImp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem),
-                TotalIVA105 = saleDetails.Any(sd => sd.TaxId == 2) ? saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem) * 10.5m / 100 : 0,
-                TotalIVA21 = saleDetails.Any(sd => sd.TaxId == 3) ? saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem) * 21m / 100 : 0,
-                TotalIVA27 = saleDetails.Any(sd => sd.TaxId == 4) ? saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem) * 27m / 100 : 0,
+                BaseImp105 = baseimp105 - (baseimp105 * saleViewModel.GeneralDiscount / 100),
+                BaseImp21 = baseimp21 - (baseimp21 * saleViewModel.GeneralDiscount / 100),
+                BaseImp27 = baseimp27 - (baseimp27 * saleViewModel.GeneralDiscount / 100),
+                TotalIVA105 = iva105 - (iva105 * saleViewModel.GeneralDiscount / 100),
+                TotalIVA21 = iva21 - (iva21 * saleViewModel.GeneralDiscount / 100),
+                TotalIVA27 = iva27 - (iva27 * saleViewModel.GeneralDiscount / 100),
                 SaleDetails = saleDetails,
 
             };

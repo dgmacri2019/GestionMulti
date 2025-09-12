@@ -115,7 +115,9 @@ namespace GestionComercial.Desktop.ViewModels.Client
             App.Current.Dispatcher.Invoke(() =>
             {
                 Clients.Clear();
-                foreach (var c in filtered)
+                foreach (var c in filtered.OrderBy(c => c.BusinessName)
+                    .ThenBy(c => c.FantasyName ?? "")
+                    .ThenBy(c => c.OptionalCode ?? ""))
                     Clients.Add(c);
             });
         }

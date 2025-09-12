@@ -1506,8 +1506,8 @@ namespace GestionComercial.API.Helpers
                         CreateUser = "System",
                         IsEnabled = true,
                         IsDeleted = false,
-                        Description = "5 %",
-                        Utility = 5,
+                        Description = "0 %",
+                        Utility = 0,
                     },
                     new PriceList
                     {
@@ -1686,6 +1686,7 @@ namespace GestionComercial.API.Helpers
                 return result;
             }
         }
+
         private static async Task<GeneralResponse> CreateSaleConditionsAsync(AppDbContext _context)
         {
             GeneralResponse result = new GeneralResponse { Success = false };
@@ -1956,6 +1957,7 @@ namespace GestionComercial.API.Helpers
                 return result;
             }
         }
+
         private static async Task<GeneralResponse> UploadStatesAsync(AppDbContext _context)
         {
             GeneralResponse result = new GeneralResponse { Success = false };

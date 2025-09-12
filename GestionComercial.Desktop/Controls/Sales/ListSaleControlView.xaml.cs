@@ -23,9 +23,17 @@ namespace GestionComercial.Desktop.Controls.Sales
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var saleAddWindow = new SaleAddWindow(0) { Owner = Window.GetWindow(this) };
-            if (saleAddWindow.ShowDialog() == true)
+            try
             {
+                var saleAddWindow = new SaleAddWindow(0) { Owner = Window.GetWindow(this) };
+                if (saleAddWindow.ShowDialog() == true)
+                {
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+
             }
         }
 

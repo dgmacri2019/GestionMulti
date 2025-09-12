@@ -34,13 +34,13 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Article? Article { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Tax? Tax { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Sale? Sale { get; set; }
     }
 }

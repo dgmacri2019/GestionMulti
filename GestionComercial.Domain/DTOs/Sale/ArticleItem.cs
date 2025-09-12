@@ -21,7 +21,6 @@ namespace GestionComercial.Domain.DTOs.Sale
         public string Code { get => _code; set => SetProperty(ref _code, value); }
         public string Description { get => _description; set => SetProperty(ref _description, value); }
         public string SmallMeasureDescription { get => _smallMeasureDescription; set => SetProperty(ref _smallMeasureDescription, value); }
-
        
         public bool IsLowStock
         {
@@ -66,6 +65,7 @@ namespace GestionComercial.Domain.DTOs.Sale
                     Recalculate();
             }
         }
+
 
         public decimal Subtotal { get => _subtotal; private set => SetProperty(ref _subtotal, value); }
         public decimal Total { get => _total; private set => SetProperty(ref _total, value); }

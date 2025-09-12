@@ -2,7 +2,6 @@
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
-using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
@@ -121,7 +120,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     foreach (var p in filtered
                                         .OrderBy(a => a.Category)
                                         .ThenBy(a => a.Code)
-                                        .ThenBy(a=>a.Description))
+                                        .ThenBy(a => a.Description))
 
                         Articles.Add(p);
                 });
