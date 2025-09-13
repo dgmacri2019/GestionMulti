@@ -53,8 +53,9 @@ namespace GestionComercial.API.Controllers.Sales
             if (resultAdd.Success)
             {
                 await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
-                await _notifierArticles.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Updated);
-                await _notifierClients.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Updated);
+                await _notifierClients.NotifyAsync(sale.ClientId, "Venta Creada", ChangeType.Updated);
+                foreach (var saleDetail in sale.SaleDetails)
+                    await _notifierArticles.NotifyAsync(saleDetail.ArticleId, "Venta Creada", ChangeType.Updated);
 
                 return
                     Ok(resultAdd);
