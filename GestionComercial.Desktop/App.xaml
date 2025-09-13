@@ -35,6 +35,7 @@
             <converters:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
             <converters:DecimalCommaConverter x:Key="DecimalCommaConverter"/>
             <converters:TwoDecimalMoneyCommaConverter x:Key="TwoDecimalMoneyCommaConverter"/>
+            <converters:HexToBrushConverter x:Key="HexToBrushConverter"/>
         </ResourceDictionary>
 
     </Application.Resources>

@@ -15,14 +15,14 @@ namespace GestionComercial.API.Notifications
             //_hub = hub;
         }
 
-        public async Task NotifyAsync(int articleId, string nombre, ChangeType accion)
+        public async Task NotifyAsync(List<int> articlesId, string nombre, ChangeType accion)
         {
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             ArticuloChangeNotification notification = accion switch
             {
-                ChangeType.Created => new ArticleCreado(articleId, DateTimeOffset.UtcNow, nombre, accion),
-                ChangeType.Updated => new ArticleActualizado(articleId, DateTimeOffset.UtcNow, nombre, accion),
-                ChangeType.Deleted => new ArticleEliminado(articleId, DateTimeOffset.UtcNow, accion),
+                ChangeType.Created => new ArticleCreado(articlesId, DateTimeOffset.UtcNow, nombre, accion),
+                ChangeType.Updated => new ArticleActualizado(articlesId, DateTimeOffset.UtcNow, nombre, accion),
+                ChangeType.Deleted => new ArticleEliminado(articlesId, DateTimeOffset.UtcNow, accion),
                 _ => throw new ArgumentException("Acción inválida")
             };
             //await _hub.Clients.All.ArticulosActualizados(notification);

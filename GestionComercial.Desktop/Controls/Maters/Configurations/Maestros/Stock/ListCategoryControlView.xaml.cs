@@ -1,7 +1,5 @@
-﻿using GestionComercial.Desktop.ViewModels.PriceList;
-using GestionComercial.Desktop.ViewModels.Stock;
-using GestionComercial.Domain.DTOs.PriceLists;
-using GestionComercial.Domain.Entities.Stock;
+﻿using GestionComercial.Desktop.ViewModels.Stock;
+using GestionComercial.Domain.DTOs.Stock;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,10 +17,10 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
             DataContext = new CategoryListViewModel();
         }
 
-       
+
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DgCategories.SelectedItem is Category category)
+            if (DgCategories.SelectedItem is CategoryViewModel category)
             {
                 DgCategories.Visibility = Visibility.Hidden;
                 PanelSearch.Visibility = Visibility.Hidden;

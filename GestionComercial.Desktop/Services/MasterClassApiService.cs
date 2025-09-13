@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
@@ -239,8 +240,8 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
 
-                    List<Category>? categories = await JsonSerializer.DeserializeAsync<List<Category>>(stream, Options);
-                    categories.Add(new Category { Id = 0, Description = "Seleccione el rubro" });
+                    List<CategoryViewModel>? categories = await JsonSerializer.DeserializeAsync<List<CategoryViewModel>>(stream, Options);
+                    categories.Add(new CategoryViewModel { Id = 0, Description = "Seleccione el rubro", IsDeleted = true, IsEnabled = false });
                     result.Success = true;
                     result.Categories = categories;
                     return result;
@@ -282,7 +283,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
 
-                    Category? category = await JsonSerializer.DeserializeAsync<Category>(stream, Options);
+                    CategoryViewModel? category = await JsonSerializer.DeserializeAsync<CategoryViewModel>(stream, Options);
                     result.Success = true;
                     result.Category = category;
                     return result;
@@ -298,6 +299,32 @@ namespace GestionComercial.Desktop.Services
                 result.Message = ex.Message;
                 return result;
             }
+        }
+
+        internal async Task<GeneralResponse> AddCategoryAsync(Category category)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddCategoryAsync", category);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+        internal async Task<GeneralResponse> UpdateCategoryAsync(Category category)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/masterclass/UpdateCategoryAsync", category);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
         }
     }
 }

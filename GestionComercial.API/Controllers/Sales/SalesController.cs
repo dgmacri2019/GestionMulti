@@ -3,6 +3,7 @@ using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,10 +53,14 @@ namespace GestionComercial.API.Controllers.Sales
 
             if (resultAdd.Success)
             {
+                List<int> articlesId = [];
+
                 await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
                 await _notifierClients.NotifyAsync(sale.ClientId, "Venta Creada", ChangeType.Updated);
                 foreach (var saleDetail in sale.SaleDetails)
-                    await _notifierArticles.NotifyAsync(saleDetail.ArticleId, "Venta Creada", ChangeType.Updated);
+                    articlesId.Add(saleDetail.ArticleId);
+                if (articlesId.Count > 0)
+                    await _notifierArticles.NotifyAsync(articlesId, "Venta Creada", ChangeType.Updated);
 
                 return
                     Ok(resultAdd);

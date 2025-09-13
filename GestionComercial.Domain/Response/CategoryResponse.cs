@@ -1,10 +1,10 @@
-﻿using GestionComercial.Domain.Entities.Stock;
+﻿using GestionComercial.Domain.DTOs.Stock;
 
 namespace GestionComercial.Domain.Response
 {
     public class CategoryResponse : GeneralResponse
     {
-        public List<Category> Categories { get; set; }
-        public Category? Category { get; set; }
+        public List<CategoryViewModel> Categories { get; set; }
+        public CategoryViewModel? Category { get; set; }
     }
 }

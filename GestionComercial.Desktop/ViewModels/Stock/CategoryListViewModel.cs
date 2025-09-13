@@ -3,7 +3,9 @@ using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -20,7 +22,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
 
         // 🔹 Lista observable para bindear al DataGrid
-        public ObservableCollection<Category> Categories { get; } = [];
+        public ObservableCollection<CategoryViewModel> Categories { get; } = [];
 
         // 🔹 Propiedades de filtros
         private string _nameFilter = string.Empty;
@@ -148,7 +150,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                             {
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    Category? category = CategoryCache.Instance.FindById(notification.Id);
+                                    CategoryViewModel? category = CategoryCache.Instance.FindById(notification.Id);
                                     if (category != null)
                                     {
                                         CategoryCache.Instance.Update(category);
@@ -161,7 +163,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                             {
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    Category? category = CategoryCache.Instance.FindById(notification.Id);
+                                    CategoryViewModel? category = CategoryCache.Instance.FindById(notification.Id);
                                     if (category != null)
                                     {
                                         CategoryCache.Instance.Remove(category);

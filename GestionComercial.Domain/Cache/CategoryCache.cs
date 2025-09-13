@@ -1,4 +1,4 @@
-﻿using GestionComercial.Domain.Entities.Stock;
+﻿using GestionComercial.Domain.DTOs.Stock;
 
 namespace GestionComercial.Domain.Cache
 {
@@ -7,7 +7,7 @@ namespace GestionComercial.Domain.Cache
         private static CategoryCache? _instance;
         public static CategoryCache Instance => _instance ??= new CategoryCache();
 
-        private List<Category> _categories;
+        private List<CategoryViewModel> _categories;
         public static bool Reading { get; set; } = false;
 
         public bool HasData => _categories != null && _categories.Any() && !Reading;
@@ -18,11 +18,11 @@ namespace GestionComercial.Domain.Cache
         }
 
 
-        public List<Category> GetAll()
+        public List<CategoryViewModel> GetAll()
         {
             return _categories.OrderBy(c => c.Description).ToList();
         }
-        public List<Category> Search(string name, bool isEnabled, bool isDeleted)
+        public List<CategoryViewModel> Search(string name, bool isEnabled, bool isDeleted)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Set(List<Category> categories)
+        public void Set(List<CategoryViewModel> categories)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Set(Category client)
+        public void Set(CategoryViewModel client)
         {
             try
             {
@@ -63,11 +63,11 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Update(Category client)
+        public void Update(CategoryViewModel client)
         {
             try
             {
-                Category? Category = _categories.FirstOrDefault(c => c.Id == client.Id);
+                CategoryViewModel? Category = _categories.FirstOrDefault(c => c.Id == client.Id);
                 if (Category != null)
                 {
                     _categories.Remove(Category);
@@ -80,11 +80,11 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Remove(Category client)
+        public void Remove(CategoryViewModel client)
         {
             try
             {
-                Category? Category = _categories.FirstOrDefault(c => c.Id == client.Id);
+                CategoryViewModel? Category = _categories.FirstOrDefault(c => c.Id == client.Id);
                 if (Category != null)
                     _categories.Remove(Category);
             }
@@ -95,7 +95,7 @@ namespace GestionComercial.Domain.Cache
             }
 
         }
-        public Category? FindById(int id)
+        public CategoryViewModel? FindById(int id)
         {
             try
             {

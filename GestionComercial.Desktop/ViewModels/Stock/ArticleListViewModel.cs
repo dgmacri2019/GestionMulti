@@ -130,7 +130,11 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
                 throw;
             }
+           
+           
         }
+
+       
 
         private async void OnArticuloCambiado(ArticuloChangeNotification notification)
         {
@@ -138,13 +142,13 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             {
                 case ChangeType.Created:
                     {
-                        if (ArticleCache.Instance.FindArticleById(notification.ClientId) == null)
+                        if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
                         {
-                            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
+                            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId[0]);
                             if (articleResponse.Success)
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    if (ArticleCache.Instance.FindArticleById(notification.ClientId) == null)
+                                    if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
                                         ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
 
                                     await LoadArticlesAsync();
@@ -154,24 +158,17 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     }
                 case ChangeType.Updated:
                     {
-                        ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId);
-                        if (articleResponse.Success)
-                            await App.Current.Dispatcher.InvokeAsync(async () =>
-                            {
-                                ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(notification.ClientId);
-                                if (viewModel != null)
-                                {
-                                    ArticleCache.Instance.UpdateArticle(articleResponse.ArticleViewModel);
-                                    await LoadArticlesAsync();
-                                }
-                            });
+
+                        await Task.Run(async ()=> await CargarCacheAsync(notification.ClientId));
+
+                       
                         break;
                     }
                 case ChangeType.Deleted:
                     {
                         await App.Current.Dispatcher.InvokeAsync(async () =>
                         {
-                            ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(notification.ClientId);
+                            ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(notification.ClientId[0]);
                             if (viewModel != null)
                             {
                                 ArticleCache.Instance.RemoveArticle(viewModel);
@@ -185,6 +182,22 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             }
         }
 
-
+        private async Task CargarCacheAsync(List<int> clientsId)
+        {
+            foreach (var clientId in clientsId)
+            {
+                ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
+                if (articleResponse.Success)
+                    await App.Current.Dispatcher.InvokeAsync(async () =>
+                    {
+                        ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(clientId);
+                        if (viewModel != null)
+                        {
+                            ArticleCache.Instance.UpdateArticle(articleResponse.ArticleViewModel);
+                        }
+                    });
+            }
+            await LoadArticlesAsync();
+        }
     }
 }

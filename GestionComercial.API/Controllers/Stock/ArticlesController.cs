@@ -27,12 +27,6 @@ namespace GestionComercial.API.Controllers.Stock
             _notifier = notifier;
         }
 
-        [HttpPost("{id:int}/notify")]
-        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
-        {
-            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
-            return Ok();
-        }
 
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Article article)
@@ -40,7 +34,10 @@ namespace GestionComercial.API.Controllers.Stock
             GeneralResponse resultAdd = await _masterService.AddAsync(article);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(article.Id, article.Description, ChangeType.Created);
+                List<int> articlesId = [];
+                articlesId.Add(article.Id);
+
+                await _notifier.NotifyAsync(articlesId, article.Description, ChangeType.Created);
 
                 return Ok("Artículo creado correctamente");
             }
@@ -53,7 +50,10 @@ namespace GestionComercial.API.Controllers.Stock
             GeneralResponse resultAdd = await _masterService.UpdateAsync(article);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(article.Id, article.Description, ChangeType.Updated);
+                List<int> articlesId = [];
+                articlesId.Add(article.Id);
+
+                await _notifier.NotifyAsync(articlesId, article.Description, ChangeType.Updated);
                 return Ok("Artículo actualizado correctamente");
             }
             else return BadRequest(resultAdd.Message);
@@ -69,7 +69,10 @@ namespace GestionComercial.API.Controllers.Stock
             GeneralResponse resultAdd = await _artcicleService.DeleteAsync(filter.Id);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(article.Id, article.Description, ChangeType.Deleted);
+                List<int> articlesId = [];
+                articlesId.Add(article.Id);
+
+                await _notifier.NotifyAsync(articlesId, article.Description, ChangeType.Deleted);
                 return Ok("Artículo borrado correctamente");
             }
             else return BadRequest(resultAdd.Message);
@@ -93,7 +96,7 @@ namespace GestionComercial.API.Controllers.Stock
             return Ok(article);
         }
 
-        
+
 
 
         [HttpPost("UpdatePricesAsync")]

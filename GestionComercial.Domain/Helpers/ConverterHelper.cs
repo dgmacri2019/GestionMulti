@@ -304,6 +304,8 @@ namespace GestionComercial.Domain.Helpers
 
         #endregion
 
+        #region Masters
+
         #region PriceList
 
         public static PriceList ToPriceList(PriceListViewModel priceListViewModel, bool isNew)
@@ -337,6 +339,42 @@ namespace GestionComercial.Domain.Helpers
                 Utility = priceList.Utility,
             };
         }
+
+        #endregion
+
+        #region Category
+        public static CategoryViewModel ToCategoryViewModel(Category category)
+        {
+            return new CategoryViewModel
+            {
+                Id = category.Id,
+                CreateDate = category.CreateDate,
+                CreateUser = category.CreateUser,
+                IsDeleted = category.IsDeleted,
+                IsEnabled = category.IsEnabled,
+                UpdateDate = category.UpdateDate,
+                UpdateUser = category.UpdateUser,
+                Color = category.Color,
+                Description = category.Description,
+            };
+        }
+        public static Category ToCategory(CategoryViewModel categoryViewModel, bool isNew)
+        {
+            return new Category
+            {
+                Id = isNew ? 0 : categoryViewModel.Id,
+                CreateDate = categoryViewModel.CreateDate,
+                CreateUser = categoryViewModel.CreateUser,
+                IsDeleted = categoryViewModel.IsDeleted,
+                IsEnabled = categoryViewModel.IsEnabled,
+                UpdateDate = categoryViewModel.UpdateDate,
+                UpdateUser = categoryViewModel.UpdateUser,
+                Color = categoryViewModel.Color,
+                Description = categoryViewModel.Description,
+            };
+        }
+
+        #endregion
 
         #endregion
 

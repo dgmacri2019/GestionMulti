@@ -426,7 +426,7 @@ namespace GestionComercial.Domain.DTOs.Stock
 
         public virtual ICollection<Tax> Taxes { get; set; }
         public virtual ICollection<Measure> Measures { get; set; }
-        public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<CategoryViewModel> Categories { get; set; }
     }
 
 

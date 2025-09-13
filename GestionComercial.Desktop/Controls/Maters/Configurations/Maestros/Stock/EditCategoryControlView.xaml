@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock"
              mc:Ignorable="d"
              x:Name="miUserControl" 
-             Loaded="miUserControl_Loaded"
              Background="LightGray">
     
     <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
@@ -31,10 +30,7 @@
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
                   MaxLength="8"
-                  Text="{Binding Description}"
-                  GotFocus="TextBox_SelectAll"
-                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                  KeyDown="TextBox_KeyDown_MoveNext"/>
+                  Text="{Binding Description}"/>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">
@@ -42,11 +38,11 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Style="{StaticResource BlueBold10}"/>
-            <TextBox x:Name="txtColor"
-                  Style="{StaticResource TextBoxSearch}"
-                  VerticalAlignment="Center"  
-                  HorizontalAlignment="Stretch"
-                  Text="{Binding Color}"/>
+            <Border Width="30" Height="15" 
+                    Background="{Binding Color, Converter={StaticResource HexToBrushConverter}}"
+                    BorderBrush="Black" 
+                    BorderThickness="1"
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
         </StackPanel>
 
         <Button x:Name="btnCancel"

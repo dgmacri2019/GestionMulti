@@ -86,8 +86,8 @@ namespace GestionComercial.Desktop.Controls.Articles
             }
             catch (Exception ex)
             {
-
-                throw;
+                lblError.Text = ex.Message;
+                btnUpdate.IsEnabled = true;
             }
         }
 

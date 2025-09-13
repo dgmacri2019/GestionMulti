@@ -21,12 +21,15 @@ namespace GestionComercial.API.Controllers.Admin
         private readonly IMasterClassService _masterClassService;
         private readonly IMasterService _masterService;
         private readonly IMasterClassNotifier _notifier;
+        private readonly IArticlesNotifier _articlesNotifier;
 
-        public MasterClassController(IMasterClassService masterClassService, IMasterService masterService, IMasterClassNotifier notifier)
+        public MasterClassController(IMasterClassService masterClassService, IMasterService masterService, IMasterClassNotifier notifier,
+            IArticlesNotifier articlesNotifier)
         {
             _masterClassService = masterClassService;
             _masterService = masterService;
             _notifier = notifier;
+            _articlesNotifier = articlesNotifier;
         }
 
         [HttpPost("AddStateAsync")]
@@ -205,6 +208,7 @@ namespace GestionComercial.API.Controllers.Admin
             else return BadRequest(resultAdd.Message);
         }
 
+        #region Category
 
         [HttpPost("AddCategoryAsync")]
         public async Task<IActionResult> AddCategoryAsync([FromBody] Category category)
@@ -226,13 +230,35 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(category);
             if (resultAdd.Success)
             {
+                List<int> articlesId = [];
+
                 await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.Category);
+                Category categoryUpdated = await _masterClassService.GetCategoryByIdAsync(category.Id);
+                foreach (Article article in categoryUpdated.Articles)
+                    articlesId.Add(article.Id);
+                if (articlesId.Count > 0)
+                    await _articlesNotifier.NotifyAsync(articlesId, "Rubro Actualizado", ChangeType.Updated);
 
                 return
                     Ok("Rubro actualizado correctamente");
             }
             else return BadRequest(resultAdd.Message);
         }
+
+
+        [HttpPost("GetAllCategoriesAsync")]
+        public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllCategoriesAsync(filter.IsEnabled, filter.IsDeleted));
+        }
+
+        [HttpPost("GetCategoryByIdAsync")]
+        public async Task<IActionResult> GetCategoryByIdAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetCategoryByIdAsync(filter.Id));
+        }
+
+        #endregion
 
 
 
@@ -257,20 +283,6 @@ namespace GestionComercial.API.Controllers.Admin
         public async Task<IActionResult> GetAllIvaConditionsAsync([FromBody] PriceListFilterDto filter)
         {
             return Ok(await _masterClassService.GetAllIvaConditionsAsync(filter.IsEnabled, filter.IsDeleted));
-        }
-
-
-
-        [HttpPost("GetAllCategoriesAsync")]
-        public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
-        {
-            return Ok(await _masterClassService.GetAllCategoriesAsync(filter.IsEnabled, filter.IsDeleted));
-        }
-
-        [HttpPost("GetCategoryByIdAsync")]
-        public async Task<IActionResult> GetCategoryByIdAsync([FromBody] PriceListFilterDto filter)
-        {
-            return Ok(await _masterClassService.GetCategoryByIdAsync(filter.Id));
         }
 
 
