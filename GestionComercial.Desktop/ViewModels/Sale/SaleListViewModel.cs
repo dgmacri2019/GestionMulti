@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
@@ -6,8 +7,6 @@ using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using static GestionComercial.Domain.Notifications.SaleChangeNotification;
 
@@ -137,6 +136,11 @@ namespace GestionComercial.Desktop.ViewModels.Sale
                         await Task.Delay(10);
                     int salePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
                     SaleResponse resultSale = await _salesApiService.GetAllBySalePointAsync(salePoint);
+                    if (!resultSale.Success)
+                    {
+                        MsgBoxAlertHelper.MsgAlertError(resultSale.Message);
+                        return;
+                    }
                     List<SaleViewModel> sales = resultSale.SaleViewModels;
 
                     SaleCache.Instance.SetSales(sales);
@@ -145,17 +149,17 @@ namespace GestionComercial.Desktop.ViewModels.Sale
                 }
 
                 var filtered = SaleCache.Instance.GetAllSales();
-
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    Sales.Clear();
-                    foreach (var c in filtered)
-                        Sales.Add(c);
-                });
+                if (filtered != null)
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        Sales.Clear();
+                        foreach (var c in filtered)
+                            Sales.Add(c);
+                    });
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
 
             }
         }
@@ -165,15 +169,17 @@ namespace GestionComercial.Desktop.ViewModels.Sale
         private async void OnVentaCambiado(VentaChangeNotification notification)
         {
             SaleResponse saleResponse = await _salesApiService.GetAllBySalePointAsync(ParameterCache.Instance.GetPcParameter().SalePoint);
-            if(saleResponse.Success)
-            await App.Current.Dispatcher.InvokeAsync(async () =>
-            {
-                SaleCache.Instance.ClearCache();
-                SaleCache.Instance.SetSales(saleResponse.SaleViewModels);
-                SaleCache.Instance.SetLastSaleNumber(saleResponse.LastSaleNumber);
+            if (saleResponse.Success)
+                await App.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    SaleCache.Instance.ClearCache();
+                    SaleCache.Instance.SetSales(saleResponse.SaleViewModels);
+                    SaleCache.Instance.SetLastSaleNumber(saleResponse.LastSaleNumber);
 
-                await LoadSalesAsync();
-            });
+                    await LoadSalesAsync();
+                });
+            else
+                MsgBoxAlertHelper.MsgAlertError(saleResponse.Message);
         }
 
         private void OnSalesChanged(string json)

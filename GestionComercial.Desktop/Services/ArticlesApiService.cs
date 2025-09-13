@@ -29,7 +29,6 @@ namespace GestionComercial.Desktop.Services
 
         internal async Task<ArticleResponse> GetAllAsync(int pageSize = 100)
         {
-            // Llama al endpoint y deserializa la respuesta
             List<ArticleViewModel> allArticles = [];
             int page = 1;
             bool moreData = true;

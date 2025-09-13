@@ -7,5 +7,8 @@
         public int Id { get; set; } = 0;
         public int SalePoint { get; set; }
         public DateTime? SaleDate { get; set; }
+
+        public int Page { get; set; } = 1;       // página por defecto
+        public int PageSize { get; set; } = 100; // tamaño por defecto
     }
 }

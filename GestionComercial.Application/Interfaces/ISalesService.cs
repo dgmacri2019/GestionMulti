@@ -7,9 +7,9 @@ namespace GestionComercial.Applications.Interfaces
     public interface ISalesService
     {
         Task<SaleResponse> AddAsync(Sale sale);
-        Task<IEnumerable<SaleViewModel>> GetAllAsync();
-        Task<IEnumerable<SaleViewModel>> GetAllBySalePointAsync(int salePoint, DateTime saleDate);
-        Task<SaleViewModel?> GetByIdAsync(int id);
-        Task<int> GetLastSaleNumber(int salePoint);
+        Task<SaleResponse> GetAllAsync(int page, int pageSize);
+        Task<SaleResponse> GetAllBySalePointAsync(int salePoint, DateTime saleDate, int page, int pageSize);
+        Task<SaleResponse> GetByIdAsync(int id);
+        Task<SaleResponse> GetLastSaleNumber(int salePoint);
     }
 }

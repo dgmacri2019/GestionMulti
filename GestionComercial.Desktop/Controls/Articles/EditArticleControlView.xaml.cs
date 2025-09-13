@@ -20,7 +20,7 @@ namespace GestionComercial.Desktop.Controls.Articles
         private readonly ArticlesApiService _articlesApiService;
         private readonly int ArticleId;
 
-        private ArticleViewModel articleViewModel { get; set; }
+        private ArticleViewModel ArticleViewModel { get; set; }
 
         public event Action ProductoActualizado;
 
@@ -31,58 +31,34 @@ namespace GestionComercial.Desktop.Controls.Articles
             _articlesApiService = new ArticlesApiService();
             ArticleId = articleId;
 
-            // _ = FindArticleAsync();
             if (ArticleId == 0)
             {
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
-                articleViewModel = new ArticleViewModel { CreateUser = App.UserName, IsEnabled = true };
+                ArticleViewModel = new ArticleViewModel { CreateUser = App.UserName, IsEnabled = true };
             }
             else
             {
                 ArticleViewModel? viewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
                 if (viewModel != null)
                 {
-                    articleViewModel = viewModel;
+                    ArticleViewModel = viewModel;
                     btnAdd.Visibility = Visibility.Hidden;
                     btnUpdate.Visibility = Visibility.Visible;
                 }
                 else
                     lblError.Text = "No se reconoce el artículo";
             }
-            if (articleViewModel != null)
+            if (ArticleViewModel != null)
             {
-                articleViewModel.Taxes = MasterCache.Instance.GetTaxes();
-                articleViewModel.Measures = MasterCache.Instance.GetMeasures();
-                articleViewModel.Categories = MasterCache.Instance.GetCategories();
+                ArticleViewModel.Taxes = MasterCache.Instance.GetTaxes();
+                ArticleViewModel.Measures = MasterCache.Instance.GetMeasures();
+                ArticleViewModel.Categories = MasterCache.Instance.GetCategories();
             }
-            DataContext = articleViewModel;
+            DataContext = ArticleViewModel;
+            txtCode.Focus();
+            txtCode.SelectAll();
         }
-
-        private async Task FindArticleAsync()
-        {
-            //ArticleResponse result = await _articlesApiService.GetByIdAsync(ArticleId);
-            if (ArticleId == 0)
-            {
-                articleViewModel = new ArticleViewModel
-                {
-                    CreateUser = App.UserName
-                };
-            }
-            else
-            {
-                articleViewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
-                if (articleViewModel != null)
-                {
-                    //articleViewModel = result.ArticleViewModel;
-
-                    DataContext = articleViewModel;
-                }
-                else
-                    lblError.Text = "No se reconoce el artículo";
-            }
-        }
-
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             lblError.MaxWidth = this.ActualWidth;
@@ -99,10 +75,10 @@ namespace GestionComercial.Desktop.Controls.Articles
             {
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
-                articleViewModel.UpdateUser = App.UserName;
-                articleViewModel.UpdateDate = DateTime.Now;
+                ArticleViewModel.UpdateUser = App.UserName;
+                ArticleViewModel.UpdateDate = DateTime.Now;
                 //articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1)) : Convert.ToDecimal(txtRealCost.Text);
-                Article article = ConverterHelper.ToArticle(articleViewModel, articleViewModel.Id == 0);
+                Article article = ConverterHelper.ToArticle(ArticleViewModel, ArticleViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _articlesApiService.UpdateAsync(article);
                 if (resultUpdate.Success)
                     ProductoActualizado?.Invoke(); // para notificar a la vista principal
@@ -124,7 +100,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                 btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
                 //articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1).Replace(".", ",")) : Convert.ToDecimal(txtRealCost.Text.Replace(".", ","));
-                Article article = ConverterHelper.ToArticle(articleViewModel, articleViewModel.Id == 0);
+                Article article = ConverterHelper.ToArticle(ArticleViewModel, ArticleViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _articlesApiService.AddAsync(article);
                 if (resultUpdate.Success)
                     ProductoActualizado?.Invoke(); // para notificar a la vista principal
@@ -161,7 +137,7 @@ namespace GestionComercial.Desktop.Controls.Articles
         }
 
         // Selecciona todo al hacer click con el mouse (si aún no tenía foco)
-        private void TextBox_PreviewMouseLeftButtonDown_SelectAll(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void TextBox_PreviewMouseLeftButtonDown_SelectAll(object sender, MouseButtonEventArgs e)
         {
             if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
             {
@@ -171,96 +147,9 @@ namespace GestionComercial.Desktop.Controls.Articles
             }
         }
 
-
-        private void txtStock_LostFocus(object sender, RoutedEventArgs e)
-        {
-            txtStock.Text = txtStock.Text.Replace(".", ",");
-        }
-        private void txtStock_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == "," || textoIngresado == "-")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-
-
-        private void txtMinimalStock_LostFocus(object sender, RoutedEventArgs e)
-        {
-            txtMinimalStock.Text = txtMinimalStock.Text.Replace(".", ",");
-        }
-        private void txtMinimalStock_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == "," || textoIngresado == "-")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-
-
-        private void txtReplacement_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-
-
-        //private void txtUmbral_LostFocus(object sender, RoutedEventArgs e)
-        //{
-        //    txtUmbral.Text = txtUmbral.Text.Replace(".", ",");
-        //}
-        private void txtUmbral_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
-
-
-        private void txtChangePoint_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void TextBoxIsNumeric_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !ValidatorHelper.IsNumeric(e.Text);
-        }
-
-
-        private void txtSalePoint_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !ValidatorHelper.IsNumeric(e.Text);
-        }
-
-
-        private void txtInternalTax_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !ValidatorHelper.IsNumeric(e.Text);
-        }
-
-
-
-
-
-        private bool EsTextoNumerico(string texto)
-        {
-            if (texto.Length > 0 && texto.Substring(1).Contains("-"))
-                return false;
-            if (texto.Substring(0, 1) == "-" && texto.Length == 1)
-                return true;
-            // Usá CultureInfo si querés permitir coma decimal como en es-AR
-            return double.TryParse(texto, NumberStyles.Any, CultureInfo.CurrentCulture, out _);
         }
 
 

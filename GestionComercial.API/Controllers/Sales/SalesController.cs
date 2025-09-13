@@ -23,7 +23,7 @@ namespace GestionComercial.API.Controllers.Sales
         private readonly IClientsNotifier _notifierClients;
 
 
-        public SalesController(ISalesService saleService, IMasterService masterService, 
+        public SalesController(ISalesService saleService, IMasterService masterService,
             ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients)
         {
             _saleService = saleService;
@@ -81,33 +81,27 @@ namespace GestionComercial.API.Controllers.Sales
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync([FromBody] SaleFilterDto filter)
         {
-            IEnumerable<SaleViewModel> sales = await _saleService.GetAllAsync();
-            return Ok(sales);
+            SaleResponse saleResponse = await _saleService.GetAllAsync(filter.Page, filter.PageSize);
+            return saleResponse.Success ? Ok(saleResponse) : BadRequest(saleResponse.Message);
         }
 
 
         [HttpPost("GetAllBySalePointAsync")]
         public async Task<IActionResult> GetAllBySalePointAsync([FromBody] SaleFilterDto filter)
         {
-            SaleResponse saleResponse = new()
-            {
-                Success = true
-            };
-            try
-            {
-                IEnumerable<SaleViewModel> sales = await _saleService.GetAllBySalePointAsync(filter.SalePoint, (DateTime)filter.SaleDate);
-                int lastSaleNumber = await _saleService.GetLastSaleNumber(filter.SalePoint);
-                saleResponse.LastSaleNumber = lastSaleNumber;
-                saleResponse.SaleViewModels = [.. sales];
+            SaleResponse sales = await _saleService.GetAllBySalePointAsync(filter.SalePoint, (DateTime)filter.SaleDate, filter.Page, filter.PageSize);
+            SaleResponse lastSaleNumber = await _saleService.GetLastSaleNumber(filter.SalePoint);
+            if (!sales.Success)
+                return BadRequest(sales.Message);
+            if (!lastSaleNumber.Success)
+                return BadRequest(lastSaleNumber.Message);
 
-                return Ok(saleResponse);
-            }
-            catch (Exception ex)
+            return Ok(new SaleResponse
             {
-                saleResponse.Success = false;
-                saleResponse.Message = ex.Message;
-                return BadRequest(saleResponse);
-            }
+                Success = true,
+                LastSaleNumber = lastSaleNumber.LastSaleNumber,
+                SaleViewModels = sales.SaleViewModels,
+            });
         }
 
 
@@ -115,11 +109,8 @@ namespace GestionComercial.API.Controllers.Sales
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync([FromBody] SaleFilterDto filter)
         {
-            SaleViewModel? sale = await _saleService.GetByIdAsync(filter.Id);
-            if (sale == null)
-                return NotFound();
-
-            return Ok(sale);
+            SaleResponse sale = await _saleService.GetByIdAsync(filter.Id);
+            return sale.Success ? Ok(sale) : BadRequest(sale.Message);
         }
 
     }

@@ -105,57 +105,106 @@ namespace GestionComercial.Applications.Services
             }
         }
 
-        public async Task<IEnumerable<SaleViewModel>> GetAllAsync()
+        public async Task<SaleResponse> GetAllAsync(int page, int pageSize)
         {
-            List<Sale> sales = await _context.Sales
-                .AsNoTracking()
-                .Include(c => c.Client)
-                //.Include(sc => sc.SaleCondition)
-                .Include(sd => sd.SaleDetails)
-                .Include(spm => spm.SalePayMetodDetails)
-                .Include(a => a.Acreditations)
-                .OrderBy(sp => sp.SalePoint).ThenBy(sn => sn.SaleNumber)
-                .ToListAsync();
+            try
+            {
+                List<Sale> sales = await _context.Sales
+                       .AsNoTracking()
+                       .Include(c => c.Client)
+                       //.Include(sc => sc.SaleCondition)
+                       .Include(sd => sd.SaleDetails)
+                       .Include(spm => spm.SalePayMetodDetails)
+                       .Include(a => a.Acreditations)
+                       .OrderBy(sp => sp.SalePoint).ThenBy(sn => sn.SaleNumber)
+                       .Skip((page - 1) * pageSize)
+                       .Take(pageSize)
+                       .ToListAsync();
 
 
-            return ToSaleViewModelsList(sales);
-
+                return new SaleResponse
+                {
+                    Success = true,
+                    SaleViewModels = ToSaleViewModelsList(sales),
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
 
         }
 
-        public async Task<IEnumerable<SaleViewModel>> GetAllBySalePointAsync(int salePoint, DateTime saleDate)
+        public async Task<SaleResponse> GetAllBySalePointAsync(int salePoint, DateTime saleDate, int page, int pageSize)
         {
-            List<Sale> sales = await _context.Sales
-                .AsNoTracking()
-                .Include(c => c.Client)
-                //.Include(sc => sc.SaleCondition)
-                .Include(sd => sd.SaleDetails)
-                .Include(spm => spm.SalePayMetodDetails)
-                .Include(a => a.Acreditations)
-                .Where(s => s.SalePoint == salePoint && s.SaleDate == saleDate.Date)
-                .OrderBy(sp => sp.SalePoint).ThenBy(sn => sn.SaleNumber)
-                .ToListAsync();
+            try
+            {
+                List<Sale> sales = await _context.Sales
+                       .AsNoTracking()
+                       .Include(c => c.Client)
+                       //.Include(sc => sc.SaleCondition)
+                       .Include(sd => sd.SaleDetails)
+                       .Include(spm => spm.SalePayMetodDetails)
+                       .Include(a => a.Acreditations)
+                       .Where(s => s.SalePoint == salePoint && s.SaleDate == saleDate.Date)
+                       .OrderBy(sp => sp.SalePoint).ThenBy(sn => sn.SaleNumber)
+                       .Skip((page - 1) * pageSize)
+                       .Take(pageSize)
+                       .ToListAsync();
 
 
-            return ToSaleViewModelsList(sales);
+                return new SaleResponse
+                {
+                    Success = true,
+                    SaleViewModels = ToSaleViewModelsList(sales),
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
+
         }
 
-        public async Task<SaleViewModel?> GetByIdAsync(int id)
+        public async Task<SaleResponse> GetByIdAsync(int id)
         {
-            Sale? sale = await _context.Sales
-                .AsNoTracking()
-                .Include(c => c.Client)
-                //.Include(sc => sc.SaleCondition)
-                .Include(sd => sd.SaleDetails)
-                .Include(spm => spm.SalePayMetodDetails)
-                .Include(a => a.Acreditations)
-                .Where(s => s.Id == id)
-                .FirstOrDefaultAsync();
+            try
+            {
+                Sale? sale = await _context.Sales
+                        .AsNoTracking()
+                        .Include(c => c.Client)
+                        //.Include(sc => sc.SaleCondition)
+                        .Include(sd => sd.SaleDetails)
+                        .Include(spm => spm.SalePayMetodDetails)
+                        .Include(a => a.Acreditations)
+                        .Where(s => s.Id == id)
+                        .FirstOrDefaultAsync();
 
-            return id == 0 || sale == null ? new SaleViewModel() : ConverterHelper.ToSaleViewModel(sale);
+                return new SaleResponse
+                {
+                    Success = true,
+                    SaleViewModel = id == 0 || sale == null ? new SaleViewModel() : ConverterHelper.ToSaleViewModel(sale),
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
         }
 
-        public async Task<int> GetLastSaleNumber(int salePoint)
+        public async Task<SaleResponse> GetLastSaleNumber(int salePoint)
         {
             try
             {
@@ -164,12 +213,19 @@ namespace GestionComercial.Applications.Services
                     .Select(s => (int?)s.SaleNumber) // usamos nullable para manejar el caso de que no haya registros
                     .MaxAsync();
 
-                return lastSaleNumber == null ? 0 : lastSaleNumber.Value;
+                return new SaleResponse
+                {
+                    Success = true,
+                    LastSaleNumber = lastSaleNumber == null ? 0 : lastSaleNumber.Value
+                };
             }
             catch (Exception ex)
             {
-
-                throw;
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
             }
         }
 
@@ -177,7 +233,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        private IEnumerable<SaleViewModel> ToSaleViewModelsList(List<Sale> sales)
+        private List<SaleViewModel> ToSaleViewModelsList(List<Sale> sales)
         {
             return sales.Select(sale => new SaleViewModel
             {
@@ -219,7 +275,7 @@ namespace GestionComercial.Applications.Services
                 //SaleConditionId = sale.SaleConditionId,
 
 
-            }).OrderBy(s => s.SalePoint).ThenBy(s => s.SaleNumber);
+            }).OrderBy(s => s.SalePoint).ThenBy(s => s.SaleNumber).ToList();
         }
     }
 }

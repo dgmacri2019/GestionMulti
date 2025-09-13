@@ -1,7 +1,9 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Response;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -28,77 +30,124 @@ namespace GestionComercial.Desktop.Services
         }
 
 
-        internal async Task<List<SaleViewModel>> GetAllAsync()
+        internal async Task<SaleResponse> GetAllAsync(int pageSize = 100)
         {
+            // Llama al endpoint y deserializa la respuesta
+            List<SaleViewModel> allSales = [];
+            int page = 1;
+            bool moreData = true;
+            SaleResponse saleResponse = new()
+            {
+                Success = false,
+            };
             try
             {
-                // Llama al endpoint y deserializa la respuesta
-
-                var response = await _httpClient.PostAsJsonAsync("api/sales/GetAllAsync", new
+                while (moreData)
                 {
-                    //IsDeleted = isDeleted,
-                    //IsEnabled = isEnabled,
-                });
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-
-                    var sales = JsonSerializer.Deserialize<List<SaleViewModel>>(jsonResponse, options);
-
-
-                    return sales;
-                }
-                else
-                {
-                    // Manejo de error
-                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        internal async Task<SaleResponse> GetAllBySalePointAsync(int salePoint)
-        {
-            try
-            {
-                // Llama al endpoint y deserializa la respuesta
-
-                var response = await _httpClient.PostAsJsonAsync("api/sales/GetAllBySalePointAsync", new
-                {
-                    SalePoint = salePoint,
-                    SaleDate = DateTime.Now.Date,
-                    //IsDeleted = isDeleted,
-                    //IsEnabled = isEnabled,
-                });
-
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                SaleResponse saleResponse = JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
-                if (response.IsSuccessStatusCode)
-                    return saleResponse;
-                else
-                    return new SaleResponse
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/sales/GetAllAsync", new
                     {
-                        // Manejo de error
-                        Message = saleResponse.Message,
-                        Success = false,
-                    };
+                        Page = page,
+                        PageSize = pageSize
+                    });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        // Leer el contenido como stream para no cargar todo en memoria
+                        using Stream? stream = await response.Content.ReadAsStreamAsync();
+
+
+                        SaleResponse? result = JsonSerializer.Deserialize<SaleResponse>(stream, options);
+                        if (result.Success)
+                        {
+                            if (result.SaleViewModels == null || result.SaleViewModels.Count() == 0)
+                            {
+                                moreData = false; // no quedan más datos
+                            }
+                            else
+                            {
+                                allSales.AddRange(result.SaleViewModels);
+                                page++; // siguiente página
+                            }
+                        }
+                    }
+                    else
+                    {
+                        saleResponse.Message = await response.Content.ReadAsStringAsync();
+                        return saleResponse;
+                    }
+                }
+                saleResponse.Success = true;
+                saleResponse.SaleViewModels = allSales;
+                return saleResponse;
+
             }
             catch (Exception ex)
             {
-                return new SaleResponse
+                saleResponse.Message = $"Error al obtener ventas, el error fue:\n {ex.Message}";
+                return saleResponse;
+            }
+        }
+
+        internal async Task<SaleResponse> GetAllBySalePointAsync(int salePoint, int pageSize = 100)
+        {
+            // Llama al endpoint y deserializa la respuesta
+            List<SaleViewModel> allSales = [];
+            int page = 1;
+            bool moreData = true;
+            SaleResponse saleResponse = new()
+            {
+                Success = false,
+            };
+            try
+            {
+                while (moreData)
                 {
-                    // Manejo de error
-                    Message = ex.Message,
-                    Success = false,
-                };
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/sales/GetAllBySalePointAsync", new
+                    {
+                        SalePoint = salePoint,
+                        SaleDate = DateTime.Now.Date,
+                        Page = page,
+                        PageSize = pageSize
+                    });
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        // Leer el contenido como stream para no cargar todo en memoria
+                        using Stream? stream = await response.Content.ReadAsStreamAsync();
+
+
+                        SaleResponse? result = JsonSerializer.Deserialize<SaleResponse>(stream, options);
+                        if (result.Success)
+                        {
+                            if (result.SaleViewModels == null || result.SaleViewModels.Count() == 0)
+                            {
+                                moreData = false; // no quedan más datos
+                            }
+                            else
+                            {
+                                allSales.AddRange(result.SaleViewModels);
+                                page++; // siguiente página
+                            }
+                        }
+                    }
+                    else
+                    {
+                        saleResponse.Message = await response.Content.ReadAsStringAsync();
+                        return saleResponse;
+                    }
+                }
+                saleResponse.Success = true;
+                saleResponse.SaleViewModels = allSales;
+                return saleResponse;
+            }
+            catch (Exception ex)
+            {
+                saleResponse.Message = $"Error al obtener ventas, el error fue:\n {ex.Message}";
+                return saleResponse;
             }
         }
 
@@ -120,22 +169,23 @@ namespace GestionComercial.Desktop.Services
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
-                    return new SaleResponse
-                    {
-                        SaleViewModel = JsonSerializer.Deserialize<SaleViewModel>(jsonResponse, options),
-                        Success = true,
-                    };
+                {
+                    return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
+                }
                 else
                     return new SaleResponse
                     {
                         Success = false,
-                        Message = $"Error: {response.StatusCode}\n{jsonResponse}",
+                        Message = $"Error al obtener la venta, el error fue: \n{jsonResponse}",
                     };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = $"Error: \n{ex.Message}",
+                };
             }
         }
 
@@ -164,7 +214,7 @@ namespace GestionComercial.Desktop.Services
         {
             try
             {
-               var response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
+                var response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
                 return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
