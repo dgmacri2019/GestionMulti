@@ -13,14 +13,14 @@ namespace GestionComercial.API.Notifications
             _queue = queue;
         }
 
-        public async Task NotifyAsync(int id, string nombre, ChangeType accion)
+        public async Task NotifyAsync(int id, string nombre, ChangeType accion, ChangeClass changeClass)
         {
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             ClaseMaestraChangeNotification notification = accion switch
             {
-                ChangeType.Created => new MasterClassCreado(id, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Updated => new MasterClassActualizado(id, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Deleted => new MasterClassEliminado(id, DateTimeOffset.UtcNow),
+                ChangeType.Created => new MasterClassCreado(id, DateTimeOffset.UtcNow, nombre, accion, changeClass),
+                ChangeType.Updated => new MasterClassActualizado(id, DateTimeOffset.UtcNow, nombre, accion, changeClass),
+                ChangeType.Deleted => new MasterClassEliminado(id, DateTimeOffset.UtcNow, accion, changeClass),
                 _ => throw new ArgumentException("Acción inválida")
             };
             // 👉 encolamos (rápido) y devolvemos el control al request

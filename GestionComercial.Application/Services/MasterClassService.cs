@@ -26,6 +26,17 @@ namespace GestionComercial.Applications.Services
                 .ToListAsync();
         }
 
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await _context.Categories
+                .Where(c => c.Id == id)
+                .Include(a => a.Articles)
+                .FirstOrDefaultAsync();
+                
+        }
+
+
+
         public async Task<IEnumerable<DocumentType>> GetAllDocumentTypesAsync(bool isEnabled, bool isDeleted)
         {
             return await _context.DocumentTypes
@@ -67,5 +78,7 @@ namespace GestionComercial.Applications.Services
                 .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
                 .ToListAsync();
         }
+
+        
     }
 }

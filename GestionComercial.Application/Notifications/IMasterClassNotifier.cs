@@ -4,6 +4,6 @@ namespace GestionComercial.Applications.Notifications
 {
     public interface IMasterClassNotifier
     {
-        Task NotifyAsync(int Id, string description, ChangeType action);
+        Task NotifyAsync(int Id, string description, ChangeType action, ChangeClass changeClass);
     }
 }

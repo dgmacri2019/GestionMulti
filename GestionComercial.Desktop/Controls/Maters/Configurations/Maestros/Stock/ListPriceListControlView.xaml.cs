@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GestionComercial.Desktop.Controls.PriceLists
+namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
 {
     /// <summary>
     /// Lógica de interacción para ListPriceListControlView.xaml

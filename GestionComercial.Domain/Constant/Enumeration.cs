@@ -45,55 +45,7 @@ namespace GestionComercial.Domain.Constant
 
 
         
-        // Tipo de Condicion de venta
-        public enum SaleCondition
-        {
-            [Display(Name = "Seleccione la Forma de Pago")]
-            Seleccione = 0,
-            //[Display(Name = "Sin Cargo")]
-            //SinCargo = 1,
-            [Display(Name = "Cuenta Corriente")]
-            Cuenta_Corriente = 2,
-            [Display(Name = "Cheque")]
-            Cheque = 3,
-            [Display(Name = "Efectivo Pesos")]
-            Efectivo_Peso = 4,
-            [Display(Name = "Efectivo Dolar")]
-            Efectivo_Dolar = 17,
-            [Display(Name = "Efectivo Real")]
-            Efectivo_Real = 18,
-            [Display(Name = "Efectivo Euro")]
-            Efectivo_Euro = 19,
-            [Display(Name = "Efectivo Otro")]
-            Efectivo_Otro = 20,
-            [Display(Name = "Transferencia Bancaria")]
-            Deposito = 5,
-            [Display(Name = "Tarjeta de Débito")]
-            Debito = 6,
-            [Display(Name = "Tarjeta de Crédito")]
-            Credito = 7,
-            [Display(Name = "Mercado Pago Transferencia")]
-            Mercado_Pago_Transfencia = 8,
-            [Display(Name = "Mercado Pago QR Crédito")]
-            MercadoPago_QR_Credito = 9,
-            [Display(Name = "Mercado Pago QR Débito")]
-            MercadoPago_QR_Debito = 10,
-            [Display(Name = "Mercado Pago QR Dinero Cuenta")]
-            MercadoPago_QR_Dinero_Cuenta = 11,
-            [Display(Name = "Mercado Pago Point Crédito")]
-            MercadoPago_Credito = 12,
-            [Display(Name = "Mercado Pago Point Débito")]
-            MercadoPago_Debito = 13,
-            [Display(Name = "Mercado Pago On-Line")]
-            MercadoPago_OnLine = 14,
-            [Display(Name = "Mercado Pago Link Pago")]
-            MercadoPago_Link_Pago = 15,
-            [Display(Name = "Mercado Pago Otro")]
-            MercadoPago_Otro = 16,
-            [Display(Name = "Multiple Metodos de pago")]
-            Multiples_Metodos = 21,
-
-        }
+       
 
         */
 
@@ -222,7 +174,6 @@ namespace GestionComercial.Domain.Constant
 
 
         //Tipos de cambios
-
         public enum ChangeType
         {
             Created, 
@@ -230,5 +181,18 @@ namespace GestionComercial.Domain.Constant
             Deleted
         }
 
+
+        //Clase que cambio
+
+        public enum ChangeClass
+        {
+            Category,
+            State,
+            DocumentType,
+            IvaCondition,
+            SaleCondition,
+            Measure,
+            Tax,
+        }
     }
 }

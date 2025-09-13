@@ -1,8 +1,13 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
+using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
+using static GestionComercial.Domain.Constant.Enumeration;
 using static GestionComercial.Domain.Notifications.MasterClassChangeNotification;
 
 namespace GestionComercial.Desktop.ViewModels.Master
@@ -11,6 +16,67 @@ namespace GestionComercial.Desktop.ViewModels.Master
     {
         private readonly MasterClassApiService _masterClassApiService;
         private readonly MasterClassHubService _hubService;
+
+
+
+        // 🔹 Lista observable para bindear al DataGrid
+        public ObservableCollection<Category> Categories { get; } = [];
+
+        // 🔹 Propiedades de filtros
+        private string _nameFilter = string.Empty;
+        public string NameFilter
+        {
+            get => _nameFilter;
+            set
+            {
+                if (_nameFilter != value)
+                {
+                    _nameFilter = value;
+                    OnPropertyChanged();
+                    _ = LoadMastersAsync(); // 🔹 ejecuta búsqueda al escribir
+                }
+            }
+        }
+
+        private bool _isEnabledFilter = true;
+        public bool IsEnabledFilter
+        {
+            get => _isEnabledFilter;
+            set
+            {
+                if (_isEnabledFilter != value)
+                {
+                    _isEnabledFilter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _isDeletedFilter = false;
+        public bool IsDeletedFilter
+        {
+            get => _isDeletedFilter;
+            set
+            {
+                if (_isDeletedFilter != value)
+                {
+                    _isDeletedFilter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        // 🔹 Command para buscar
+        public ICommand SearchCommand { get; }
+        public ICommand ToggleEnabledCommand { get; }
+
+
+        public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
+
+
+
+
+
         public MasterClassListViewModel()
         {
             _masterClassApiService = new MasterClassApiService();
@@ -20,10 +86,18 @@ namespace GestionComercial.Desktop.ViewModels.Master
 
             _hubService = new MasterClassHubService(hubUrl);
             _hubService.ClaseMaestraCambiado += OnClaseMaestraCambiado;
-
+            ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
+            SearchCommand = new RelayCommand1(async _ => await LoadMastersAsync());
 
             _ = _hubService.StartAsync();
             _ = LoadMastersAsync(); // carga inicial
+        }
+
+        private async Task ToggleEnabled()
+        {
+            IsEnabledFilter = !IsEnabledFilter;
+            OnPropertyChanged(nameof(ToggleEnabledText));
+            await LoadMastersAsync();
         }
 
 
@@ -36,8 +110,8 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 MasterClassResponse result = await _masterClassApiService.GetAllAsync();
                 if (result.Success)
                 {
-                    MasterCache.Instance.SetData(result.PriceLists, result.States,
-                        result.SaleConditions, result.IvaConditions, result.DocumentTypes, result.Categories, result.Measures, result.Taxes);
+                    MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions,
+                        result.DocumentTypes, result.Measures, result.Taxes);
                 }
                 else
                     MessageBox.Show($"Error al cargar clientes, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -51,19 +125,22 @@ namespace GestionComercial.Desktop.ViewModels.Master
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnClaseMaestraCambiado(ClaseMaestraChangeNotification notification)
         {
-            MasterClassResponse result = await _masterClassApiService.GetAllAsync();
-            if (result.Success)
-                await App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    MasterCache.Instance.ClearCache();
-                    MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions,
-                        result.DocumentTypes, result.Categories, result.Measures, result.Taxes);
+            if (notification.ChangeClass != ChangeClass.Category)
+            {
+                MasterClassResponse result = await _masterClassApiService.GetAllAsync();
+                if (result.Success)
+                    await App.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        MasterCache.Instance.ClearCache();
+                        MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions,
+                            result.DocumentTypes, result.Measures, result.Taxes);
 
-                    _ = LoadMastersAsync();
-                });
-            else
-                MessageBox.Show($"Error al cargar clase maestra, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _ = LoadMastersAsync();
+                    });
+                else
+                    MessageBox.Show($"Error al cargar clase maestra, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
 
+            }
         }
     }
 }

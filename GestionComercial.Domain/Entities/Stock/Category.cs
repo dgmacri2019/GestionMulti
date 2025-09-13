@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Stock
 {
@@ -19,7 +18,7 @@ namespace GestionComercial.Domain.Entities.Stock
 
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual ICollection<Article>? Articles { get; set; }
     }
 }

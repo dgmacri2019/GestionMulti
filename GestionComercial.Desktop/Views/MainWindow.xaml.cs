@@ -2,9 +2,9 @@
 using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
+using GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock;
 using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
 using GestionComercial.Desktop.Controls.Permissions;
-using GestionComercial.Desktop.Controls.PriceLists;
 using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
@@ -67,7 +67,6 @@ namespace GestionComercial.Desktop.Views
                     Children =
                     [
                         new() { Title = "Articulos", Icon = "/Images/Products 32.png", Tag = "Stock" },
-                        new() { Title = "Listadas de Precios", Icon = "/Images/Details.png", Tag = "PriceLists" },
                         new() {
                             Title = "Reportes",
                             Icon = "/Images/Report 20.png",
@@ -120,10 +119,28 @@ namespace GestionComercial.Desktop.Views
                 },
                 new MenuItemModel
                 {
-                    Title = "Configuración",
-                    Icon = "/Images/Setting Config 32.png",
+                    Title = "Configuraciones",
+                    Icon = "/Images/Config 32.png",
                     Children =
                     [
+                         new() {
+                            Title = "Maestros",
+                            Icon = "/Images/Control Panel 32.png",
+                            Children =
+                            [
+                                new ()
+                                {
+                                    Title="Stock",
+                                    Icon = "/Images/Products 32.png",
+                                    Children =
+                                    [
+                                        new() { Title = "Listas de Precios", Icon = "/Images/Price List 32.png", Tag = "PriceLists" },
+                                        new() { Title = "Rubros", Icon = "/Images/Product Category 32.png", Tag = "Categories" },
+                                    ]
+                                },
+                                new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
+                            ]
+                        },
                         new() {
                             Title = "Parámetros",
                             Icon = "/Images/Setting Config 32.png",
@@ -211,6 +228,9 @@ namespace GestionComercial.Desktop.Views
                     case "PcParameter_Setup":
                         MainContent.Content = new PcParametersControlView();
                         break;
+                    case "Categories":
+                        MainContent.Content = new ListCategoryControlView();
+                        break;
                     case "LogOut":
                         LogOut();
                         break;
@@ -246,6 +266,9 @@ namespace GestionComercial.Desktop.Views
         {
             MasterClassListViewModel masterClassListViewModel = new();
             while (!MasterCache.Instance.HasData)
+                Thread.Sleep(10);
+            CategoryListViewModel categoryListViewModel = new();
+            while (!CategoryCache.Instance.HasData)
                 Thread.Sleep(10);
             ClientListViewModel clientListViewModel = new();
             while (!ClientCache.Instance.HasData)

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Notifications
 {
@@ -9,15 +10,15 @@ namespace GestionComercial.Domain.Notifications
         [JsonDerivedType(typeof(MasterClassActualizado), "updated")]
         [JsonDerivedType(typeof(MasterClassEliminado), "deleted")]
 
-        public abstract record ClaseMaestraChangeNotification(int id, DateTimeOffset ServerTime);
+        public abstract record ClaseMaestraChangeNotification(int Id, DateTimeOffset ServerTime, ChangeType Action, ChangeClass ChangeClass);
 
-        public record MasterClassCreado(int id, DateTimeOffset ServerTime, string Nombre)
-        : ClaseMaestraChangeNotification(id, ServerTime);
+        public record MasterClassCreado(int Id, DateTimeOffset ServerTime, string Nombre, ChangeType Action, ChangeClass ChangeClass)
+        : ClaseMaestraChangeNotification(Id, ServerTime, Action, ChangeClass);
 
-        public record MasterClassActualizado(int id, DateTimeOffset ServerTime, string Nombre)
-            : ClaseMaestraChangeNotification(id, ServerTime);
+        public record MasterClassActualizado(int Id, DateTimeOffset ServerTime, string Nombre, ChangeType Action, ChangeClass ChangeClass)
+            : ClaseMaestraChangeNotification(Id, ServerTime, Action, ChangeClass);
 
-        public record MasterClassEliminado(int id, DateTimeOffset ServerTime)
-            : ClaseMaestraChangeNotification(id, ServerTime);
+        public record MasterClassEliminado(int Id, DateTimeOffset ServerTime, ChangeType Action, ChangeClass ChangeClass)
+            : ClaseMaestraChangeNotification(Id, ServerTime, Action, ChangeClass);
     }
 }

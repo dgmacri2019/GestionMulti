@@ -16,6 +16,11 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
+        private JsonSerializerOptions Options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         public MasterClassApiService()
         {
             _apiService = new ApiService();
@@ -35,10 +40,6 @@ namespace GestionComercial.Desktop.Services
             };
             try
             {
-                JsonSerializerOptions options = new()
-                {
-                    PropertyNameCaseInsensitive = true
-                };
 
                 // Enviar la solicitud al endpoint Lista De Precios
                 HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api/pricelists/GetAllAsync", new
@@ -53,7 +54,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
 
-                    List<PriceList>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceList>>(stream, options);
+                    List<PriceList>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceList>>(stream, Options);
                     priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
                     masterClassResponse.PriceLists = priceLists;
                 }
@@ -76,7 +77,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseStates.Content.ReadAsStreamAsync();
 
-                    List<State>? states = await JsonSerializer.DeserializeAsync<List<State>>(stream, options);
+                    List<State>? states = await JsonSerializer.DeserializeAsync<List<State>>(stream, Options);
                     states.Add(new State { Id = 0, Name = "Seleccione la provincia" });
                     masterClassResponse.States = states;
                 }
@@ -99,7 +100,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseDocumentType.Content.ReadAsStreamAsync();
 
-                    List<DocumentType>? documentTypes = await JsonSerializer.DeserializeAsync<List<DocumentType>>(stream, options);
+                    List<DocumentType>? documentTypes = await JsonSerializer.DeserializeAsync<List<DocumentType>>(stream, Options);
                     documentTypes.Add(new DocumentType { Id = 0, Description = "Seleccione el tipo de documento" });
                     masterClassResponse.DocumentTypes = documentTypes;
                 }
@@ -122,7 +123,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseIvaCondition.Content.ReadAsStreamAsync();
 
-                    List<IvaCondition>? ivaConditions = await JsonSerializer.DeserializeAsync<List<IvaCondition>>(stream, options);
+                    List<IvaCondition>? ivaConditions = await JsonSerializer.DeserializeAsync<List<IvaCondition>>(stream, Options);
                     ivaConditions.Add(new IvaCondition { Id = 0, Description = "Seleccione la condición de IVA" });
                     masterClassResponse.IvaConditions = ivaConditions;
                 }
@@ -145,7 +146,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseSaleCondition.Content.ReadAsStreamAsync();
 
-                    List<SaleCondition>? saleConditions = await JsonSerializer.DeserializeAsync<List<SaleCondition>>(stream, options);
+                    List<SaleCondition>? saleConditions = await JsonSerializer.DeserializeAsync<List<SaleCondition>>(stream, Options);
                     saleConditions.Add(new SaleCondition { Id = 0, Description = "Seleccione la condición de venta" });
                     masterClassResponse.SaleConditions = saleConditions;
                 }
@@ -154,30 +155,6 @@ namespace GestionComercial.Desktop.Services
                     masterClassResponse.Message = await responseSaleCondition.Content.ReadAsStringAsync();
                     return masterClassResponse;
                 }
-
-                // Enviar la solicitud al endpoint Rubros
-                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllCategoriesAsync", new
-                {
-                    IsEnabled = true,
-                    IsDeleted = false
-                });
-                if (responseCategory.IsSuccessStatusCode)
-                {
-                    responseCategory.EnsureSuccessStatusCode();
-
-                    // Leer el contenido como stream para no cargar todo en memoria
-                    using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
-
-                    List<Category>? categories = await JsonSerializer.DeserializeAsync<List<Category>>(stream, options);
-                    categories.Add(new Category { Id = 0, Description = "Seleccione el rubro" });
-                    masterClassResponse.Categories = categories;
-                }
-                else
-                {
-                    masterClassResponse.Message = await responseSaleCondition.Content.ReadAsStringAsync();
-                    return masterClassResponse;
-                }
-
                 // Enviar la solicitud al endpoint Unidades de medida
                 HttpResponseMessage responseMeasure = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllMeasuresAsync", new
                 {
@@ -191,7 +168,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseMeasure.Content.ReadAsStreamAsync();
 
-                    List<Measure>? measures = await JsonSerializer.DeserializeAsync<List<Measure>>(stream, options);
+                    List<Measure>? measures = await JsonSerializer.DeserializeAsync<List<Measure>>(stream, Options);
                     measures.Add(new Measure { Id = 0, Description = "Seleccione la unidad de medida" });
                     masterClassResponse.Measures = measures;
                 }
@@ -214,7 +191,7 @@ namespace GestionComercial.Desktop.Services
                     // Leer el contenido como stream para no cargar todo en memoria
                     using Stream? stream = await responseTax.Content.ReadAsStreamAsync();
 
-                    List<Tax>? taxes = await JsonSerializer.DeserializeAsync<List<Tax>>(stream, options);
+                    List<Tax>? taxes = await JsonSerializer.DeserializeAsync<List<Tax>>(stream, Options);
                     taxes.Add(new Tax { Id = 0, Description = "Seleccione el tipo de IVA" });
                     masterClassResponse.Taxes = taxes;
                 }
@@ -239,6 +216,88 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
+        internal async Task<CategoryResponse> GetAllCategoriesAsync()
+        {
+            CategoryResponse result = new CategoryResponse
+            {
+                Success = false
+            };
 
+            try
+            {
+
+                // Enviar la solicitud al endpoint Rubros
+                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllCategoriesAsync", new
+                {
+                    IsEnabled = true,
+                    IsDeleted = false
+                });
+                if (responseCategory.IsSuccessStatusCode)
+                {
+                    responseCategory.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
+
+                    List<Category>? categories = await JsonSerializer.DeserializeAsync<List<Category>>(stream, Options);
+                    categories.Add(new Category { Id = 0, Description = "Seleccione el rubro" });
+                    result.Success = true;
+                    result.Categories = categories;
+                    return result;
+                }
+                else
+                {
+                    result.Message = await responseCategory.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        internal async Task<CategoryResponse> GetCategoryByIdAsync(int id)
+        {
+            CategoryResponse result = new CategoryResponse
+            {
+                Success = false
+            };
+
+            try
+            {
+
+                // Enviar la solicitud al endpoint Rubros
+                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetCategoryByIdAsync", new
+                {
+                    IsEnabled = true,
+                    IsDeleted = false,
+                    Id = id,
+                });
+                if (responseCategory.IsSuccessStatusCode)
+                {
+                    responseCategory.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
+
+                    Category? category = await JsonSerializer.DeserializeAsync<Category>(stream, Options);
+                    result.Success = true;
+                    result.Category = category;
+                    return result;
+                }
+                else
+                {
+                    result.Message = await responseCategory.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+        }
     }
 }

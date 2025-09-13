@@ -101,7 +101,7 @@ namespace GestionComercial.API.Notifications.Background
                         case MasterClassChangedItem s:
                             try
                             {
-                                _logger.LogInformation("Dispatching MasterClassChangedItem", s.Notification?.id ?? 0);
+                                _logger.LogInformation("Dispatching MasterClassChangedItem", s.Notification?.Id ?? 0);
                                 // debug JSON serializado (útil para ver si serializa correctamente)
                                 try
                                 {
@@ -114,7 +114,7 @@ namespace GestionComercial.API.Notifications.Background
                                 }
 
                                 await _masterClassHub.Clients.All.ClaseMaestraActualizados(s.Notification);
-                                _logger.LogInformation("MasterClassActualizados invoked (typed) ", s.Notification?.id ?? 0);
+                                _logger.LogInformation("MasterClassActualizados invoked (typed) ", s.Notification?.Id ?? 0);
                             }
                             catch (Exception ex)
                             {

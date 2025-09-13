@@ -1,14 +1,12 @@
-﻿using GestionComercial.Domain.Cache;
-using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace GestionComercial.Desktop.Controls.Articles
 {
@@ -53,7 +51,7 @@ namespace GestionComercial.Desktop.Controls.Articles
             {
                 ArticleViewModel.Taxes = MasterCache.Instance.GetTaxes();
                 ArticleViewModel.Measures = MasterCache.Instance.GetMeasures();
-                ArticleViewModel.Categories = MasterCache.Instance.GetCategories();
+                ArticleViewModel.Categories = CategoryCache.Instance.GetAll();
             }
             DataContext = ArticleViewModel;
             txtCode.Focus();

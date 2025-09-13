@@ -35,7 +35,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(state);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(state.Id, "Provencia Creada", ChangeType.Created);
+                await _notifier.NotifyAsync(state.Id, "Provencia Creada", ChangeType.Created, ChangeClass.State);
 
                 return
                     Ok("Provincia creada correctamente");
@@ -49,7 +49,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(state);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(state.Id, "Pronvincia Actualizada", ChangeType.Updated);
+                await _notifier.NotifyAsync(state.Id, "Pronvincia Actualizada", ChangeType.Updated, ChangeClass.State);
 
                 return
                     Ok("Provincia actualizada correctamente");
@@ -65,7 +65,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(documentType);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(documentType.Id, "Tipo de documento", ChangeType.Created);
+                await _notifier.NotifyAsync(documentType.Id, "Tipo de documento", ChangeType.Created, ChangeClass.DocumentType);
 
                 return
                     Ok("Tipo de decumento creado correctamente");
@@ -79,7 +79,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(documentType);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(documentType.Id, "Tipo de documento actualizado", ChangeType.Updated);
+                await _notifier.NotifyAsync(documentType.Id, "Tipo de documento actualizado", ChangeType.Updated, ChangeClass.DocumentType);
 
                 return
                     Ok("Tipo de documento actualizado correctamente");
@@ -95,7 +95,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(ivaCondition);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(ivaCondition.Id, "Tipo de iva crado", ChangeType.Created);
+                await _notifier.NotifyAsync(ivaCondition.Id, "Tipo de iva crado", ChangeType.Created, ChangeClass.IvaCondition);
 
                 return
                     Ok("Tipo de iva creado correctamente");
@@ -109,7 +109,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(ivaCondition);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(ivaCondition.Id, "Condición de venta actualizada", ChangeType.Updated);
+                await _notifier.NotifyAsync(ivaCondition.Id, "Condición de venta actualizada", ChangeType.Updated, ChangeClass.IvaCondition);
 
                 return
                     Ok("Condición de venta actualizada correctamente");
@@ -125,7 +125,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(saleCondition);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(saleCondition.Id, "Condición de venta creada", ChangeType.Created);
+                await _notifier.NotifyAsync(saleCondition.Id, "Condición de venta creada", ChangeType.Created, ChangeClass.SaleCondition);
 
                 return
                     Ok("Condición de venta creada correctamente");
@@ -139,7 +139,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(saleCondition);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(saleCondition.Id, "Condición de venta actualizada", ChangeType.Updated);
+                await _notifier.NotifyAsync(saleCondition.Id, "Condición de venta actualizada", ChangeType.Updated, ChangeClass.SaleCondition);
 
                 return
                     Ok("Condición de venta actualizada correctamente");
@@ -154,7 +154,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(measure);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(measure.Id, "Unidad de medida creada", ChangeType.Created);
+                await _notifier.NotifyAsync(measure.Id, "Unidad de medida creada", ChangeType.Created, ChangeClass.Measure);
 
                 return
                     Ok("Unidad de medida creada correctamente");
@@ -168,7 +168,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(measure);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(measure.Id, "Unidad de medida actualizada", ChangeType.Updated);
+                await _notifier.NotifyAsync(measure.Id, "Unidad de medida actualizada", ChangeType.Updated, ChangeClass.Measure);
 
                 return
                     Ok("Unidad de medida actualizada correctamente");
@@ -183,7 +183,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(tax);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(tax.Id, "Tipo de IVA creado", ChangeType.Created);
+                await _notifier.NotifyAsync(tax.Id, "Tipo de IVA creado", ChangeType.Created, ChangeClass.Tax);
 
                 return
                     Ok("Tipo de IVA creado correctamente");
@@ -197,7 +197,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(tax);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(tax.Id, "Tipo de IVA actualizado", ChangeType.Updated);
+                await _notifier.NotifyAsync(tax.Id, "Tipo de IVA actualizado", ChangeType.Updated, ChangeClass.Tax);
 
                 return
                     Ok("Tipo de IVA actualizado correctamente");
@@ -212,7 +212,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(category);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created);
+                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.Category);
 
                 return
                     Ok("Rubro creado correctamente");
@@ -226,7 +226,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.UpdateAsync(category);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated);
+                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.Category);
 
                 return
                     Ok("Rubro actualizado correctamente");
@@ -259,11 +259,23 @@ namespace GestionComercial.API.Controllers.Admin
             return Ok(await _masterClassService.GetAllIvaConditionsAsync(filter.IsEnabled, filter.IsDeleted));
         }
 
+
+
         [HttpPost("GetAllCategoriesAsync")]
         public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
         {
             return Ok(await _masterClassService.GetAllCategoriesAsync(filter.IsEnabled, filter.IsDeleted));
         }
+
+        [HttpPost("GetCategoryByIdAsync")]
+        public async Task<IActionResult> GetCategoryByIdAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetCategoryByIdAsync(filter.Id));
+        }
+
+
+
+
 
         [HttpPost("GetAllMeasuresAsync")]
         public async Task<IActionResult> GetAllMeasuresAsync([FromBody] PriceListFilterDto filter)
@@ -283,6 +295,6 @@ namespace GestionComercial.API.Controllers.Admin
             return Ok(await _masterClassService.GetAllSaleConditionsAsync(filter.IsEnabled, filter.IsDeleted));
         }
 
-        
+
     }
 }

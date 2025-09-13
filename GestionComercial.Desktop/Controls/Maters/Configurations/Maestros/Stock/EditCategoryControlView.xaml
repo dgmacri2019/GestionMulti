@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock.EditCategoryControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock"
+             mc:Ignorable="d"
+             x:Name="miUserControl" 
+             Loaded="miUserControl_Loaded"
+             Background="LightGray">
+    
+    <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
+       Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>            
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Descripción" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtDescription"
+                  Style="{StaticResource TextBoxSearch}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  MaxLength="8"
+                  Text="{Binding Description}"
+                  GotFocus="TextBox_SelectAll"
+                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                  KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">
+            <TextBlock Text="Color" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtColor"
+                  Style="{StaticResource TextBoxSearch}"
+                  VerticalAlignment="Center"  
+                  HorizontalAlignment="Stretch"
+                  Text="{Binding Color}"/>
+        </StackPanel>
+
+        <Button x:Name="btnCancel"
+             Grid.Row="1" 
+             Grid.ColumnSpan="2"
+             Grid.Column="0" 
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             Content="Cancelar"  
+             Margin="0,40,120,0" 
+             Click="BtnCancel_Click" 
+             Style="{StaticResource BtnCancel}"/>
+        <Button x:Name="btnUpdate"
+             Grid.Row="1" 
+             Grid.ColumnSpan="2"
+             Grid.Column="0" 
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             Content="Actualizar" 
+             Margin="120,40,0,0"  
+             Click="BtnUpdate_Click"
+             Style="{StaticResource BtnUpdate}"/>
+        <Button x:Name="btnAdd"
+             Grid.Row="1" 
+             Grid.ColumnSpan="2"
+             Grid.Column="0"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             Content="Guardar" 
+             Margin="120,40,0,0"  
+             Click="BtnAdd_Click"
+             Style="{StaticResource BtnAdd}"/>
+
+        <TextBlock x:Name="lblError"
+                Grid.Row="2" 
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Stretch"
+                Style="{StaticResource lblError12}"
+                TextWrapping="Wrap"/>
+    </Grid>
+
+</UserControl>

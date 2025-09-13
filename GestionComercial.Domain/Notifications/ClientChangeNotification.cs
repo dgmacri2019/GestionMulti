@@ -10,15 +10,15 @@ namespace GestionComercial.Domain.Notifications
         [JsonDerivedType(typeof(ClientActualizado), "updated")]
         [JsonDerivedType(typeof(ClientEliminado), "deleted")]
 
-        public abstract record ClienteChangeNotification(int ClientId, DateTimeOffset ServerTime, ChangeType action);
+        public abstract record ClienteChangeNotification(int ClientId, DateTimeOffset ServerTime, ChangeType Action);
 
-        public record ClientCreado(int ClientId, DateTimeOffset ServerTime, ChangeType action)
-        : ClienteChangeNotification(ClientId, ServerTime, action);
+        public record ClientCreado(int ClientId, DateTimeOffset ServerTime, ChangeType Action)
+        : ClienteChangeNotification(ClientId, ServerTime, Action);
 
-        public record ClientActualizado(int ClientId, DateTimeOffset ServerTime, ChangeType action)
-            : ClienteChangeNotification(ClientId, ServerTime, action);
+        public record ClientActualizado(int ClientId, DateTimeOffset ServerTime, ChangeType Action)
+            : ClienteChangeNotification(ClientId, ServerTime, Action);
 
-        public record ClientEliminado(int ClientId, DateTimeOffset ServerTime, ChangeType action)
-            : ClienteChangeNotification(ClientId, ServerTime, action);
+        public record ClientEliminado(int ClientId, DateTimeOffset ServerTime, ChangeType Action)
+            : ClienteChangeNotification(ClientId, ServerTime, Action);
     }
 }

@@ -125,7 +125,7 @@ namespace GestionComercial.Desktop.ViewModels.Client
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnClienteCambiado(ClienteChangeNotification notification)
         {
-            switch (notification.action)
+            switch (notification.Action)
             {
                 case ChangeType.Created:
                     {
