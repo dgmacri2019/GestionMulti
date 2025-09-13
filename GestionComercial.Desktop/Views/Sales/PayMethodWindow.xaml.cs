@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.DTOs.Sale;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Masters;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -25,13 +26,13 @@ namespace GestionComercial.Desktop.Views.Sales
             InitializeComponent();
             _totalVenta = totalVenta;
 
-            MetodosPago = new ObservableCollection<PayMethodItem>();
-            AvailableMetodos = new List<SaleCondition>
-            {
+            MetodosPago = [];
+            AvailableMetodos =
+            [
                 new SaleCondition { Id = 4, SmallDescription = "EF", Description = "Efectivo" },
                 new SaleCondition { Id = 17, SmallDescription = "MP", Description = "Mercado Pago" },
                 new SaleCondition { Id = 7, SmallDescription = "TJ", Description = "Tarjeta" }
-            };
+            ];
 
             DataContext = this;
 
@@ -177,7 +178,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 }
                 else
                 {
-                    MessageBox.Show("Metodo de pago inválido", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MsgBoxAlertHelper.MsgAlertError("Metodo de pago inválido");
                     // ✅ Poner foco en la celda Método
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -189,7 +190,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         dataGrid.BeginEdit();
                     }), DispatcherPriority.Background);
                 }
-            }
+            }            
         }
 
         private void PayMethodWin_Loaded(object sender, RoutedEventArgs e)

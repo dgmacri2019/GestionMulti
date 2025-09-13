@@ -91,8 +91,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
             if (!ready)
             {
-                MessageBox.Show("Error cargando datos iniciales", "Aviso al operador",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxAlertHelper.MsgAlertError("Error cargando datos iniciales"); 
 
                 this.Close(); // 👈 Cerramos la ventana
                 return;

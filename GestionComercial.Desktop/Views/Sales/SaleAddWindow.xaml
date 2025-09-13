@@ -73,14 +73,14 @@
         <!-- Contenido principal -->
         <Grid x:Name="GridGeneral" Grid.Column="1" Margin="10" Background="LightGray">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <!-- DataGrid -->
                 <RowDefinition Height="Auto"/>
@@ -212,14 +212,14 @@
                 </StackPanel>-->
             </Grid>
             <!-- DataGrid artículos -->
-            <DataGrid x:Name="dgArticles" 
-                      Grid.Row="4"
+            <DataGrid x:Name="dgArticles" Grid.Row="4"
                       ItemsSource="{Binding ArticleItems, RelativeSource={RelativeSource AncestorType=Window}}" 
                       AutoGenerateColumns="False" 
                       CanUserAddRows="False" 
                       CanUserSortColumns="False"
                       HeadersVisibility="Column" 
                       Margin="5"
+                      Height="250"
                       Visibility="Hidden"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
