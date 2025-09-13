@@ -130,6 +130,7 @@ namespace GestionComercial.Desktop.Services
                             else
                             {
                                 allSales.AddRange(result.SaleViewModels);
+                                saleResponse.LastSaleNumber = result.LastSaleNumber;
                                 page++; // siguiente página
                             }
                         }
