@@ -91,7 +91,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
             if (!ready)
             {
-                MsgBoxAlertHelper.MsgAlertError("Error cargando datos iniciales"); 
+                MsgBoxAlertHelper.MsgAlertError("Error cargando datos iniciales");
 
                 this.Close(); // 👈 Cerramos la ventana
                 return;
@@ -454,7 +454,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         var selectedArticle = searchWindow.SelectedArticle;
                         if (selectedArticle != null)
                         {
-                            if(selectedArticle.SalePrice == 0 || selectedArticle.SalePriceWithTaxes == 0)
+                            if (selectedArticle.SalePrice == 0 || selectedArticle.SalePriceWithTaxes == 0)
                             {
                                 MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
@@ -829,15 +829,16 @@ namespace GestionComercial.Desktop.Views.Sales
                             var selectedMethods = payMethodWindows.MetodosPago;
                             ICollection<SalePayMetodDetail> salePayMetodDetails = [];
                             foreach (var pm in selectedMethods)
-                                salePayMetodDetails.Add(new SalePayMetodDetail
-                                {
-                                    CreateDate = DateTime.Now,
-                                    CreateUser = App.UserName,
-                                    IsDeleted = false,
-                                    IsEnabled = true,
-                                    Value = pm.Monto,
-                                    SaleConditionId = pm.MetodoId,
-                                });
+                                if (pm.MetodoId != 0)
+                                    salePayMetodDetails.Add(new SalePayMetodDetail
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = App.UserName,
+                                        IsDeleted = false,
+                                        IsEnabled = true,
+                                        Value = pm.Monto,
+                                        SaleConditionId = pm.MetodoId,
+                                    });
                             decimal totalpay = salePayMetodDetails.Sum(sp => sp.Value);
                             sale.SalePayMetodDetails = salePayMetodDetails;
                             sale.Sold = sale.Total - totalpay;

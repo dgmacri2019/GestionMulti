@@ -1,82 +1,90 @@
 ﻿<Window x:Class="GestionComercial.Desktop.Views.Sales.PayMethodWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Sales"
-        mc:Ignorable="d"
-        Title="Metodo de Pago" 
-        WindowStartupLocation="CenterScreen"
-        Height="300" 
-        Width="450"
-        x:Name="PayMethodWin" 
+        Title="Métodos de Pago"
+        Height="450" Width="700"
         Loaded="PayMethodWin_Loaded"
         KeyDown="PayMethodWin_KeyDown">
-    <Window.Resources>
-        <Style TargetType="DataGridColumnHeader">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
-
-    </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <!-- DataGrid -->
             <RowDefinition Height="Auto"/>
+            <!-- Totales -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botones -->
         </Grid.RowDefinitions>
 
+        <!-- DataGrid -->
         <DataGrid x:Name="dgMetodosPago"
-          AutoGenerateColumns="False"
-          ItemsSource="{Binding MetodosPago}"
-          CanUserAddRows="True"
-          Margin="0,0,0,10"
-          CellEditEnding="dgMetodosPago_CellEditEnding">
+                  ItemsSource="{Binding MetodosPago}"
+                  AutoGenerateColumns="False"
+                  CellEditEnding="dgMetodosPago_CellEditEnding"
+                  PreparingCellForEdit="dgMetodosPago_PreparingCellForEdit"
+                  CanUserAddRows="True"
+                  Margin="0,0,0,5"
+                  Grid.Row="0">
             <DataGrid.Columns>
-                <!-- Columna editable: usuario escribe el código (EF, MP, etc.) -->
                 <DataGridTextColumn Header="Método"
-                            Binding="{Binding MetodoCodigo, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                            Width="100"/>
+                                    Binding="{Binding MetodoCodigo, UpdateSourceTrigger=PropertyChanged}"
+                                    Width="100"/>
 
-                <!-- Solo lectura: descripción completa -->
                 <DataGridTextColumn Header="Descripción"
-                            Binding="{Binding MetodoDescripcion}"
-                            Width="200"
-                            IsReadOnly="True"/>
+                                    Binding="{Binding MetodoDescripcion}"
+                                    IsReadOnly="True"
+                                    Width="*"/>
 
-                <!-- Monto con formato moneda -->
-                <DataGridTextColumn Header="Monto" 
-                        Binding="{Binding Monto, StringFormat={}{0:C2},UpdateSourceTrigger=LostFocus, Mode=TwoWay}" 
-                        Width="*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="TextAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                    <DataGridTextColumn.EditingElementStyle>
+                <DataGridTextColumn Header="Monto"
+                                    Binding="{Binding Monto,UpdateSourceTrigger=LostFocus, Converter={StaticResource TwoDecimalMoneyCommaConverter}}"
+                                    Width="150">
+                    <!--<DataGridTextColumn.EditingElementStyle>
                         <Style TargetType="TextBox">
                             <EventSetter Event="GotFocus" Handler="Monto_GotFocus"/>
                             <EventSetter Event="PreviewKeyDown" Handler="Monto_PreviewKeyDown"/>
                             <EventSetter Event="PreviewTextInput" Handler="Monto_PreviewTextInput"/>
                             <EventSetter Event="TextChanged" Handler="Monto_TextChanged"/>
+                            --><!-- NO EventSetter para Pasting; se asocia en PreparingCellForEdit --><!--
                         </Style>
-                    </DataGridTextColumn.EditingElementStyle>
+                    </DataGridTextColumn.EditingElementStyle>-->
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
+        <!-- Totales -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1" Margin="0,5,0,5">
+            <TextBlock Text="Total Venta:" 
+                       Style="{StaticResource BlueBold14}"
+                       Margin="0,0,8,0"/>
+            <TextBlock Text="{Binding TotalVenta, StringFormat=C}" 
+                       Style="{StaticResource BlackBold14}"
+                       Margin="0,0,16,0"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
-            <Button Content="Aceptar"
+            <TextBlock Text="Ingresado:" 
+                       Style="{StaticResource BlueBold12}" 
+                       Margin="0,0,8,0"/>
+            <TextBlock Text="{Binding TotalIngresado, StringFormat=C}"
+                       Style="{StaticResource BlackBold12}"                       
+                       Margin="0,0,16,0"/>
+
+            <TextBlock Text="Saldo:" 
+                       Style="{StaticResource BlackBold12}"
+                       Margin="0,0,8,0"/>
+            <TextBlock Text="{Binding Saldo, StringFormat=C}" 
+                       Style="{StaticResource BlackBold12}"
+                       Margin="0,0,16,0"/>
+        </StackPanel>
+
+        <!-- Botones -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="0,5,0,0">
+            <Button Content="Aceptar (F2)" 
                     Width="100" 
                     Margin="5" 
-                    Click="Aceptar_Click"
+                    Click="Aceptar_Click"                    
                     Style="{StaticResource BtnAdd}"/>
-            <Button Content="Cancelar" 
+            <Button Content="Cancelar (ESC)" 
                     Width="100" 
-                    Margin="5"
-                    Click="Cancelar_Click"
+                    Margin="5" 
+                    Click="Cancelar_Click"                    
                     Style="{StaticResource BtnCancel}"/>
         </StackPanel>
     </Grid>

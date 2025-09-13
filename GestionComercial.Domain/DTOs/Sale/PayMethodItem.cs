@@ -10,18 +10,21 @@ namespace GestionComercial.Domain.DTOs.Sale
         private decimal _monto;
         private int _metodoId;
 
-
         public int MetodoId
         {
             get => _metodoId;
             set { _metodoId = value; OnPropertyChanged(); }
         }
 
-        // acá guardás EF, MP, TJ, etc.
+        // EF, MP, TJ, etc.
         public string MetodoCodigo
         {
             get => _metodoCodigo;
-            set { _metodoCodigo = value; OnPropertyChanged(); }
+            set
+            {
+                _metodoCodigo = value?.ToUpper();
+                OnPropertyChanged();
+            }
         }
 
         public decimal Monto

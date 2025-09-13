@@ -34,6 +34,7 @@
             <converters:IsLastItemConverter x:Key="IsLastItemConverter"/>
             <converters:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
             <converters:DecimalCommaConverter x:Key="DecimalCommaConverter"/>
+            <converters:TwoDecimalMoneyCommaConverter x:Key="TwoDecimalMoneyCommaConverter"/>
         </ResourceDictionary>
 
     </Application.Resources>
