@@ -63,15 +63,15 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Update(CategoryViewModel client)
+        public void Update(CategoryViewModel categoryNew)
         {
             try
             {
-                CategoryViewModel? Category = _categories.FirstOrDefault(c => c.Id == client.Id);
-                if (Category != null)
+                CategoryViewModel? category = _categories.FirstOrDefault(c => c.Id == categoryNew.Id);
+                if (category != null)
                 {
-                    _categories.Remove(Category);
-                    _categories.Add(client);
+                    _categories.Remove(category);
+                    _categories.Add(categoryNew);
                 }
             }
             catch (Exception)

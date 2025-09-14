@@ -153,7 +153,8 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                                     CategoryViewModel? category = CategoryCache.Instance.FindById(notification.Id);
                                     if (category != null)
                                     {
-                                        CategoryCache.Instance.Update(category);
+                                        CategoryCache.Instance.ClearCache();
+                                        //CategoryCache.Instance.Update(category);
                                         await LoadCategoriesAsync();
                                     }
                                 });

@@ -4,6 +4,7 @@ using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -51,7 +52,8 @@ namespace GestionComercial.Desktop.Controls.Articles
             {
                 ArticleViewModel.Taxes = MasterCache.Instance.GetTaxes();
                 ArticleViewModel.Measures = MasterCache.Instance.GetMeasures();
-                ArticleViewModel.Categories = CategoryCache.Instance.GetAll();
+                var categories = CategoryCache.Instance.GetAll();
+                ArticleViewModel.Categories = [.. categories];
             }
             DataContext = ArticleViewModel;
             txtCode.Focus();

@@ -29,7 +29,6 @@
                   Style="{StaticResource TextBoxSearch}"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
-                  MaxLength="8"
                   Text="{Binding Description}"/>
         </StackPanel>
 

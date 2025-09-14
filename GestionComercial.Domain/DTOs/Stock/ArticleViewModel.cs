@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Stock;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,6 +11,7 @@ namespace GestionComercial.Domain.DTOs.Stock
         public event PropertyChangedEventHandler PropertyChanged;
         private decimal _cost, _bonification, _realCost, _costWithTaxes, _internalTax, _utility, _salePrice, _salePriceWithTaxes;
         private int _taxId;
+        private ObservableCollection<CategoryViewModel> _categories;
 
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -403,8 +405,8 @@ namespace GestionComercial.Domain.DTOs.Stock
                     _cost = bonifFactor * internalFactor != 0m ? Round2(_realCost / (bonifFactor * internalFactor)) : 0m;
                     _costWithTaxes = Round2(_realCost * ivaFactor);
                 }
-                
-                
+
+
                 _utility = _realCost != 0m ? Round2((_salePrice / _realCost - 1m) * 100m) : 0m;
 
                 NotifyAll(nameof(SalePrice), nameof(Utility), nameof(RealCost), nameof(Cost), nameof(CostWithTaxes));
@@ -426,7 +428,20 @@ namespace GestionComercial.Domain.DTOs.Stock
 
         public virtual ICollection<Tax> Taxes { get; set; }
         public virtual ICollection<Measure> Measures { get; set; }
-        public virtual ICollection<CategoryViewModel> Categories { get; set; }
+        public virtual ObservableCollection<CategoryViewModel> Categories
+        {
+            get => _categories;
+            set
+            {
+                if (_categories != value)
+                {
+                    _categories = value;
+                    OnPropertyChanged(nameof(Categories));
+                }
+            }
+        }
+
+
     }
 
 
