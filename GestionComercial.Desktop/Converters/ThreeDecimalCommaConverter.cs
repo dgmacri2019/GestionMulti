@@ -3,7 +3,7 @@ using System.Windows.Data;
 
 namespace GestionComercial.Desktop.Converters
 {
-    public class DecimalCommaConverter : IValueConverter
+    public class ThreeDecimalCommaConverter : IValueConverter
     {
         // Convierte de decimal a string con coma como separador y 2 decimales
         // Solo para mostrar en el TextBox (cuando binding actualiza el control)

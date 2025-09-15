@@ -3,6 +3,7 @@ using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
@@ -12,15 +13,12 @@ using static GestionComercial.Domain.Notifications.MasterClassChangeNotification
 
 namespace GestionComercial.Desktop.ViewModels.Stock
 {
-    public class CategoryListViewModel : BaseViewModel
+    internal class PriceListListViewModel : BaseViewModel
     {
         private readonly MasterClassApiService _apiService;
         private readonly MasterClassHubService _hubService;
 
-
-
-        // 🔹 Lista observable para bindear al DataGrid
-        public ObservableCollection<CategoryViewModel> Categories { get; } = [];
+        public ObservableCollection<PriceListViewModel> PriceLists { get; set; } = [];
 
         // 🔹 Propiedades de filtros
         private string _nameFilter = string.Empty;
@@ -33,7 +31,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                 {
                     _nameFilter = value;
                     OnPropertyChanged();
-                    _ = LoadCategoriesAsync(); // 🔹 ejecuta búsqueda al escribir
+                    _ = LoadPriceListAsync(); // 🔹 ejecuta búsqueda al escribir
                 }
             }
         }
@@ -70,23 +68,19 @@ namespace GestionComercial.Desktop.ViewModels.Stock
         public ICommand SearchCommand { get; }
         public ICommand ToggleEnabledCommand { get; }
 
-
-        public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
-
+        public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitadas" : "Ver Habilitadas";
 
 
-        public CategoryListViewModel()
+        public PriceListListViewModel()
         {
             _apiService = new MasterClassApiService();
             var hubUrl = string.Format("{0}hubs/masterclass", App.Configuration["ApiSettings:BaseUrl"]);
             _hubService = new MasterClassHubService(hubUrl);
-            _hubService.ClaseMaestraCambiado += OnCategoriaCambiado;
-
+            _hubService.ClaseMaestraCambiado += OnListaPrecioCambiado;
             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
-            SearchCommand = new RelayCommand1(async _ => await LoadCategoriesAsync());
-
+            SearchCommand = new RelayCommand1(async _ => await LoadPriceListAsync());
             _ = _hubService.StartAsync();
-            _ = LoadCategoriesAsync(); // carga inicial
+            _ = LoadPriceListAsync(); // carga inicial
         }
 
 
@@ -94,53 +88,52 @@ namespace GestionComercial.Desktop.ViewModels.Stock
         {
             IsEnabledFilter = !IsEnabledFilter;
             OnPropertyChanged(nameof(ToggleEnabledText));
-            await LoadCategoriesAsync();
+            await LoadPriceListAsync();
         }
 
         // 🔹 Carga clientes aplicando filtros
-        public async Task LoadCategoriesAsync()
+        public async Task LoadPriceListAsync()
         {
-            if (!CategoryCache.Instance.HasData)
+            if (!PriceListCache.Instance.HasData)
             {
-                CategoryCache.Reading = true;
-                CategoryResponse result = await _apiService.GetAllCategoriesAsync();
+                PriceListCache.Reading = true;
+                PriceListResponse result = await _apiService.GetAllPriceListAsync();
                 if (result.Success)
                 {
-                    CategoryCache.Instance.ClearCache();
-                    CategoryCache.Instance.Set(result.Categories);
+                    PriceListCache.Instance.ClearCache();
+                    PriceListCache.Instance.Set(result.PriceListViewModels);
                 }
                 else
-                    MsgBoxAlertHelper.MsgAlertError($"Error al cargar categorias, el error fue:\n{result.Message}");
+                    MsgBoxAlertHelper.MsgAlertError($"Error al cargar listas de precios, el error fue:\n{result.Message}");
 
-                CategoryCache.Reading = false;
+                PriceListCache.Reading = false;
             }
 
-            var filtered = CategoryCache.Instance.Search(NameFilter, IsEnabledFilter, IsDeletedFilter);
+            var filtered = PriceListCache.Instance.Search(NameFilter, IsEnabledFilter, IsDeletedFilter);
 
             App.Current.Dispatcher.Invoke(() =>
             {
-                Categories.Clear();
+                PriceLists.Clear();
                 foreach (var c in filtered.OrderBy(c => c.Description))
-                    Categories.Add(c);
+                    PriceLists.Add(c);
             });
         }
 
-
         // 🔹 SignalR recibe notificación y actualiza cache + lista
-        private async void OnCategoriaCambiado(ClaseMaestraChangeNotification notification)
+        private async void OnListaPrecioCambiado(ClaseMaestraChangeNotification notification)
         {
-            if (notification.ChangeClass == ChangeClass.Category)
+            if (notification.ChangeClass == ChangeClass.PriceList)
             {
-                CategoryResponse categoryResponse = await _apiService.GetCategoryByIdAsync(notification.Id);
-                if (categoryResponse.Success)
+                PriceListResponse result = await _apiService.GetPriceListByIdAsync(notification.Id);
+                if (result.Success)
                     switch (notification.Action)
                     {
                         case ChangeType.Created:
                             {
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    CategoryCache.Instance.Set(categoryResponse.Category);
-                                    await LoadCategoriesAsync();
+                                    PriceListCache.Instance.Set(result.PriceListViewModel);
+                                    await LoadPriceListAsync();
                                 });
                                 break;
                             }
@@ -148,12 +141,12 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                             {
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    CategoryViewModel? category = CategoryCache.Instance.FindById(notification.Id);
-                                    if (category != null)
+                                    PriceListViewModel? priceList = PriceListCache.Instance.FindById(notification.Id);
+                                    if (priceList != null)
                                     {
-                                        CategoryCache.Instance.ClearCache();
+                                        PriceListCache.Instance.ClearCache();
                                         //CategoryCache.Instance.Update(category);
-                                        await LoadCategoriesAsync();
+                                        await LoadPriceListAsync();
                                     }
                                 });
                                 break;
@@ -162,12 +155,12 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                             {
                                 await App.Current.Dispatcher.InvokeAsync(async () =>
                                 {
-                                    CategoryViewModel? category = CategoryCache.Instance.FindById(notification.Id);
-                                    if (category != null)
+                                    PriceListViewModel? priceList = PriceListCache.Instance.FindById(notification.Id);
+                                    if (priceList != null)
                                     {
-                                        CategoryCache.Instance.Remove(category);
+                                        PriceListCache.Instance.Remove(priceList);
                                         //Clients.Remove(viewModel);
-                                        await LoadCategoriesAsync();
+                                        await LoadPriceListAsync();
                                     }
                                 });
                                 break;
@@ -176,9 +169,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                             break;
                     }
                 else
-                    MsgBoxAlertHelper.MsgAlertError($"Error al cargar rubros, el error fue:\n{categoryResponse.Message}");
+                    MsgBoxAlertHelper.MsgAlertError($"Error al cargar lista de precios, el error fue:\n{result.Message}");
             }
         }
-
     }
 }
+

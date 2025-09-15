@@ -1,7 +1,7 @@
-﻿using GestionComercial.Domain.Entities.BoxAndBank;
+﻿using GestionComercial.Domain.DTOs.PriceLists;
+using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
-using GestionComercial.Domain.Entities.Stock;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -130,7 +130,7 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public ObservableCollection<Entities.Masters.Client> Clients { get; set; } = [];
 
-        public ObservableCollection<PriceList> PriceLists { get; set; } = [];
+        public ObservableCollection<PriceListViewModel> PriceLists { get; set; } = [];
 
         // public ObservableCollection<ArticleItem> ArticleItems { get; set; } = [];
         public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];

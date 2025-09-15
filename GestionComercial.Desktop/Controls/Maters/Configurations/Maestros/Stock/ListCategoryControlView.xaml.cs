@@ -50,7 +50,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             DgCategories.Visibility = Visibility.Hidden;
-            DgCategories.DataContext = null;
+            //DgCategories.DataContext = null;
             PanelSearch.Visibility = Visibility.Hidden;
             PanelEdicion.Visibility = Visibility.Visible;
             btnEnables.Visibility = Visibility.Hidden;

@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
@@ -110,7 +111,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 MasterClassResponse result = await _masterClassApiService.GetAllAsync();
                 if (result.Success)
                 {
-                    MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions,
+                    MasterCache.Instance.SetData(result.States, result.SaleConditions, result.IvaConditions,
                         result.DocumentTypes, result.Measures, result.Taxes);
                 }
                 else
@@ -125,22 +126,29 @@ namespace GestionComercial.Desktop.ViewModels.Master
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnClaseMaestraCambiado(ClaseMaestraChangeNotification notification)
         {
-            if (notification.ChangeClass != ChangeClass.Category)
+            switch(notification.ChangeClass)
             {
-                MasterClassResponse result = await _masterClassApiService.GetAllAsync();
-                if (result.Success)
-                    await App.Current.Dispatcher.InvokeAsync(() =>
+                case ChangeClass.PriceList:
+                    break;
+                case ChangeClass.Category:
+                    break;
+                default:
                     {
-                        MasterCache.Instance.ClearCache();
-                        MasterCache.Instance.SetData(result.PriceLists, result.States, result.SaleConditions, result.IvaConditions,
-                            result.DocumentTypes, result.Measures, result.Taxes);
+                        MasterClassResponse result = await _masterClassApiService.GetAllAsync();
+                        if (result.Success)
+                            await App.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                MasterCache.Instance.ClearCache();
+                                MasterCache.Instance.SetData(result.States, result.SaleConditions, result.IvaConditions,
+                                    result.DocumentTypes, result.Measures, result.Taxes);
 
-                        _ = LoadMastersAsync();
-                    });
-                else
-                    MessageBox.Show($"Error al cargar clase maestra, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            }
+                                _ = LoadMastersAsync();
+                            });
+                        else
+                            MsgBoxAlertHelper.MsgAlertError($"Error al cargar clase maestra, el error fue:\n{result.Message}");
+                        break;
+                    }
+            }           
         }
     }
 }

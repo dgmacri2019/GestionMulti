@@ -16,6 +16,7 @@ using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
+using GestionComercial.Domain.DTOs.PriceLists;
 using System.Windows;
 
 namespace GestionComercial.Desktop.Views
@@ -264,6 +265,9 @@ namespace GestionComercial.Desktop.Views
 
         private void CargarCache(object? obj)
         {
+            PriceListListViewModel priceListViewModel = new();
+            while (!PriceListCache.Instance.HasData)
+                Thread.Sleep(10);
             MasterClassListViewModel masterClassListViewModel = new();
             while (!MasterCache.Instance.HasData)
                 Thread.Sleep(10);

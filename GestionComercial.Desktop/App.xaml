@@ -33,9 +33,10 @@
             <converters:StockMultiConverter x:Key="StockMultiConverter"/>
             <converters:IsLastItemConverter x:Key="IsLastItemConverter"/>
             <converters:LastRowByIndexConverter x:Key="LastRowByIndexConverter"/>
-            <converters:DecimalCommaConverter x:Key="DecimalCommaConverter"/>
+            <converters:ThreeDecimalCommaConverter x:Key="ThreeDecimalCommaConverter"/>
             <converters:TwoDecimalMoneyCommaConverter x:Key="TwoDecimalMoneyCommaConverter"/>
             <converters:HexToBrushConverter x:Key="HexToBrushConverter"/>
+            <converters:TwoDecimalCommaConverter x:Key="TwoDecimalCommaConverter"/>
         </ResourceDictionary>
 
     </Application.Resources>

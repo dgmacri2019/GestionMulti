@@ -3,12 +3,11 @@ using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Views.Searchs;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
-using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
-using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
@@ -138,7 +137,7 @@ namespace GestionComercial.Desktop.Views.Sales
                     SalePoint = SalePoint,
                     SaleNumber = SaleNumber,
                     //saleViewModel.Clients = ClientCache.Instance.GetAllClients().ToList();
-                    PriceLists = new ObservableCollection<PriceList>(MasterCache.Instance.GetPriceLists()),
+                    PriceLists = new ObservableCollection<PriceListViewModel>(PriceListCache.Instance.GetAll()),
                     SaleConditions = new ObservableCollection<SaleCondition>(MasterCache.Instance.GetSaleConditions())
                 };
             }

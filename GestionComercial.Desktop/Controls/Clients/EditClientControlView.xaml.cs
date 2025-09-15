@@ -28,7 +28,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             _clientsApiService = new ClientsApiService();
             ClientId = clientId;
 
-            editVM.PriceLists = MasterCache.Instance.GetPriceLists();
+            editVM.PriceLists = PriceListCache.Instance.GetAll();
             editVM.States = MasterCache.Instance.GetStates();
             editVM.SaleConditions = MasterCache.Instance.GetSaleConditions();
             editVM.IvaConditions = MasterCache.Instance.GetIvaConditions();

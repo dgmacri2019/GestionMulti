@@ -37,54 +37,46 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <Label 
-                x:Name="lblHeader" 
-                Grid.Row="0"
-                Grid.ColumnSpan="3"
-                Content="Listas de Precios" 
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center"
-                Style="{StaticResource lblHeader}"
-                Foreground="#324F52"/>
+                <Label x:Name="lblHeader" 
+                       Grid.Row="0"
+                       Grid.ColumnSpan="3"
+                       Content="Listas de Precios" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource lblHeader}"
+                       Foreground="#324F52"/>
 
-                <Button
-                    x:Name="btnAdd"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    HorizontalAlignment="Right"
-                    Content="Nueva Lista"
-                    Margin="0,5,0,0"
-                    Style="{StaticResource BtnArticles}" Click="btnAdd_Click"/>
+                <Button x:Name="btnAdd"
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        Content="Nueva lista"
+                        Margin="0,5,0,0"
+                        Style="{StaticResource BtnArticles}" 
+                        Click="btnAdd_Click" 
+                        Height="20" 
+                        Grid.RowSpan="3" 
+                        VerticalAlignment="Top"/>
+                
 
-                <Button 
-                    x:Name="btnDisables"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Content="Listas Inhabilitadas"
-                    Margin="0,5,0,0" 
-                    Style="{StaticResource BtnDisables}" Click="btnDisables_Click"/>
-
-                <Button 
-                    x:Name="btnEnables"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Content="Listas Habilitadas"
-                    Margin="0,5,0,0" 
-                    Style="{StaticResource BtnEnables}" 
-                    Click="btnEnables_Click"/>
+                <Button x:Name="btnEnables"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Content="{Binding ToggleEnabledText}"
+                        Command="{Binding ToggleEnabledCommand}"
+                        Margin="40,5,0,0" 
+                        Style="{StaticResource BtnEnables}" />
             </Grid>
         </StackPanel>
 
         <StackPanel x:Name="PanelSearch" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Margin="0,0,50,8">
             <TextBlock Text="Buscar:" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="SearchBox"
-                 Style="{StaticResource TextBoxSearch}"
-                 Width="250"
-                 VerticalAlignment="Center"                     
-                 ToolTip="Ingresa descripción"
-                 TextChanged="SearchBox_TextChanged"/>
+                     Style="{StaticResource TextBoxSearch}"
+                     Width="250"
+                     VerticalAlignment="Center"                     
+                     ToolTip="Ingresa descripción"
+                     Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <DataGrid x:Name="DgPriceLists"
@@ -94,7 +86,8 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Descripción" Width="400">

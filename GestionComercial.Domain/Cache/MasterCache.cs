@@ -12,7 +12,6 @@ namespace GestionComercial.Domain.Cache
 
         public static MasterCache Instance => _instance ??= new MasterCache();
 
-        private List<PriceList> _priceLists;
         private List<State> _states;
         private List<SaleCondition> _saleConditions;
         private List<IvaCondition> _ivaConditions;
@@ -37,12 +36,7 @@ namespace GestionComercial.Domain.Cache
         {
             return _measures != null ? _measures.ToList() : [];
         }
-        public List<PriceList> GetPriceLists()
-        {
-            return _priceLists != null ? _priceLists.ToList() : [];
-        }
-
-        public List<State> GetStates()
+         public List<State> GetStates()
         {
             return _states != null ? _states.ToList() : [];
         }
@@ -62,12 +56,11 @@ namespace GestionComercial.Domain.Cache
             return _documentTypes != null ? _documentTypes.ToList() : [];
         }
 
-        public void SetData(List<PriceList> priceLists, List<State> states, List<SaleCondition> saleConditions,
+        public void SetData(List<State> states, List<SaleCondition> saleConditions,
             List<IvaCondition> ivaConditions, List<DocumentType> documentTypes, List<Measure> measures,
             List<Tax> taxes)
         {
-            _priceLists = priceLists;
-            _states = states;
+             _states = states;
             _saleConditions = saleConditions;
             _ivaConditions = ivaConditions;
             _documentTypes = documentTypes;
@@ -75,7 +68,7 @@ namespace GestionComercial.Domain.Cache
             _measures = measures;
         }
 
-        public bool HasData => ((_priceLists != null && _priceLists.Any()) || (_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
+        public bool HasData => ((_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
             || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any()) || (_taxes != null && _taxes.Any()) 
             || (_measures != null && _measures.Any())) && !Reading;
 
@@ -83,7 +76,6 @@ namespace GestionComercial.Domain.Cache
         {
             try
             {
-                _priceLists.Clear();
                 _states.Clear();
                 _saleConditions.Clear();
                 _ivaConditions.Clear();

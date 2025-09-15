@@ -1,6 +1,6 @@
-﻿using GestionComercial.Domain.Entities.Afip;
+﻿using GestionComercial.Domain.DTOs.PriceLists;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
-using GestionComercial.Domain.Entities.Stock;
 
 namespace GestionComercial.Domain.DTOs.Client
 {
@@ -9,7 +9,7 @@ namespace GestionComercial.Domain.DTOs.Client
         public ClientViewModel Client { get; set; }
 
         // Listas maestras compartidas
-        public List<PriceList> PriceLists { get; set; }
+        public List<PriceListViewModel> PriceLists { get; set; }
         public List<State> States { get; set; }
         public List<SaleCondition> SaleConditions { get; set; }
         public List<IvaCondition> IvaConditions { get; set; }

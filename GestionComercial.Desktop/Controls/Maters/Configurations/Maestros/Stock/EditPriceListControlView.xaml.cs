@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Helpers;
@@ -13,7 +14,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
     /// </summary>
     public partial class EditPriceListControlView : UserControl
     {
-        private readonly PriceListsApiService _priceListsApiService;
+        private readonly MasterClassApiService apiService;
         private readonly int PriceListId;
         private PriceListViewModel PriceListViewModel { get; set; }
 
@@ -22,35 +23,21 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
         public EditPriceListControlView(int priceListId)
         {
             InitializeComponent();
-            _priceListsApiService = new PriceListsApiService();
+            apiService = new MasterClassApiService();
             PriceListId = priceListId;
-            FindPriceList();
             if (PriceListId == 0)
             {
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
+                PriceListViewModel = new PriceListViewModel { CreateUser = App.UserName, IsEnabled = true };
             }
             else
             {
+                PriceListViewModel? priceList = PriceListCache.Instance.FindById(PriceListId);
                 btnAdd.Visibility = Visibility.Hidden;
                 btnUpdate.Visibility = Visibility.Visible;
             }
-        }
-
-        private async Task FindPriceList()
-        {
-            PriceListResponse result = await _priceListsApiService.GetByIdAsync(PriceListId, true, false);
-            if (result.Success)
-            {
-                PriceListViewModel = result.PriceListViewModel;
-                if (PriceListId == 0)
-                {
-                    PriceListViewModel.CreateUser = App.UserName;
-                }
-                DataContext = PriceListViewModel;
-            }
-            else
-                lblError.Text = result.Message;
+            DataContext = PriceListViewModel;
         }
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
@@ -77,17 +64,18 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
                     PriceListViewModel.UpdateDate = DateTime.Now;
 
                     PriceList priceList = ConverterHelper.ToPriceList(PriceListViewModel, PriceListViewModel.Id == 0);
-                    GeneralResponse resultUpdate = await _priceListsApiService.UpdateAsync(priceList);
+                    GeneralResponse resultUpdate = await apiService.UpdatePriceListAsync(priceList);
                     if (resultUpdate.Success)
                         ListaPrecioActualizada?.Invoke(); // para notificar a la vista principal
                     else
-                        lblError.Text = resultUpdate.Message;
+                        msgError(resultUpdate.Message);
                     btnUpdate.IsEnabled = true;
                 }
             }
             catch (Exception ex)
             {
-                lblError.Text = ex.Message;
+                msgError(ex.Message);
+                btnUpdate.IsEnabled = true;
             }
         }
 
@@ -95,42 +83,48 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
         {
             try
             {
+                btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
 
                 if (ValidatePriceList())
                 {
                     btnAdd.IsEnabled = false;
                     lblError.Text = string.Empty;
+
                     PriceList priceList = ConverterHelper.ToPriceList(PriceListViewModel, PriceListViewModel.Id == 0);
-                    GeneralResponse resultUpdate = await _priceListsApiService.AddAsync(priceList);
+                    GeneralResponse resultUpdate = await apiService.AddPriceListAsync(priceList);
                     if (resultUpdate.Success)
                         ListaPrecioActualizada?.Invoke(); // para notificar a la vista principal
                     else
-                        lblError.Text = resultUpdate.Message;
+                        msgError(resultUpdate.Message);
                     btnAdd.IsEnabled = true;
                 }
             }
             catch (Exception ex)
             {
-                lblError.Text = ex.Message;
+                msgError(ex.Message);
+                btnAdd.IsEnabled = true;
+            }
+        }
+              
+        private void TextBox_PreviewMouseLeftButtonDown_SelectAll(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is TextBox tb && !tb.IsKeyboardFocusWithin)
+            {
+                e.Handled = true; // evita que WPF cambie el foco primero
+                tb.Focus();
+                tb.SelectAll();
             }
         }
 
-        private void txtUtility_LostFocus(object sender, RoutedEventArgs e)
+        private void TextBox_SelectAll(object sender, RoutedEventArgs e)
         {
-            txtUtility.Text = txtUtility.Text.Replace(".", ",");
+            if (sender is TextBox tb)
+            {
+                tb.SelectAll();
+            }
         }
 
-        private void txtUtility_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            string textoIngresado = e.Text;
-            bool result = false;
-            if (ValidatorHelper.IsNumeric(textoIngresado) || textoIngresado == "." || textoIngresado == ",")
-                result = false;
-            else
-                result = true;
-            e.Handled = result;
-        }
 
         private bool ValidatePriceList()
         {
@@ -151,13 +145,10 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
 
             return result;
         }
-
-
         private void msgError(string msg)
         {
             lblError.Text = msg;
         }
-
 
     }
 }

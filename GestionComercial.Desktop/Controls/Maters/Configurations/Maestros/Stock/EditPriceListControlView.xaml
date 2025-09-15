@@ -6,129 +6,113 @@
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock"
              xmlns:local1="clr-namespace:GestionComercial.Desktop.Helpers"
              xmlns:client="clr-namespace:GestionComercial.Desktop.ViewModels.Client"
-             d:DataContext="{d:DesignInstance Type=client:ClientListViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1460"
              x:Name="miUserControl" 
              Loaded="miUserControl_Loaded"
              Background="LightGray">
-    
-    <Grid x:Name="GridGeneral" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Background="LightGray">
+
+    <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
+          Background="LightGray">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10,0,20,8">
-            <TextBlock Text="Descripción" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+        <StackPanel Orientation="Vertical" 
+                    HorizontalAlignment="Stretch" 
+                    Grid.Row="0" 
+                    Grid.Column="0" 
+                    Margin="0,0,0,8">
+            <TextBlock Text="Descripción" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtDescription"
-                Style="{StaticResource TextBoxSearch}"
-                Width="300"
-                VerticalAlignment="Center">
-                <TextBox.Text>
-                    <Binding 
-                        Path="Description" 
-                        UpdateSourceTrigger="PropertyChanged" 
-                        ValidatesOnDataErrors="True" 
-                        NotifyOnValidationError="True">
-                        <Binding.ValidationRules>
-                            <local1:StringEmptyValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Description}"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3" Margin="10,0,20,8">
-            <TextBlock Text="Utilidad" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+        <StackPanel Orientation="Vertical" 
+                    HorizontalAlignment="Stretch" 
+                    Grid.Row="0" 
+                    Grid.Column="1" 
+                    Margin="10,0,20,8">
+            <TextBlock Text="Utilidad" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtUtility"
                      Style="{StaticResource TextBoxSearch}"
-                     Width="250"
-                     VerticalAlignment="Center"                     
-                     Text="{Binding Utility}" LostFocus="txtUtility_LostFocus" PreviewTextInput="txtUtility_PreviewTextInput"/>
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"        
+                     Text="{Binding Utility, UpdateSourceTrigger=LostFocus, Converter={StaticResource TwoDecimalCommaConverter}}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"/>
         </StackPanel>
-       
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,0,20,8">
-            <TextBlock Text="Habilitado" VerticalAlignment="Center" Style="{StaticResource BlueBold10}"/>
+
+        <StackPanel Orientation="Vertical" 
+                    HorizontalAlignment="Stretch" 
+                    Grid.Row="0" 
+                    Grid.Column="2" 
+                    Margin="10,0,20,8">
+            <TextBlock Text="Habilitado" 
+                       VerticalAlignment="Center"                       
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
             <CheckBox x:Name="chbIsEnabled"
-              Style="{StaticResource CheckBox}"
-              Width="50"
-              VerticalAlignment="Center"                     
-              IsChecked="{Binding IsEnabled}"/>
+                      Style="{StaticResource CheckBox}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Stretch"                        
+                      IsChecked="{Binding IsEnabled}"/>
         </StackPanel>
 
 
-        <Button 
-         x:Name="btnCancel"
-         Grid.Row="8" 
-         Grid.Column="1" 
-         Content="Cancelar"
-         Margin="0,40,0,0" 
-         Click="BtnCancel_Click" 
-         Style="{StaticResource BtnCancel}"/>
+        <Button x:Name="btnCancel"
+                Grid.Row="1" 
+                Grid.ColumnSpan="3"
+                Grid.Column="0" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Cancelar"  
+                Margin="0,40,120,0" 
+                Click="BtnCancel_Click" 
+                Style="{StaticResource BtnCancel}"/>
+        
+        <Button x:Name="btnUpdate"
+                Grid.Row="1" 
+                Grid.ColumnSpan="3"
+                Grid.Column="0" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Actualizar" 
+                Margin="120,40,0,0"  
+                Click="BtnUpdate_Click"
+                Style="{StaticResource BtnUpdate}"/>
+        
+        <Button x:Name="btnAdd"
+                Grid.Row="1" 
+                Grid.ColumnSpan="3"
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Guardar" 
+                Margin="120,40,0,0"  
+                Click="BtnAdd_Click"
+                Style="{StaticResource BtnAdd}"/>
 
-        <Button 
-         x:Name="btnUpdate"
-         Grid.Row="8" 
-         Grid.Column="2" 
-         Content="Actualizar" 
-         Margin="0,40,0,0" 
-         Click="BtnUpdate_Click"
-         Style="{StaticResource BtnUpdate}">
-            <Button.IsEnabled>
-                <MultiBinding Converter="{StaticResource ValidationToEnabledConverter}">
-                    <Binding ElementName="txtEmail" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtBussinessName" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtDocumentNumber" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtAdress" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtPostalCode" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtCity" Path="(Validation.HasError)"/>
-                    <!-- Agregá más bindings si tenés otros campos -->
-                </MultiBinding>
-            </Button.IsEnabled>
-        </Button>
-
-        <Button 
-         x:Name="btnAdd"
-         Grid.Row="8" 
-         Grid.Column="2" 
-         Content="Guardar" 
-         Margin="0,40,0,0" 
-         Click="BtnAdd_Click"
-         Style="{StaticResource BtnAdd}">
-            <Button.IsEnabled>
-                <MultiBinding Converter="{StaticResource ValidationToEnabledConverter}">
-                    <Binding ElementName="txtEmail" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtBussinessName" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtDocumentNumber" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtAdress" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtPostalCode" Path="(Validation.HasError)"/>
-                    <Binding ElementName="txtCity" Path="(Validation.HasError)"/>
-                    <!-- Agregá más bindings si tenés otros campos -->
-                </MultiBinding>
-            </Button.IsEnabled>
-        </Button>
-
-        <TextBlock 
-         x:Name="lblError"
-         Grid.Row="9" 
-         Grid.ColumnSpan="4"
-         Style="{StaticResource lblError}"
-         TextWrapping="Wrap"/>
-
+        <TextBlock x:Name="lblError"
+                   Grid.Row="2" 
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Stretch"
+                   Style="{StaticResource lblError12}"
+                   TextWrapping="Wrap"/>
     </Grid>
 </UserControl>

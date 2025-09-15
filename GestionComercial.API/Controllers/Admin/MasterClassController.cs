@@ -33,6 +33,120 @@ namespace GestionComercial.API.Controllers.Admin
             _articlesNotifier = articlesNotifier;
         }
 
+
+
+        #region Category
+
+        [HttpPost("AddCategoryAsync")]
+        public async Task<IActionResult> AddCategoryAsync([FromBody] Category category)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(category);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.Category);
+
+                return
+                    Ok("Rubro creado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("UpdateCategoryAsync")]
+        public async Task<IActionResult> UpdateCategoryAsync([FromBody] Category category)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(category);
+            if (resultAdd.Success)
+            {
+                List<int> articlesId = [];
+
+                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.Category);
+                Category categoryUpdated = await _masterClassService.GetCategoryByIdAsync(category.Id);
+                foreach (Article article in categoryUpdated.Articles)
+                    articlesId.Add(article.Id);
+                if (articlesId.Count > 0)
+                    await _articlesNotifier.NotifyAsync(articlesId, "Rubro Actualizado", ChangeType.Updated);
+
+                return
+                    Ok("Rubro actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+        [HttpPost("GetAllCategoriesAsync")]
+        public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllCategoriesAsync());
+        }
+
+        [HttpPost("GetCategoryByIdAsync")]
+        public async Task<IActionResult> GetCategoryByIdAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetCategoryByIdAsync(filter.Id));
+        }
+
+        #endregion
+
+        #region PriceList
+
+        [HttpPost("AddPriceListAsync")]
+        public async Task<IActionResult> AddPriceList([FromBody] PriceList priceList)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(priceList);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(priceList.Id, "Lista de precios creada", ChangeType.Created, ChangeClass.PriceList);
+
+                return
+                    Ok("Lista de precios creada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+        [HttpPost("UpdatePriceListAsync")]
+        public async Task<IActionResult> UpdatePriceListAsync([FromBody] PriceList priceList)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(priceList);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(priceList.Id, "Lista de precios actualizada", ChangeType.Updated, ChangeClass.PriceList);
+
+                return
+                    Ok("Lista de precios actualizada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("GetAllPriceListAsync")]
+        public async Task<IActionResult> GetAllPriceListAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllPriceListAsync());
+        }
+
+
+        [HttpPost("GetPriceListByIdAsync")]
+        public async Task<IActionResult> GetByIdAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetPriceListByIdAsync(filter.Id));
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpPost("AddStateAsync")]
         public async Task<IActionResult> AddStateAsync([FromBody] State state)
         {
@@ -211,104 +325,7 @@ namespace GestionComercial.API.Controllers.Admin
 
 
 
-        #region Category
-
-        [HttpPost("AddCategoryAsync")]
-        public async Task<IActionResult> AddCategoryAsync([FromBody] Category category)
-        {
-            GeneralResponse resultAdd = await _masterService.AddAsync(category);
-            if (resultAdd.Success)
-            {
-                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.Category);
-
-                return
-                    Ok("Rubro creado correctamente");
-            }
-            else return BadRequest(resultAdd.Message);
-        }
-
-        [HttpPost("UpdateCategoryAsync")]
-        public async Task<IActionResult> UpdateCategoryAsync([FromBody] Category category)
-        {
-            GeneralResponse resultAdd = await _masterService.UpdateAsync(category);
-            if (resultAdd.Success)
-            {
-                List<int> articlesId = [];
-
-                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.Category);
-                Category categoryUpdated = await _masterClassService.GetCategoryByIdAsync(category.Id);
-                foreach (Article article in categoryUpdated.Articles)
-                    articlesId.Add(article.Id);
-                if (articlesId.Count > 0)
-                    await _articlesNotifier.NotifyAsync(articlesId, "Rubro Actualizado", ChangeType.Updated);
-
-                return
-                    Ok("Rubro actualizado correctamente");
-            }
-            else return BadRequest(resultAdd.Message);
-        }
-
-
-        [HttpPost("GetAllCategoriesAsync")]
-        public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
-        {
-            return Ok(await _masterClassService.GetAllCategoriesAsync());
-        }
-
-        [HttpPost("GetCategoryByIdAsync")]
-        public async Task<IActionResult> GetCategoryByIdAsync([FromBody] PriceListFilterDto filter)
-        {
-            return Ok(await _masterClassService.GetCategoryByIdAsync(filter.Id));
-        }
-
-        #endregion
-
-        #region PriceList
-
-        [HttpPost("AddPriceListAsync")]
-        public async Task<IActionResult> AddPriceList([FromBody] PriceList priceList)
-        {
-            GeneralResponse resultAdd = await _masterService.AddAsync(priceList);
-            if (resultAdd.Success)
-            {
-                await _notifier.NotifyAsync(priceList.Id, "Lista de precios creada", ChangeType.Created, ChangeClass.PriceList);
-
-                return
-                    Ok("Lista de precios creada correctamente");
-            }
-            else return BadRequest(resultAdd.Message);
-        }
-
-
-        [HttpPost("UpdatePriceListAsync")]
-        public async Task<IActionResult> UpdatePriceListAsync([FromBody] PriceList priceList)
-        {
-            GeneralResponse resultAdd = await _masterService.UpdateAsync(priceList);
-            if (resultAdd.Success)
-            {
-                await _notifier.NotifyAsync(priceList.Id, "Lista de precios actualizada", ChangeType.Updated, ChangeClass.PriceList);
-
-                return
-                    Ok("Lista de precios actualizada correctamente");
-            }
-            else return BadRequest(resultAdd.Message);          
-        }
-
-        [HttpPost("GetAllPriceListAsync")]
-        public async Task<IActionResult> GetAllPriceListAsync([FromBody] PriceListFilterDto filter)
-        {
-            return Ok(await _masterClassService.GetAllPriceListAsync());
-        }
-
-
-        [HttpPost("GetPriceListByIdAsync")]
-        public async Task<IActionResult> GetByIdAsync([FromBody] PriceListFilterDto filter)
-        {
-            return Ok(await _masterClassService.GetPriceListByIdAsync(filter.Id));
-        }
-
-        #endregion
-
+       
 
 
         [HttpPost("GetAllStatesAsync")]

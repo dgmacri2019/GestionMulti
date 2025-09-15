@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock"
              mc:Ignorable="d"
              x:Name="miUserControl" 
-             Background="LightGray">
+             Background="LightGray"
+             Loaded="miUserControl_Loaded">
     
     <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
        Background="LightGray">
@@ -26,10 +27,10 @@
                     HorizontalAlignment="Center"
                     Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtDescription"
-                  Style="{StaticResource TextBoxSearch}"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Stretch"
-                  Text="{Binding Description}"/>
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Description}"/>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">

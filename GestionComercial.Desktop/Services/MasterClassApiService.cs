@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
@@ -41,30 +42,6 @@ namespace GestionComercial.Desktop.Services
             };
             try
             {
-
-                // Enviar la solicitud al endpoint Lista De Precios
-                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api//GetAllPriceListAsync", new
-                {
-                    IsEnabled = true,
-                    IsDeleted = false
-                });
-                if (responsePriceList.IsSuccessStatusCode)
-                {
-                    responsePriceList.EnsureSuccessStatusCode();
-
-                    // Leer el contenido como stream para no cargar todo en memoria
-                    using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
-
-                    List<PriceList>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceList>>(stream, Options);
-                    priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios", IsDeleted = true, IsEnabled = false });
-                    masterClassResponse.PriceLists = priceLists;
-                }
-                else
-                {
-                    masterClassResponse.Message = await responsePriceList.Content.ReadAsStringAsync();
-                    return masterClassResponse;
-                }
-
                 // Enviar la solicitud al endpoint Provincias
                 HttpResponseMessage responseStates = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllStatesAsync", new
                 {
@@ -217,9 +194,11 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
+        #region Category
+
         internal async Task<CategoryResponse> GetAllCategoriesAsync()
         {
-            CategoryResponse result = new CategoryResponse
+            CategoryResponse result = new()
             {
                 Success = false
             };
@@ -230,8 +209,8 @@ namespace GestionComercial.Desktop.Services
                 // Enviar la solicitud al endpoint Rubros
                 HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllCategoriesAsync", new
                 {
-                    IsEnabled = true,
-                    IsDeleted = false
+                    //IsEnabled = true,
+                    //IsDeleted = false
                 });
                 if (responseCategory.IsSuccessStatusCode)
                 {
@@ -326,5 +305,122 @@ namespace GestionComercial.Desktop.Services
                 Success = response.IsSuccessStatusCode,
             };
         }
+
+        #endregion
+
+
+        #region PriceList
+        internal async Task<PriceListResponse> GetAllPriceListAsync()
+        {
+            PriceListResponse result = new()
+            {
+                Success = false
+            };
+
+            try
+            {
+
+                // Enviar la solicitud al endpoint Rubros
+                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllPriceListAsync", new
+                {
+                    //IsEnabled = true,
+                    //IsDeleted = false
+                });
+                if (responsePriceList.IsSuccessStatusCode)
+                {
+                    responsePriceList.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
+
+                    List<PriceListViewModel>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceListViewModel>>(stream, Options);
+                    priceLists.Add(new PriceListViewModel { Id = 0, Description = "Seleccione la lista de precios", IsDeleted = true, IsEnabled = false });
+                    result.Success = true;
+                    result.PriceListViewModels = priceLists;
+                    return result;
+                }
+                else
+                {
+                    result.Message = await responsePriceList.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        internal async Task<PriceListResponse> GetPriceListByIdAsync(int id)
+        {
+            PriceListResponse result = new()
+            {
+                Success = false
+            };
+
+            try
+            {
+
+                // Enviar la solicitud al endpoint Rubros
+                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api/masterclass/GetPriceListByIdAsync", new
+                {
+                    //IsEnabled = true,
+                    //IsDeleted = false,
+                    Id = id,
+                });
+                if (responsePriceList.IsSuccessStatusCode)
+                {
+                    responsePriceList.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
+
+                    PriceListViewModel? priceList = await JsonSerializer.DeserializeAsync<PriceListViewModel>(stream, Options);
+                    result.Success = true;
+                    result.PriceListViewModel = priceList;
+                    return result;
+                }
+                else
+                {
+                    result.Message = await responsePriceList.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        internal async Task<GeneralResponse> AddPriceListAsync(PriceList priceList)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddPriceListAsync", priceList);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+        internal async Task<GeneralResponse> UpdatePriceListAsync(PriceList priceList)
+        {
+            // Llama al endpoint y deserializa la respuesta
+
+            var response = await _httpClient.PostAsJsonAsync("api/masterclass/UpdatePriceListAsync", priceList);
+            var error = await response.Content.ReadAsStringAsync();
+            return new GeneralResponse
+            {
+                Message = $"Error: {response.StatusCode}\n{error}",
+                Success = response.IsSuccessStatusCode,
+            };
+        }
+
+
+        #endregion
     }
 }

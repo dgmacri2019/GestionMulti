@@ -7,5 +7,7 @@ namespace GestionComercial.Domain.Response
         public string Description { get; set; }
 
         public PriceListViewModel PriceListViewModel { get; set; }
+        public List<PriceListViewModel> PriceListViewModels { get; set; }
+
     }
 }

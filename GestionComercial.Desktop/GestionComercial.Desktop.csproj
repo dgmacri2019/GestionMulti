@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Compile Remove="Helpers\MultiConverter.cs" />
+    <Compile Remove="Services\PriceListsApiService.cs" />
     <Compile Remove="ViewModels\Stock\ArticleViewModel.cs" />
   </ItemGroup>
 

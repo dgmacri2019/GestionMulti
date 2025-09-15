@@ -122,6 +122,9 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
             }
         }
 
-
+        private void miUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            lblError.MaxWidth = this.ActualWidth;
+        }
     }
 }
