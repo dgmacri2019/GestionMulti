@@ -113,7 +113,8 @@ namespace GestionComercial.API.Controllers.Admin
             if (resultAdd.Success)
             {
                 await _notifier.NotifyAsync(priceList.Id, "Lista de precios actualizada", ChangeType.Updated, ChangeClass.PriceList);
-
+                List<int> articlesId = await _masterClassService.GetAllArticlesId();
+                await _articlesNotifier.NotifyAsync(articlesId, "Lista de precios actualizada", ChangeType.Updated);
                 return
                     Ok("Lista de precios actualizada correctamente");
             }

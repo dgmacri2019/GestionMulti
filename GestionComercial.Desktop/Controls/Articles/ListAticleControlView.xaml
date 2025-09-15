@@ -142,10 +142,10 @@
                 <DataGridTemplateColumn Header="Stock" Width="auto" SortMemberPath="Stock">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Border CornerRadius="30">
+                            <Border CornerRadius="30" MinWidth="80">
                                 <TextBlock Text="{Binding Stock, StringFormat={}{0:N2}}" 
-                                   Style="{StaticResource CenteredTextStyle}"
-                                   Foreground="{Binding Stock, Converter={StaticResource NegativoATextoConverter}}"/>
+                                           Style="{StaticResource CenteredTextStyle}"
+                                           Foreground="{Binding Stock, Converter={StaticResource NegativoATextoConverter}}"/>
                                 <Border.Background>
                                     <MultiBinding Converter="{StaticResource StockMultiConverter}">
                                         <Binding Path="Stock" />
@@ -208,7 +208,7 @@
                 <DataGridTemplateColumn Header="Impuestos" Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding TaxesPrice}">
+                            <ItemsControl ItemsSource="{Binding TaxesPrice}" VerticalAlignment="Center">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >

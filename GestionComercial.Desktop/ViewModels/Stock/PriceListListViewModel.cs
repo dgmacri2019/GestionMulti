@@ -130,11 +130,12 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     {
                         case ChangeType.Created:
                             {
-                                await App.Current.Dispatcher.InvokeAsync(async () =>
-                                {
-                                    PriceListCache.Instance.Set(result.PriceListViewModel);
-                                    await LoadPriceListAsync();
-                                });
+                                if (PriceListCache.Instance.FindById(notification.Id) == null)
+                                    await App.Current.Dispatcher.InvokeAsync(async () =>
+                                    {
+                                        PriceListCache.Instance.Set(result.PriceListViewModel);
+                                        await LoadPriceListAsync();
+                                    });
                                 break;
                             }
                         case ChangeType.Updated:
