@@ -142,26 +142,25 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             {
                 case ChangeType.Created:
                     {
-                        if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
-                        {
-                            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId[0]);
-                            if (articleResponse.Success)
-                                await App.Current.Dispatcher.InvokeAsync(async () =>
-                                {
-                                    if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
-                                        ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
+                        if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)                        
+                            await Task.Run(async () => await AgregarCacheAsync(notification.ClientId[0]));
+                        //if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
+                        //{
+                        //    ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId[0]);
+                        //    if (articleResponse.Success)
+                        //        await App.Current.Dispatcher.InvokeAsync(async () =>
+                        //        {
+                        //            if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
+                        //                ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
 
-                                    await LoadArticlesAsync();
-                                });
-                        }
+                        //            await LoadArticlesAsync();
+                        //        });
+                        //}
                         break;
                     }
                 case ChangeType.Updated:
                     {
-
-                        await Task.Run(async ()=> await CargarCacheAsync(notification.ClientId));
-
-                       
+                        await Task.Run(async ()=> await ActualizarCacheAsync(notification.ClientId));                       
                         break;
                     }
                 case ChangeType.Deleted:
@@ -182,7 +181,20 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             }
         }
 
-        private async Task CargarCacheAsync(List<int> clientsId)
+        private async Task AgregarCacheAsync(int clientId)
+        {
+            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
+            if (articleResponse.Success)
+                await App.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    if (ArticleCache.Instance.FindArticleById(clientId) == null)
+                        ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
+
+                    await LoadArticlesAsync();
+                });
+        }
+
+        private async Task ActualizarCacheAsync(List<int> clientsId)
         {
             foreach (var clientId in clientsId)
             {

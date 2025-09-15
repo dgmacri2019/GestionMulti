@@ -220,7 +220,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responseCategory.Content.ReadAsStreamAsync();
 
                     List<CategoryViewModel>? categories = await JsonSerializer.DeserializeAsync<List<CategoryViewModel>>(stream, Options);
-                    categories.Add(new CategoryViewModel { Id = 0, Description = "Seleccione el rubro", IsDeleted = true, IsEnabled = false });
+                    categories.Add(new CategoryViewModel { Id = 0, Description = "Seleccione el rubro", IsDeleted = true, IsEnabled = true });
                     result.Success = true;
                     result.Categories = categories;
                     return result;
@@ -334,7 +334,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
 
                     List<PriceListViewModel>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceListViewModel>>(stream, Options);
-                    priceLists.Add(new PriceListViewModel { Id = 0, Description = "Seleccione la lista de precios", IsDeleted = true, IsEnabled = false });
+                    priceLists.Add(new PriceListViewModel { Id = 0, Description = "Seleccione la lista de precios", IsDeleted = true, IsEnabled = true });
                     result.Success = true;
                     result.PriceListViewModels = priceLists;
                     return result;

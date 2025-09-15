@@ -1,7 +1,6 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
-using GestionComercial.Applications.Services;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
@@ -96,6 +95,9 @@ namespace GestionComercial.API.Controllers.Admin
             if (resultAdd.Success)
             {
                 await _notifier.NotifyAsync(priceList.Id, "Lista de precios creada", ChangeType.Created, ChangeClass.PriceList);
+
+                List<int> articlesId = await _masterClassService.GetAllArticlesId();
+                await _articlesNotifier.NotifyAsync(articlesId, "Lista de precios creada", ChangeType.Updated);
 
                 return
                     Ok("Lista de precios creada correctamente");
@@ -325,7 +327,7 @@ namespace GestionComercial.API.Controllers.Admin
 
 
 
-       
+
 
 
         [HttpPost("GetAllStatesAsync")]

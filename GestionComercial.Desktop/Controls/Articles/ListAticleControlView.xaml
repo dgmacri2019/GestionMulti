@@ -289,7 +289,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="120">
+                <DataGridTemplateColumn Width="auto">
                     <DataGridTemplateColumn.Header>
                         <TextBlock Text="Listas de Precios con IVA"
                                    TextWrapping="Wrap"

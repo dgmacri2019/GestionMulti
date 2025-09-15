@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Stock;
@@ -34,8 +35,14 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
             else
             {
                 PriceListViewModel? priceList = PriceListCache.Instance.FindById(PriceListId);
-                btnAdd.Visibility = Visibility.Hidden;
-                btnUpdate.Visibility = Visibility.Visible;
+                if (priceList != null)
+                {
+                    PriceListViewModel = priceList;
+                    btnAdd.Visibility = Visibility.Hidden;
+                    btnUpdate.Visibility = Visibility.Visible;
+                }
+                else
+                    MsgBoxAlertHelper.MsgAlertError("No se pudo cargar la lista de precio");
             }
             DataContext = PriceListViewModel;
         }

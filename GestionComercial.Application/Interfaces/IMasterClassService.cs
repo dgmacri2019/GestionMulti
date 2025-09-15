@@ -21,6 +21,6 @@ namespace GestionComercial.Applications.Interfaces
         Task<IEnumerable<SaleCondition>> GetAllSaleConditionsAsync(bool isEnabled, bool isDeleted);
         Task<IEnumerable<State>> GetAllStatesAsync(bool isEnabled, bool isDeleted);
         Task<IEnumerable<Tax>> GetAllTaxesAsync(bool isEnabled, bool isDeleted);
-
+        Task<List<int>> GetAllArticlesId();
     }
 }

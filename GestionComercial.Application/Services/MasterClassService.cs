@@ -21,6 +21,15 @@ namespace GestionComercial.Applications.Services
 
         }
 
+        public async Task<List<int>> GetAllArticlesId()
+        {
+            return await _context.Articles
+                .AsNoTracking()
+                .Select(a => a.Id)
+                .ToListAsync();
+        }
+
+
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             return await _context.Categories
@@ -124,5 +133,7 @@ namespace GestionComercial.Applications.Services
                 IsEnabled = provider.IsEnabled
             });
         }
+
+
     }
 }
