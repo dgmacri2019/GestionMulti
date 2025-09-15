@@ -193,6 +193,7 @@ namespace GestionComercial.Domain.Constant
             SaleCondition,
             Measure,
             Tax,
+            PriceList,
         }
     }
 }

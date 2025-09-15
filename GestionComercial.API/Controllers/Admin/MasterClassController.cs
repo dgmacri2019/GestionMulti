@@ -1,6 +1,7 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
+using GestionComercial.Applications.Services;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
@@ -208,6 +209,8 @@ namespace GestionComercial.API.Controllers.Admin
             else return BadRequest(resultAdd.Message);
         }
 
+
+
         #region Category
 
         [HttpPost("AddCategoryAsync")]
@@ -249,7 +252,7 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("GetAllCategoriesAsync")]
         public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
         {
-            return Ok(await _masterClassService.GetAllCategoriesAsync(filter.IsEnabled, filter.IsDeleted));
+            return Ok(await _masterClassService.GetAllCategoriesAsync());
         }
 
         [HttpPost("GetCategoryByIdAsync")]
@@ -260,10 +263,51 @@ namespace GestionComercial.API.Controllers.Admin
 
         #endregion
 
+        #region PriceList
+
+        [HttpPost("AddPriceListAsync")]
+        public async Task<IActionResult> AddPriceList([FromBody] PriceList priceList)
+        {
+            GeneralResponse resultAdd = await _masterService.AddAsync(priceList);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(priceList.Id, "Lista de precios creada", ChangeType.Created, ChangeClass.PriceList);
+
+                return
+                    Ok("Lista de precios creada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
 
 
+        [HttpPost("UpdatePriceListAsync")]
+        public async Task<IActionResult> UpdatePriceListAsync([FromBody] PriceList priceList)
+        {
+            GeneralResponse resultAdd = await _masterService.UpdateAsync(priceList);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(priceList.Id, "Lista de precios actualizada", ChangeType.Updated, ChangeClass.PriceList);
+
+                return
+                    Ok("Lista de precios actualizada correctamente");
+            }
+            else return BadRequest(resultAdd.Message);          
+        }
+
+        [HttpPost("GetAllPriceListAsync")]
+        public async Task<IActionResult> GetAllPriceListAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetAllPriceListAsync());
+        }
 
 
+        [HttpPost("GetPriceListByIdAsync")]
+        public async Task<IActionResult> GetByIdAsync([FromBody] PriceListFilterDto filter)
+        {
+            return Ok(await _masterClassService.GetPriceListByIdAsync(filter.Id));
+        }
+
+        #endregion
 
 
 

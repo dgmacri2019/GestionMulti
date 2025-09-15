@@ -43,7 +43,7 @@ namespace GestionComercial.Desktop.Services
             {
 
                 // Enviar la solicitud al endpoint Lista De Precios
-                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api/pricelists/GetAllAsync", new
+                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api//GetAllPriceListAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -56,7 +56,7 @@ namespace GestionComercial.Desktop.Services
                     using Stream? stream = await responsePriceList.Content.ReadAsStreamAsync();
 
                     List<PriceList>? priceLists = await JsonSerializer.DeserializeAsync<List<PriceList>>(stream, Options);
-                    priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios" });
+                    priceLists.Add(new PriceList { Id = 0, Description = "Seleccione la lista de precios", IsDeleted = true, IsEnabled = false });
                     masterClassResponse.PriceLists = priceLists;
                 }
                 else

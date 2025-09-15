@@ -1,7 +1,9 @@
 ﻿using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,21 +21,39 @@ namespace GestionComercial.Applications.Services
 
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync(bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             return await _context.Categories
-                .Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted)
+                .Include(a => a.Articles)
                 .ToListAsync();
         }
-
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories
                 .Where(c => c.Id == id)
                 .Include(a => a.Articles)
                 .FirstOrDefaultAsync();
-                
+
         }
+
+
+
+        public async Task<IEnumerable<PriceList>> GetAllPriceListAsync()
+        {
+            return await _context.PriceLists.ToListAsync();
+        }
+        public async Task<PriceList?> GetPriceListByIdAsync(int id)
+        {
+            return await _context.PriceLists.FindAsync(id);
+        }
+
+
+
+
+
+
+
+
 
 
 
@@ -79,6 +99,30 @@ namespace GestionComercial.Applications.Services
                 .ToListAsync();
         }
 
-        
+
+
+
+
+
+
+
+
+
+
+        private IEnumerable<PriceListViewModel> ToPriceListViewModelList(List<PriceList> priceLists)
+        {
+            return priceLists.Select(provider => new PriceListViewModel
+            {
+                Id = provider.Id,
+                Description = provider.Description,
+                Utility = provider.Utility,
+                CreateDate = provider.CreateDate,
+                CreateUser = provider.CreateUser,
+                UpdateDate = provider.UpdateDate,
+                UpdateUser = provider.UpdateUser,
+                IsDeleted = provider.IsDeleted,
+                IsEnabled = provider.IsEnabled
+            });
+        }
     }
 }

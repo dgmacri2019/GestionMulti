@@ -6,8 +6,7 @@ namespace GestionComercial.Domain.Response
 {
     public class MasterClassResponse : GeneralResponse
     {
-        public List<PriceList>? PriceLists { get; set; }
-        public List<State>? States { get; set; }
+       public List<State>? States { get; set; }
         public List<DocumentType>? DocumentTypes { get; set; }
         public List<IvaCondition>? IvaConditions { get; set; }
         public List<SaleCondition>? SaleConditions { get; set; }
