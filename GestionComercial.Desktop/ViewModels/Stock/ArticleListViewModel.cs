@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
@@ -130,11 +131,11 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
                 throw;
             }
-           
-           
+
+
         }
 
-       
+
 
         private async void OnArticuloCambiado(ArticuloChangeNotification notification)
         {
@@ -142,7 +143,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             {
                 case ChangeType.Created:
                     {
-                        if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)                        
+                        if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
                             await Task.Run(async () => await AgregarCacheAsync(notification.ClientId[0]));
                         //if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
                         //{
@@ -160,7 +161,17 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     }
                 case ChangeType.Updated:
                     {
-                        await Task.Run(async ()=> await ActualizarCacheAsync(notification.ClientId));                       
+                        var progress = new Progress<(int value, string message)>(p =>
+                        {
+                            GlobalProgressHelper.Report(p.value, notification.ClientId.Count, p.message);
+                        });
+
+
+                        await Task.Run(async () => await ActualizarCacheAsync(notification.ClientId, progress));
+
+                        GlobalProgressHelper.Report(notification.ClientId.Count, notification.ClientId.Count);
+
+                        await GlobalProgressHelper.ShowCompletedAsync();
                         break;
                     }
                 case ChangeType.Deleted:
@@ -194,8 +205,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                 });
         }
 
-        private async Task ActualizarCacheAsync(List<int> clientsId)
+        private async Task ActualizarCacheAsync(List<int> clientsId, IProgress<(int value, string message)> progress)
         {
+            int cont = 0;
             foreach (var clientId in clientsId)
             {
                 ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
@@ -208,6 +220,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                             ArticleCache.Instance.UpdateArticle(articleResponse.ArticleViewModel);
                         }
                     });
+                // Reporta progreso
+                progress.Report((cont + 1, $"Procesando artículos {cont} de {clientsId.Count}"));
+                cont++;
             }
             await LoadArticlesAsync();
         }

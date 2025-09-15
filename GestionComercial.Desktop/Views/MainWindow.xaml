@@ -144,6 +144,14 @@
             <StatusBarItem>
                 <TextBlock Text="{Binding Rol}" />
             </StatusBarItem>
+            
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="GlobalProgressText" Margin="0,2,0,0"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ProgressBar x:Name="GlobalProgressBar" Height="20" Minimum="0" Maximum="100" />
+            </StatusBarItem>
+            
         </StatusBar>
 
         <!-- Vista dinámica donde se carga la vista de venta de productos -->

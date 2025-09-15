@@ -8,6 +8,7 @@ using GestionComercial.Desktop.Controls.Permissions;
 using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
+using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.ViewModels;
 using GestionComercial.Desktop.ViewModels.Client;
 using GestionComercial.Desktop.ViewModels.Master;
@@ -16,7 +17,6 @@ using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
-using GestionComercial.Domain.DTOs.PriceLists;
 using System.Windows;
 
 namespace GestionComercial.Desktop.Views
@@ -30,6 +30,7 @@ namespace GestionComercial.Desktop.Views
         {
             InitializeComponent();
             DataContext = new MainViewModel();
+            GlobalProgressHelper.Initialize(GlobalProgressBar, GlobalProgressText);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
