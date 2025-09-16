@@ -36,7 +36,7 @@ namespace GestionComercial.Domain.Cache
         {
             return _measures != null ? _measures.ToList() : [];
         }
-         public List<State> GetStates()
+        public List<State> GetStates()
         {
             return _states != null ? _states.ToList() : [];
         }
@@ -60,7 +60,7 @@ namespace GestionComercial.Domain.Cache
             List<IvaCondition> ivaConditions, List<DocumentType> documentTypes, List<Measure> measures,
             List<Tax> taxes)
         {
-             _states = states;
+            _states = states;
             _saleConditions = saleConditions;
             _ivaConditions = ivaConditions;
             _documentTypes = documentTypes;
@@ -69,7 +69,7 @@ namespace GestionComercial.Domain.Cache
         }
 
         public bool HasData => ((_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
-            || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any()) || (_taxes != null && _taxes.Any()) 
+            || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any()) || (_taxes != null && _taxes.Any())
             || (_measures != null && _measures.Any())) && !Reading;
 
         public void ClearCache()

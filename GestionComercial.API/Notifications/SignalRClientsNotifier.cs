@@ -15,7 +15,7 @@ namespace GestionComercial.Api.Notifications
             //_hub = hub;
         }
 
-        public async Task NotifyAsync(int clienteId, string nombre, ChangeType accion)
+        public async Task NotifyAsync(List<int> clienteId, string nombre, ChangeType accion)
         {
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             ClienteChangeNotification notification = accion switch

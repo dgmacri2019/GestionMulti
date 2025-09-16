@@ -42,7 +42,7 @@ namespace GestionComercial.Desktop.Controls.Clients
             }
             else
             {
-                editVM.Client = ClientCache.Instance.GetAllClients()
+                editVM.Client = ClientCache.Instance.GetAll()
                                       .FirstOrDefault(c => c.Id == ClientId);
                 btnAdd.Visibility = Visibility.Hidden;
                 btnUpdate.Visibility = Visibility.Visible;
@@ -52,25 +52,7 @@ namespace GestionComercial.Desktop.Controls.Clients
 
             DataContext = editVM;
         }
-
-        private async Task FindClientAsync()
-        {
-            //  ClientResponse result = await _clientsApiService.GetByIdAsync(ClientId);
-
-            if (ClientId == 0)
-            {
-                editVM.Client.CreateUser = App.UserName;
-            }
-            else
-            {
-                editVM.Client = ClientCache.Instance.GetAllClients().FirstOrDefault(c => c.Id == ClientId);
-                if (editVM != null)
-                    DataContext = editVM;
-                else
-                    lblError.Text = "No se reconoce al cliente";
-            }
-        }
-
+              
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             GridGeneral.MaxWidth = this.ActualWidth;

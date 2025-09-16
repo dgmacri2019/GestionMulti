@@ -1,53 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace GestionComercial.Desktop.Helpers
 {
     internal static class GlobalProgressHelper
     {
         private static ProgressBar _progressBar;
-        private static TextBlock _progressText;
+        private static TextBlock _statusText;
+        private static Dispatcher _dispatcher;
 
-        public static void Initialize(ProgressBar pb, TextBlock lbl)
+        public static void Initialize(ProgressBar progressBar, TextBlock statusText, Dispatcher dispatcher)
         {
-            _progressBar = pb;
-            _progressText = lbl;
+            _progressBar = progressBar;
+            _statusText = statusText;
+            _dispatcher = dispatcher;
         }
 
-        public static void Report(int value, int max, string message = "")
+        // 🔹 Progreso con % conocido
+        public static void Report(int current, int total, string message)
         {
-            if (_progressBar == null || _progressText == null) return;
+            if (_progressBar == null || _statusText == null) return;
 
-            Application.Current.Dispatcher.Invoke(() =>
+            _dispatcher.Invoke(() =>
             {
-                _progressBar.Maximum = max;
-                _progressBar.Value = value;
-                _progressText.Text = message;
+                _progressBar.IsIndeterminate = false;
+                _progressBar.Value = total > 0 ? (current * 100) / total : 0;
+                _statusText.Text = message;
             });
         }
 
-        public static async Task ShowCompletedAsync(string message = "Proceso terminado", int delayMs = 2000)
+        // 🔹 Progreso indeterminado
+        public static void ReportIndeterminate(string message)
         {
-            if (_progressText == null) return;
+            if (_progressBar == null || _statusText == null) return;
 
-            Application.Current.Dispatcher.Invoke(() =>
+            _dispatcher.Invoke(() =>
             {
-                _progressText.Text = message;
+                _progressBar.IsIndeterminate = true;
+                _statusText.Text = message;
             });
+        }
 
-            await Task.Delay(delayMs);
+        // 🔹 Terminar y resetear luego de 2 seg.
+        public static async Task CompleteAsync()
+        {
+            if (_progressBar == null || _statusText == null) return;
 
-            Application.Current.Dispatcher.Invoke(() =>
+            await _dispatcher.InvokeAsync(async () =>
             {
-                _progressText.Text = "";
+                _progressBar.IsIndeterminate = false;
+                _progressBar.Value = 100;
+                _statusText.Text = "Proceso terminado";
+
+                await Task.Delay(2000);
                 _progressBar.Value = 0;
+                _statusText.Text = "";
             });
         }
     }
 }
-

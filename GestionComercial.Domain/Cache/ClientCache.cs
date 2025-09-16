@@ -15,11 +15,11 @@ namespace GestionComercial.Domain.Cache
             CacheManager.Register(this);
         }
 
-        public List<ClientViewModel> GetAllClients()
+        public List<ClientViewModel> GetAll()
         {
             return _clients.OrderBy(c => c.BusinessName).ToList();
         }
-        public List<ClientViewModel> SearchClients(string name, bool isEnabled, bool isDeleted)
+        public List<ClientViewModel> Search(string name, bool isEnabled, bool isDeleted)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void SetClients(List<ClientViewModel> clients)
+        public void Set(List<ClientViewModel> clients)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void SetClient(ClientViewModel client)
+        public void Set(ClientViewModel client)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void UpdateClient(ClientViewModel client)
+        public void Update(ClientViewModel client)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void RemoveClient(ClientViewModel client)
+        public void Remove(ClientViewModel client)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace GestionComercial.Domain.Cache
             }
 
         }
-        public ClientViewModel? FindClientByOptionalCode(string optionalCode)
+        public ClientViewModel? FindByOptionalCode(string optionalCode)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public ClientViewModel? FindClientById(int id)
+        public ClientViewModel? FindById(int id)
         {
             try
             {
@@ -125,8 +125,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-
-        public List<ClientViewModel>? FindClientsByName(string name)
+        public List<ClientViewModel>? FindByName(string name)
         {
             try
             {

@@ -4,7 +4,6 @@ using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.PriceLists;
-using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Windows.Input;

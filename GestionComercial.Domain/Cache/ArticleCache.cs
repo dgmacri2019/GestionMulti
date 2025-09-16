@@ -21,12 +21,11 @@ namespace GestionComercial.Domain.Cache
             CacheManager.Register(this);
         }
 
-        public List<ArticleViewModel> GetAllArticles()
+        public List<ArticleViewModel> GetAll()
         {
             return _articles;
         }
-
-        public List<ArticleViewModel> SearchArticles(string name, bool isEnabled, bool isDeleted)
+        public List<ArticleViewModel> Search(string name, bool isEnabled, bool isDeleted)
         {
             return _articles != null ? _articles
                 .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted
@@ -37,13 +36,11 @@ namespace GestionComercial.Domain.Cache
                 :
                 [];
         }
-
-        public void SetArticles(List<ArticleViewModel> articles)
+        public void Set(List<ArticleViewModel> articles)
         {
             _articles = articles;
         }
-
-        public void SetArticle(ArticleViewModel article)
+        public void Set(ArticleViewModel article)
         {
             try
             {
@@ -55,7 +52,6 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-
         public ArticleViewModel? FindByCodeOrBarCode(string code)
         {
             return _articles != null && !string.IsNullOrEmpty(code) ? _articles
@@ -65,7 +61,6 @@ namespace GestionComercial.Domain.Cache
                 :
                 new ArticleViewModel();
         }
-
         public ArticleViewModel? FindByBarCode(string barCode)
         {
             return _articles != null && !string.IsNullOrEmpty(barCode) ? _articles
@@ -74,7 +69,52 @@ namespace GestionComercial.Domain.Cache
                 :
                 new ArticleViewModel();
         }
+        public ArticleViewModel? FindById(int id)
+        {
+            try
+            {
+                return _articles != null ?
+                                _articles.FirstOrDefault(c => c.Id == id)
+                               :
+                               null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public void Update(ArticleViewModel article)
+        {
+            try
+            {
+                ArticleViewModel? articleViewModel = _articles.FirstOrDefault(c => c.Id == article.Id);
+                if (articleViewModel != null)
+                {
+                    _articles.Remove(articleViewModel);
+                    _articles.Add(article);
+                }
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
+        public void Remove(ArticleViewModel article)
+        {
+            try
+            {
+                ArticleViewModel? articleViewModel = _articles.FirstOrDefault(c => c.Id == article.Id);
+                if (articleViewModel != null)
+                    _articles.Remove(articleViewModel);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        
         public ArticleResponse GenerateNewBarCode()
         {
             try
@@ -129,53 +169,7 @@ namespace GestionComercial.Domain.Cache
             }
         }
 
-        public ArticleViewModel? FindArticleById(int id)
-        {
-            try
-            {
-                return _articles != null ?
-                                _articles.FirstOrDefault(c => c.Id == id)
-                               :
-                               null;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public void UpdateArticle(ArticleViewModel article)
-        {
-            try
-            {
-                ArticleViewModel? articleViewModel = _articles.FirstOrDefault(c => c.Id == article.Id);
-                if (articleViewModel != null)
-                {
-                    _articles.Remove(articleViewModel);
-                    _articles.Add(article);
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public void RemoveArticle(ArticleViewModel article)
-        {
-            try
-            {
-                ArticleViewModel? articleViewModel = _articles.FirstOrDefault(c => c.Id == article.Id);
-                if (articleViewModel != null)
-                    _articles.Remove(articleViewModel);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
+        
 
 
 

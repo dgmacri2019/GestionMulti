@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Masters
@@ -43,8 +42,8 @@ namespace GestionComercial.Domain.Entities.Masters
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Localidad")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public int CityId { get; set; }
+        //[Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
+        public string City { get; set; }
 
         [Display(Name = "Inicio de actividades")]
         public DateTime? ActivityStartDate { get; set; }
@@ -90,16 +89,16 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        [JsonIgnore] 
+        // [JsonIgnore] 
         public virtual State? State { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual IvaCondition? IvaCondition { get; set; }
 
-        [JsonIgnore] 
-        public virtual City? City { get; set; }
+        //[JsonIgnore] 
+        //public virtual City? City { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public ICollection<Billing>? Billings { get; set; }
 
     }

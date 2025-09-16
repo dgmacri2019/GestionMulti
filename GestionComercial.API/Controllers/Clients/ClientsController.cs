@@ -27,19 +27,7 @@ namespace GestionComercial.API.Controllers.Clients
             _notifier = notifier;
         }
 
-        [HttpPost("notify")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Notify([FromBody] ClientFilterDto filter)
-        {
-            if (filter.Id == 5)
-                await _notifier.NotifyAsync(filter.Id, "Prueba", ChangeType.Created);
-            else if (filter.Id == 6)
-                await _notifier.NotifyAsync(filter.Id, "Prueba", ChangeType.Updated);
-            else
-                await _notifier.NotifyAsync(filter.Id, "Prueba", ChangeType.Deleted);
-            return Ok();
-        }
-
+       
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Client client)
         {
@@ -47,7 +35,8 @@ namespace GestionComercial.API.Controllers.Clients
 
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(client.Id, client.BusinessName, ChangeType.Created);
+                List<int> clientsId = [client.Id];
+                await _notifier.NotifyAsync(clientsId, client.BusinessName, ChangeType.Created);
 
                 return
                     Ok("Cliente creado correctamente");
@@ -62,7 +51,7 @@ namespace GestionComercial.API.Controllers.Clients
             GeneralResponse resultAdd = await _masterService.UpdateAsync(client);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(client.Id, client.BusinessName, ChangeType.Updated);
+                await _notifier.NotifyAsync([client.Id], client.BusinessName, ChangeType.Updated);
 
                 return Ok("Cliente actualizado correctamente");
             }
@@ -80,7 +69,7 @@ namespace GestionComercial.API.Controllers.Clients
             GeneralResponse resultAdd = await _clienService.DeleteAsync(client.Id);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(client.Id, client.BusinessName, ChangeType.Deleted);
+                await _notifier.NotifyAsync([client.Id], client.BusinessName, ChangeType.Deleted);
 
                 return Ok("Cliente borrado correctamente");
             }

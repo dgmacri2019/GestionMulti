@@ -516,7 +516,7 @@ namespace GestionComercial.Desktop.Views.Sales
             if (e.Key == Key.Enter)
             {
                 ClearClient();
-                ClientViewModel? client = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text);
+                ClientViewModel? client = ClientCache.Instance.FindByOptionalCode(txtClientCode.Text);
                 if (client != null)
                 {
                     txtFansatyName.Text = string.IsNullOrEmpty(client.FantasyName) ? client.BusinessName : client.FantasyName;
@@ -818,7 +818,7 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 if (ValidateSale())
                 {
-                    if (ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text) != null)
+                    if (ClientCache.Instance.FindByOptionalCode(txtClientCode.Text) != null)
                     {
                         Sale sale = ToSale(SaleViewModel, ArticleItems);
 
@@ -1225,7 +1225,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
             return new Sale
             {
-                ClientId = ClientCache.Instance.FindClientByOptionalCode(txtClientCode.Text).Id,
+                ClientId = ClientCache.Instance.FindByOptionalCode(txtClientCode.Text).Id,
                 CreateDate = DateTime.Now,
                 CreateUser = App.UserName,
                 IsDeleted = false,

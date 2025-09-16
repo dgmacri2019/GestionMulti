@@ -38,7 +38,7 @@ namespace GestionComercial.Desktop.Controls.Articles
             }
             else
             {
-                ArticleViewModel? viewModel = ArticleCache.Instance.GetAllArticles().FirstOrDefault(a => a.Id == ArticleId);
+                ArticleViewModel? viewModel = ArticleCache.Instance.GetAll().FirstOrDefault(a => a.Id == ArticleId);
                 if (viewModel != null)
                 {
                     ArticleViewModel = viewModel;

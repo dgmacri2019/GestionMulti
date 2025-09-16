@@ -18,7 +18,7 @@ namespace GestionComercial.Desktop.Views.Searchs
             InitializeComponent();
 
             // Cargar todos los artículos desde tu cache/repositorio
-            _allArticles = ArticleCache.Instance.GetAllArticles().Where(a=>a.IsEnabled && !a.IsDeleted).ToList();
+            _allArticles = ArticleCache.Instance.GetAll().Where(a=>a.IsEnabled && !a.IsDeleted).ToList();
 
             // Llenar grilla
             dgArticles.ItemsSource = _allArticles;

@@ -105,7 +105,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
                     ArticleResponse articleResponse = await _articlesApiService.GetAllAsync();
                     if (articleResponse.Success)
-                        ArticleCache.Instance.SetArticles(articleResponse.ArticleViewModels);
+                        ArticleCache.Instance.Set(articleResponse.ArticleViewModels);
                     else
                         MessageBox.Show($"Error al cargar articulos, el error fue:\n{articleResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -113,7 +113,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                     ArticleCache.Reading = false;
                 }
 
-                List<ArticleViewModel> filtered = ArticleCache.Instance.SearchArticles(NameFilter, IsEnabledFilter, IsDeletedFilter);
+                List<ArticleViewModel> filtered = ArticleCache.Instance.Search(NameFilter, IsEnabledFilter, IsDeletedFilter);
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
@@ -143,45 +143,24 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             {
                 case ChangeType.Created:
                     {
-                        if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
+                        if (ArticleCache.Instance.FindById(notification.ClientId[0]) == null)
                             await Task.Run(async () => await AgregarCacheAsync(notification.ClientId[0]));
-                        //if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
-                        //{
-                        //    ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(notification.ClientId[0]);
-                        //    if (articleResponse.Success)
-                        //        await App.Current.Dispatcher.InvokeAsync(async () =>
-                        //        {
-                        //            if (ArticleCache.Instance.FindArticleById(notification.ClientId[0]) == null)
-                        //                ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
-
-                        //            await LoadArticlesAsync();
-                        //        });
-                        //}
                         break;
                     }
                 case ChangeType.Updated:
                     {
-                        var progress = new Progress<(int value, string message)>(p =>
-                        {
-                            GlobalProgressHelper.Report(p.value, notification.ClientId.Count, p.message);
-                        });
+                        await Task.Run(async () => await ActualizarCacheAsync(notification.ClientId));
 
-
-                        await Task.Run(async () => await ActualizarCacheAsync(notification.ClientId, progress));
-
-                        GlobalProgressHelper.Report(notification.ClientId.Count, notification.ClientId.Count);
-
-                        await GlobalProgressHelper.ShowCompletedAsync();
                         break;
                     }
                 case ChangeType.Deleted:
                     {
                         await App.Current.Dispatcher.InvokeAsync(async () =>
                         {
-                            ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(notification.ClientId[0]);
+                            ArticleViewModel? viewModel = ArticleCache.Instance.FindById(notification.ClientId[0]);
                             if (viewModel != null)
                             {
-                                ArticleCache.Instance.RemoveArticle(viewModel);
+                                ArticleCache.Instance.Remove(viewModel);
                                 await LoadArticlesAsync();
                             }
                         });
@@ -192,39 +171,41 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             }
         }
 
-        private async Task AgregarCacheAsync(int clientId)
+        private async Task AgregarCacheAsync(int articleId)
         {
-            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
+            ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(articleId);
             if (articleResponse.Success)
                 await App.Current.Dispatcher.InvokeAsync(async () =>
                 {
-                    if (ArticleCache.Instance.FindArticleById(clientId) == null)
-                        ArticleCache.Instance.SetArticle(articleResponse.ArticleViewModel);
+                    if (ArticleCache.Instance.FindById(articleId) == null)
+                        ArticleCache.Instance.Set(articleResponse.ArticleViewModel);
 
                     await LoadArticlesAsync();
                 });
         }
 
-        private async Task ActualizarCacheAsync(List<int> clientsId, IProgress<(int value, string message)> progress)
+        private async Task ActualizarCacheAsync(List<int> articlesId)
         {
             int cont = 0;
-            foreach (var clientId in clientsId)
+            foreach (var clientId in articlesId)
             {
                 ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
                 if (articleResponse.Success)
                     await App.Current.Dispatcher.InvokeAsync(async () =>
                     {
-                        ArticleViewModel? viewModel = ArticleCache.Instance.FindArticleById(clientId);
+                        ArticleViewModel? viewModel = ArticleCache.Instance.FindById(clientId);
                         if (viewModel != null)
                         {
-                            ArticleCache.Instance.UpdateArticle(articleResponse.ArticleViewModel);
+                            ArticleCache.Instance.Update(articleResponse.ArticleViewModel);
                         }
                     });
                 // Reporta progreso
-                progress.Report((cont + 1, $"Procesando artículos {cont} de {clientsId.Count}"));
+                GlobalProgressHelper.Report(cont + 1, articlesId.Count, $"Procesando artículos {cont} de {articlesId.Count}");
                 cont++;
             }
+            await GlobalProgressHelper.CompleteAsync();
             await LoadArticlesAsync();
+
         }
     }
 }

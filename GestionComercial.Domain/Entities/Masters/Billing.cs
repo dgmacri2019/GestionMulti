@@ -48,19 +48,19 @@ namespace GestionComercial.Domain.Entities.Masters
         [Display(Name = "Token Padron")]
         public string? PadronToken { get; set; }
 
-        [Display(Name = "Fecha de generación Token Padron A5")]
-        public DateTime? PadronA5GenerationTime { get; set; }
+        //[Display(Name = "Fecha de generación Token Padron A5")]
+        //public DateTime? PadronA5GenerationTime { get; set; }
 
-        [Display(Name = "Fecha de vencimiento Token Padron A5")]
-        public DateTime? PadronA5ExpirationTime { get; set; }
+        //[Display(Name = "Fecha de vencimiento Token Padron A5")]
+        //public DateTime? PadronA5ExpirationTime { get; set; }
 
-        [Required]
-        [Display(Name = "Password Padron A5")]
-        public string? PadronA5Sign { get; set; }
+        //[Required]
+        //[Display(Name = "Password Padron A5")]
+        //public string? PadronA5Sign { get; set; }
 
-        [Required]
-        [Display(Name = "Token Padron A5")]
-        public string? PadronA5Token { get; set; }
+        //[Required]
+        //[Display(Name = "Token Padron A5")]
+        //public string? PadronA5Token { get; set; }
 
         [Required]
         [Display(Name = "Emitir Comprobantes M")]
@@ -81,7 +81,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual CommerceData? CommerceData { get; set; }
 
 

@@ -84,8 +84,14 @@
     <None Remove="Images\Bar Code 48.png" />
     <None Remove="Images\Bar Code 512.png" />
     <None Remove="Images\Bar Code 64.png" />
-    <None Remove="Images\Bebidas.jfif" />
     <None Remove="Images\bienes.png" />
+    <None Remove="Images\Billing Data Commerce 128.png" />
+    <None Remove="Images\Billing Data Commerce 16.png" />
+    <None Remove="Images\Billing Data Commerce 24.png" />
+    <None Remove="Images\Billing Data Commerce 256.png" />
+    <None Remove="Images\Billing Data Commerce 32.png" />
+    <None Remove="Images\Billing Data Commerce 512.png" />
+    <None Remove="Images\Billing Data Commerce 64.png" />
     <None Remove="Images\Block 16.png" />
     <None Remove="Images\Block 24.png" />
     <None Remove="Images\Block 32.png" />
@@ -152,7 +158,6 @@
     <None Remove="Images\Control Panel 48.png" />
     <None Remove="Images\Control Panel 512.png" />
     <None Remove="Images\Control Panel 64.png" />
-    <None Remove="Images\Control-de-temperatura.ico" />
     <None Remove="Images\Cooling 1024.png" />
     <None Remove="Images\Cooling 128.png" />
     <None Remove="Images\Cooling 16.png" />
@@ -165,6 +170,13 @@
     <None Remove="Images\Cooling 48.png" />
     <None Remove="Images\Cooling 512.png" />
     <None Remove="Images\Cooling 64.png" />
+    <None Remove="Images\Data Commerce 128.png" />
+    <None Remove="Images\Data Commerce 16.png" />
+    <None Remove="Images\Data Commerce 24.png" />
+    <None Remove="Images\Data Commerce 256.png" />
+    <None Remove="Images\Data Commerce 32.png" />
+    <None Remove="Images\Data Commerce 512.png" />
+    <None Remove="Images\Data Commerce 64.png" />
     <None Remove="Images\Delete 128.png" />
     <None Remove="Images\Delete 16.png" />
     <None Remove="Images\Delete 32.png" />
@@ -343,10 +355,6 @@
     <None Remove="Images\Payments 512.png" />
     <None Remove="Images\Payments 64.png" />
     <None Remove="Images\Pdf.png" />
-    <None Remove="Images\pizz rucula 2.png" />
-    <None Remove="Images\Pizza Rucula.png" />
-    <None Remove="Images\pizza-calabresa.png" />
-    <None Remove="Images\pizza.png" />
     <None Remove="Images\presupuesto.png" />
     <None Remove="Images\Price List 128.png" />
     <None Remove="Images\Price List 16.png" />
@@ -594,6 +602,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -676,8 +685,14 @@
     <Resource Include="Images\Bar Code 48.png" />
     <Resource Include="Images\Bar Code 512.png" />
     <Resource Include="Images\Bar Code 64.png" />
-    <Resource Include="Images\Bebidas.jfif" />
     <Resource Include="Images\bienes.png" />
+    <Resource Include="Images\Billing Data Commerce 128.png" />
+    <Resource Include="Images\Billing Data Commerce 16.png" />
+    <Resource Include="Images\Billing Data Commerce 24.png" />
+    <Resource Include="Images\Billing Data Commerce 256.png" />
+    <Resource Include="Images\Billing Data Commerce 32.png" />
+    <Resource Include="Images\Billing Data Commerce 512.png" />
+    <Resource Include="Images\Billing Data Commerce 64.png" />
     <Resource Include="Images\Block 16.png" />
     <Resource Include="Images\Block 24.png" />
     <Resource Include="Images\Block 32.png" />
@@ -744,7 +759,6 @@
     <Resource Include="Images\Control Panel 48.png" />
     <Resource Include="Images\Control Panel 512.png" />
     <Resource Include="Images\Control Panel 64.png" />
-    <Resource Include="Images\Control-de-temperatura.ico" />
     <Resource Include="Images\Cooling 1024.png" />
     <Resource Include="Images\Cooling 128.png" />
     <Resource Include="Images\Cooling 16.png" />
@@ -757,6 +771,13 @@
     <Resource Include="Images\Cooling 48.png" />
     <Resource Include="Images\Cooling 512.png" />
     <Resource Include="Images\Cooling 64.png" />
+    <Resource Include="Images\Data Commerce 128.png" />
+    <Resource Include="Images\Data Commerce 16.png" />
+    <Resource Include="Images\Data Commerce 24.png" />
+    <Resource Include="Images\Data Commerce 256.png" />
+    <Resource Include="Images\Data Commerce 32.png" />
+    <Resource Include="Images\Data Commerce 512.png" />
+    <Resource Include="Images\Data Commerce 64.png" />
     <Resource Include="Images\Delete 128.png" />
     <Resource Include="Images\Delete 16.png" />
     <Resource Include="Images\Delete 32.png" />
@@ -935,10 +956,6 @@
     <Resource Include="Images\Payments 512.png" />
     <Resource Include="Images\Payments 64.png" />
     <Resource Include="Images\Pdf.png" />
-    <Resource Include="Images\pizz rucula 2.png" />
-    <Resource Include="Images\Pizza Rucula.png" />
-    <Resource Include="Images\pizza-calabresa.png" />
-    <Resource Include="Images\pizza.png" />
     <Resource Include="Images\presupuesto.png" />
     <Resource Include="Images\Price List 128.png" />
     <Resource Include="Images\Price List 16.png" />

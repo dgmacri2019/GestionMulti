@@ -19,7 +19,7 @@ namespace GestionComercial.Desktop.Views.Searchs
             InitializeComponent();
 
             // Cargar todos los clientes desde el cache
-            _allClients = ClientCache.Instance.GetAllClients();
+            _allClients = ClientCache.Instance.GetAll();
 
             // Llenar grilla
             dgClients.ItemsSource = _allClients;

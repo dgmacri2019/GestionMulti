@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
@@ -100,7 +101,7 @@ namespace GestionComercial.Desktop.ViewModels.Client
                 ClientResponse clientResponse = await _clientsApiService.GetAllAsync();
                 if (clientResponse.Success)
                 {
-                    ClientCache.Instance.SetClients(clientResponse.ClientViewModels);
+                    ClientCache.Instance.Set(clientResponse.ClientViewModels);
                     //MasterCahe.Instance.SetData(clientResponse.PriceLists, clientResponse.States,
                     //    clientResponse.SaleConditions, clientResponse.IvaConditions, clientResponse.DocumentTypes);
                 }
@@ -110,7 +111,7 @@ namespace GestionComercial.Desktop.ViewModels.Client
                 ClientCache.Reading = false;
             }
 
-            var filtered = ClientCache.Instance.SearchClients(NameFilter, IsEnabledFilter, IsDeletedFilter);
+            var filtered = ClientCache.Instance.Search(NameFilter, IsEnabledFilter, IsDeletedFilter);
 
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -129,42 +130,23 @@ namespace GestionComercial.Desktop.ViewModels.Client
             {
                 case ChangeType.Created:
                     {
-                        ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(notification.ClientId);
-                        if (clientResponse.Success)
-                            await App.Current.Dispatcher.InvokeAsync(async () =>
-                            {
-                                // ClientCache.Instance.ClearCache();
-                                ClientCache.Instance.SetClient(clientResponse.ClientViewModel);
-                                //Clients.Add(clientResponse.ClientViewModel);
-                                await LoadClientsAsync();
-                            });
+                        if (ClientCache.Instance.FindById(notification.ClientId[0]) == null)
+                            await Task.Run(async () => await AgregarCacheAsync(notification.ClientId[0]));
                         break;
                     }
                 case ChangeType.Updated:
                     {
-                        ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(notification.ClientId);
-                        if (clientResponse.Success)
-                            await App.Current.Dispatcher.InvokeAsync(async () =>
-                            {
-                                ClientViewModel? viewModel = ClientCache.Instance.FindClientById(notification.ClientId);
-                                if (viewModel != null)
-                                {
-                                    ClientCache.Instance.UpdateClient(clientResponse.ClientViewModel);
-                                    //Clients.Remove(viewModel);
-                                    //Clients.Add(clientResponse.ClientViewModel);
-                                    await LoadClientsAsync();
-                                }
-                            });
+                        await Task.Run(async () => await ActualizarCacheAsync(notification.ClientId));
                         break;
                     }
                 case ChangeType.Deleted:
                     {
                         await App.Current.Dispatcher.InvokeAsync(async () =>
                         {
-                            ClientViewModel? viewModel = ClientCache.Instance.FindClientById(notification.ClientId);
+                            ClientViewModel? viewModel = ClientCache.Instance.FindById(notification.ClientId[0]);
                             if (viewModel != null)
                             {
-                                ClientCache.Instance.RemoveClient(viewModel);
+                                ClientCache.Instance.Remove(viewModel);
                                 //Clients.Remove(viewModel);
                                 await LoadClientsAsync();
                             }
@@ -174,6 +156,45 @@ namespace GestionComercial.Desktop.ViewModels.Client
                 default:
                     break;
             }
+        }
+
+
+
+
+        private async Task AgregarCacheAsync(int clientId)
+        {
+            ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(clientId);
+            if (clientResponse.Success)
+                await App.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    if (ClientCache.Instance.FindById(clientId) == null)
+                        ClientCache.Instance.Set(clientResponse.ClientViewModel);
+
+                    await LoadClientsAsync();
+                });
+        }
+
+        private async Task ActualizarCacheAsync(List<int> clientsId)
+        {
+            int cont = 0;
+            foreach (var clientId in clientsId)
+            {
+                ClientResponse clientResponse = await _clientsApiService.GetByIdAsync(clientId);
+                if (clientResponse.Success)
+                    await App.Current.Dispatcher.InvokeAsync(async () =>
+                    {
+                        ClientViewModel? viewModel = ClientCache.Instance.FindById(clientId);
+                        if (viewModel != null)
+                        {
+                            ClientCache.Instance.Update(clientResponse.ClientViewModel);
+                        }
+                    });
+                // Reporta progreso
+                GlobalProgressHelper.Report(cont + 1, clientsId.Count, $"Procesando clientes {cont} de {clientsId.Count}");
+                cont++;
+            }
+            await GlobalProgressHelper.CompleteAsync();
+            await LoadClientsAsync();
         }
     }
 

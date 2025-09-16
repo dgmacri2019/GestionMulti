@@ -56,7 +56,7 @@ namespace GestionComercial.API.Controllers.Sales
                 List<int> articlesId = [];
 
                 await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
-                await _notifierClients.NotifyAsync(sale.ClientId, "Venta Creada", ChangeType.Updated);
+                await _notifierClients.NotifyAsync([sale.ClientId], "Venta Creada", ChangeType.Updated);
                 foreach (var saleDetail in sale.SaleDetails)
                     articlesId.Add(saleDetail.ArticleId);
                 if (articlesId.Count > 0)

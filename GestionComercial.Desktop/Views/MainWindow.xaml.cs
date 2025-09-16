@@ -15,8 +15,10 @@ using GestionComercial.Desktop.ViewModels.Master;
 using GestionComercial.Desktop.ViewModels.Parameter;
 using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.ViewModels.Stock;
+using GestionComercial.Desktop.Views.Masters;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GestionComercial.Desktop.Views
@@ -30,14 +32,13 @@ namespace GestionComercial.Desktop.Views
         {
             InitializeComponent();
             DataContext = new MainViewModel();
-            GlobalProgressHelper.Initialize(GlobalProgressBar, GlobalProgressText);
+            GlobalProgressHelper.Initialize(StatusProgressBar, StatusText, Dispatcher);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             NavigationTree.ItemsSource = CreateMenuItem();
-            Thread thread = new(CargarCache);
-            thread.Start();
+            await Task.Run(async () => await CargarCacheAsync());
         }
 
         private List<MenuItemModel> CreateMenuItem()
@@ -87,7 +88,6 @@ namespace GestionComercial.Desktop.Views
                     Children =
                     [
                         new() { Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "Sales" },
-                        //new() { Title = "Listadas de Precios", Icon = "/Images/Details.png", Tag = "PriceLists" },
                         new() {
                             Title = "Reportes",
                             Icon = "/Images/Report 20.png",
@@ -140,7 +140,28 @@ namespace GestionComercial.Desktop.Views
                                         new() { Title = "Rubros", Icon = "/Images/Product Category 32.png", Tag = "Categories" },
                                     ]
                                 },
-                                new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
+                                new() 
+                                {
+                                    Title = "Seguridad",
+                                    Icon = "/Images/Security 32.png",
+                                    Children =
+                                    [
+                                        new() { Title = "Usuarios", Icon = "/Images/Users 32.png", Tag = "Users" },
+                                        new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
+                                    ]
+                                },     
+                                
+                                new() 
+                                {
+                                    Title = "Empresa",
+                                    Icon = "/Images/Bienes.png",
+                                    Children =
+                                    [
+                                        new() { Title = "Datos de la empresa", Icon = "/Images/Data Commerce 32.png", Tag = "CommerceData" },
+                                        new() { Title = "Datos Fiscales", Icon = "/Images/Billing Data Commerce 32.png", Tag = "Billing" },
+                                    ]
+                                },     
+                                
                             ]
                         },
                         new() {
@@ -162,15 +183,7 @@ namespace GestionComercial.Desktop.Views
 
                             ]
                         },
-                        new() {
-                            Title = "Seguridad",
-                            Icon = "/Images/Security 32.png",
-                            Children =
-                            [
-                                new() { Title = "Usuarios", Icon = "/Images/Users 32.png", Tag = "Users" },
-                                new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
-                            ]
-                        },
+                        
 
                     ]
                 },
@@ -233,6 +246,13 @@ namespace GestionComercial.Desktop.Views
                     case "Categories":
                         MainContent.Content = new ListCategoryControlView();
                         break;
+                    case "CommerceData":
+                        var window = new CommerceDataWindow() { Owner = Window.GetWindow(this) };
+                        window.ShowDialog();
+                        break;
+                    case "Billing":
+                        MainContent.Content = new ListCategoryControlView();
+                        break;
                     case "LogOut":
                         LogOut();
                         break;
@@ -264,29 +284,37 @@ namespace GestionComercial.Desktop.Views
             Application.Current.MainWindow = loginView;
         }
 
-        private void CargarCache(object? obj)
+        private async Task CargarCacheAsync()
         {
+            GlobalProgressHelper.ReportIndeterminate("Cargando Lista de precios");
             PriceListListViewModel priceListViewModel = new();
             while (!PriceListCache.Instance.HasData)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando clase maestra");
             MasterClassListViewModel masterClassListViewModel = new();
             while (!MasterCache.Instance.HasData)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Rubros");
             CategoryListViewModel categoryListViewModel = new();
             while (!CategoryCache.Instance.HasData)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Clientes");
             ClientListViewModel clientListViewModel = new();
             while (!ClientCache.Instance.HasData)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Articulos");
             ArticleListViewModel articleListViewModel = new();
             while (!ArticleCache.Instance.HasData)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
             ParameterListViewModel parameterListViewModel = new();
             while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Ventas");
             SaleListViewModel saleListViewModel = new();
             while (!ClientCache.Instance.HasData)
-                Thread.Sleep(10);
+                await Task.Delay(10);
+            await GlobalProgressHelper.CompleteAsync();
         }
     }
 }

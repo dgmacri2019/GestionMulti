@@ -89,7 +89,7 @@
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter TargetName="Bd" Property="Background" Value="Transparent"/>
-                                         </Trigger>
+                                    </Trigger>
                                     <Trigger Property="IsExpanded" Value="False">
                                         <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                                     </Trigger>
@@ -103,9 +103,9 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                </Style>               
+                </Style>
             </TreeView.Resources>
-        
+
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate  DataType="{x:Type local1:MenuItemModel}" ItemsSource="{Binding Children}">
                     <Grid>
@@ -120,8 +120,8 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-       
-        
+
+
         <StatusBar DockPanel.Dock="Bottom" Background="#F3F3F3">
             <StatusBarItem>
                 <TextBlock Text="{Binding HoraActual}" FontWeight="Bold"/>
@@ -144,14 +144,15 @@
             <StatusBarItem>
                 <TextBlock Text="{Binding Rol}" />
             </StatusBarItem>
-            
-            <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock x:Name="GlobalProgressText" Margin="0,2,0,0"/>
+
+            <StatusBarItem HorizontalAlignment="Right" Margin="0,0,30,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatusText" Margin="0,0,10,0"/>
+                    <ProgressBar x:Name="StatusProgressBar" Width="150" Height="16" 
+                         Minimum="0" Maximum="100"/>
+                </StackPanel>
             </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <ProgressBar x:Name="GlobalProgressBar" Height="20" Minimum="0" Maximum="100" />
-            </StatusBarItem>
-            
+
         </StatusBar>
 
         <!-- Vista dinámica donde se carga la vista de venta de productos -->
