@@ -112,7 +112,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 if (result.Success)
                 {
                     MasterCache.Instance.SetData(result.States, result.SaleConditions, result.IvaConditions,
-                        result.DocumentTypes, result.Measures, result.Taxes);
+                        result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData);
                 }
                 else
                     MessageBox.Show($"Error al cargar clientes, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -126,11 +126,11 @@ namespace GestionComercial.Desktop.ViewModels.Master
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnClaseMaestraCambiado(ClaseMaestraChangeNotification notification)
         {
-            switch(notification.ChangeClass)
+            switch (notification.ChangeClass)
             {
                 case ChangeClass.PriceList:
                     break;
-                case ChangeClass.Category:
+                case ChangeClass.CommerceData:
                     break;
                 default:
                     {
@@ -140,7 +140,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                             {
                                 MasterCache.Instance.ClearCache();
                                 MasterCache.Instance.SetData(result.States, result.SaleConditions, result.IvaConditions,
-                                    result.DocumentTypes, result.Measures, result.Taxes);
+                                    result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData);
 
                                 _ = LoadMastersAsync();
                             });
@@ -148,7 +148,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                             MsgBoxAlertHelper.MsgAlertError($"Error al cargar clase maestra, el error fue:\n{result.Message}");
                         break;
                     }
-            }           
+            }
         }
     }
 }

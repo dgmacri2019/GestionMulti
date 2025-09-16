@@ -100,6 +100,8 @@ namespace GestionComercial.Domain.Entities.Masters
 
         //[JsonIgnore] 
         public ICollection<Billing>? Billings { get; set; }
+        public ICollection<IvaCondition>? IvaConditions { get; set; }
+        public ICollection<State>? States { get; set; }
 
     }
 }

@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Masters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Datos de la empresa" 
-        MinHeight="800"
+        MinHeight="400"
         MinWidth="900"
         Width="900"
-        Height="800"        
+        Height="400"        
         WindowStartupLocation="CenterScreen" 
         SizeChanged="Window_SizeChanged" 
         KeyDown="Window_KeyDown"
@@ -26,12 +26,6 @@
     <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
           Background="LightGray">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -96,7 +90,6 @@
                                 KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
-
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="3" Margin="0,0,0,5">
             <TextBlock Text="Inicio de Actividades" 
                        VerticalAlignment="Center" 
@@ -110,9 +103,242 @@
         </StackPanel>
 
 
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Domicilio" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtAddress"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Address}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8">
+            <TextBlock Text="Código Postal" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtPostalCode"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding PostalCode}"
+                     MaxLength="8"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
+            <TextBlock Text="Localidad" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtCity"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding City}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="3" Margin="0,0,0,8">
+            <TextBlock Text="Provincia" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <ComboBox x:Name="cbStates" 
+                      Style="{StaticResource ComboBox}"
+                      Width="Auto"
+                      ItemsSource="{Binding States}"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding StateId}"/>
+        </StackPanel>
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Ingresos Brutos" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtIIBB"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding IIBB}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8">
+            <TextBlock Text="Condición Fiscal" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <ComboBox x:Name="cbIvaConditions" 
+                      Style="{StaticResource ComboBox}"
+                      Width="Auto"
+                      DisplayMemberPath="Description"
+                      SelectedValuePath="Id"
+                      ItemsSource="{Binding IvaConditions}"
+                      SelectedValue="{Binding IvaConditionId}"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="2" Margin="0,0,0,8">
+            <TextBlock Text="CBU Bancario" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtCBU"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding CBU}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="3" Margin="0,0,0,8">
+            <TextBlock Text="Alias Bancario" 
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtAlias"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Alias}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Teléfono / Fax" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtPhone"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"                     
+                     Text="{Binding Phone}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="1" Margin="0,0,0,8">
+            <TextBlock Text="Teléfono / Fax" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtPhone2"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Phone2}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="2" Margin="0,0,0,8">
+            <TextBlock Text="Teléfono / Fax" 
+               VerticalAlignment="Center" 
+               HorizontalAlignment="Center"
+               Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtPhone3"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Phone3}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        
+        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Correo Electrónico" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtEmail"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding Email}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8">
+            <TextBlock Text="Sitio Web" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtWebSite"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding WebSite}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Email de Registro" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtRegisterEmail"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     IsReadOnly="True"
+                     Text="{Binding RegisterEmail}"
+                     GotFocus="TextBox_SelectAll"                     
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8">
+            <TextBlock Text="Codigo de Activación"  
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtActivationCode"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding ActivationCode}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+
+
         <!-- Botones -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="9" Grid.ColumnSpan="4" Margin="0,5,0,0">
-            <Button Content="Aceptar (F2)"
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="5" Grid.ColumnSpan="4" Margin="0,5,0,0">
+            <Button x:Name="btnAdd"
+                    Content="Aceptar (F2)"
                     Width="100" 
                     Margin="5" 
                     Click="Aceptar_Click"                    
@@ -127,7 +353,7 @@
 
         <!-- Label error -->
         <TextBlock x:Name="lblError"
-                   Grid.Row="10" 
+                   Grid.Row="6" 
                    Grid.ColumnSpan="4"
                    HorizontalAlignment="Stretch"
                    Style="{StaticResource lblError12}"

@@ -12,5 +12,6 @@ namespace GestionComercial.Domain.Response
         public List<SaleCondition>? SaleConditions { get; set; }
         public List<Measure>? Measures { get; set; }
         public List<Tax>? Taxes { get; set; }
+        public CommerceData? CommerceData { get; set; }
     }
 }

@@ -8,5 +8,9 @@ namespace GestionComercial.Desktop.Helpers
         {
             MessageBox.Show(message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        internal static void MsgAlertInformation(string message)
+        {
+            MessageBox.Show(message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }

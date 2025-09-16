@@ -186,7 +186,7 @@ namespace GestionComercial.Domain.Constant
 
         public enum ChangeClass
         {
-            Category,
+            CommerceData,
             State,
             DocumentType,
             IvaCondition,

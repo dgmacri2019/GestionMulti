@@ -1,7 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
-using System.Xml.Linq;
 
 namespace GestionComercial.Domain.Cache
 {
@@ -18,6 +17,8 @@ namespace GestionComercial.Domain.Cache
         private List<DocumentType> _documentTypes;
         private List<Measure> _measures;
         private List<Tax> _taxes;
+        private CommerceData? _commerceData;
+
 
         public static bool Reading { get; set; } = false;
 
@@ -25,6 +26,11 @@ namespace GestionComercial.Domain.Cache
         public MasterCache()
         {
             CacheManager.Register(this);
+        }
+
+        public CommerceData? GetCommerceData()
+        {
+            return _commerceData;
         }
 
 
@@ -58,8 +64,9 @@ namespace GestionComercial.Domain.Cache
 
         public void SetData(List<State> states, List<SaleCondition> saleConditions,
             List<IvaCondition> ivaConditions, List<DocumentType> documentTypes, List<Measure> measures,
-            List<Tax> taxes)
+            List<Tax> taxes, CommerceData? commerceData)
         {
+            _commerceData = commerceData;
             _states = states;
             _saleConditions = saleConditions;
             _ivaConditions = ivaConditions;
@@ -68,7 +75,7 @@ namespace GestionComercial.Domain.Cache
             _measures = measures;
         }
 
-        public bool HasData => ((_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
+        public bool HasData => (_commerceData != null || (_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
             || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any()) || (_taxes != null && _taxes.Any())
             || (_measures != null && _measures.Any())) && !Reading;
 

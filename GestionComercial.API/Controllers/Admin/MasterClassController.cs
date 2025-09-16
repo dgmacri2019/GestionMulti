@@ -42,7 +42,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(category);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.Category);
+                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.CommerceData);
 
                 return
                     Ok("Rubro creado correctamente");
@@ -58,7 +58,7 @@ namespace GestionComercial.API.Controllers.Admin
             {
                 List<int> articlesId = [];
 
-                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.Category);
+                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.CommerceData);
                 Category categoryUpdated = await _masterClassService.GetCategoryByIdAsync(category.Id);
                 foreach (Article article in categoryUpdated.Articles)
                     articlesId.Add(article.Id);
@@ -137,12 +137,37 @@ namespace GestionComercial.API.Controllers.Admin
         #endregion
 
 
+        #region CommerceData
+
+        [HttpPost("AddOrUpdateCommerceDataAsync")]
+        public async Task<IActionResult> AddOrUpdateCommerceDataAsync([FromBody] CommerceData commerceData)
+        {
+            CommerceData? commerceDataCheck = await _masterClassService.GetCommerceDataAsync();
+
+            GeneralResponse resultAdd = commerceDataCheck == null ?
+                await _masterService.AddAsync(commerceData)
+                :
+                await _masterService.UpdateAsync(commerceData);
+
+            if (resultAdd.Success)
+                await _notifier.NotifyAsync(commerceData.Id, "Datos Comerciales guardados", ChangeType.Updated, ChangeClass.CommerceData);
+
+            return resultAdd.Success ?
+                     Ok("Datos Comerciales guardados correctamente")
+                     :
+                     BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("GetCommerceDataAsync")]
+        public async Task<IActionResult> GetCommerceDataAsync([FromBody] PriceListFilterDto filter)
+        {
+            CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
+            return commerceData == null ? Ok(new CommerceData { Id = -1 }) : Ok(commerceData);
+        }
 
 
 
-
-
-
+        #endregion
 
 
 
@@ -370,6 +395,8 @@ namespace GestionComercial.API.Controllers.Admin
         {
             return Ok(await _masterClassService.GetAllSaleConditionsAsync(filter.IsEnabled, filter.IsDeleted));
         }
+
+
 
 
     }

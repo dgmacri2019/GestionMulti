@@ -4,12 +4,14 @@ using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using static GestionComercial.Domain.Constant.Enumeration;
 using static GestionComercial.Domain.Notifications.ArticleChangeNotification;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GestionComercial.Desktop.ViewModels.Stock
 {
@@ -186,26 +188,41 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
         private async Task ActualizarCacheAsync(List<int> articlesId)
         {
-            int cont = 0;
-            foreach (var clientId in articlesId)
+            if (articlesId.Count < 20)
             {
-                ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
+                int cont = 0;
+                foreach (var clientId in articlesId)
+                {
+                    ArticleResponse articleResponse = await _articlesApiService.GetByIdAsync(clientId);
+                    if (articleResponse.Success)
+                        await App.Current.Dispatcher.InvokeAsync(async () =>
+                        {
+                            ArticleViewModel? viewModel = ArticleCache.Instance.FindById(clientId);
+                            if (viewModel != null)
+                            {
+                                ArticleCache.Instance.Update(articleResponse.ArticleViewModel);
+                            }
+                        });
+                    // Reporta progreso
+                    GlobalProgressHelper.Report(cont + 1, articlesId.Count, $"Procesando artículos {cont} de {articlesId.Count}");
+                    cont++;
+                }
+                await GlobalProgressHelper.CompleteAsync();
+            }
+            else
+            {
+                GlobalProgressHelper.ReportIndeterminate("Procesando artículos");
+                ArticleResponse articleResponse = await _articlesApiService.GetAllAsync();
                 if (articleResponse.Success)
                     await App.Current.Dispatcher.InvokeAsync(async () =>
                     {
-                        ArticleViewModel? viewModel = ArticleCache.Instance.FindById(clientId);
-                        if (viewModel != null)
-                        {
-                            ArticleCache.Instance.Update(articleResponse.ArticleViewModel);
-                        }
-                    });
-                // Reporta progreso
-                GlobalProgressHelper.Report(cont + 1, articlesId.Count, $"Procesando artículos {cont} de {articlesId.Count}");
-                cont++;
-            }
-            await GlobalProgressHelper.CompleteAsync();
-            await LoadArticlesAsync();
+                        ArticleCache.Instance.ClearCache();
+                        ArticleCache.Instance.Set(articleResponse.ArticleViewModels);
 
+                    });
+                await GlobalProgressHelper.CompleteAsync();
+            }
+            await LoadArticlesAsync();
         }
     }
 }

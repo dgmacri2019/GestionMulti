@@ -21,6 +21,15 @@ namespace GestionComercial.Applications.Services
 
         }
 
+
+        public async Task<CommerceData?> GetCommerceDataAsync()
+        {
+            return await _context.CommerceDatas.FirstOrDefaultAsync();
+        }
+
+
+
+
         public async Task<List<int>> GetAllArticlesId()
         {
             return await _context.Articles
