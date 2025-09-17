@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Masters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:helpers="clr-namespace:GestionComercial.Desktop.Helpers"
         Title="Datos de la empresa" 
         MinHeight="400"
         MinWidth="900"
@@ -26,6 +27,7 @@
     <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
           Background="LightGray">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -83,7 +85,8 @@
                                 Style="{StaticResource TextBoxSearch}"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Stretch"
-                                Text="{Binding CUIT}"
+                                Text="{Binding CUIT, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CuitToLongConverter}}" 
+                                HidePromptOnLeave="False"
                                 TextChanged="txtCUIT_TextChanged"
                                 GotFocus="TextBox_SelectAll"
                                 PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
@@ -186,7 +189,6 @@
                        Style="{StaticResource BlueBold10}"/>
             <ComboBox x:Name="cbIvaConditions" 
                       Style="{StaticResource ComboBox}"
-                      Width="Auto"
                       DisplayMemberPath="Description"
                       SelectedValuePath="Id"
                       ItemsSource="{Binding IvaConditions}"
@@ -280,11 +282,22 @@
             <TextBox x:Name="txtEmail"
                      Style="{StaticResource TextBoxSearch}"
                      VerticalAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Text="{Binding Email}"
+                     HorizontalAlignment="Stretch"                     
                      GotFocus="TextBox_SelectAll"
                      PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                     KeyDown="TextBox_KeyDown_MoveNext"/>
+                     KeyDown="TextBox_KeyDown_MoveNext">
+                <TextBox.Text>
+                    <Binding 
+                        Path="Email" 
+                        UpdateSourceTrigger="PropertyChanged" 
+                        ValidatesOnDataErrors="True" 
+                        NotifyOnValidationError="True">
+                        <Binding.ValidationRules>
+                            <helpers:EmailValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8">
@@ -302,23 +315,37 @@
                      KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="0" Margin="0,0,0,8">
+        
+        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="0" Margin="0,0,0,8">
             <TextBlock Text="Email de Registro" 
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center"
                        Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtRegisterEmail"
                      Style="{StaticResource TextBoxSearch}"
+                     Background="#E1DB66"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
                      IsReadOnly="True"
-                     Text="{Binding RegisterEmail}"
                      GotFocus="TextBox_SelectAll"                     
                      PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                     KeyDown="TextBox_KeyDown_MoveNext"/>
+                     KeyDown="TextBox_KeyDown_MoveNext">
+                <TextBox.Text>
+                    <Binding 
+                        Path="RegisterEmail" 
+                        UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnDataErrors="True" 
+                        NotifyOnValidationError="True">
+                        <Binding.ValidationRules>
+                            <helpers:EmailValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="1" Margin="0,0,0,8">
             <TextBlock Text="Codigo de Activación"  
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center"
@@ -327,6 +354,8 @@
                      Style="{StaticResource TextBoxSearch}"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
+                     Background="#E1DB66"
+                     IsReadOnly="True"
                      Text="{Binding ActivationCode}"
                      GotFocus="TextBox_SelectAll"
                      PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
@@ -336,7 +365,7 @@
 
 
         <!-- Botones -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="5" Grid.ColumnSpan="4" Margin="0,5,0,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="6" Grid.ColumnSpan="4" Margin="0,5,0,0">
             <Button x:Name="btnAdd"
                     Content="Aceptar (F2)"
                     Width="100" 
@@ -353,7 +382,7 @@
 
         <!-- Label error -->
         <TextBlock x:Name="lblError"
-                   Grid.Row="6" 
+                   Grid.Row="7" 
                    Grid.ColumnSpan="4"
                    HorizontalAlignment="Stretch"
                    Style="{StaticResource lblError12}"

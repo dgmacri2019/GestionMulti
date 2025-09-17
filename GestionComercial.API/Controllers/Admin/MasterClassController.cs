@@ -42,7 +42,7 @@ namespace GestionComercial.API.Controllers.Admin
             GeneralResponse resultAdd = await _masterService.AddAsync(category);
             if (resultAdd.Success)
             {
-                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.CommerceData);
+                await _notifier.NotifyAsync(category.Id, "Rubro creado", ChangeType.Created, ChangeClass.Category);
 
                 return
                     Ok("Rubro creado correctamente");
@@ -58,7 +58,7 @@ namespace GestionComercial.API.Controllers.Admin
             {
                 List<int> articlesId = [];
 
-                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.CommerceData);
+                await _notifier.NotifyAsync(category.Id, "Rubro actualizado", ChangeType.Updated, ChangeClass.Category);
                 Category categoryUpdated = await _masterClassService.GetCategoryByIdAsync(category.Id);
                 foreach (Article article in categoryUpdated.Articles)
                     articlesId.Add(article.Id);

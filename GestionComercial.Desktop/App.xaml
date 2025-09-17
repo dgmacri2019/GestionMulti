@@ -37,6 +37,7 @@
             <converters:TwoDecimalMoneyCommaConverter x:Key="TwoDecimalMoneyCommaConverter"/>
             <converters:HexToBrushConverter x:Key="HexToBrushConverter"/>
             <converters:TwoDecimalCommaConverter x:Key="TwoDecimalCommaConverter"/>
+            <converters:CuitToLongConverter x:Key="CuitToLongConverter"/>
         </ResourceDictionary>
 
     </Application.Resources>

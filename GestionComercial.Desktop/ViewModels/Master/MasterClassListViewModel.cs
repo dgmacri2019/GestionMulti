@@ -130,7 +130,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
             {
                 case ChangeClass.PriceList:
                     break;
-                case ChangeClass.CommerceData:
+                case ChangeClass.Category:
                     break;
                 default:
                     {

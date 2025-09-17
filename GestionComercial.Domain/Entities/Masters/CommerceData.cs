@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Entities.Masters
@@ -24,7 +25,7 @@ namespace GestionComercial.Domain.Entities.Masters
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [Display(Name = "Condición de IVA")]
         [Range(1, double.MaxValue, ErrorMessage = "Debe seleccionar la {0}")]
-        public int TaxConditionId { get; set; }
+        public int IvaConditionId { get; set; }
 
         [Display(Name = "Ingresos Brutos")]
         public string IIBB { get; set; }
@@ -100,7 +101,10 @@ namespace GestionComercial.Domain.Entities.Masters
 
         //[JsonIgnore] 
         public ICollection<Billing>? Billings { get; set; }
+        [JsonIgnore] 
         public ICollection<IvaCondition>? IvaConditions { get; set; }
+        
+        [JsonIgnore] 
         public ICollection<State>? States { get; set; }
 
     }

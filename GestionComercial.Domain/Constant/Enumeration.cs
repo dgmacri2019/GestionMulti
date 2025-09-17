@@ -176,8 +176,8 @@ namespace GestionComercial.Domain.Constant
         //Tipos de cambios
         public enum ChangeType
         {
-            Created, 
-            Updated, 
+            Created,
+            Updated,
             Deleted
         }
 
@@ -186,6 +186,7 @@ namespace GestionComercial.Domain.Constant
 
         public enum ChangeClass
         {
+            Category,
             CommerceData,
             State,
             DocumentType,

@@ -129,7 +129,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnCategoriaCambiado(ClaseMaestraChangeNotification notification)
         {
-            if (notification.ChangeClass == ChangeClass.CommerceData)
+            if (notification.ChangeClass == ChangeClass.Category)
             {
                 CategoryResponse categoryResponse = await _apiService.GetCategoryByIdAsync(notification.Id);
                 if (categoryResponse.Success)

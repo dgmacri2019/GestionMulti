@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Views.Masters
 {
@@ -30,9 +31,16 @@ namespace GestionComercial.Desktop.Views.Masters
                 CommerceData = new CommerceData
                 {
                     CreateUser = App.UserName,
+                    CreateDate = DateTime.Now,
+                    ServiceEnable = true,
+                    ServiceValidTo = DateTime.Now.AddDays(5),
+                    SystemVersionType = SystemVersionType.PurchaseSale,
                     IsDeleted = false,
                     IsEnabled = true,
+                    States = MasterCache.Instance.GetStates(),
+                    IvaConditions = MasterCache.Instance.GetIvaConditions(),
                 };
+                dpDate.DisplayDateEnd = DateTime.Now;
                 txtActivationCode.IsReadOnly = false;
                 txtRegisterEmail.IsReadOnly = false;
             }
@@ -65,6 +73,7 @@ namespace GestionComercial.Desktop.Views.Masters
                 lblError.Text = string.Empty;
                 if (ValidateCommerceData())
                 {
+                    var x = CommerceData;
                     GeneralResponse resultAdd = await _apiService.AddOrUpdateCommerceDataAsync(CommerceData);
                     if (resultAdd.Success)
                     {
