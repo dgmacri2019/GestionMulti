@@ -461,6 +461,11 @@ namespace GestionComercial.Desktop.Services
             };
         }
 
+        internal async Task<GeneralResponse> AddOrUpdateBillingAsync(Billing billing)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

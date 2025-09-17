@@ -247,11 +247,12 @@ namespace GestionComercial.Desktop.Views
                         MainContent.Content = new ListCategoryControlView();
                         break;
                     case "CommerceData":
-                        var window = new CommerceDataWindow() { Owner = Window.GetWindow(this) };
-                        window.ShowDialog();
+                        var commerceDataWindow = new CommerceDataWindow() { Owner = Window.GetWindow(this) };
+                        commerceDataWindow.ShowDialog();
                         break;
                     case "Billing":
-                        MainContent.Content = new ListCategoryControlView();
+                        var bilingWindow = new BillingWindow() { Owner = Window.GetWindow(this) };
+                        bilingWindow.ShowDialog();
                         break;
                     case "LogOut":
                         LogOut();

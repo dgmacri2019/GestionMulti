@@ -66,9 +66,7 @@ namespace GestionComercial.Domain.Entities.Masters
         [Display(Name = "Emitir Comprobantes M")]
         public bool EmitInvoiceM { get; set; }
 
-        [Display(Name = "Punto de Venta")]
-        public int SalePoint { get; set; }
-
+        
         [Display(Name = "Concepto de Comprobantes")]
         public int Concept { get; set; }
 

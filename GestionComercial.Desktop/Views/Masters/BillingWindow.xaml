@@ -1,0 +1,168 @@
+﻿<Window x:Class="GestionComercial.Desktop.Views.Masters.BillingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Masters"
+        Title="Datos fiscales de la empresa" 
+        MinHeight="400"
+        MinWidth="900"
+        Width="900"
+        Height="400"  
+        WindowStartupLocation="CenterScreen" 
+        SizeChanged="Window_SizeChanged" 
+        KeyDown="Window_KeyDown"
+        Loaded="Window_Loaded"
+        Background="LightGray">
+
+    <Window.Resources>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
+       Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8">
+            <TextBlock Text="Certificado AFIP" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtCertificate"
+                  Style="{StaticResource TextBoxSearch}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  Text="{Binding CertPath}"
+                  GotFocus="TextBox_SelectAll"
+                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                  KeyDown="TextBox_KeyDown_MoveNext"/>
+            <Button Content="Seleccionar Archivo" 
+                    Width="100" 
+                    Margin="5"
+                    Click="Cancelar_Click"
+                    Style="{StaticResource BtnCancel}"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="2" Margin="0,0,0,8">
+            <TextBlock Text="Utilizar Factura Eletrónica" 
+         VerticalAlignment="Center" 
+         HorizontalAlignment="Center"
+         Style="{StaticResource BlueBold10}"/>
+            <CheckBox x:Name="chbUseWSDL"
+                Style="{StaticResource CheckBox}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                IsChecked="{Binding UseWSDL}"
+                KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,8">
+            <TextBlock Text="Password Certificado" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtPassword"
+                  Style="{StaticResource TextBoxSearch}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  Text="{Binding CertPass}"
+                  GotFocus="TextBox_SelectAll"
+                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                  KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
+            <Button x:Name="btnGenerateToken"
+                    Content="Generar Tokens" 
+                    Visibility="Hidden"
+                    Width="100" 
+                    Margin="5"
+                    Click="Cancelar_Click"
+                    Style="{StaticResource BtnCancel}"/>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Utilizar Padrón AFIP" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <CheckBox x:Name="chbUsePadron"
+                      Style="{StaticResource CheckBox}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      IsChecked="{Binding UsePadron}"
+                      KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8">
+            <TextBlock Text='Emitir Comprobantes "M"' 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <CheckBox x:Name="chbEmitInvoiceM"
+                      Style="{StaticResource CheckBox}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      IsChecked="{Binding EmitInvoiceM}"
+                      KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>      
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="2" Margin="0,0,0,8">
+            <TextBlock Text="Concepto de las Facturas" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <RadioButton Content="Productos" Tag="1" Checked="RadioButton_Checked" IsChecked="True"/>
+            <RadioButton Content="Servicios" Tag="2" Checked="RadioButton_Checked"/>
+            <RadioButton Content="Productos y Servicios" Tag="3" Checked="RadioButton_Checked"/>
+        </StackPanel>
+
+
+
+        
+      
+        
+
+
+        <!-- Botones -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="4" Margin="0,5,0,0">
+            <Button x:Name="btnAdd"
+                 Content="Aceptar (F2)"
+                 Width="100" 
+                 Margin="5" 
+                 Click="Aceptar_Click"                    
+                 Style="{StaticResource BtnAdd}"/>
+            <Button Content="Cancelar (ESC)" 
+                 Width="100" 
+                 Margin="5" 
+                 Click="Cancelar_Click"
+                 Style="{StaticResource BtnCancel}"/>
+        </StackPanel>
+
+
+        <!-- Label error -->
+        <TextBlock x:Name="lblError"
+                Grid.Row="4" 
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Stretch"
+                Style="{StaticResource lblError12}"
+                TextWrapping="Wrap"/>
+    </Grid>
+</Window>
