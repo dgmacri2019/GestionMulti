@@ -112,7 +112,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                 if (result.Success)
                 {
                     MasterCache.Instance.SetData(result.States, result.SaleConditions, result.IvaConditions,
-                        result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData);
+                        result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData, result.BillingViewModel);
                 }
                 else
                     MessageBox.Show($"Error al cargar clientes, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -140,7 +140,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                             {
                                 MasterCache.Instance.ClearCache();
                                 MasterCache.Instance.SetData(result.States, result.SaleConditions, result.IvaConditions,
-                                    result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData);
+                                    result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData, result.BillingViewModel);
 
                                 _ = LoadMastersAsync();
                             });

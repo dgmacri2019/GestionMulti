@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Masters"
         Title="Datos fiscales de la empresa" 
         MinHeight="400"
-        MinWidth="900"
-        Width="900"
+        MinWidth="650"
+        Width="650"
         Height="400"  
         WindowStartupLocation="CenterScreen" 
         SizeChanged="Window_SizeChanged" 
@@ -44,18 +44,18 @@
                     HorizontalAlignment="Center"
                     Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtCertificate"
-                  Style="{StaticResource TextBoxSearch}"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Stretch"
-                  Text="{Binding CertPath}"
-                  GotFocus="TextBox_SelectAll"
-                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                  KeyDown="TextBox_KeyDown_MoveNext"/>
-            <Button Content="Seleccionar Archivo" 
-                    Width="100" 
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding CertPath}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+            <Button x:Name="btnCertificate" 
+                    Content="Seleccionar Archivo" 
+                    Width="150" 
                     Margin="5"
-                    Click="Cancelar_Click"
-                    Style="{StaticResource BtnCancel}"/>
+                    Style="{StaticResource BtnCancel}" Click="btnCertificate_Click"/>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="2" Margin="0,0,0,8">
@@ -78,23 +78,22 @@
                     HorizontalAlignment="Center"
                     Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtPassword"
-                  Style="{StaticResource TextBoxSearch}"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Stretch"
-                  Text="{Binding CertPass}"
-                  GotFocus="TextBox_SelectAll"
-                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                  KeyDown="TextBox_KeyDown_MoveNext"/>
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding CertPass}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
             <Button x:Name="btnGenerateToken"
                     Content="Generar Tokens" 
-                    Visibility="Hidden"
+                    Visibility="Visible"
                     Width="100" 
                     Margin="5"
-                    Click="Cancelar_Click"
-                    Style="{StaticResource BtnCancel}"/>
+                    Style="{StaticResource BtnCancel}" Click="btnGenerateToken_Click"/>
 
         </StackPanel>
 
@@ -129,9 +128,9 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Style="{StaticResource BlueBold10}"/>
-            <RadioButton Content="Productos" Tag="1" Checked="RadioButton_Checked" IsChecked="True"/>
-            <RadioButton Content="Servicios" Tag="2" Checked="RadioButton_Checked"/>
-            <RadioButton Content="Productos y Servicios" Tag="3" Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="rbProduct" Content="Productos" Tag="1" Checked="RadioButton_Checked" IsChecked="True"/>
+            <RadioButton x:Name="rbService" Content="Servicios" Tag="2" Checked="RadioButton_Checked"/>
+            <RadioButton x:Name="rbProductAndService" Content="Productos y Servicios" Tag="3" Checked="RadioButton_Checked"/>
         </StackPanel>
 
 

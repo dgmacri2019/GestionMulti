@@ -21,17 +21,17 @@ namespace GestionComercial.Applications.Services
 
         public async Task<IEnumerable<Permission>> GetAllAsync(bool isEnabled, bool isDeleted)
         {
-            return await _context.Permissions.Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted).ToListAsync();
+            return await _context.Permissions.AsNoTracking().Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted).ToListAsync();
         }
 
         public async Task<IEnumerable<RolePermission>> GetAllRolePermisionAsync(bool isEnabled, bool isDeleted)
         {
-            return await _context.RolePermissions.Where(rp => rp.IsEnabled == isEnabled && rp.IsDeleted == isDeleted).ToListAsync();
+            return await _context.RolePermissions.AsNoTracking().Where(rp => rp.IsEnabled == isEnabled && rp.IsDeleted == isDeleted).ToListAsync();
         }
 
         public async Task<IEnumerable<UserPermission>> GetAllUserPermisionAsync(bool isEnabled, bool isDeleted)
         {
-            return await _context.UserPermissions.Where(up => up.IsEnabled == isEnabled && up.IsDeleted == isDeleted).ToListAsync();
+            return await _context.UserPermissions.AsNoTracking().Where(up => up.IsEnabled == isEnabled && up.IsDeleted == isDeleted).ToListAsync();
         }
 
         public async Task<Permission> GetByIdAsync(int id)

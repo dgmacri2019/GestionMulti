@@ -1,13 +1,16 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Admin
@@ -136,7 +139,6 @@ namespace GestionComercial.API.Controllers.Admin
 
         #endregion
 
-
         #region CommerceData
 
         [HttpPost("AddOrUpdateCommerceDataAsync")]
@@ -163,6 +165,76 @@ namespace GestionComercial.API.Controllers.Admin
         {
             CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
             return commerceData == null ? Ok(new CommerceData { Id = -1 }) : Ok(commerceData);
+        }
+
+
+        [HttpPost("AddOrUpdateBillingAsync")]
+        //public async Task<IActionResult> AddOrUpdateBillingAsync([FromForm] BillingViewModel billingViewModel,
+        //    [FromForm] IFormFile? file)
+        public async Task<IActionResult> AddOrUpdateBillingAsync([FromBody] BillingViewModel billingViewModel)
+        {
+            try
+            {
+                if(billingViewModel == null)
+                    return BadRequest("No se pudieron recibir correctamente los datos. Por favor reintente nuevamente");
+                CommerceData commerceData = await _masterClassService.GetCommerceDataAsync();
+                if (commerceData == null)
+                    return BadRequest("Debe cargar primero los datos comerciales de la empresa");
+
+                BillingViewModel? billingCheck = await _masterClassService.GetBillingAsync();
+
+                if(billingViewModel.CertificateByteArray != null)
+                {
+                    GeneralResponse resultAddFile = FileHelper.SaveByteArrayToFile(billingViewModel.CertificateByteArray, string.Format("{0}.pfx", commerceData.CUIT));
+                    if (!resultAddFile.Success)
+                        return BadRequest(resultAddFile.Message);
+                }
+                //if (file != null && !string.IsNullOrEmpty(file.FileName))
+                //{
+                //    // Carpeta dentro de la API
+                //    string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados");
+
+                //    if (!Directory.Exists(basePath))
+                //        Directory.CreateDirectory(basePath);
+
+                //    string path = Path.Combine(basePath, file.FileName);
+
+                //    // Si existe lo borramos
+                //    if (System.IO.File.Exists(path))
+                //        System.IO.File.Delete(path);
+
+                //    // Guardar archivo en el servidor
+                //}
+
+                Billing billing = ConverterHelper.ToBilling(billingViewModel, billingViewModel.Id == 0);
+                billing.CommerceDataId = commerceData.Id;
+
+                GeneralResponse resultAdd = billingCheck == null ?
+                    await _masterService.AddAsync(billing)
+                    :
+                    await _masterService.UpdateAsync(billing);
+
+                if (resultAdd.Success)
+                    await _notifier.NotifyAsync(billingViewModel.Id, "Datos fiscales guardados", ChangeType.Updated, ChangeClass.CommerceData);
+
+                return resultAdd.Success ?
+                         Ok("Datos fiscales guardados correctamente")
+                         :
+                         BadRequest(resultAdd.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+        [HttpPost("GetBillingAsync")]
+        public async Task<IActionResult> GetBillingAsync([FromBody] PriceListFilterDto filter)
+        {
+            BillingViewModel? billing = await _masterClassService.GetBillingAsync();
+            return billing == null ? Ok(new BillingViewModel { Id = -1 }) : Ok(billing);
         }
 
 

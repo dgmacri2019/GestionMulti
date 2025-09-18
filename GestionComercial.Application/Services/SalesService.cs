@@ -209,6 +209,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 int? lastSaleNumber = await _context.Sales
+                    .AsNoTracking()
                     .Where(s => s.SalePoint == salePoint)
                     .Select(s => (int?)s.SaleNumber) // usamos nullable para manejar el caso de que no haya registros
                     .MaxAsync();

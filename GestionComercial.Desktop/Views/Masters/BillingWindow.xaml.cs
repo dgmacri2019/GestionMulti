@@ -1,20 +1,13 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
-using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace GestionComercial.Desktop.Views.Masters
 {
@@ -24,13 +17,47 @@ namespace GestionComercial.Desktop.Views.Masters
     public partial class BillingWindow : Window
     {
         private MasterClassApiService _apiService;
-        private int opcionSeleccionada;
+        private OpenFileDialog FileDialogCert = new()
+        {
+            Filter = "PFX (*.pfx)|*.pfx",
+            FilterIndex = 1,
+            Multiselect = false,
+            Title = "Seleccione el certificado"
+        };
 
-        private Billing Billing;
+        private BillingViewModel BillingViewModel;
         public BillingWindow()
         {
             InitializeComponent();
             _apiService = new MasterClassApiService();
+            BillingViewModel = MasterCache.Instance.GetBilling();
+            if (BillingViewModel == null)
+                BillingViewModel = new BillingViewModel
+                {
+                    CreateDate = DateTime.Now,
+                    CreateUser = App.UserName,
+                    IsEnabled = true,
+                    PadronExpirationTime = DateTime.Now,
+                    PadronGenerationTime = DateTime.Now,
+                    PadronSign = "System",
+                    PadronToken = "System",
+                    WSDLExpirationTime = DateTime.Now,
+                    WSDLGenerationTime = DateTime.Now,
+                    WSDLSign = "System",
+                    WSDLToken = "System",
+                    CommerceDataId = MasterCache.Instance.GetCommerceData().Id,
+                    Concept = 1,
+                };
+            else
+            {
+                BillingViewModel.CertPass = CryptoHelper.Decrypt(BillingViewModel.CertPass);
+                BillingViewModel.UpdateDate = DateTime.Now;
+                BillingViewModel.UpdateUser = App.UserName;
+                rbProduct.IsChecked = BillingViewModel.Concept == 1;
+                rbService.IsChecked = BillingViewModel.Concept == 2;
+                rbProductAndService.IsChecked = BillingViewModel.Concept == 3;
+            }
+            DataContext = BillingViewModel;
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -59,10 +86,21 @@ namespace GestionComercial.Desktop.Views.Masters
                 lblError.Text = string.Empty;
                 if (ValidateBilling())
                 {
-                    GeneralResponse resultAdd = await _apiService.AddOrUpdateBillingAsync(Billing);
+                    BillingViewModel.CertPass = CryptoHelper.Encrypt(BillingViewModel.CertPass);
+                    if (BillingViewModel.CertPath != null && !string.IsNullOrEmpty(BillingViewModel.CertPath))
+                    {
+                        byte[]? certificateByteArray = null;
+                        certificateByteArray = FileHelper.FilePathToByteArray(BillingViewModel.CertPath);
+                        if (certificateByteArray != null && certificateByteArray.Length > 0)
+                        {
+                            BillingViewModel.CertificateByteArray = certificateByteArray;
+                        }
+                    }
+
+                    GeneralResponse resultAdd = await _apiService.AddOrUpdateBillingAsync(BillingViewModel);
                     if (resultAdd.Success)
                     {
-                        MsgBoxAlertHelper.MsgAlertInformation("Datos comerciales guardados correctamente");
+                        MsgBoxAlertHelper.MsgAlertInformation("Datos fiscales guardados correctamente");
                         LogOut();
                     }
                     else
@@ -79,15 +117,27 @@ namespace GestionComercial.Desktop.Views.Masters
 
         private bool ValidateBilling()
         {
-            throw new NotImplementedException();
+            bool result = true;
+
+            if (BillingViewModel.Concept == 0)
+            {
+                msgError("Debe seleccionar el concepto de las facturas");
+                result = false;
+            }
+            if ((chbUseWSDL.IsChecked == true || chbUsePadron.IsChecked == true) && string.IsNullOrEmpty(txtPassword.Text))
+            {
+                msgError("Debe ingresar el Password del certificado");
+                result = false;
+            }
+            return result;
         }
 
-       
+
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            if (sender is RadioButton rb && rb.Tag != null)
+            if (sender is RadioButton rb && rb.Tag != null && BillingViewModel != null)
             {
-                opcionSeleccionada = int.Parse(rb.Tag.ToString()!);
+                BillingViewModel.Concept = int.Parse(rb.Tag.ToString()!);
                 // Ahora opcionSeleccionada tiene 1, 2 o 3 según la opción
             }
         }
@@ -140,6 +190,38 @@ namespace GestionComercial.Desktop.Views.Masters
         private void LogOut()
         {
             DialogResult = false;
+        }
+
+        private void btnCertificate_Click(object sender, RoutedEventArgs e)
+        {
+            if (FileDialogCert.ShowDialog() == true)
+            {
+                txtCertificate.Text = FileDialogCert.FileName;
+                BillingViewModel.CertPath = FileDialogCert.FileName;
+                chbUseWSDL.IsChecked = true;
+            }
+        }
+
+        private void btnGenerateToken_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("¿Confirma el forzado de generación de tokens?", "Alerta", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                //LogInServiceAfip logInServiceAfip = new LogInServiceAfip();
+                //if (StaticCommerceData.Billing.UsePadron && StaticCommerceData.Billing.UseWSDL)
+                //{
+                //    await logInServiceAfip.LogInAsync(AfipLogInType.PadronA13, true);
+                //    await logInServiceAfip.LogInAsync(AfipLogInType.PadronA5, true);
+                //    await logInServiceAfip.LogInAsync(AfipLogInType.WSDL, true);
+                //}
+                //else if (!StaticCommerceData.Billing.UsePadron && StaticCommerceData.Billing.UseWSDL)
+                //    await logInServiceAfip.LogInAsync(AfipLogInType.WSDL, true);
+
+                //else if (StaticCommerceData.Billing.UsePadron && !StaticCommerceData.Billing.UseWSDL)
+                //{
+                //    await logInServiceAfip.LogInAsync(AfipLogInType.PadronA13, true);
+                //    await logInServiceAfip.LogInAsync(AfipLogInType.PadronA5, true);
+                //}
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
@@ -24,9 +25,15 @@ namespace GestionComercial.Applications.Services
 
         public async Task<CommerceData?> GetCommerceDataAsync()
         {
-            return await _context.CommerceDatas.FirstOrDefaultAsync();
+            return await _context.CommerceDatas
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
+        public async Task<BillingViewModel?> GetBillingAsync()
+        {
+            return ConverterHelper.ToBillingViewModel(await _context.Billings.AsNoTracking().FirstOrDefaultAsync());
+        }
 
 
 
@@ -42,12 +49,14 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             return await _context.Categories
+                .AsNoTracking()
                 .Include(a => a.Articles)
                 .ToListAsync();
         }
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories
+                .AsNoTracking()
                 .Where(c => c.Id == id)
                 .Include(a => a.Articles)
                 .FirstOrDefaultAsync();
@@ -58,7 +67,7 @@ namespace GestionComercial.Applications.Services
 
         public async Task<IEnumerable<PriceList>> GetAllPriceListAsync()
         {
-            return await _context.PriceLists.ToListAsync();
+            return await _context.PriceLists.AsNoTracking().ToListAsync();
         }
         public async Task<PriceList?> GetPriceListByIdAsync(int id)
         {
@@ -143,6 +152,6 @@ namespace GestionComercial.Applications.Services
             });
         }
 
-
+        
     }
 }

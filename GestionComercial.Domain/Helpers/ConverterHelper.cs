@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Domain.DTOs.Accounts;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.Sale;
@@ -376,6 +377,76 @@ namespace GestionComercial.Domain.Helpers
 
         #endregion
 
+
+        #region Commerce Data
+
+        public static BillingViewModel? ToBillingViewModel(Billing? billing)
+        {
+
+            return billing == null ? null : new BillingViewModel
+            {
+                Id = billing.Id,
+                IsDeleted = billing.IsDeleted,
+                IsEnabled = billing.IsEnabled,
+                CreateDate = billing.CreateDate,
+                CreateUser = billing.CreateUser,
+                UpdateDate = billing.UpdateDate,
+                UpdateUser = billing.UpdateUser,
+                CertPass = billing.CertPass,
+                CommerceDataId = billing.CommerceDataId,
+                Concept = billing.Concept,
+                EmitInvoiceM = billing.EmitInvoiceM,
+                ExpireCertificate = billing.ExpireCertificate,
+                ExpireCertificateText = billing.ExpireCertificateText,
+                HasCertificate = billing.HasCertificate,
+                PadronExpirationTime = billing.PadronExpirationTime,
+                PadronGenerationTime = billing.PadronGenerationTime,
+                PadronSign = billing.PadronSign,
+                PadronToken = billing.PadronToken,
+                UniqueId = billing.UniqueId,
+                UsePadron = billing.UsePadron,
+                UseWSDL = billing.UseWSDL,
+                WSDLExpirationTime = billing.WSDLExpirationTime,
+                WSDLGenerationTime = billing.WSDLGenerationTime,
+                WSDLSign = billing.WSDLSign,
+                WSDLToken = billing.WSDLToken,
+                CertPath = string.Empty,
+            };
+        }
+        public static Billing? ToBilling(BillingViewModel? billingViewModel, bool isNew)
+        {
+            return new Billing
+            {
+                Id = isNew ? 0 : billingViewModel.Id,
+                IsDeleted = billingViewModel.IsDeleted,
+                IsEnabled = billingViewModel.IsEnabled,
+                CreateDate = billingViewModel.CreateDate,
+                CreateUser = billingViewModel.CreateUser,
+                UpdateDate = billingViewModel.UpdateDate,
+                UpdateUser = billingViewModel.UpdateUser,
+                CertPass = billingViewModel.CertPass,
+                CommerceDataId = billingViewModel.CommerceDataId,
+                Concept = billingViewModel.Concept,
+                EmitInvoiceM = billingViewModel.EmitInvoiceM,
+                ExpireCertificate = billingViewModel.ExpireCertificate,
+                ExpireCertificateText = billingViewModel.ExpireCertificateText,
+                HasCertificate = billingViewModel.HasCertificate,
+                PadronExpirationTime = billingViewModel.PadronExpirationTime,
+                PadronGenerationTime = billingViewModel.PadronGenerationTime,
+                PadronSign = billingViewModel.PadronSign,
+                PadronToken = billingViewModel.PadronToken,
+                UniqueId = billingViewModel.UniqueId,
+                UsePadron = billingViewModel.UsePadron,
+                UseWSDL = billingViewModel.UseWSDL,
+                WSDLExpirationTime = billingViewModel.WSDLExpirationTime,
+                WSDLGenerationTime = billingViewModel.WSDLGenerationTime,
+                WSDLSign = billingViewModel.WSDLSign,
+                WSDLToken = billingViewModel.WSDLToken,
+            };
+        }
+
+        #endregion
+
         #endregion
 
         #region Bank And Box
@@ -617,7 +688,6 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = saleViewModel.TotalIVA27,
             };
         }
-
 
 
         #endregion

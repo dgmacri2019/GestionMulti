@@ -140,9 +140,9 @@ namespace GestionComercial.Applications.Services
         {
 
             List<User> users = model.All ?
-                await _context.Users.ToListAsync()
+                await _context.Users.AsNoTracking().ToListAsync()
                 :
-                await _context.Users.Where(u => u.Enabled == model.IsEnabled).ToListAsync();
+                await _context.Users.AsNoTracking().Where(u => u.Enabled == model.IsEnabled).ToListAsync();
 
             return ToUserViewModelList(users);
         }
@@ -150,10 +150,10 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<UserViewModel>> SearchToListAsync(UserFilterDto model)
         {
             List<User> users = model.All ?
-                await _context.Users.ToListAsync()
+                await _context.Users.AsNoTracking().ToListAsync()
                 :
                 string.IsNullOrEmpty(model.NameFilter) ?
-                    await _context.Users
+                    await _context.Users.AsNoTracking()
                     .Where(u => u.Enabled == model.IsEnabled)
                     .ToListAsync()
                     :

@@ -21,6 +21,7 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<GeneralParameter>> GetAllGeneralParametersAsync()
         {
             return await _context.GeneralParameters
+                .AsNoTracking()
                 .Where(gp => gp.IsEnabled && !gp.IsDeleted)
                 .ToListAsync();
         }
@@ -41,6 +42,7 @@ namespace GestionComercial.Applications.Services
             List<PcParameter> pcParameters = await _context.PcParameters.ToListAsync();
 
             PcParameter? pcParameter = await _context.PcParameters
+                .AsNoTracking()
                  .Where(gp => gp.IsEnabled && !gp.IsDeleted && gp.PCName == pcName)
                  .FirstOrDefaultAsync();
             if (pcParameter == null)
@@ -64,6 +66,7 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<PurchaseAndSalesListViewModel>> GetAllPcParametersAsync()
         {
             ICollection<PcParameter> pcParameters = await _context.PcParameters
+                .AsNoTracking()
                 .Where(pp => pp.IsEnabled && !pp.IsDeleted)
                 .ToListAsync();
 

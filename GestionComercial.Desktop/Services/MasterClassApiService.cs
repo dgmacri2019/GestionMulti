@@ -1,14 +1,17 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 
 namespace GestionComercial.Desktop.Services
@@ -214,7 +217,33 @@ namespace GestionComercial.Desktop.Services
                         commerceData.IvaConditions = ivaConditions;
                         masterClassResponse.CommerceData = commerceData;
                     }
-                   
+
+                }
+                else
+                {
+                    masterClassResponse.Message = await responseCommerceData.Content.ReadAsStringAsync();
+                    return masterClassResponse;
+                }
+
+                // Enviar la solicitud al endpoint Datos Comerciales
+                HttpResponseMessage responseBilling = await _httpClient.PostAsJsonAsync("api/masterclass/GetBillingAsync", new
+                {
+
+                });
+                if (responseBilling.IsSuccessStatusCode)
+                {
+                    responseBilling.EnsureSuccessStatusCode();
+
+                    // Leer el contenido como stream para no cargar todo en memoria
+                    using Stream? stream = await responseBilling.Content.ReadAsStreamAsync();
+
+                    BillingViewModel? billingViewModel = await JsonSerializer.DeserializeAsync<BillingViewModel>(stream, Options);
+                    if (billingViewModel.Id == -1)
+                        masterClassResponse.BillingViewModel = null;
+                    else
+                    {
+                        masterClassResponse.BillingViewModel = billingViewModel;
+                    }
                 }
                 else
                 {
@@ -461,9 +490,47 @@ namespace GestionComercial.Desktop.Services
             };
         }
 
-        internal async Task<GeneralResponse> AddOrUpdateBillingAsync(Billing billing)
+        internal async Task<GeneralResponse> AddOrUpdateBillingAsync(BillingViewModel billing)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using var client = new HttpClient();
+                using var form = new MultipartFormDataContent();
+
+                // 1. Archivo
+                if (!string.IsNullOrEmpty(billing.CertPath) && File.Exists(billing.CertPath))
+                {
+                    var fileStream = File.OpenRead(billing.CertPath);
+                    var fileContent = new StreamContent(fileStream);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                    // "file" debe coincidir con el parámetro en la API
+                    form.Add(fileContent, "file", Path.GetFileName(billing.CertPath));
+                }
+
+                // 2. ViewModel como JSON
+                var json = JsonSerializer.Serialize(billing);
+                form.Add(new StringContent(json, Encoding.UTF8, "application/json"), "masterclass");
+
+
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddOrUpdateBillingAsync", billing);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+
+            }
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.DTOs.PriceLists;
+﻿using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
+using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
@@ -23,5 +24,6 @@ namespace GestionComercial.Applications.Interfaces
         Task<IEnumerable<Tax>> GetAllTaxesAsync(bool isEnabled, bool isDeleted);
         Task<List<int>> GetAllArticlesId();
         Task<CommerceData?> GetCommerceDataAsync();
+        Task<BillingViewModel?> GetBillingAsync();
     }
 }

@@ -38,12 +38,12 @@ namespace GestionComercial.Applications.Services
 
         public async Task<List<IdentityRole>> GetAllAsync()
         {
-            return await _roleManager.Roles.ToListAsync();
+            return await _roleManager.Roles.AsNoTracking().ToListAsync();
         }
 
         public List<IdentityRole> GetAll()
         {
-            return _roleManager.Roles.ToList();
+            return _roleManager.Roles.AsNoTracking().ToList();
         }
     }
 }

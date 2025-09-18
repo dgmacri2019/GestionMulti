@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.Entities.Afip;
+﻿using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 
@@ -13,5 +14,6 @@ namespace GestionComercial.Domain.Response
         public List<Measure>? Measures { get; set; }
         public List<Tax>? Taxes { get; set; }
         public CommerceData? CommerceData { get; set; }
+        public BillingViewModel? BillingViewModel { get; set; }
     }
 }

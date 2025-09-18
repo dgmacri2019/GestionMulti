@@ -41,8 +41,9 @@ namespace GestionComercial.Applications.Services
             try
             {
                 List<PriceList> priceLists = await _context.PriceLists
-                       .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                       .ToListAsync();
+                    .AsNoTracking()
+                    .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                    .ToListAsync();
                 List<Article> articles = await _context.Articles
                     .AsNoTracking()
                     .Include(p => p.Tax)
@@ -81,8 +82,9 @@ namespace GestionComercial.Applications.Services
         public async Task<ArticleViewModel?> GetByIdAsync(int id)
         {
             List<PriceList> priceLists = await _context.PriceLists
-                       .Where(pl => pl.IsEnabled && !pl.IsDeleted)
-                       .ToListAsync();
+                .AsNoTracking()
+                .Where(pl => pl.IsEnabled && !pl.IsDeleted)
+                .ToListAsync();
             Article? article = await _context.Articles
                .AsNoTracking()
                .Include(c => c.Category)

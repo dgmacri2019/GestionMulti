@@ -1,4 +1,5 @@
-﻿using GestionComercial.Domain.Entities.Afip;
+﻿using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
 
@@ -18,6 +19,7 @@ namespace GestionComercial.Domain.Cache
         private List<Measure> _measures;
         private List<Tax> _taxes;
         private CommerceData? _commerceData;
+        private BillingViewModel? _billingViewModel;
 
 
         public static bool Reading { get; set; } = false;
@@ -26,6 +28,11 @@ namespace GestionComercial.Domain.Cache
         public MasterCache()
         {
             CacheManager.Register(this);
+        }
+
+        public BillingViewModel? GetBilling()
+        {
+            return _billingViewModel;
         }
 
         public CommerceData? GetCommerceData()
@@ -64,7 +71,7 @@ namespace GestionComercial.Domain.Cache
 
         public void SetData(List<State> states, List<SaleCondition> saleConditions,
             List<IvaCondition> ivaConditions, List<DocumentType> documentTypes, List<Measure> measures,
-            List<Tax> taxes, CommerceData? commerceData)
+            List<Tax> taxes, CommerceData? commerceData, BillingViewModel billingViewModel)
         {
             _commerceData = commerceData;
             _states = states;
@@ -73,9 +80,10 @@ namespace GestionComercial.Domain.Cache
             _documentTypes = documentTypes;
             _taxes = taxes;
             _measures = measures;
+            _billingViewModel = billingViewModel;
         }
 
-        public bool HasData => (_commerceData != null || (_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
+        public bool HasData => ((_commerceData != null) || (_billingViewModel != null) || (_states != null && _states.Any()) || (_saleConditions != null && _saleConditions.Any())
             || (_ivaConditions != null && _ivaConditions.Any()) || (_documentTypes != null && _documentTypes.Any()) || (_taxes != null && _taxes.Any())
             || (_measures != null && _measures.Any())) && !Reading;
 
@@ -88,7 +96,7 @@ namespace GestionComercial.Domain.Cache
                 _ivaConditions.Clear();
                 _documentTypes.Clear();
                 _taxes.Clear();
-                _measures.Clear();
+                _measures.Clear();                
             }
             catch (Exception ex)
             {

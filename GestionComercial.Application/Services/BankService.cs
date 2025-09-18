@@ -57,11 +57,13 @@ namespace GestionComercial.Applications.Services
         public async Task<BankViewModel?> GetBankByIdAsync(int id)
         {
             List<State> states = await _context.States
-                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
-                 .OrderBy(sc => sc.Name)
-                 .ToListAsync();
+                .AsNoTracking()
+                .Where(sc => sc.IsEnabled && !sc.IsDeleted)
+                .OrderBy(sc => sc.Name)
+                .ToListAsync();
 
             List<Account> accounts = await _context.Accounts
+                .AsNoTracking()
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Name)
                 .ToListAsync();
@@ -81,13 +83,14 @@ namespace GestionComercial.Applications.Services
             else
             {
                 Bank? bank = await _context.Banks
-                 .Where(b => b.Id == id)
-                 .Include(a => a.Account)
-                 .Include(s => s.State)
-                 .Include(bp => bp.BankParameters)
-                 .Include(a => a.Acreditations)
-                 .Include(d => d.Debitations)
-                 .FirstOrDefaultAsync();
+                    .AsNoTracking()
+                    .Where(b => b.Id == id)
+                    .Include(a => a.Account)
+                    .Include(s => s.State)
+                    .Include(bp => bp.BankParameters)
+                    .Include(a => a.Acreditations)
+                    .Include(d => d.Debitations)
+                    .FirstOrDefaultAsync();
                 return new BankViewModel
                 {
                     AccountId = bank.AccountId,
@@ -121,11 +124,13 @@ namespace GestionComercial.Applications.Services
         public async Task<BoxViewModel?> GetBoxByIdAsync(int id)
         {
             List<SaleCondition> saleConditions = await _context.SaleConditions
+                .AsNoTracking()
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Description)
                 .ToListAsync();
 
             List<Account> accounts = await _context.Accounts
+                .AsNoTracking()
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Name)
                 .ToListAsync();
@@ -145,10 +150,11 @@ namespace GestionComercial.Applications.Services
             else
             {
                 Box? box = await _context.Boxes
-                .Where(b => b.Id == id)
-                .Include(a => a.Account)
-                //.Include(sc => sc.SaleCondition)
-                .FirstOrDefaultAsync();
+                    .AsNoTracking()
+                    .Where(b => b.Id == id)
+                    .Include(a => a.Account)
+                    //.Include(sc => sc.SaleCondition)
+                    .FirstOrDefaultAsync();
 
                 return new BoxViewModel
                 {
@@ -179,6 +185,7 @@ namespace GestionComercial.Applications.Services
             StaticCommon.ContextInUse = true;
 
             List<Bank> banks = await _context.Banks
+                .AsNoTracking()
                 .Include(s => s.State)
                 .Include(bp => bp.BankParameters)
                 .Include(a => a.Acreditations)
@@ -187,7 +194,8 @@ namespace GestionComercial.Applications.Services
 
 
             List<Box> boxes = await _context.Boxes
-                 .Include(a => a.Account)
+                .AsNoTracking()
+                .Include(a => a.Account)
                 //.Include(sc => sc.SaleCondition)
                 .ToListAsync();
 
@@ -244,6 +252,7 @@ namespace GestionComercial.Applications.Services
             StaticCommon.ContextInUse = true;
 
             List<Bank> banks = await _context.Banks
+                .AsNoTracking()
                 .Where(b => b.IsEnabled && !b.IsDeleted)
                 .Include(a => a.Account)
                 .Include(s => s.State)
@@ -251,12 +260,14 @@ namespace GestionComercial.Applications.Services
                 .ToListAsync();
 
             List<BankParameter> bankParameters = await _context.BankParameters
+                .AsNoTracking()
                 .Where(a => a.IsEnabled && !a.IsDeleted)
                 .Include(s => s.Bank)
                 //.Include(sc => sc.SaleCondition)
                 .ToListAsync();
 
             List<SaleCondition> saleConditions = await _context.SaleConditions
+                .AsNoTracking()
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Description)
                 .ToListAsync();
@@ -271,10 +282,12 @@ namespace GestionComercial.Applications.Services
         public async Task<BankParameterViewModel?> GetBankParameterByIdAsync(int id)
         {
             List<SaleCondition> saleConditions = await _context.SaleConditions
+                .AsNoTracking()
                 .Where(sc => sc.IsEnabled && !sc.IsDeleted)
                 .OrderBy(sc => sc.Description)
                 .ToListAsync();
             List<Bank> banks = await _context.Banks
+                .AsNoTracking()
                .Where(b => b.IsEnabled && !b.IsDeleted)
                .Include(a => a.Account)
                .Include(s => s.State)
@@ -296,6 +309,7 @@ namespace GestionComercial.Applications.Services
             else
             {
                 BankParameter? bankParameter = await _context.BankParameters
+                    .AsNoTracking()
                  .Where(b => b.Id == id)
                  .Include(a => a.Bank)
                 // .Include(sc => sc.SaleCondition)
