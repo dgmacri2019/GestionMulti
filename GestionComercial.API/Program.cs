@@ -1,4 +1,6 @@
-﻿using GestionComercial.Api.Notifications;
+﻿using Afip.PublicServices.Interfaces;
+using Afip.PublicServices.Services;
+using GestionComercial.Api.Notifications;
 using GestionComercial.API.Helpers;
 using GestionComercial.API.Hubs;
 using GestionComercial.API.Notifications;
@@ -106,6 +108,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IParameterService, ParameterService>();
 builder.Services.AddScoped<IMasterClassService, MasterClassService>();
+builder.Services.AddScoped<IWSFEHomologacionService, WSFEHomologacionService>();
+builder.Services.AddScoped<ILoginCMSHomologacionService, LoginCMSHomologacionService>();
 
 
 
