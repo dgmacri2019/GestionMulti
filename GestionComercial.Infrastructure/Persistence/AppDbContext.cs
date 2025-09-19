@@ -280,6 +280,11 @@ namespace GestionComercial.Infrastructure.Persistence
               .IsUnique()
               .HasDatabaseName("Sale_SalePoint-Number_Index");
 
+            modelBuilder.Entity<Invoice>()
+              .HasIndex(s => new { s.SaleId, s.CompTypeId })
+              .IsUnique()
+              .HasDatabaseName("Invoice_SaleId-CompTypeId_Index");
+
             modelBuilder.Entity<City>()
               .HasIndex(c => new { c.Name, c.StateId, c.AfipId })
               .IsUnique()

@@ -1,5 +1,4 @@
 ﻿using GestionComercial.Domain.Entities.Masters;
-using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Sales
 {
@@ -15,7 +14,7 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Invoice? Invoice { get; set; }
     }
 }

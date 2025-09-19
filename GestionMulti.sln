@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionComercial.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionComercial.Domain", "GestionComercial.Domain\GestionComercial.Domain.csproj", "{118A82B3-B8BE-459D-82E8-2BAF4A95C54B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Afip", "Afip\Afip.csproj", "{8A7012B8-B034-4C50-9E1D-0F071AC23BA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{118A82B3-B8BE-459D-82E8-2BAF4A95C54B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{118A82B3-B8BE-459D-82E8-2BAF4A95C54B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{118A82B3-B8BE-459D-82E8-2BAF4A95C54B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A7012B8-B034-4C50-9E1D-0F071AC23BA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A7012B8-B034-4C50-9E1D-0F071AC23BA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A7012B8-B034-4C50-9E1D-0F071AC23BA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A7012B8-B034-4C50-9E1D-0F071AC23BA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

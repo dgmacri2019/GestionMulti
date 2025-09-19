@@ -294,6 +294,12 @@ namespace GestionComercial.Infrastructure.Persistence
                 {
                     response.Message = "Esa localidad ya se encuentra registrada";
                 }
+                else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Invoice_SaleId-CompTypeId_Index")) ||
+                   ex.InnerException != null && ex.InnerException.InnerException != null &&
+                    ex.InnerException.InnerException.Message.Contains("Invoice_SaleId-CompTypeId_Index"))
+                {
+                    response.Message = "Ese venta ya tiene generado una factura para ese tipo de comprobante";
+                }
                 else if ((ex.InnerException != null && ex.InnerException.Message.Contains("Permision_Name_Index")) ||
                    ex.InnerException != null && ex.InnerException.InnerException != null &&
                     ex.InnerException.InnerException.Message.Contains("Permision_Name_Index"))

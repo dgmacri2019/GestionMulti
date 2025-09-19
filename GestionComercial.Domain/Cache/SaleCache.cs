@@ -108,7 +108,10 @@ namespace GestionComercial.Domain.Cache
             _sales.Clear();
         }
 
-
+        public SaleViewModel? FindBySaleNumber(int salePoint, int saleNumber)
+        {
+            return _sales.FirstOrDefault(s => s.SalePoint == salePoint && s.SaleNumber == saleNumber);
+        }
 
         public bool HasData => _sales != null && _sales.Any() && !Reading;
     }

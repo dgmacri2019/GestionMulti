@@ -126,7 +126,6 @@ namespace GestionComercial.Desktop.Views.Sales
             return true;
         }
 
-
         private async Task LoadSaleAsync()
         {
 
@@ -813,65 +812,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            lblError.Text = string.Empty;
-            try
-            {
-                if (ValidateSale())
-                {
-                    if (ClientCache.Instance.FindByOptionalCode(txtClientCode.Text) != null)
-                    {
-                        Sale sale = ToSale(SaleViewModel, ArticleItems);
 
-                        var payMethodWindows = new PayMethodWindow(Math.Round(sale.Total, 2));
-                        if (payMethodWindows.ShowDialog() == true)
-                        {
-                            var selectedMethods = payMethodWindows.MetodosPago;
-                            ICollection<SalePayMetodDetail> salePayMetodDetails = [];
-                            foreach (var pm in selectedMethods)
-                                if (pm.MetodoId != 0)
-                                    salePayMetodDetails.Add(new SalePayMetodDetail
-                                    {
-                                        CreateDate = DateTime.Now,
-                                        CreateUser = App.UserName,
-                                        IsDeleted = false,
-                                        IsEnabled = true,
-                                        Value = pm.Monto,
-                                        SaleConditionId = pm.MetodoId,
-                                    });
-                            decimal totalpay = salePayMetodDetails.Sum(sp => sp.Value);
-                            sale.SalePayMetodDetails = salePayMetodDetails;
-                            sale.Sold = sale.Total - totalpay;
-                            sale.PaidOut = sale.Total == totalpay;
-                            sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
-
-
-                            GeneralResponse resultAdd = await _salesApiService.AddAsync(sale);
-                            if (resultAdd.Success)
-                            {
-                                ClearClient();
-                                ArticleItems.Clear();
-                                txtClientCode.Focus();
-                                txtClientCode.Text = string.Empty;
-                                SaleNumber++;
-                                await LoadSaleAsync();
-                            }
-                            else
-                                lblError.Text = resultAdd.Message;
-                        }
-                    }
-                    else
-                    {
-                        lblError.Text = "Cliente inválido";
-                    }
-                }
-
-
-
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = ex.Message;
-            }
         }
 
 
@@ -1113,7 +1054,7 @@ namespace GestionComercial.Desktop.Views.Sales
             //dgArticles.Height = Height * 0.3;
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private async void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
@@ -1121,8 +1062,76 @@ namespace GestionComercial.Desktop.Views.Sales
             }
             else if (e.Key == Key.F2)
             {
-                // F2 → guardar
-                BtnAdd_Click(null, null);
+                // F2 → Proforma
+                await GenerateSaleAsync(false);
+            }
+            else if (e.Key == Key.F12)
+            {
+                // F12 → Factura
+                await GenerateSaleAsync(true);
+            }
+        }
+
+        private async Task GenerateSaleAsync(bool generateInvoice)
+        {
+            lblError.Text = string.Empty;
+            try
+            {
+                if (ValidateSale())
+                {
+                    if (ClientCache.Instance.FindByOptionalCode(txtClientCode.Text) != null)
+                    {
+                        Sale sale = ToSale(SaleViewModel, ArticleItems);
+
+                        var payMethodWindows = new PayMethodWindow(Math.Round(sale.Total, 2));
+                        if (payMethodWindows.ShowDialog() == true)
+                        {
+                            var selectedMethods = payMethodWindows.MetodosPago;
+                            ICollection<SalePayMetodDetail> salePayMetodDetails = [];
+                            foreach (var pm in selectedMethods)
+                                if (pm.MetodoId != 0)
+                                    salePayMetodDetails.Add(new SalePayMetodDetail
+                                    {
+                                        CreateDate = DateTime.Now,
+                                        CreateUser = App.UserName,
+                                        IsDeleted = false,
+                                        IsEnabled = true,
+                                        Value = pm.Monto,
+                                        SaleConditionId = pm.MetodoId,
+                                    });
+                            decimal totalpay = salePayMetodDetails.Sum(sp => sp.Value);
+                            sale.SalePayMetodDetails = salePayMetodDetails;
+                            sale.Sold = sale.Total - totalpay;
+                            sale.PaidOut = sale.Total == totalpay;
+                            sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
+
+
+                            GeneralResponse resultAdd = await _salesApiService.AddAsync(sale, generateInvoice);
+                            if (resultAdd.Success)
+                            {
+                                ClearClient();
+                                ArticleItems.Clear();
+                                txtClientCode.Focus();
+                                txtClientCode.Text = string.Empty;
+                                SaleNumber++;
+                                await LoadSaleAsync();
+                            }
+                            else
+                                lblError.Text = resultAdd.Message;
+                        }
+                    }
+                    else
+                    {
+                        lblError.Text = "Cliente inválido";
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = ex.Message;
             }
         }
 

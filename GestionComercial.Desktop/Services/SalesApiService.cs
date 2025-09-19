@@ -1,6 +1,6 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Sale;
-using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Response;
 using System.IO;
@@ -8,7 +8,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Windows;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -126,6 +125,7 @@ namespace GestionComercial.Desktop.Services
                             if (result.SaleViewModels == null || result.SaleViewModels.Count() == 0)
                             {
                                 moreData = false; // no quedan más datos
+                                saleResponse.LastSaleNumber = result.LastSaleNumber;
                             }
                             else
                             {
@@ -211,22 +211,56 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<GeneralResponse> AddAsync(Sale sale)
+        internal async Task<SaleResponse> AddAsync(Sale sale, bool generateInvoice)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
-                var jsonResponse = await response.Content.ReadAsStringAsync();
+                SaleViewModel? saleCheck = SaleCache.Instance.FindBySaleNumber(sale.SalePoint, sale.SaleNumber);
 
-                return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
-                //if (response.IsSuccessStatusCode)
-                //    return saleResponse;
-                //else
-                //    return new SaleResponse
-                //    {
-                //        Success = false,
-                //        Message = saleResponse.Message,
-                //    };
+                if (saleCheck == null)
+                    if (!generateInvoice)
+                    {
+                        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+                        return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
+                    }
+                    else
+                    {
+                        HttpResponseMessage responseAddSale = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
+                        string jsonResponseAddSale = await responseAddSale.Content.ReadAsStringAsync();
+                        SaleResponse resultAddSale = JsonSerializer.Deserialize<SaleResponse>(jsonResponseAddSale, options);
+                        if (!resultAddSale.Success)
+                            return resultAddSale;
+
+                        HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("api/sales/AddInvoiceAsync", new
+                        {
+                            Id = resultAddSale.SaleId,
+                            //IsDeleted = isDeleted,
+                            //IsEnabled = isEnabled,
+                        });
+
+                        string jsonResponseAddInvoice = await responseAddInvoice.Content.ReadAsStringAsync();
+                        return JsonSerializer.Deserialize<SaleResponse>(jsonResponseAddInvoice, options);
+                    }
+                else if (saleCheck != null && generateInvoice)
+                {
+                    HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("api/sales/AddInvoiceAsync", new
+                    {
+                        Id = saleCheck.Id,
+                        //IsDeleted = isDeleted,
+                        //IsEnabled = isEnabled,
+                    });
+
+                    string jsonResponseAddInvoice = await responseAddInvoice.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<SaleResponse>(jsonResponseAddInvoice, options);
+                }
+                else
+                    return new SaleResponse
+                    {
+                        Success = false,
+                        Message = "No se reconoce el comando a realizar",
+                    };
+
             }
             catch (Exception ex)
             {

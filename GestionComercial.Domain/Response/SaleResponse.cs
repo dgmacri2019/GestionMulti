@@ -9,5 +9,6 @@ namespace GestionComercial.Domain.Response
         public List<SaleViewModel> SaleViewModels { get; set; }
 
         public int LastSaleNumber { get; set; }
+        public int SaleId { get; set; }
     }
 }

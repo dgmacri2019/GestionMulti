@@ -83,7 +83,7 @@ namespace GestionComercial.Applications.Services
                         StaticCommon.ContextInUse = true;
                         transacction.Commit();
                         StaticCommon.ContextInUse = false;
-                        return new SaleResponse { Success = true };
+                        return new SaleResponse { Success = true, SaleId = sale.Id };
                     }
                     else
                         return new SaleResponse { Success = false, Message = resultSave.Message };
@@ -231,7 +231,18 @@ namespace GestionComercial.Applications.Services
         }
 
 
+        #region Invoice
 
+        public async Task<Invoice?> FindInvoiceBySaleIdAsync(int saleId, int compTypeId)
+        {
+            return await _context.Invoices
+                .AsNoTracking()
+                .Include(iv => iv.InvoiceDetails)
+                .FirstOrDefaultAsync(i => i.SaleId == saleId && i.CompTypeId == compTypeId);
+        }
+
+
+        #endregion
 
 
         private List<SaleViewModel> ToSaleViewModelsList(List<Sale> sales)

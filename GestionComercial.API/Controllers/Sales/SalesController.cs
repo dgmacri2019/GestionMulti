@@ -1,9 +1,12 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
+using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
-using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,36 +22,29 @@ namespace GestionComercial.API.Controllers.Sales
     {
         private readonly ISalesService _saleService;
         private readonly IMasterService _masterService;
+        private readonly IMasterClassService _masterClassService;
+        private readonly IClientService _clientService;
         private readonly ISalesNotifier _notifierSales;
         private readonly IArticlesNotifier _notifierArticles;
         private readonly IClientsNotifier _notifierClients;
 
 
         public SalesController(ISalesService saleService, IMasterService masterService,
-            ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients)
+            ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients,
+            IMasterClassService masterClassService, IClientService clientService)
         {
             _saleService = saleService;
             _masterService = masterService;
             _notifierSales = notifierSales;
             _notifierArticles = notifierArticles;
             _notifierClients = notifierClients;
+            _masterClassService = masterClassService;
+            _clientService = clientService;
         }
-
-        [HttpPost("notify")]
-        public async Task<IActionResult> Notify(int id)
-        {
-            await _notifierSales.NotifyAsync(id, "VentasActualizados", ChangeType.Updated);
-            return Ok();
-        }
-
-
-
 
         [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync([FromBody] Sale sale)
         {
-            //return BadRequest(new SaleResponse { Success = false, Message = "Mensaje de prueba de error" });
-
             SaleResponse resultAdd = await _saleService.AddAsync(sale);
 
             if (resultAdd.Success)
@@ -67,6 +63,145 @@ namespace GestionComercial.API.Controllers.Sales
             }
             else return BadRequest(resultAdd);
         }
+
+        [HttpPost("AddInvoiceAsync")]
+        public async Task<IActionResult> AddInvoiceAsync([FromBody] SaleFilterDto filter)
+        {
+            try
+            {
+                SaleResponse saleResponse = await _saleService.GetByIdAsync(filter.Id);
+
+                if (saleResponse.Success)
+                {
+                    SaleViewModel sale = saleResponse.SaleViewModel;
+
+                    CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
+                    if (commerceData == null)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos del comercio no se pueden leer" });
+                    ClientViewModel? client = await _clientService.GetByIdAsync(sale.ClientId);
+                    if (client == null)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos del cliente no se pueden leer" });
+                    BillingViewModel? billing = await _masterClassService.GetBillingAsync();
+                    if (billing == null)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos del comercio (Facturación) no se pueden leer" });
+                    IEnumerable<IvaCondition> ivaConditions = await _masterClassService.GetAllIvaConditionsAsync(true, false);
+                    if (ivaConditions == null || ivaConditions.Count() == 0)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos de condiciones de IVA no se pueden leer" });
+                    IvaCondition? ivaCondition = ivaConditions.Where(ic => ic.Id == client.IvaConditionId).FirstOrDefault();
+                    if (ivaCondition == null)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos de condicion de IVA no se pueden leer" });
+                    IEnumerable<DocumentType> documentTypes = await _masterClassService.GetAllDocumentTypesAsync(true, false);
+                    if (documentTypes == null || documentTypes.Count() == 0)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos de tipos de documento no se pueden leer" });
+                    DocumentType? documentType = documentTypes.Where(dt => dt.Id == client.DocumentTypeId).FirstOrDefault();
+                    if (documentType == null)
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos de tipo de documento no se pueden leer" });
+
+
+                    int compTypeId;
+                    if (commerceData.IvaConditionId == 1)
+                    {
+                        if (client.IvaConditionId == 1 || client.IvaConditionId == 2)
+                            compTypeId = billing.EmitInvoiceM ? 51 : 1;
+                        else
+                            compTypeId = 6;
+                    }
+                    else if (commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3)
+                        compTypeId = 11;
+                    else
+                        return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir factura por la condición de iva declarada" });
+
+                    DateTime date = sale.SaleDate.Date < DateTime.Now.Date.AddDays(-5) ? DateTime.Now : sale.SaleDate;
+
+                    Invoice? invoice = await _saleService.FindInvoiceBySaleIdAsync(sale.Id, compTypeId);
+                    if (invoice == null)
+                    {
+                        invoice = new()
+                        {
+                            CreateDate = sale.CreateDate,
+                            CreateUser = sale.CreateUser,
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            SaleId = sale.Id,
+                            ClientId = sale.ClientId,
+                            PtoVenta = sale.SalePoint,
+                            ImpTotal = Convert.ToDouble(sale.Total),
+                            ImpNeto = Convert.ToDouble(sale.SubTotal),
+                            ImpTotalIVA = Convert.ToDouble(sale.TotalIVA21 + sale.TotalIVA105 + sale.TotalIVA27),
+                            ImpTotalConc = Convert.ToDouble(0),
+                            CompTypeId = compTypeId,
+                            DocNro = Convert.ToInt64(client.DocumentNumber),
+                            DocType = documentType.AfipId,
+                            ReceptorIvaId = ivaCondition.AfipId,
+                            InvoiceDate = string.Format("{0:yyyyMMdd}", date),
+                            ServDesde = string.Format("{0:yyyyMMdd}", date),
+                            ServHasta = string.Format("{0:yyyyMMdd}", date),
+                            VtoPago = string.Format("{0:yyyyMMdd}", date),
+                            Cuit = commerceData.CUIT,
+                            Alias = commerceData.Alias,
+                            CBU = commerceData.CBU,
+                            IvaConditionId = commerceData.IvaConditionId,
+                            InvoiceDetails =
+                        [
+                            new InvoiceDetail
+                        {
+                            CreateDate = sale.CreateDate,
+                            CreateUser = sale.CreateUser,
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            IvaId = 4,
+                            BaseImpIva = Convert.ToDouble(sale.BaseImp105),
+                            ImporteIva = Convert.ToDouble(sale.TotalIVA105),
+                        },
+                        new InvoiceDetail
+                        {
+                            CreateDate = sale.CreateDate,
+                            CreateUser = sale.CreateUser,
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            IvaId = 5,
+                            BaseImpIva = Convert.ToDouble(sale.BaseImp21),
+                            ImporteIva = Convert.ToDouble(sale.TotalIVA21),
+                        },
+                        new InvoiceDetail
+                        {
+                            CreateDate = sale.CreateDate,
+                            CreateUser = sale.CreateUser,
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            IvaId = 6,
+                            BaseImpIva = Convert.ToDouble(sale.BaseImp27),
+                            ImporteIva = Convert.ToDouble(sale.TotalIVA27),
+                        }
+                        ],
+                        };
+                        GeneralResponse invoiceResponse = await _masterService.AddAsync(invoice);
+
+                        if (!invoiceResponse.Success)
+                            return BadRequest(new SaleResponse { Success = false, Message = invoiceResponse.Message });
+                        return
+                            Ok(new SaleResponse { Success = true, Message = "Factura generada correctamente" });
+                    }
+                    else
+                        return BadRequest(new SaleResponse { Success = false, Message = "Ya se genero esa factura" });
+                }
+                else return BadRequest(new SaleResponse { Success = false, Message = $"No se encontro la venta que desea facturar el error fue:\n{saleResponse.Message}" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                });
+            }
+        }
+
+
+
+
+
 
 
         [HttpPost("UpdateAsync")]

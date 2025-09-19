@@ -12,7 +12,9 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public long Cuit { get; set; }
 
-        public int TaxConditionId { get; set; }
+        public int IvaConditionId { get; set; }
+
+        public int ReceptorIvaId { get; set; }
 
         public int PtoVenta { get; set; }
 
@@ -20,7 +22,7 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public long CompNro { get; set; }
 
-        public string InvoiceDate { get; set; }
+        public string? InvoiceDate { get; set; }
 
         public string? ServDesde { get; set; }
 
@@ -57,16 +59,16 @@ namespace GestionComercial.Domain.Entities.Sales
 
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual Client? Client { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual IvaCondition? IvaCondition { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual Sale? Sale { get; set; }
     }
 }

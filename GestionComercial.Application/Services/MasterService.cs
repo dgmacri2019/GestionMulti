@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
 using GestionComercial.Infrastructure.Persistence;
@@ -102,7 +103,7 @@ namespace GestionComercial.Applications.Services
                 }
             }
         }
-
+               
         public async Task<GeneralResponse> UpdateAsync<T>(T model)
         {
             while (StaticCommon.ContextInUse)
@@ -143,6 +144,11 @@ namespace GestionComercial.Applications.Services
                 }
             }
         }
+
+
+       
+
+
 
     }
 }
