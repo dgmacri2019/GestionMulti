@@ -1,5 +1,6 @@
 ﻿using Afip.PublicServices.Interfaces;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Response;
@@ -23,6 +24,9 @@ namespace Afip.PublicServices.Services
 
         #region Private Properties
         private FEAuthRequest? FEAuthRequest { get; set; }
+
+
+
 
         #endregion
 
@@ -217,7 +221,7 @@ namespace Afip.PublicServices.Services
                         CantReg = 1,
                         CbteTipo = invoice.CompTypeId,
                         PtoVta = invoice.PtoVenta,
-                    },                   
+                    },
                 };
 
 
@@ -432,7 +436,7 @@ namespace Afip.PublicServices.Services
                     cabecera.CbteTipo = respuestaCae.Body.FECAESolicitarResult.FeCabResp.CbteTipo;
                     cabecera.FchProceso = respuestaCae.Body.FECAESolicitarResult.FeCabResp.FchProceso;
                     cabecera.PtoVta = respuestaCae.Body.FECAESolicitarResult.FeCabResp.PtoVta;
-                    cabecera.Resultado = respuestaCae.Body.FECAESolicitarResult.FeCabResp.Resultado
+                    cabecera.Resultado = respuestaCae.Body.FECAESolicitarResult.FeCabResp.Resultado;
                 }
 
 
@@ -468,6 +472,7 @@ namespace Afip.PublicServices.Services
         private async Task LoginWSFEAsync()
         {
             FEAuthRequest = await _loginCMS.LogInWSFEAsync();
+
         }
 
         #endregion

@@ -1,6 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
-using System.Text.Json.Serialization;
 
 namespace GestionComercial.Domain.Entities.Sales
 {

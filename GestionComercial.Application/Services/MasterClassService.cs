@@ -27,6 +27,7 @@ namespace GestionComercial.Applications.Services
         {
             return await _context.CommerceDatas
                 .AsNoTracking()
+                .Include(b => b.Billings)
                 .FirstOrDefaultAsync();
         }
 
@@ -152,6 +153,6 @@ namespace GestionComercial.Applications.Services
             });
         }
 
-        
+
     }
 }

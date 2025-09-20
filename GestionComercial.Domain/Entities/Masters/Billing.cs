@@ -66,7 +66,7 @@ namespace GestionComercial.Domain.Entities.Masters
         [Display(Name = "Emitir Comprobantes M")]
         public bool EmitInvoiceM { get; set; }
 
-        
+
         [Display(Name = "Concepto de Comprobantes")]
         public int Concept { get; set; }
 
@@ -76,8 +76,7 @@ namespace GestionComercial.Domain.Entities.Masters
 
         public int CommerceDataId { get; set; }
 
-
-
+        public bool UseHomologacion { get; set; }
 
         //[JsonIgnore] 
         public virtual CommerceData? CommerceData { get; set; }
