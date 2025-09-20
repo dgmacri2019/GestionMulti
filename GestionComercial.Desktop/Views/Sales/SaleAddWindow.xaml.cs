@@ -571,6 +571,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                 e.Handled = true;
             }
+
         }
 
 
@@ -646,11 +647,13 @@ namespace GestionComercial.Desktop.Views.Sales
                             }
                             else
                             {
+                                string small = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription;
+
                                 ArticleItem newItem = new()
                                 {
                                     Code = article.Code,
                                     Description = article.Description,
-                                    SmallMeasureDescription = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription,
+                                    SmallMeasureDescription = small,
                                     Quantity = quantity,
                                     Bonification = 0,
                                     IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
@@ -729,12 +732,12 @@ namespace GestionComercial.Desktop.Views.Sales
 
                             //ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
 
-
+                            string small = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription;
                             ArticleItem newItem = new()
                             {
                                 Code = article.Code,
                                 Description = article.Description,
-                                SmallMeasureDescription = MasterCache.Instance.GetMeasures().First(m => m.Id == article.MeasureId).SmallDescription,
+                                SmallMeasureDescription = small,
                                 Quantity = 1,
                                 Bonification = 0,
                                 IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock,
@@ -1259,7 +1262,39 @@ namespace GestionComercial.Desktop.Views.Sales
             };
         }
 
+        private void dgArticles_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                bool showPricesWithoutIva = MasterCache.Instance.GetCommerceData().IvaConditionId == 1;
 
+                // Buscar columnas por Header o por índice
+                DataGridColumn? precioSinIvaCol = dgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Precio sin IVA");
+                DataGridColumn? subtotalSinIvaCol = dgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Sub Total sin IVA");
+                DataGridColumn? precioCol = dgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Precio");
+                DataGridColumn? ivaCol = dgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "IVA");
+
+                if (showPricesWithoutIva)
+                {
+                    if (precioSinIvaCol != null) precioSinIvaCol.Visibility = Visibility.Visible;
+                    if (subtotalSinIvaCol != null) subtotalSinIvaCol.Visibility = Visibility.Visible;
+                    if (ivaCol != null) ivaCol.Visibility = Visibility.Visible;
+                    if (precioCol != null) precioCol.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    if (precioSinIvaCol != null) precioSinIvaCol.Visibility = Visibility.Collapsed;
+                    if (subtotalSinIvaCol != null) subtotalSinIvaCol.Visibility = Visibility.Collapsed;
+                    if (ivaCol != null) ivaCol.Visibility = Visibility.Collapsed;
+                    if (precioCol != null) precioCol.Visibility = Visibility.Visible;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = ex.Message;
+            }
+        }
     }
 
 }

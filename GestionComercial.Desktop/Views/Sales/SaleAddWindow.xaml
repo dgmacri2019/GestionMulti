@@ -228,7 +228,7 @@
                       PreparingCellForEdit="dgArticles_PreparingCellForEdit"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                      AlternationCount="1000000">
+                      AlternationCount="1000000" Loaded="dgArticles_Loaded">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Style.Triggers>
@@ -348,7 +348,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <DataGridTemplateColumn Width="80" SortMemberPath="Price">
+                    <DataGridTemplateColumn Width="80" SortMemberPath="Price" x:Name="ColPrecioSinIva" >
                         <DataGridTemplateColumn.Header>
                             <TextBlock Text="Precio sin IVA"
                                        TextWrapping="Wrap"
@@ -365,7 +365,24 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Width="95" SortMemberPath="Price">
+                    <DataGridTemplateColumn x:Name="ColPrecio" Width="80" SortMemberPath="Price">
+                        <DataGridTemplateColumn.Header>
+                            <TextBlock Text="Precio"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <TextBlock Text="{Binding FinalPrice, StringFormat={}{0:C2}}" 
+                                               Style="{StaticResource CenteredTextStyle}"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn x:Name="ColSubtotalSinIva" Width="95" SortMemberPath="Price">
                         <DataGridTemplateColumn.Header>
                             <TextBlock Text="Sub Total sin IVA"
                                        TextWrapping="Wrap"
@@ -517,7 +534,7 @@
                                  LostFocus="txtGeneralDiscount_LostFocus"/>
                     </StackPanel>
                 </Border>
-                
+
                 <Border Grid.Column="2"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
@@ -541,7 +558,7 @@
                                    HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
-                
+
                 <Border Grid.Column="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
@@ -549,23 +566,23 @@
                         Margin="1"
                         BorderBrush="Black"
                         BorderThickness="2">
-                        <StackPanel Orientation="Vertical"
+                    <StackPanel Orientation="Vertical"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="Total de la venta"
+                        <TextBlock Text="Total de la venta"
                                        Style="{StaticResource BlueBold16}" 
                                        Margin="0,0,0,5"
                                        TextAlignment="Center"
                                        HorizontalAlignment="Center"
                                        TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}, RelativeSource={RelativeSource AncestorType=Window}}" 
+                        <TextBlock Text="{Binding TotalPrice, StringFormat={}{0:C2}, RelativeSource={RelativeSource AncestorType=Window}}" 
                                        Style="{StaticResource BlackBold14}" 
                                        Margin="0"
                                        TextAlignment="Center"
                                        HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                
+                    </StackPanel>
+                </Border>
+
                 <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="40,0" 
                             VerticalAlignment="Center">
                     <TextBlock Text="Cantidad de items:" Style="{StaticResource BlueBold12}" VerticalAlignment="Center"/>

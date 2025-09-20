@@ -88,7 +88,7 @@
                   FrozenColumnCount="3" 
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                  MouseDoubleClick="DataGrid_MouseDoubleClick">
+                  MouseDoubleClick="DataGrid_MouseDoubleClick" Loaded="DgArticles_Loaded">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Categoría" Width="100" SortMemberPath="Category">
                     <DataGridTemplateColumn.CellTemplate>
@@ -174,7 +174,13 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Bonificación" Width="auto" SortMemberPath="Bonification">
+                <DataGridTemplateColumn Width="auto" SortMemberPath="Bonification">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Bonificación"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border CornerRadius="20"
@@ -205,7 +211,13 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Impuestos" Width="150">
+                <DataGridTemplateColumn Width="150">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Impuestos"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding TaxesPrice}" VerticalAlignment="Center">
@@ -275,6 +287,22 @@
                 <DataGridTemplateColumn Width="100" SortMemberPath="PriceWithTax">
                     <DataGridTemplateColumn.Header>
                         <TextBlock Text="Precio venta con IVA"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding SalePriceWithTaxes, StringFormat={}{0:C2}}" 
+                                   Style="{StaticResource CenteredTextStyle}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" SortMemberPath="PriceWithTax">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Precio venta"
                                    TextWrapping="Wrap"
                                    TextAlignment="Center"
                                    HorizontalAlignment="Center"/>

@@ -1,4 +1,6 @@
-﻿using GestionComercial.Desktop.ViewModels.Stock;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.ViewModels.Stock;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Stock;
 using System.Windows;
 using System.Windows.Controls;
@@ -71,6 +73,78 @@ namespace GestionComercial.Desktop.Controls.Articles
             PanelEdicion.Content = ventana;
         }
 
+        private void DgArticles_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                bool showPricesWithoutIva = MasterCache.Instance.GetCommerceData().IvaConditionId == 1;
+                bool showCostPrices = false;
+                // Buscar columnas por Header o por índice
+                DataGridColumn? costoSinIvaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Costo sin IVA");
+                DataGridColumn? bonificacionCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Bonificación");
+                DataGridColumn? subtotalSinIvaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "SubTotal sin IVA");
+                DataGridColumn? impuestosCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Impuestos");
+                DataGridColumn? costoConIvaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Costo con IVA");
+                DataGridColumn? utilidadCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Utilidad");
+                DataGridColumn? ventaSinIvaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Precio venta sin IVA");
+                DataGridColumn? ventaConIvaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Precio venta con IVA");
+                DataGridColumn? ventaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Precio venta");
 
+                if (showPricesWithoutIva)
+                {
+                    if (ventaCol != null) ventaCol.Visibility = Visibility.Collapsed;
+                    if (ventaSinIvaCol != null) ventaSinIvaCol.Visibility = Visibility.Visible;
+                    if (ventaConIvaCol != null) ventaConIvaCol.Visibility = Visibility.Visible;
+
+                    if (showCostPrices)
+                    {
+                        if (costoSinIvaCol != null) costoSinIvaCol.Visibility = Visibility.Visible;
+                        if (bonificacionCol != null) bonificacionCol.Visibility = Visibility.Visible;
+                        if (subtotalSinIvaCol != null) subtotalSinIvaCol.Visibility = Visibility.Visible;
+                        if (impuestosCol != null) impuestosCol.Visibility = Visibility.Visible;
+                        if (costoConIvaCol != null) costoConIvaCol.Visibility = Visibility.Visible;
+                        if (utilidadCol != null) utilidadCol.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        if (costoSinIvaCol != null) costoSinIvaCol.Visibility = Visibility.Collapsed;
+                        if (bonificacionCol != null) bonificacionCol.Visibility = Visibility.Collapsed;
+                        if (subtotalSinIvaCol != null) subtotalSinIvaCol.Visibility = Visibility.Collapsed;
+                        if (impuestosCol != null) impuestosCol.Visibility = Visibility.Collapsed;
+                        if (costoConIvaCol != null) costoConIvaCol.Visibility = Visibility.Collapsed;
+                        if (utilidadCol != null) utilidadCol.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    if (ventaSinIvaCol != null) ventaSinIvaCol.Visibility = Visibility.Collapsed;
+                    if (ventaConIvaCol != null) ventaConIvaCol.Visibility = Visibility.Collapsed;
+                    if (ventaCol != null) ventaCol.Visibility = Visibility.Visible;
+
+                    
+                    if (showCostPrices)
+                    {
+                        //TODO: Resolver Vista para monotributo
+                        if (utilidadCol != null) utilidadCol.Visibility = Visibility.Visible;
+                        if (impuestosCol != null) impuestosCol.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        if (costoSinIvaCol != null) costoSinIvaCol.Visibility = Visibility.Collapsed;
+                        if (bonificacionCol != null) bonificacionCol.Visibility = Visibility.Collapsed;
+                        if (subtotalSinIvaCol != null) subtotalSinIvaCol.Visibility = Visibility.Collapsed;
+                        if (impuestosCol != null) impuestosCol.Visibility = Visibility.Collapsed;
+                        if (costoConIvaCol != null) costoConIvaCol.Visibility = Visibility.Collapsed;
+                        if (utilidadCol != null) utilidadCol.Visibility = Visibility.Collapsed;
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
+            }
+        }
     }
 }

@@ -113,7 +113,7 @@ namespace GestionComercial.Desktop.ViewModels.Stock
             App.Current.Dispatcher.Invoke(() =>
             {
                 PriceLists.Clear();
-                foreach (var c in filtered.OrderBy(c => c.Description))
+                foreach (var c in filtered.OrderBy(c => c.Id))
                     PriceLists.Add(c);
             });
         }

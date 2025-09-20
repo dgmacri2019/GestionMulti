@@ -14,6 +14,7 @@ namespace GestionComercial.Domain.DTOs.Sale
         private string _smallMeasureDescription;
         private int _priceListId;
         private decimal _price;
+        private decimal _finalPrice;
         private decimal _quantity = 1;
         private decimal _bonification;
         private decimal _subtotal;
@@ -62,6 +63,10 @@ namespace GestionComercial.Domain.DTOs.Sale
         }
 
         public decimal Price { get => _price; set { if (SetProperty(ref _price, value)) Recalculate(); } }
+        public decimal FinalPrice { get => _finalPrice; set { if (SetProperty(ref _finalPrice, value)) Recalculate(); } }
+       
+        
+        
         public decimal Quantity { get => _quantity; set { if (SetProperty(ref _quantity, value)) Recalculate(); } }
         public decimal Bonification
         {
@@ -84,6 +89,7 @@ namespace GestionComercial.Domain.DTOs.Sale
             {
                 Subtotal = Price * Quantity;
                 Iva = (Subtotal - (Subtotal * Bonification / 100m)) * tax.Rate / 100;
+                FinalPrice = (Subtotal + (Subtotal * tax.Rate / 100)) / Quantity;
                 Total = Subtotal - (Subtotal * Bonification / 100m) + Iva;
             }
         }

@@ -249,6 +249,11 @@ namespace GestionComercial.Infrastructure.Persistence
                 .IsUnique()
                 .HasDatabaseName("Client_Document_Index");
 
+            modelBuilder.Entity<PriceList>()
+                .HasIndex(c => new { c.Description })
+                .IsUnique()
+                .HasDatabaseName("PriceList_Description_Index");
+
             modelBuilder.Entity<Provider>()
                 .HasIndex(c => new { c.OptionalCode })
                 .IsUnique()

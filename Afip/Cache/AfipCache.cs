@@ -32,7 +32,7 @@ namespace Afip.Cache
         }
 
 
-        public bool HasData => (_commerceData != null || _billing != null) && !Reading;
+        public bool HasData => _commerceData != null && _billing != null && !Reading;
 
 
     }

@@ -91,6 +91,17 @@
                   VerticalAlignment="Stretch" 
                   MouseDoubleClick="DataGrid_MouseDoubleClick">
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Número" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding Id}" 
+                                           Style="{StaticResource CenteredTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>               
                 <DataGridTemplateColumn Header="Descripción" Width="400">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
