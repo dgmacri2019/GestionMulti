@@ -24,15 +24,17 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public string? InvoiceDate { get; set; }
 
+        public int Concepto { get; set; }
+
         public string? ServDesde { get; set; }
 
         public string? ServHasta { get; set; }
 
         public string? VtoPago { get; set; }
 
-        public int DocType { get; set; }
+        public int ClientDocType { get; set; }
 
-        public long DocNro { get; set; }
+        public long ClientDocNro { get; set; }
 
         public double ImpTotal { get; set; }
 
@@ -47,6 +49,8 @@ namespace GestionComercial.Domain.Entities.Sales
         public string? Alias { get; set; }
 
         public string? CAE { get; set; }
+
+        public double InternalTax { get; set; }
 
         public string? FechaVtoCAE { get; set; }
 
@@ -70,5 +74,6 @@ namespace GestionComercial.Domain.Entities.Sales
 
         //[JsonIgnore]
         public virtual Sale? Sale { get; set; }
+
     }
 }

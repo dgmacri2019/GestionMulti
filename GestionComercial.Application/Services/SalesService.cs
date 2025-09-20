@@ -242,6 +242,17 @@ namespace GestionComercial.Applications.Services
         }
 
 
+        public async Task<Invoice?> FindInvoiceAsync(int invoiceAnularId)
+        {
+            return await _context.Invoices
+                .AsNoTracking()
+                .Include(id => id.InvoiceDetails)
+                .Include(s => s.Sale)
+                .Where(i => i.Id == invoiceAnularId)
+                .FirstOrDefaultAsync();
+        }
+
+
         #endregion
 
 
@@ -289,5 +300,7 @@ namespace GestionComercial.Applications.Services
 
             }).OrderBy(s => s.SalePoint).ThenBy(s => s.SaleNumber).ToList();
         }
+
+
     }
 }

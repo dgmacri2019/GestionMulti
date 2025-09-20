@@ -1,4 +1,5 @@
-﻿using GestionComercial.API.Security;
+﻿using Afip.PublicServices.Interfaces;
+using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.Client;
@@ -27,11 +28,12 @@ namespace GestionComercial.API.Controllers.Sales
         private readonly ISalesNotifier _notifierSales;
         private readonly IArticlesNotifier _notifierArticles;
         private readonly IClientsNotifier _notifierClients;
+        private readonly IWSFEHomologacionService _wSFEHomologacion;
 
 
         public SalesController(ISalesService saleService, IMasterService masterService,
             ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients,
-            IMasterClassService masterClassService, IClientService clientService)
+            IMasterClassService masterClassService, IClientService clientService, IWSFEHomologacionService wSFEHomologacion)
         {
             _saleService = saleService;
             _masterService = masterService;
@@ -40,6 +42,7 @@ namespace GestionComercial.API.Controllers.Sales
             _notifierClients = notifierClients;
             _masterClassService = masterClassService;
             _clientService = clientService;
+            _wSFEHomologacion = wSFEHomologacion;
         }
 
         [HttpPost("AddAsync")]
@@ -122,6 +125,7 @@ namespace GestionComercial.API.Controllers.Sales
                             CreateUser = sale.CreateUser,
                             IsDeleted = false,
                             IsEnabled = true,
+                            Concepto = billing.Concept,
                             SaleId = sale.Id,
                             ClientId = sale.ClientId,
                             PtoVenta = sale.SalePoint,
@@ -130,8 +134,8 @@ namespace GestionComercial.API.Controllers.Sales
                             ImpTotalIVA = Convert.ToDouble(sale.TotalIVA21 + sale.TotalIVA105 + sale.TotalIVA27),
                             ImpTotalConc = Convert.ToDouble(0),
                             CompTypeId = compTypeId,
-                            DocNro = Convert.ToInt64(client.DocumentNumber),
-                            DocType = documentType.AfipId,
+                            ClientDocNro = Convert.ToInt64(client.DocumentNumber),
+                            ClientDocType = documentType.AfipId,
                             ReceptorIvaId = ivaCondition.AfipId,
                             InvoiceDate = string.Format("{0:yyyyMMdd}", date),
                             ServDesde = string.Format("{0:yyyyMMdd}", date),
@@ -140,6 +144,7 @@ namespace GestionComercial.API.Controllers.Sales
                             Cuit = commerceData.CUIT,
                             Alias = commerceData.Alias,
                             CBU = commerceData.CBU,
+                            InternalTax = Convert.ToDouble(sale.InternalTax),
                             IvaConditionId = commerceData.IvaConditionId,
                             InvoiceDetails =
                         [
@@ -175,10 +180,13 @@ namespace GestionComercial.API.Controllers.Sales
                         }
                         ],
                         };
-                        GeneralResponse invoiceResponse = await _masterService.AddAsync(invoice);
+                        GeneralResponse invoiceAddResponse = await _masterService.AddAsync(invoice);
 
-                        if (!invoiceResponse.Success)
-                            return BadRequest(new SaleResponse { Success = false, Message = invoiceResponse.Message });
+                        if (!invoiceAddResponse.Success)
+                            return BadRequest(new SaleResponse { Success = false, Message = invoiceAddResponse.Message });
+
+                        InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0);
+
                         return
                             Ok(new SaleResponse { Success = true, Message = "Factura generada correctamente" });
                     }
