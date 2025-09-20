@@ -7,7 +7,7 @@
         MinHeight="800"
         MinWidth="1024"
         Width="1024"
-        Height="800"
+        Height="900"
         Loaded="miUserControl_Loaded" 
         KeyDown="Window_KeyDown"
         Background="LightGray"

@@ -105,7 +105,16 @@ namespace GestionComercial.Domain.Cache
         }
         public void ClearCache()
         {
-            _sales.Clear();
+            try
+            {
+
+                _sales.Clear();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public SaleViewModel? FindBySaleNumber(int salePoint, int saleNumber)

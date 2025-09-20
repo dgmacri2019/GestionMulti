@@ -123,6 +123,7 @@ namespace GestionComercial.API.Controllers.Sales
                     {
                         invoice = new()
                         {
+
                             CreateDate = sale.CreateDate,
                             CreateUser = sale.CreateUser,
                             IsDeleted = false,
@@ -132,8 +133,8 @@ namespace GestionComercial.API.Controllers.Sales
                             ClientId = sale.ClientId,
                             PtoVenta = sale.SalePoint,
                             ImpTotal = Convert.ToDouble(sale.Total),
-                            ImpNeto = Convert.ToDouble(sale.SubTotal),
-                            ImpTotalIVA = Convert.ToDouble(sale.TotalIVA21 + sale.TotalIVA105 + sale.TotalIVA27),
+                            ImpNeto = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? Convert.ToDouble(sale.Total) : Convert.ToDouble(sale.SubTotal),
+                            ImpTotalIVA = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? 0 : Convert.ToDouble(sale.TotalIVA21 + sale.TotalIVA105 + sale.TotalIVA27),
                             ImpTotalConc = Convert.ToDouble(0),
                             CompTypeId = compTypeId,
                             ClientDocNro = Convert.ToInt64(client.DocumentNumber),
@@ -148,44 +149,40 @@ namespace GestionComercial.API.Controllers.Sales
                             CBU = commerceData.CBU,
                             InternalTax = Convert.ToDouble(sale.InternalTax),
                             IvaConditionId = commerceData.IvaConditionId,
-                            InvoiceDetails =
-                        [
-                            new InvoiceDetail
-                        {
-                            CreateDate = sale.CreateDate,
-                            CreateUser = sale.CreateUser,
-                            IsDeleted = false,
-                            IsEnabled = true,
-                            IvaId = 4,
-                            BaseImpIva = Convert.ToDouble(sale.BaseImp105),
-                            ImporteIva = Convert.ToDouble(sale.TotalIVA105),
-                        },
-                        new InvoiceDetail
-                        {
-                            CreateDate = sale.CreateDate,
-                            CreateUser = sale.CreateUser,
-                            IsDeleted = false,
-                            IsEnabled = true,
-                            IvaId = 5,
-                            BaseImpIva = Convert.ToDouble(sale.BaseImp21),
-                            ImporteIva = Convert.ToDouble(sale.TotalIVA21),
-                        },
-                        new InvoiceDetail
-                        {
-                            CreateDate = sale.CreateDate,
-                            CreateUser = sale.CreateUser,
-                            IsDeleted = false,
-                            IsEnabled = true,
-                            IvaId = 6,
-                            BaseImpIva = Convert.ToDouble(sale.BaseImp27),
-                            ImporteIva = Convert.ToDouble(sale.TotalIVA27),
-                        }
-                        ],
+                            InvoiceDetails = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3? null : 
+                            [
+                                new InvoiceDetail
+                                {
+                                    CreateDate = sale.CreateDate,
+                                    CreateUser = sale.CreateUser,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    IvaId = 4,
+                                    BaseImpIva = Convert.ToDouble(sale.BaseImp105),
+                                    ImporteIva = Convert.ToDouble(sale.TotalIVA105),
+                                },
+                                new InvoiceDetail
+                                {
+                                    CreateDate = sale.CreateDate,
+                                    CreateUser = sale.CreateUser,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    IvaId = 5,
+                                    BaseImpIva = Convert.ToDouble(sale.BaseImp21),
+                                    ImporteIva = Convert.ToDouble(sale.TotalIVA21),
+                                },
+                                new InvoiceDetail
+                                {
+                                    CreateDate = sale.CreateDate,
+                                    CreateUser = sale.CreateUser,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    IvaId = 6,
+                                    BaseImpIva = Convert.ToDouble(sale.BaseImp27),
+                                    ImporteIva = Convert.ToDouble(sale.TotalIVA27),
+                                }
+                                ],
                         };
-                        GeneralResponse invoiceAddResponse = await _masterService.AddAsync(invoice);
-
-                        if (!invoiceAddResponse.Success)
-                            return BadRequest(new SaleResponse { Success = false, Message = invoiceAddResponse.Message });
 
 
                         //InvoiceResponse resultAfip = billing.UseHomologacion ?
@@ -195,8 +192,26 @@ namespace GestionComercial.API.Controllers.Sales
 
                         InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0);
 
-                        return
-                            Ok(new SaleResponse { Success = true, Message = "Factura generada correctamente" });
+                        if (resultAfip.Success)
+                        {
+                            invoice.CAE = resultAfip.CAE;
+                            invoice.CompNro = resultAfip.CompNro;
+                            invoice.FechaVtoCAE = resultAfip.FechaVtoCAE;
+                            invoice.FechaProceso = resultAfip.FechaProceso;
+
+                            GeneralResponse invoiceAddResponse = await _masterService.AddAsync(invoice);
+
+                            if (!invoiceAddResponse.Success)
+                                return BadRequest(new SaleResponse { Success = false, Message = invoiceAddResponse.Message });
+                            else
+                                return Ok(new SaleResponse { Success = true, Message = "Factura generada correctamente" });
+                        }
+                        return BadRequest(new SaleResponse
+                        {
+                            Success = false,
+                            Message = resultAfip.Message,
+                        });
+
                     }
                     else
                         return BadRequest(new SaleResponse { Success = false, Message = "Ya se genero esa factura" });

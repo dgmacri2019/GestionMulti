@@ -41,67 +41,92 @@ namespace Afip.PublicServices.Services
             _masterService = masterService;
         }
 
-        public async Task<FEAuthRequest?> LogInWSFEAsync()
+        public async Task<AfipLoginResponse> LogInWSFEAsync()
         {
-            SecureString passwordSecureString = new();
-            string certificatePath;
-            if (!AfipCache.Instance.HasData)
+            try
             {
-                AfipCache.Reading = true;
-                CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
-                if (commerceData != null)
+                SecureString passwordSecureString = new();
+                string certificatePath;
+                if (!AfipCache.Instance.HasData)
                 {
-                    if (commerceData.Billings != null && commerceData.Billings.Count() > 0)
+                    AfipCache.Reading = true;
+                    CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
+                    if (commerceData != null)
                     {
-                        AfipCache.Instance.SetData(CommerceData, Billing);
+                        if (commerceData.Billings != null && commerceData.Billings.Count() > 0)
+                        {
+
+                            AfipCache.Instance.SetData(commerceData, commerceData.Billings.First());
+                        }
                     }
+                    AfipCache.Reading = false;
                 }
-                AfipCache.Reading = false;
-            }
 
-            Billing = AfipCache.Instance.GetBilling();
-            CommerceData = AfipCache.Instance.GetCommerceData();
+                Billing = AfipCache.Instance.GetBilling();
+                CommerceData = AfipCache.Instance.GetCommerceData();
 
 
-            if (Billing != null && Billing.WSDLExpirationTime > DateTime.Now)
-            {
-
-                return new FEAuthRequest
+                if (Billing != null && Billing.WSDLExpirationTime > DateTime.Now)
                 {
-                    Cuit = CommerceData.CUIT,
-                    Sign = Billing.WSDLSign,
-                    Token = Billing.WSDLToken,
-                };
-            }
-            else
-            {
-                certificatePath = string.Format("{0}{1}.pfx", Folder, AfipCache.Instance.GetCommerceData().CUIT);
-                foreach (char c in CryptoHelper.Decrypt(AfipCache.Instance.GetBilling().CertPass))
-                    passwordSecureString.AppendChar(c);
-                passwordSecureString.MakeReadOnly();
 
-
-                AfipLoginResquestResponse resultLogIn = await ObtenerLoginTicketResponseAsync(certificatePath, passwordSecureString);
-
-                if (resultLogIn.Success)
-                {
-                    Billing.WSDLGenerationTime = resultLogIn.GenerationTime;
-                    Billing.WSDLExpirationTime = resultLogIn.ExpirationTime;
-                    Billing.WSDLSign = resultLogIn.Sign;
-                    Billing.WSDLToken = resultLogIn.Token;
-                    Billing.UniqueId = resultLogIn.UniqueId;
-                    AfipCache.Instance.SetData(CommerceData, Billing);
-                    await _masterService.UpdateAsync(Billing);
-                    return new FEAuthRequest
+                    return new AfipLoginResponse
                     {
-                        Cuit = CommerceData.CUIT,
-                        Sign = Billing.WSDLSign,
-                        Token = Billing.WSDLToken,
+                        Success = true,
+                        Object = new FEAuthRequest
+                        {
+                            Cuit = CommerceData.CUIT,
+                            Sign = Billing.WSDLSign,
+                            Token = Billing.WSDLToken,
+                        },
+                    };
+                }
+                else
+                {
+                    certificatePath = Path.Combine(Folder, string.Format("{0}.pfx", AfipCache.Instance.GetCommerceData().CUIT));
+                    string pass = CryptoHelper.Decrypt(Billing.CertPass);
+                    foreach (char c in pass)
+                        passwordSecureString.AppendChar(c);
+                    passwordSecureString.MakeReadOnly();
+
+
+                    AfipLoginResquestResponse resultLogIn = await ObtenerLoginTicketResponseAsync(certificatePath, passwordSecureString);
+
+                    if (resultLogIn.Success)
+                    {
+                        Billing.WSDLGenerationTime = resultLogIn.GenerationTime;
+                        Billing.WSDLExpirationTime = resultLogIn.ExpirationTime;
+                        Billing.WSDLSign = resultLogIn.Sign;
+                        Billing.WSDLToken = resultLogIn.Token;
+                        Billing.UniqueId = resultLogIn.UniqueId;
+                        AfipCache.Instance.SetData(CommerceData, Billing);
+                        await _masterService.UpdateAsync(Billing);
+                        return new AfipLoginResponse
+                        {
+                            Success = true,
+                            Object = new FEAuthRequest
+                            {
+                                Cuit = CommerceData.CUIT,
+                                Sign = Billing.WSDLSign,
+                                Token = Billing.WSDLToken,
+                            },
+                        };
+
+                    }
+                    return new AfipLoginResponse
+                    {
+                        Success = false,
+                        Message = resultLogIn.Message
                     };
 
                 }
-                return null;
-
+            }
+            catch (Exception ex)
+            {
+                return new AfipLoginResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
             }
         }
 
@@ -134,8 +159,9 @@ namespace Afip.PublicServices.Services
                 // Encodeo el mensaje PKCS #7.
                 return cmsFirmado.Encode();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                string error = ex.Message;
                 return null;
             }
         }

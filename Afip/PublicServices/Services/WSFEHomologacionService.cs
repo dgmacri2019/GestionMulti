@@ -1,7 +1,5 @@
 ﻿using Afip.PublicServices.Interfaces;
 using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Response;
 using System.Globalization;
@@ -38,7 +36,6 @@ namespace Afip.PublicServices.Services
             _loginCMS = loginCMS;
             _salesService = salesService;
             _serviceSoapClient = new ServiceSoapClient(EndpointConfiguration.ServiceSoap);
-            _ = LoginWSFEAsync();
         }
 
         #endregion
@@ -201,6 +198,15 @@ namespace Afip.PublicServices.Services
         {
             try
             {
+                AfipLoginResponse resultLogin = await _loginCMS.LogInWSFEAsync();
+                if (!resultLogin.Success)
+                    return new InvoiceResponse
+                    {
+                        Success = false,
+                        Message = resultLogin.Message
+                    };
+                FEAuthRequest = (FEAuthRequest)resultLogin.Object;
+
                 InvoiceResponse response = new() { Success = false };
                 //Datos de la respuesta
                 FECAESolicitarResponse respuestaCae = new();
@@ -240,17 +246,17 @@ namespace Afip.PublicServices.Services
                 }
 
                 long cbteDesdeHasta = resultLastCbte.LastCbte + 1;
-
-                foreach (InvoiceDetail invoiceDetail in invoice.InvoiceDetails)
-                    if (invoiceDetail.ImporteIva > 0)
-                    {
-                        alicIvas.Add(new AlicIva
+                if (invoice.InvoiceDetails != null)
+                    foreach (InvoiceDetail invoiceDetail in invoice.InvoiceDetails)
+                        if (invoiceDetail.ImporteIva > 0)
                         {
-                            Id = invoiceDetail.IvaId,
-                            BaseImp = invoiceDetail.BaseImpIva,
-                            Importe = invoiceDetail.ImporteIva,
-                        });
-                    }
+                            alicIvas.Add(new AlicIva
+                            {
+                                Id = invoiceDetail.IvaId,
+                                BaseImp = invoiceDetail.BaseImpIva,
+                                Importe = invoiceDetail.ImporteIva,
+                            });
+                        }
 
                 if (invoice.InternalTax != 0)
                 {
@@ -429,6 +435,30 @@ namespace Afip.PublicServices.Services
                 //Solicita CAE
                 respuestaCae = await _serviceSoapClient.FECAESolicitarAsync(FEAuthRequest, feCAEReq);
 
+                if (respuestaCae.Body.FECAESolicitarResult.FeCabResp != null && respuestaCae.Body.FECAESolicitarResult.FeCabResp.CantReg > 0)
+                {
+                    response.CAE = respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].CAE;
+                    response.FechaVtoCAE = respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].CAEFchVto;
+                    response.CompNro = respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].CbteHasta;
+                    response.FechaProceso = respuestaCae.Body.FECAESolicitarResult.FeCabResp.FchProceso;
+                    response.Resultado = respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].Resultado;
+                }
+
+                if (respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].Observaciones != null
+                    && respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].Observaciones.Count() > 0)
+                {
+                    foreach (var observacion in respuestaCae.Body.FECAESolicitarResult.FeDetResp[0].Observaciones)
+                        response.Message = $"Observacion:{observacion.Code}. {observacion.Msg}\n";
+                }
+
+                if (respuestaCae.Body.FECAESolicitarResult.Errors != null
+                    && respuestaCae.Body.FECAESolicitarResult.Errors.Count() > 0)
+                {
+                    foreach (var error in respuestaCae.Body.FECAESolicitarResult.Errors)
+                        response.Message = $"Error:{error.Code}. {error.Msg}\n";
+                }
+
+
                 if (respuestaCae.Body.FECAESolicitarResult.FeCabResp != null)
                 {
                     cabecera.Cuit = respuestaCae.Body.FECAESolicitarResult.FeCabResp.Cuit;
@@ -439,19 +469,8 @@ namespace Afip.PublicServices.Services
                     cabecera.Resultado = respuestaCae.Body.FECAESolicitarResult.FeCabResp.Resultado;
                 }
 
-
-
-
-
-
-
-
-
-
-                return new InvoiceResponse
-                {
-                    Success = true,
-                };
+                response.Success = response.Resultado == "A";
+                return response;
             }
             catch (Exception ex)
             {
@@ -471,7 +490,7 @@ namespace Afip.PublicServices.Services
 
         private async Task LoginWSFEAsync()
         {
-            FEAuthRequest = await _loginCMS.LogInWSFEAsync();
+
 
         }
 
