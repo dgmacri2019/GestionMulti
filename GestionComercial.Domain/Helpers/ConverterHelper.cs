@@ -411,6 +411,7 @@ namespace GestionComercial.Domain.Helpers
                 WSDLSign = billing.WSDLSign,
                 WSDLToken = billing.WSDLToken,
                 CertPath = string.Empty,
+                UseHomologacion = billing.UseHomologacion
             };
         }
         public static Billing? ToBilling(BillingViewModel? billingViewModel, bool isNew)
@@ -442,6 +443,7 @@ namespace GestionComercial.Domain.Helpers
                 WSDLGenerationTime = billingViewModel.WSDLGenerationTime,
                 WSDLSign = billingViewModel.WSDLSign,
                 WSDLToken = billingViewModel.WSDLToken,
+                UseHomologacion = billingViewModel.UseHomologacion,
             };
         }
 

@@ -100,7 +100,7 @@ namespace GestionComercial.API.Controllers.Sales
                     if (documentType == null)
                         return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la factura porque los datos de tipo de documento no se pueden leer" });
 
-                    if(!billing.UseWSDL)
+                    if (!billing.UseWSDL)
                         return BadRequest(new SaleResponse { Success = false, Message = "El servicio de facturación electrónica no se encuentra habilitado.\n Debe habilitarlo desde la sección Configuracion - Datos Fiscales" });
 
                     int compTypeId;
@@ -187,7 +187,13 @@ namespace GestionComercial.API.Controllers.Sales
                         if (!invoiceAddResponse.Success)
                             return BadRequest(new SaleResponse { Success = false, Message = invoiceAddResponse.Message });
 
-                        InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0)
+
+                        //InvoiceResponse resultAfip = billing.UseHomologacion ?
+                        //    await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0)
+                        //    :
+                        //    await _wSFEProduccion.SolicitarCAEAsync(invoice, 0);
+
+                        InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0);
 
                         return
                             Ok(new SaleResponse { Success = true, Message = "Factura generada correctamente" });
