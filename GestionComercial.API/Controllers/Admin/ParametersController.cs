@@ -19,24 +19,20 @@ namespace GestionComercial.API.Controllers.Admin
     {
         private readonly IMasterService _masterService;
         private readonly IParametersNotifier _notifier;
+        private readonly ISalesNotifier _salesNotifier;
         private readonly IParameterService _parameterService;
 
-        public ParametersController(IMasterService masterService, IParametersNotifier notifier, IParameterService parameterService)
+        public ParametersController(IMasterService masterService, IParametersNotifier notifier,
+            IParameterService parameterService, ISalesNotifier salesNotifier)
         {
             _masterService = masterService;
             _notifier = notifier;
+            _salesNotifier = salesNotifier;
             _parameterService = parameterService;
         }
 
 
-        [HttpPost("{id:int}/notify")]
-        public async Task<IActionResult> Notify(int id, [FromQuery] string nombre = "")
-        {
-            await _notifier.NotifyAsync(id, nombre, ChangeType.Updated);
-            return Ok();
-        }
-
-        [HttpPost("AddGeneralParameterAsync")]
+       [HttpPost("AddGeneralParameterAsync")]
         public async Task<IActionResult> AddAsync([FromBody] GeneralParameter generalParameter)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(generalParameter);
@@ -111,7 +107,7 @@ namespace GestionComercial.API.Controllers.Admin
             if (resultAdd.Success)
             {
                 await _notifier.NotifyAsync(pcParameter.Id, "PcParameter", ChangeType.Updated);
-
+                await _salesNotifier.NotifyAsync(0, "Actuliza parametros de PC", ChangeType.Updated);
                 return Ok("Parametro Pc actualizado correctamente");
             }
             else return BadRequest(resultAdd.Message);

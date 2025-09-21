@@ -11,8 +11,7 @@ namespace GestionComercial.Applications.Interfaces
         Task<IdentityResult> DeleteAsync(string id);
         Task<IdentityResult> UpdateAsync(UserFilterDto model);
         Task<IdentityResult> ChangeRoleAsync(UserFilterDto model);
-        Task<IEnumerable<UserViewModel>> GetAllAsync(UserFilterDto model);
-        Task<IEnumerable<UserViewModel>> SearchToListAsync(UserFilterDto model);
-        Task<UserViewModel?> GetByIdAsync(UserFilterDto model);
+        Task<UserResponse> GetAllAsync(int page, int pageSize);
+        Task<UserViewModel?> GetByIdAsync(string id);
     }
 }

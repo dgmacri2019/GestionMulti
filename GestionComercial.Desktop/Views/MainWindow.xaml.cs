@@ -16,6 +16,7 @@ using GestionComercial.Desktop.ViewModels.Parameter;
 using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.ViewModels.Stock;
 using GestionComercial.Desktop.Views.Masters;
+using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Threading.Tasks;
@@ -87,7 +88,8 @@ namespace GestionComercial.Desktop.Views
                     Icon = "/Images/Sales 32.png",
                     Children =
                     [
-                        new() { Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "Sales" },
+                        new() { Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "NewSale" },
+                        new() { Title = "Lista de ventas", Icon = "/Images/Sale List 32.png", Tag = "ListSales" },
                         new() {
                             Title = "Reportes",
                             Icon = "/Images/Report 20.png",
@@ -233,7 +235,11 @@ namespace GestionComercial.Desktop.Views
                     case "Permissions":
                         MainContent.Content = new ListPermissionsControlView();
                         break;
-                    case "Sales":
+                    case "NewSale":
+                        var saleAddWindow = new SaleAddWindow(0) { Owner = Window.GetWindow(this) };
+                        saleAddWindow.Show();
+                        break;
+                    case "ListSales":
                         MainContent.Content = new ListSaleControlView();
                         break;
                     case "Sales_Report":

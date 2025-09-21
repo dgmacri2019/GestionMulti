@@ -128,10 +128,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
                         Articles.Add(p);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
             }
 
 

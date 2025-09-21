@@ -43,7 +43,6 @@
                      Width="auto"
                      MinWidth="150"
                      VerticalAlignment="Center"
-                     IsReadOnly="True"
                      Text="{Binding PCName}"/>
         </StackPanel>
 

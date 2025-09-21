@@ -1,7 +1,9 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Services;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -59,25 +61,22 @@ namespace GestionComercial.API.Controllers.Security
         [HttpPost("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync(UserFilterDto model)
         {
-            return Ok(await _userService.GetAllAsync(model));
+            UserResponse userResponse = await _userService.GetAllAsync(model.Page, model.PageSize);
+            return userResponse.Success ? Ok(userResponse) : BadRequest(userResponse.Message);
         }
 
 
-        [HttpPost("SearchToListAsync")]
-        public async Task<IActionResult> SearchToListAsync(UserFilterDto model)
-        {
-            return Ok(await _userService.SearchToListAsync(model));
-        }
-
-
+        
 
 
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync(UserFilterDto model)
         {
-            UserViewModel? user = await _userService.GetByIdAsync(model);
-            if (user == null) return NotFound();
-            return Ok(user);
+            UserViewModel? user = await _userService.GetByIdAsync(model.Id);
+            return user == null ?                 
+                NotFound()
+                :
+                Ok(user);
         }
 
 

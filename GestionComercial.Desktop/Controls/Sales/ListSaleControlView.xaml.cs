@@ -26,9 +26,8 @@ namespace GestionComercial.Desktop.Controls.Sales
             try
             {
                 var saleAddWindow = new SaleAddWindow(0) { Owner = Window.GetWindow(this) };
-                if (saleAddWindow.ShowDialog() == true)
-                {
-                }
+                saleAddWindow.Show();
+
             }
             catch (Exception ex)
             {

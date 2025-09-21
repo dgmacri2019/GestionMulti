@@ -1,10 +1,12 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.DTOs.User;
+using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Response;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Windows;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -13,72 +15,170 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
+        private JsonSerializerOptions Options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
         public UsersApiService()
         {
             _apiService = new ApiService();
             string token = App.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
-            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 
-        internal async Task<List<UserViewModel>> GetAllAsync(bool isEnabled, bool all)
+        internal async Task<UserResponse> GetAllAsync(int pageSize = 100)
         {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/users/GetAllAsync", new
+            List<UserViewModel> allUsers = [];
+            int page = 1;
+            bool moreData = true;
+            //bool hasPriceList = false, hasStates = false, hasSaleConditions = false, hasIvaConditions = false, hasDocumentTypes = false;
+            UserResponse userResponse = new()
             {
-                IsEnabled = isEnabled,
-                All = all
-            });
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
+                Success = false
+            };
+            try
             {
-
-                JsonSerializerOptions options = new()
+                // Llama al endpoint y deserializa la respuesta
+                while (moreData)
                 {
-                    PropertyNameCaseInsensitive = true
-                };
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/GetAllAsync", new
+                    {
+                        Page = page,
+                        PageSize = pageSize
+                    });
 
-                return JsonSerializer.Deserialize<List<UserViewModel>>(jsonResponse, options);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        // Leer el contenido como stream para no cargar todo en memoria
+                        using Stream? stream = await response.Content.ReadAsStreamAsync();
+
+                        UserResponse? result = await JsonSerializer.DeserializeAsync<UserResponse>(stream, Options);
+                        if (result.Success)
+                        {
+                            if (result.UserViewModels == null || result.UserViewModels.Count() == 0)
+                            {
+                                moreData = false; // no quedan más datos
+                            }
+                            else
+                            {
+                                allUsers.AddRange(result.UserViewModels);
+                                page++; // siguiente página
+                            }
+                        }
+                    }
+                    else
+                    {
+                        userResponse.Message = await response.Content.ReadAsStringAsync();
+                        return userResponse;
+                    }
+                }
+                userResponse.Success = true;
+                userResponse.UserViewModels = allUsers;
+                return userResponse;
+
             }
-            else
+            catch (Exception ex)
             {
-                // Manejo de error
-                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                return null;
+                return new UserResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
             }
         }
-        internal async Task<List<UserViewModel>> SearchToListAsync(string name, bool isEnabled)
+
+        internal async Task<UserResponse> GetByIdAsync(string userId)
         {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/users/SearchToListAsync", new
+            try
             {
-                IsEnabled = isEnabled,
-                NameFilter = name
-            });
+                // Llama al endpoint y deserializa la respuesta
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-
-                JsonSerializerOptions options = new()
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/GetByIdAsync", new
                 {
-                    PropertyNameCaseInsensitive = true
-                };
+                    Id = userId,
+                    //IsDeleted = isDeleted,
+                    //IsEnabled = isEnabled,
+                });
 
-                return JsonSerializer.Deserialize<List<UserViewModel>>(jsonResponse, options);
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return new UserResponse
+                    {
+                        UserViewModel = JsonSerializer.Deserialize<UserViewModel>(jsonResponse, Options),
+                        Success = true,
+                    };
+                else
+                    return new UserResponse
+                    {
+                        Success = false,
+                        Message = $"Error al obtener usuario, el error fue:\n{jsonResponse}",
+                    };
             }
-            else
+            catch (Exception ex)
             {
-                // Manejo de error
-                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                return null;
+                return new UserResponse
+                {
+                    Success = false,
+                    Message = $"Error al obtener usuario, el error fue:\n {ex.Message}",
+                };
             }
         }
+
+        internal async Task<GeneralResponse> UpdateAsync(User user)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/UpdateAsync", user);
+                string error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error al actualizar usuario, el error fue: \n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Message = $"Error al actualizar usuario, el error fue: \n{ex.Message}",
+                    Success = false,
+                };
+            }
+        }
+
+        internal async Task<GeneralResponse> AddAsync(User user)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/AddAsync", user);
+                string error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error al guardar usuario, el error fue:\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Message = $"Error al guardar usuario, el error fue: \n{ex.Message}",
+                    Success = false,
+                };
+            }
+        }
+
+
+
     }
 }

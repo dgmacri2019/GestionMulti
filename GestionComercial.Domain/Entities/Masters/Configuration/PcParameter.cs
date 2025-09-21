@@ -9,5 +9,8 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
         [Display(Name = "Punto de venta")]
         public int SalePoint { get; set; }
+
+        [Display(Name = "Ultimo Inicio")]
+        public DateTime? LastLogin { get; set; }
     }
 }

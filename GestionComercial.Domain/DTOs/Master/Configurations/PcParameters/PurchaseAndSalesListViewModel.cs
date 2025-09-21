@@ -36,5 +36,8 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
 
         [Display(Name = "Punto de Venta")]
         public int SalePoint { get; set; }
+
+        [Display(Name = "Último Inicio Sesion")]
+        public DateTime? LastLogin { get; set; }
     }
 }

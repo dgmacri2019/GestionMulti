@@ -13,7 +13,8 @@
         public bool All { get; set; }
         public string? PhoneNumber { get; set; }
         public string? NameFilter { get; set; }
-
+        public int Page { get; set; } = 1;       // página por defecto
+        public int PageSize { get; set; } = 100; // tamaño por defecto
 
     }
 }

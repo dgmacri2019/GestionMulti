@@ -450,6 +450,13 @@
     <None Remove="Images\Restore BackUp 48.png" />
     <None Remove="Images\Restore BackUp 512.png" />
     <None Remove="Images\Restore BackUp 64.png" />
+    <None Remove="Images\Sale List 128.png" />
+    <None Remove="Images\Sale List 16.png" />
+    <None Remove="Images\Sale List 24.png" />
+    <None Remove="Images\Sale List 256.png" />
+    <None Remove="Images\Sale List 32.png" />
+    <None Remove="Images\Sale List 512.png" />
+    <None Remove="Images\Sale List 64.png" />
     <None Remove="Images\Sales 16.png" />
     <None Remove="Images\Sales 20.png" />
     <None Remove="Images\Sales 24.png" />
@@ -1051,6 +1058,13 @@
     <Resource Include="Images\Restore BackUp 48.png" />
     <Resource Include="Images\Restore BackUp 512.png" />
     <Resource Include="Images\Restore BackUp 64.png" />
+    <Resource Include="Images\Sale List 128.png" />
+    <Resource Include="Images\Sale List 16.png" />
+    <Resource Include="Images\Sale List 24.png" />
+    <Resource Include="Images\Sale List 256.png" />
+    <Resource Include="Images\Sale List 32.png" />
+    <Resource Include="Images\Sale List 512.png" />
+    <Resource Include="Images\Sale List 64.png" />
     <Resource Include="Images\Sales 16.png" />
     <Resource Include="Images\Sales 20.png" />
     <Resource Include="Images\Sales 24.png" />

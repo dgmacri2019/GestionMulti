@@ -133,7 +133,7 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding BarCode}" 
-                   Style="{StaticResource CenteredTextStyle}"/>
+                                           Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

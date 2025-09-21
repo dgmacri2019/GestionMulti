@@ -52,11 +52,20 @@ namespace GestionComercial.Applications.Services
                     PCName = pcName,
                     CreateDate = DateTime.Now,
                     CreateUser = "System",
+                    LastLogin = DateTime.Now,
                     IsDeleted = false,
                     IsEnabled = true,
                     SalePoint = pcParameters == null || pcParameters.Count() == 0 ? 1 : pcParameters.Max(pc => pc.SalePoint) + 1,
                 };
                 await _context.AddAsync(pcParameter);
+                await _dBHelper.SaveChangesAsync(_context);
+            }
+            else
+            {
+                PcParameter pcParameterUpdated = await _context.PcParameters.FindAsync(pcParameter.Id);
+                pcParameterUpdated.LastLogin = DateTime.Now;
+                pcParameter.LastLogin = DateTime.Now;
+                _context.Update(pcParameterUpdated);
                 await _dBHelper.SaveChangesAsync(_context);
             }
             return pcParameter;
@@ -86,6 +95,7 @@ namespace GestionComercial.Applications.Services
                 SalePoint = pcParameter.SalePoint,
                 UpdateDate = pcParameter.UpdateDate,
                 UpdateUser = pcParameter.UpdateUser,
+                LastLogin = pcParameter.LastLogin,
             });
         }
 

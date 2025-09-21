@@ -38,16 +38,40 @@
                                         IsReadOnly="True">
                     </DataGridTextColumn>
 
-                    <DataGridTextColumn Binding="{Binding SalePoint, StringFormat={}{0:00000}}"
-                                        Width="80"
-                                        IsReadOnly="True">
-                        <DataGridTextColumn.Header>
+                    <DataGridTemplateColumn Width="80" SortMemberPath="SalePoint">
+                        <DataGridTemplateColumn.Header>
                             <TextBlock Text="Punto de venta"
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        HorizontalAlignment="Center"/>
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <TextBlock Text="{Binding SalePoint, StringFormat={}{0:00000}}" 
+                                               Style="{StaticResource CenteredTextStyle}"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                 
+                    <DataGridTemplateColumn Width="120" SortMemberPath="LastLogin">
+                        <DataGridTemplateColumn.Header>
+                            <TextBlock Text="Último Inicio"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <TextBlock Text="{Binding LastLogin}" 
+                                               Style="{StaticResource CenteredTextStyle}"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                 
 
                 </DataGrid.Columns>
             </DataGrid>

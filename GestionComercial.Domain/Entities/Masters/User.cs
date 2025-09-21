@@ -40,7 +40,7 @@ namespace GestionComercial.Domain.Entities.Masters
         public List<string> Roles { get; set; } = [];
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public ICollection<UserPermission>? UserPermissions { get; set; }
     }
 

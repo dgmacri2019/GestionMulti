@@ -62,6 +62,8 @@ namespace GestionComercial.Desktop.Views.Masters
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            //TODO: Usar Homologacion o Produccion
+            //TODO: Ver por que no marca el certificado
 
         }
 

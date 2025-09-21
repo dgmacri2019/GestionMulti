@@ -39,7 +39,7 @@ namespace GestionComercial.Applications.Services
             {
                 User? user = await _userManager.FindByNameAsync(username);
                 if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
-                    return new LoginResponse { Success = false, Token = null, Message="Usuario o contraseña inválidos" };
+                    return new LoginResponse { Success = false, Token = null, Message = "Usuario o contraseña inválidos" };
 
                 IList<string> roles = await _userManager.GetRolesAsync(user);
 
@@ -136,40 +136,46 @@ namespace GestionComercial.Applications.Services
             return await _userManager.AddToRoleAsync(user, model.Role);
         }
 
-        public async Task<IEnumerable<UserViewModel>> GetAllAsync(UserFilterDto model)
+        public async Task<UserResponse> GetAllAsync(int page, int pageSize)
         {
-
-            List<User> users = model.All ?
-                await _context.Users.AsNoTracking().ToListAsync()
-                :
-                await _context.Users.AsNoTracking().Where(u => u.Enabled == model.IsEnabled).ToListAsync();
-
-            return ToUserViewModelList(users);
-        }
-
-        public async Task<IEnumerable<UserViewModel>> SearchToListAsync(UserFilterDto model)
-        {
-            List<User> users = model.All ?
-                await _context.Users.AsNoTracking().ToListAsync()
-                :
-                string.IsNullOrEmpty(model.NameFilter) ?
-                    await _context.Users.AsNoTracking()
-                    .Where(u => u.Enabled == model.IsEnabled)
-                    .ToListAsync()
-                    :
-                    await _context.Users
-                    .Where(u => u.Enabled == model.IsEnabled && (u.UserName.Contains(model.NameFilter)
-                                                            || u.FirstName.Contains(model.NameFilter)
-                                                            || u.LastName.Contains(model.NameFilter)
-                                                            || u.Email.Contains(model.NameFilter)))
+            try
+            {
+                List<User> users = await _context.Users
+                    .AsNoTracking()
+                    .Include(r => r.Roles)
+                    .Include(up => up.UserPermissions)
+                    .OrderBy(u => u.FirstName)
+                    .ThenBy(u => u.LastName)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
                     .ToListAsync();
 
-            return ToUserViewModelList(users);
+                var totalRegisters = await _context.Users.AsNoTracking().CountAsync();
+
+                return new UserResponse
+                {
+                    Success = true,
+                    UserViewModels = ToUserViewModelList(users),
+                    TotalRegisters = totalRegisters
+                };
+            }
+            catch (Exception ex)
+            {
+                return new UserResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
+
+
+
         }
 
-        public async Task<UserViewModel?> GetByIdAsync(UserFilterDto model)
+
+        public async Task<UserViewModel?> GetByIdAsync(string id)
         {
-            if (string.IsNullOrEmpty(model.Id))
+            if (string.IsNullOrEmpty(id))
                 return new UserViewModel
                 {
                     FirstName = string.Empty,
@@ -181,7 +187,7 @@ namespace GestionComercial.Applications.Services
                     UserName = string.Empty,
                 };
 
-            User? user = await _context.Users.FindAsync(model.Id);
+            User? user = await _context.Users.FindAsync(id);
 
             return user == null ? null : ConverterHelper.ToUserViewModel(user);
         }
@@ -189,7 +195,7 @@ namespace GestionComercial.Applications.Services
 
 
 
-        private IEnumerable<UserViewModel> ToUserViewModelList(List<User> users)
+        private List<UserViewModel> ToUserViewModelList(List<User> users)
         {
             return users.Select(user => new UserViewModel
             {
@@ -202,7 +208,10 @@ namespace GestionComercial.Applications.Services
                 ChangePassword = user.ChangePassword,
                 Email = user.Email,
                 Phone = user.PhoneNumber,
-            });
+                IsDeleted = false,                
+                IsEnabled = user.Enabled
+                
+            }).ToList();
         }
 
     }

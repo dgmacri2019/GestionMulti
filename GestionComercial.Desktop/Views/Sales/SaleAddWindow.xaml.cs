@@ -57,8 +57,8 @@ namespace GestionComercial.Desktop.Views.Sales
         private static readonly char DecSep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
         private static readonly char OtherSep = (DecSep == ',') ? '.' : ',';
 
-        private int Width;
-        private int Height;
+        private int Ancho;
+        private int Alto;
 
         public SaleAddWindow(int saleId)
         {
@@ -104,8 +104,14 @@ namespace GestionComercial.Desktop.Views.Sales
 
 
             var (width, height) = ScreenHelper.ObtenerResolucion(this);
-            Width = width;
-            Height = height;
+            Ancho = width;
+            Alto = height;
+
+            MaxHeight = Alto - (Alto * 5 / 100);
+            Height = MaxHeight - (MaxHeight * 2 / 100);
+            WindowStartupLocation = WindowStartupLocation.Manual;
+            Left = (Ancho - Width) / 2;
+            Top = 20;
         }
 
         private async Task<bool> WaitForDataAsync(TimeSpan timeout)
@@ -1189,7 +1195,8 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private void LogOut()
         {
-            DialogResult = false;
+            //DialogResult = false;
+            this.Close();
         }
 
 
