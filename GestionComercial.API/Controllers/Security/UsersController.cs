@@ -1,8 +1,6 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
-using GestionComercial.Applications.Services;
 using GestionComercial.Domain.DTOs.User;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +25,7 @@ namespace GestionComercial.API.Controllers.Security
 
 
         [HttpPost("AddAsync")]
-        public async Task<IActionResult> AddAsync(UserFilterDto model)
+        public async Task<IActionResult> AddAsync(UserViewModel model)
         {
             IdentityResult resultAdd = await _userService.AddAsync(model);
             return resultAdd.Succeeded ? Ok(new { message = "Usuario creado correctamente" }) : BadRequest(resultAdd.Errors);
@@ -43,7 +41,7 @@ namespace GestionComercial.API.Controllers.Security
 
 
         [HttpPost("UpdateAsync")]
-        public async Task<IActionResult> UpdateAsync(UserFilterDto model)
+        public async Task<IActionResult> UpdateAsync(UserViewModel model)
         {
             IdentityResult resultAdd = await _userService.UpdateAsync(model);
             return resultAdd.Succeeded ? Ok(new { message = "Usuario actualizado correctamente" }) : BadRequest(resultAdd.Errors);
@@ -51,7 +49,7 @@ namespace GestionComercial.API.Controllers.Security
 
 
         [HttpPost("ChangeRoleAsync")]
-        public async Task<IActionResult> ChangeRoleAsync(UserFilterDto model)
+        public async Task<IActionResult> ChangeRoleAsync(UserViewModel model)
         {
             IdentityResult resultAdd = await _userService.ChangeRoleAsync(model);
             return resultAdd.Succeeded ? Ok(new { message = "Rol actualizado correctamente" }) : BadRequest(resultAdd.Errors);
@@ -66,14 +64,14 @@ namespace GestionComercial.API.Controllers.Security
         }
 
 
-        
+
 
 
         [HttpPost("GetByIdAsync")]
         public async Task<IActionResult> GetByIdAsync(UserFilterDto model)
         {
             UserViewModel? user = await _userService.GetByIdAsync(model.Id);
-            return user == null ?                 
+            return user == null ?
                 NotFound()
                 :
                 Ok(user);

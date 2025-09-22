@@ -4,15 +4,7 @@
     {
         public string? Id { get; set; }
         public string? UserName { get; set; }
-        public string? Email { get; set; }
-        public string? Password { get; set; }
-        public string? Role { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public bool IsEnabled { get; set; }
-        public bool All { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? NameFilter { get; set; }
+           
         public int Page { get; set; } = 1;       // página por defecto
         public int PageSize { get; set; } = 100; // tamaño por defecto
 

@@ -1,5 +1,4 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Helpers;
@@ -75,7 +74,7 @@ namespace GestionComercial.Applications.Services
             }
         }
 
-        public async Task<IdentityResult> AddAsync(UserFilterDto model)
+        public async Task<IdentityResult> AddAsync(UserViewModel model)
         {
             User user = new()
             {
@@ -84,13 +83,13 @@ namespace GestionComercial.Applications.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Enabled = model.IsEnabled,
-                PhoneNumber = model.PhoneNumber,
+                PhoneNumber = model.PhoneNumber,                 
             };
             IdentityResult resultAddUser = await _userManager.CreateAsync(user, model.Password);
             if (!resultAddUser.Succeeded)
                 return resultAddUser;
 
-            IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.Role);
+            IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
             if (!resultAddRole.Succeeded)
                 await _userManager.DeleteAsync(user);
 
@@ -105,7 +104,7 @@ namespace GestionComercial.Applications.Services
             return await _userManager.DeleteAsync(user);
         }
 
-        public async Task<IdentityResult> UpdateAsync(UserFilterDto model)
+        public async Task<IdentityResult> UpdateAsync(UserViewModel model)
         {
             User? user = await _userManager.FindByIdAsync(model.Id);
 
@@ -122,7 +121,7 @@ namespace GestionComercial.Applications.Services
             return await _userManager.UpdateAsync(user);
         }
 
-        public async Task<IdentityResult> ChangeRoleAsync(UserFilterDto model)
+        public async Task<IdentityResult> ChangeRoleAsync(UserViewModel model)
         {
             User? user = await _userManager.FindByIdAsync(model.Id);
 
@@ -133,22 +132,24 @@ namespace GestionComercial.Applications.Services
             IList<string> roles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, roles);
 
-            return await _userManager.AddToRoleAsync(user, model.Role);
+            return await _userManager.AddToRoleAsync(user, model.RoleName);
         }
 
         public async Task<UserResponse> GetAllAsync(int page, int pageSize)
         {
             try
             {
+
                 List<User> users = await _context.Users
                     .AsNoTracking()
-                    .Include(r => r.Roles)
                     .Include(up => up.UserPermissions)
                     .OrderBy(u => u.FirstName)
                     .ThenBy(u => u.LastName)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
+
+
 
                 var totalRegisters = await _context.Users.AsNoTracking().CountAsync();
 
@@ -183,7 +184,7 @@ namespace GestionComercial.Applications.Services
                     Email = string.Empty,
                     Id = string.Empty,
                     ChangePassword = true,
-                    Enabled = true,
+                    IsEnabled = true,
                     UserName = string.Empty,
                 };
 
@@ -202,15 +203,23 @@ namespace GestionComercial.Applications.Services
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Enabled = user.Enabled,
                 FullName = user.FullName,
                 UserName = user.UserName,
+                RoleName = _ = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
                 ChangePassword = user.ChangePassword,
                 Email = user.Email,
-                Phone = user.PhoneNumber,
-                IsDeleted = false,                
-                IsEnabled = user.Enabled
-                
+                PhoneNumber = user.PhoneNumber,
+                IsDeleted = false,
+                IsEnabled = user.Enabled,
+                UserRoleDtos =
+                [
+                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+                    new UserRoleDto { Id = 1, Name = "Developer" },
+                    new UserRoleDto { Id = 2, Name = "Administrator"},
+                    new UserRoleDto { Id = 3, Name = "Supervisor" },
+                    new UserRoleDto { Id = 4, Name = "Operator" },
+                    new UserRoleDto { Id = 5, Name = "Cashier" },
+                ],
             }).ToList();
         }
 

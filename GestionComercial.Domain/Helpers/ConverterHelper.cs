@@ -603,13 +603,36 @@ namespace GestionComercial.Domain.Helpers
                 UserName = user.UserName,
                 ChangePassword = user.ChangePassword,
                 Email = user.Email,
-                Enabled = user.Enabled,
+                IsEnabled = user.Enabled,
                 FullName = user.FullName,
-                Phone = user.PhoneNumber,
+                IsDeleted = false,
+                PhoneNumber = user.PhoneNumber,
+                UserRoleDtos =
+                [
+                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+                    new UserRoleDto { Id = 1, Name = "Developer" },
+                    new UserRoleDto { Id = 2, Name = "Administrator"},
+                    new UserRoleDto { Id = 3, Name = "Supervisor" },
+                    new UserRoleDto { Id = 4, Name = "Operator" },
+                    new UserRoleDto { Id = 5, Name = "Cashier" },
+                ],
             };
         }
 
-
+        public static User ToUser(UserViewModel userViewModel, bool isNew)
+        {
+            return new User
+            {
+                Id = isNew ? string.Empty : userViewModel.Id,
+                Email = userViewModel.Email,
+                Enabled = userViewModel.IsEnabled,
+                FirstName = userViewModel.FirstName,
+                LastName = userViewModel.LastName,
+                UserName = userViewModel.UserName, 
+                PhoneNumber = userViewModel.PhoneNumber,
+                ChangePassword = userViewModel.ChangePassword,                
+            };
+        }
 
         #endregion
 
@@ -690,6 +713,8 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = saleViewModel.TotalIVA27,
             };
         }
+
+
 
 
         #endregion
