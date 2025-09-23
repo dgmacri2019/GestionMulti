@@ -592,33 +592,7 @@ namespace GestionComercial.Domain.Helpers
         #endregion
 
         #region Users
-
-        public static UserViewModel ToUserViewModel(User user)
-        {
-            return new UserViewModel
-            {
-                FirstName = user.FirstName,
-                Id = user.Id,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                ChangePassword = user.ChangePassword,
-                Email = user.Email,
-                IsEnabled = user.Enabled,
-                FullName = user.FullName,
-                IsDeleted = false,
-                PhoneNumber = user.PhoneNumber,
-                UserRoleDtos =
-                [
-                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                    new UserRoleDto { Id = 1, Name = "Developer" },
-                    new UserRoleDto { Id = 2, Name = "Administrator"},
-                    new UserRoleDto { Id = 3, Name = "Supervisor" },
-                    new UserRoleDto { Id = 4, Name = "Operator" },
-                    new UserRoleDto { Id = 5, Name = "Cashier" },
-                ],
-            };
-        }
-
+               
         public static User ToUser(UserViewModel userViewModel, bool isNew)
         {
             return new User

@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Input;
@@ -35,9 +36,9 @@ namespace GestionComercial.Desktop.Views
                 token = resultLogin.Token;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    App.UserName = TokenHelper.GetUsername(token);
-                    App.UserRole = TokenHelper.GetRole(token);
-                    App.AuthToken = TokenHelper.ExtractTokenValue(token);
+                    LoginUserCache.UserName = TokenHelper.GetUsername(token);
+                    LoginUserCache.UserRole = TokenHelper.GetRole(token);
+                    LoginUserCache.AuthToken = TokenHelper.ExtractTokenValue(token);
 
                     // Abrir ventana principal y pasar el token
                     MainWindow main = new();

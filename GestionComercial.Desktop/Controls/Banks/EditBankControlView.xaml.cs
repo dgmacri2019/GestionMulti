@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Helpers;
@@ -51,7 +52,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 BankViewModel = result.BankViewModel;
                 if (BankId == 0)
                 {
-                    BankViewModel.CreateUser = App.UserName;
+                    BankViewModel.CreateUser = LoginUserCache.UserName;
                 }
                 DataContext = BankViewModel;
             }
@@ -67,7 +68,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 lblError.Text = string.Empty;
                 btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
-                BankViewModel.CreateUser = App.UserName;
+                BankViewModel.CreateUser = LoginUserCache.UserName;
                 BankViewModel.BankName = BankViewModel.BankName.ToUpper();
                 Bank bank = ConverterHelper.ToBank(BankViewModel, BankViewModel.Id == 0);
                 GeneralResponse resultUpdate = await _bankApiService.AddBankAsync(bank);
@@ -94,7 +95,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
                 BankViewModel.BankName = BankViewModel.BankName.ToUpper();
-                BankViewModel.UpdateUser = App.UserName;
+                BankViewModel.UpdateUser = LoginUserCache.UserName;
                 BankViewModel.UpdateDate = DateTime.Now;
 
                 Bank bank = ConverterHelper.ToBank(BankViewModel, BankViewModel.Id == 0);

@@ -22,8 +22,20 @@ namespace GestionComercial.Domain.Cache
         }
         public List<UserViewModel> Search(string name, bool isEnabled, bool isDeleted)
         {
+            List<UserRoleDto> roles =
+                [
+                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+                    new UserRoleDto { Id = 1, Name = "Developer" },
+                    new UserRoleDto { Id = 2, Name = "Administrator" },
+                    new UserRoleDto { Id = 3, Name = "Supervisor" },
+                    new UserRoleDto { Id = 4, Name = "Operator" },
+                    new UserRoleDto { Id = 5, Name = "Cashier" },
+                ];
+
+            int userRoleId = roles.FirstOrDefault(r => r.Name == LoginUserCache.UserRole).Id;
+
             return _users != null ? _users
-                .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted
+                .Where(a => a.RoleId >= userRoleId && a.IsEnabled == isEnabled && a.IsDeleted == isDeleted
                        && ((a.FullName?.ToLower().Contains(name.ToLower()) ?? false)
                         || (a.RoleName?.ToLower().Contains(name.ToLower()) ?? false)))
                 .ToList()

@@ -1,8 +1,9 @@
 ﻿using GestionComercial.Desktop.Utils;
+using GestionComercial.Desktop.Views;
+using GestionComercial.Domain.Cache;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using GestionComercial.Desktop.Views;
 
 namespace GestionComercial.Desktop.ViewModels
 {
@@ -44,18 +45,18 @@ namespace GestionComercial.Desktop.ViewModels
             _timer.Tick += (s, e) => HoraActual = DateTime.Now.ToString("HH:mm:ss");
             _timer.Start();
 
-            Usuario = App.UserName ?? "Invitado";
-            Rol = App.UserRole ?? "Rol Sin Definir";
+            Usuario = LoginUserCache.UserName ?? "Invitado";
+            Rol = LoginUserCache.UserRole ?? "Rol Sin Definir";
         }
 
 
         private void Logout()
         {
             // Limpiar sesión
-            App.AuthToken = string.Empty;
-            App.UserName = string.Empty;
-            App.UserRole = string.Empty;
-            App.Password = string.Empty;
+            LoginUserCache.AuthToken = string.Empty;
+            LoginUserCache.UserName = string.Empty;
+            LoginUserCache.UserRole = string.Empty;
+            LoginUserCache.Password = string.Empty;
 
             LoginWindow loginView = new LoginWindow();
             loginView.Show();

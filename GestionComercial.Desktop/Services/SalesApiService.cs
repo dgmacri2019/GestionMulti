@@ -22,9 +22,9 @@ namespace GestionComercial.Desktop.Services
         public SalesApiService()
         {
             _apiService = new ApiService();
-            string token = App.AuthToken;
+            string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
             _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 

@@ -1,7 +1,6 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters;
-using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -83,7 +82,7 @@ namespace GestionComercial.Applications.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Enabled = model.IsEnabled,
-                PhoneNumber = model.PhoneNumber,                 
+                PhoneNumber = model.PhoneNumber,
             };
             IdentityResult resultAddUser = await _userManager.CreateAsync(user, model.Password);
             if (!resultAddUser.Succeeded)
@@ -117,8 +116,30 @@ namespace GestionComercial.Applications.Services
             user.LastName = model.LastName;
             user.PhoneNumber = model.PhoneNumber;
             user.Enabled = model.IsEnabled;
+            if (model.ChangePassword && string.IsNullOrEmpty(model.Password))
+                user.ChangePassword = true;
 
-            return await _userManager.UpdateAsync(user);
+            if (model.ChangePassword && !string.IsNullOrEmpty(model.Password))
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                IdentityResult resultUpdate = await _userManager.UpdateAsync(user);
+                if (!resultUpdate.Succeeded)
+                    return resultUpdate;
+
+                IdentityResult resultRemoveRole = await _userManager.RemoveFromRolesAsync(user, roles);
+                if (!resultRemoveRole.Succeeded)
+                    return resultRemoveRole;
+                IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
+                if (!resultAddRole.Succeeded)
+                    return resultAddRole;
+                return await _userManager.AddPasswordAsync(user, model.Password);
+            }
+            else
+                return await _userManager.UpdateAsync(user);
+
+
+
         }
 
         public async Task<IdentityResult> ChangeRoleAsync(UserViewModel model)
@@ -149,14 +170,12 @@ namespace GestionComercial.Applications.Services
                     .Take(pageSize)
                     .ToListAsync();
 
-
-
                 var totalRegisters = await _context.Users.AsNoTracking().CountAsync();
 
                 return new UserResponse
                 {
                     Success = true,
-                    UserViewModels = ToUserViewModelList(users),
+                    UserViewModels = await ToUserViewModelListAsync(users),
                     TotalRegisters = totalRegisters
                 };
             }
@@ -168,11 +187,7 @@ namespace GestionComercial.Applications.Services
                     Message = ex.Message,
                 };
             }
-
-
-
         }
-
 
         public async Task<UserViewModel?> GetByIdAsync(string id)
         {
@@ -190,38 +205,86 @@ namespace GestionComercial.Applications.Services
 
             User? user = await _context.Users.FindAsync(id);
 
-            return user == null ? null : ConverterHelper.ToUserViewModel(user);
+            return user == null ? null : await ToUserViewModelAsync(user);
         }
 
 
 
 
-        private List<UserViewModel> ToUserViewModelList(List<User> users)
+        private async Task<List<UserViewModel>> ToUserViewModelListAsync(List<User> users)
         {
-            return users.Select(user => new UserViewModel
+            List<UserRoleDto> userRoleDtos =
+            [
+                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+                new UserRoleDto { Id = 1, Name = "Developer" },
+                new UserRoleDto { Id = 2, Name = "Administrator" },
+                new UserRoleDto { Id = 3, Name = "Supervisor" },
+                new UserRoleDto { Id = 4, Name = "Operator" },
+                new UserRoleDto { Id = 5, Name = "Cashier" }
+            ];
+
+            List<UserViewModel> result = [];
+
+            foreach (var user in users)
             {
-                Id = user.Id,
+                var roles = await _userManager.GetRolesAsync(user);
+                var roleName = roles.FirstOrDefault(); // string con el nombre del rol
+                var roleId = userRoleDtos.FirstOrDefault(r => r.Name == roleName)?.Id ?? 0;
+
+                result.Add(new UserViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    RoleName = roleName,
+                    ChangePassword = user.ChangePassword,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    IsDeleted = false,
+                    IsEnabled = user.Enabled,
+                    UserRoleDtos = userRoleDtos,
+                    RoleId = roleId,
+
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<UserViewModel> ToUserViewModelAsync(User user)
+        {
+            List<UserRoleDto> userRoleDtos =
+            [
+                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+                new UserRoleDto { Id = 1, Name = "Developer" },
+                new UserRoleDto { Id = 2, Name = "Administrator" },
+                new UserRoleDto { Id = 3, Name = "Supervisor" },
+                new UserRoleDto { Id = 4, Name = "Operator" },
+                new UserRoleDto { Id = 5, Name = "Cashier" }
+            ];
+            var roles = await _userManager.GetRolesAsync(user);
+            string? roleName = roles.FirstOrDefault(); // string con el nombre del rol
+            int roleId = userRoleDtos.FirstOrDefault(r => r.Name == roleName)?.Id ?? 0;
+
+            return new UserViewModel
+            {
                 FirstName = user.FirstName,
+                Id = user.Id,
                 LastName = user.LastName,
-                FullName = user.FullName,
                 UserName = user.UserName,
-                RoleName = _ = _userManager.GetRolesAsync(user).Result.FirstOrDefault(),
                 ChangePassword = user.ChangePassword,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                IsDeleted = false,
                 IsEnabled = user.Enabled,
-                UserRoleDtos =
-                [
-                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                    new UserRoleDto { Id = 1, Name = "Developer" },
-                    new UserRoleDto { Id = 2, Name = "Administrator"},
-                    new UserRoleDto { Id = 3, Name = "Supervisor" },
-                    new UserRoleDto { Id = 4, Name = "Operator" },
-                    new UserRoleDto { Id = 5, Name = "Cashier" },
-                ],
-            }).ToList();
+                FullName = user.FullName,
+                IsDeleted = false,
+                PhoneNumber = user.PhoneNumber,
+                UserRoleDtos = userRoleDtos,
+                RoleId = roleId,
+            };
         }
+
 
     }
 }

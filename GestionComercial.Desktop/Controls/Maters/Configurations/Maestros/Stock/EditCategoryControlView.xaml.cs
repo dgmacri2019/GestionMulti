@@ -35,7 +35,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
             {
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
-                CategoryViewModel = new CategoryViewModel { CreateUser = App.UserName, IsEnabled = true };
+                CategoryViewModel = new CategoryViewModel { CreateUser = LoginUserCache.UserName, IsEnabled = true };
             }
             else
             {
@@ -85,7 +85,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
             {
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
-                CategoryViewModel.UpdateUser = App.UserName;
+                CategoryViewModel.UpdateUser = LoginUserCache.UserName;
                 CategoryViewModel.UpdateDate = DateTime.Now;
                 GeneralResponse resultUpdate = await _apiService.UpdateCategoryAsync(ConverterHelper.ToCategory(CategoryViewModel, CategoryViewModel.Id == 0));
                 if (resultUpdate.Success)

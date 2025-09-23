@@ -75,9 +75,9 @@
                VerticalAlignment="Center"                     
                ToolTip="Ingresa código, descripción, categoría o código de barra"
                Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" />
-        </StackPanel>        
-        
-        
+        </StackPanel>
+
+
         <DataGrid x:Name="DgUsers"
                   Grid.Row="2" 
                   Background="Gray"
@@ -114,7 +114,19 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
+
+                <DataGridTemplateColumn Header="Rol" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding RoleName}" 
+                                Style="{StaticResource CenteredTextStyle}">
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
                 <DataGridTemplateColumn Header="Email" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -130,11 +142,11 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-              <DataGridTemplateColumn Header="Teléfono" Width="auto" MinWidth="120">
+                <DataGridTemplateColumn Header="Teléfono" Width="auto" MinWidth="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border>
-                                <TextBlock Text="{Binding Phone}" 
+                                <TextBlock Text="{Binding PhoneNumber}" 
                                 Style="{StaticResource CenteredTextStyle}">
                                 </TextBlock>
                             </Border>
@@ -142,7 +154,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-               
+
             </DataGrid.Columns>
         </DataGrid>
         <!-- Contenedor para el control de edición -->

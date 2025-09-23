@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Response;
@@ -18,9 +19,9 @@ namespace GestionComercial.Desktop.Services
         public BanksApiService()
         {
             _apiService = new ApiService();
-            string token = App.AuthToken;
+            string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
             _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 

@@ -30,7 +30,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
             {
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
-                PriceListViewModel = new PriceListViewModel { CreateUser = App.UserName, IsEnabled = true };
+                PriceListViewModel = new PriceListViewModel { CreateUser = LoginUserCache.UserName, IsEnabled = true };
             }
             else
             {
@@ -67,7 +67,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock
                 {
                     btnUpdate.IsEnabled = false;
                     lblError.Text = string.Empty;
-                    PriceListViewModel.UpdateUser = App.UserName;
+                    PriceListViewModel.UpdateUser = LoginUserCache.UserName;
                     PriceListViewModel.UpdateDate = DateTime.Now;
 
                     PriceList priceList = ConverterHelper.ToPriceList(PriceListViewModel, PriceListViewModel.Id == 0);

@@ -36,7 +36,7 @@ namespace GestionComercial.Desktop.Controls.Clients
 
             if (ClientId == 0)
             {
-                editVM.Client = new ClientViewModel { CreateUser = App.UserName };
+                editVM.Client = new ClientViewModel { CreateUser = LoginUserCache.UserName };
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
             }
@@ -74,7 +74,7 @@ namespace GestionComercial.Desktop.Controls.Clients
                 {
                     btnUpdate.IsEnabled = false;
                     lblError.Text = string.Empty;
-                    editVM.Client.UpdateUser = App.UserName;
+                    editVM.Client.UpdateUser = LoginUserCache.UserName;
                     editVM.Client.UpdateDate = DateTime.Now;
 
                     Client client = ConverterHelper.ToClient(editVM.Client, editVM.Client.Id == 0);

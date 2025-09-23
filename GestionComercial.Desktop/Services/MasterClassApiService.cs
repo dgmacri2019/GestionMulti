@@ -1,11 +1,11 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Stock;
-using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.IO;
 using System.Net.Http;
@@ -29,9 +29,8 @@ namespace GestionComercial.Desktop.Services
         public MasterClassApiService()
         {
             _apiService = new ApiService();
-            string token = App.AuthToken;
             _httpClient = _apiService.GetHttpClient();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
             _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(2000));
         }
 

@@ -2,7 +2,6 @@
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -105,7 +104,7 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
             }
 
             List<PurchaseAndSalesListViewModel> purchaseAndSales = await _parametersApiService.GetAllPcParametersAsync();
-           
+
             App.Current.Dispatcher.Invoke(() =>
             {
                 PurchaseAndSaleViewModel.Clear();

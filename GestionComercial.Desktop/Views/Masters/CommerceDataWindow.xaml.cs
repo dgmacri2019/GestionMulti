@@ -29,7 +29,7 @@ namespace GestionComercial.Desktop.Views.Masters
             {
                 CommerceData = new CommerceData
                 {
-                    CreateUser = App.UserName,
+                    CreateUser = LoginUserCache.UserName,
                     CreateDate = DateTime.Now,
                     ServiceEnable = true,
                     ServiceValidTo = DateTime.Now.AddDays(5),

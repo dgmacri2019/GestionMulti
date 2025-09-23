@@ -6,14 +6,10 @@ using System.Windows;
 namespace GestionComercial.Desktop
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Interaction logic for LoginUserCache.xaml
     /// </summary>
     public partial class App : Application
-    {
-        public static string AuthToken { get; set; }
-        public static string Password { get; set; }
-        public static string UserName { get; set; }
-        public static string UserRole { get; set; }
+    {        
         public static IConfiguration Configuration { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)

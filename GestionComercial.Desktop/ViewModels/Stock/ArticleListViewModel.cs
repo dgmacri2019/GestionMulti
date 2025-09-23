@@ -4,14 +4,12 @@ using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Stock;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using static GestionComercial.Domain.Constant.Enumeration;
 using static GestionComercial.Domain.Notifications.ArticleChangeNotification;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GestionComercial.Desktop.ViewModels.Stock
 {

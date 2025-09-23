@@ -1,7 +1,7 @@
 ﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -46,7 +46,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
             {
                 lblError.Text = string.Empty;
                 btnUpdate.IsEnabled = false;
-                PcParameter.UpdateUser = App.UserName;
+                PcParameter.UpdateUser = LoginUserCache.UserName;
                 PcParameter.UpdateDate = DateTime.Now;
 
                 GeneralResponse resultUpdate = await _parametersApiService.UpdatePcParameterAsync(PcParameter);
@@ -73,7 +73,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
                 PcParameter = result.PcParameter;
                 if (ParameterId == 0)
                 {
-                    PcParameter.CreateUser = App.UserName;
+                    PcParameter.CreateUser = LoginUserCache.UserName;
                 }
 
                 DataContext = PcParameter;

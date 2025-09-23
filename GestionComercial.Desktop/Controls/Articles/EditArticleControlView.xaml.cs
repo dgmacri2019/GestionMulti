@@ -34,7 +34,7 @@ namespace GestionComercial.Desktop.Controls.Articles
             {
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
-                ArticleViewModel = new ArticleViewModel { CreateUser = App.UserName, IsEnabled = true };
+                ArticleViewModel = new ArticleViewModel { CreateUser = LoginUserCache.UserName, IsEnabled = true };
             }
             else
             {
@@ -75,7 +75,7 @@ namespace GestionComercial.Desktop.Controls.Articles
             {
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
-                ArticleViewModel.UpdateUser = App.UserName;
+                ArticleViewModel.UpdateUser = LoginUserCache.UserName;
                 ArticleViewModel.UpdateDate = DateTime.Now;
                 //articleViewModel.RealCost = txtRealCost.Text.Substring(0, 1) == "$" ? Convert.ToDecimal(txtRealCost.Text.Substring(1)) : Convert.ToDecimal(txtRealCost.Text);
                 Article article = ConverterHelper.ToArticle(ArticleViewModel, ArticleViewModel.Id == 0);

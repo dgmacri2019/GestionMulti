@@ -68,7 +68,7 @@ namespace GestionComercial.Desktop.ViewModels.Provider
         public ProviderListViewModel()
         {
             _providersApiService = new ProvidersApiService();
-            //var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:ClientsHubUrl"]);
+            //var hubUrl = string.Format("{0}hubs/clients", LoginUserCache.Configuration["ApiSettings:ClientsHubUrl"]);
             var hubUrl = string.Format("{0}hubs/providers", App.Configuration["ApiSettings:BaseUrl"]);
 
 

@@ -1102,7 +1102,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                     salePayMetodDetails.Add(new SalePayMetodDetail
                                     {
                                         CreateDate = DateTime.Now,
-                                        CreateUser = App.UserName,
+                                        CreateUser = LoginUserCache.UserName,
                                         IsDeleted = false,
                                         IsEnabled = true,
                                         Value = pm.Monto,
@@ -1213,7 +1213,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         ArticleId = article.Id,
                         Code = article.Code,
                         CreateDate = DateTime.Now,
-                        CreateUser = App.UserName,
+                        CreateUser = LoginUserCache.UserName,
                         Description = item.Description,
                         Discount = item.Bonification,
                         IsDeleted = false,
@@ -1246,7 +1246,7 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 ClientId = ClientCache.Instance.FindByOptionalCode(txtClientCode.Text).Id,
                 CreateDate = DateTime.Now,
-                CreateUser = App.UserName,
+                CreateUser = LoginUserCache.UserName,
                 IsDeleted = false,
                 IsEnabled = true,
                 IsFinished = true,

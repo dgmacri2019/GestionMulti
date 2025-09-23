@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
@@ -22,9 +23,8 @@ namespace GestionComercial.Desktop.Services
         public UsersApiService()
         {
             _apiService = new ApiService();
-            string token = App.AuthToken;
             _httpClient = _apiService.GetHttpClient();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
         }
 
         internal async Task<UserResponse> GetAllAsync(int pageSize = 100)
@@ -130,7 +130,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<GeneralResponse> UpdateAsync(User user)
+        internal async Task<GeneralResponse> UpdateAsync(UserViewModel user)
         {
             try
             {

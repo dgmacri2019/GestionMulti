@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Accounts;
 using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Helpers;
@@ -42,7 +43,7 @@ namespace GestionComercial.Desktop.Controls.Accounts
                 lblAccountGroup5.Visibility = Visibility.Hidden;
                 accountViewModel.IsEnabled = true;
                 accountViewModel.CreateDate = DateTime.Now;
-                accountViewModel.CreateUser = App.UserName;
+                accountViewModel.CreateUser = LoginUserCache.UserName;
                 DataContext = accountViewModel;
                 btnAdd.Visibility = Visibility.Visible;
                 btnUpdate.Visibility = Visibility.Hidden;
@@ -157,7 +158,7 @@ namespace GestionComercial.Desktop.Controls.Accounts
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
                 accountViewModel.Name = accountViewModel.Name.ToUpper();
-                accountViewModel.UpdateUser = App.UserName;
+                accountViewModel.UpdateUser = LoginUserCache.UserName;
                 accountViewModel.UpdateDate = DateTime.Now;
                 accountViewModel.AccountIdSubGroupNumber1 = Convert.ToInt32(cbAccountGroup1.SelectedValue);
                 accountViewModel.AccountIdSubGroupNumber2 = Convert.ToInt32(cbAccountGroup2.SelectedValue);

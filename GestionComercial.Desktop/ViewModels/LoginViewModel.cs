@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Desktop.Views;
+using GestionComercial.Domain.Cache;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -27,7 +28,7 @@ namespace GestionComercial.Desktop.ViewModels
 
         private async Task LoginAsync()
         {
-            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(App.Password))
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(LoginUserCache.Password))
             {
                 MessageBox.Show("Ingrese usuario y contraseña.");
                 return;
@@ -35,7 +36,7 @@ namespace GestionComercial.Desktop.ViewModels
             var config = ConfigurationHelper.GetConfiguration();
             string baseUrl = config["ApiSettings:BaseUrl"];
             using HttpClient client = new() { BaseAddress = new Uri(baseUrl) };
-            var loginData = new { username = Username, password = App.Password };
+            var loginData = new { username = Username, password = LoginUserCache.Password };
             string jsonData = JsonSerializer.Serialize(loginData);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
@@ -44,7 +45,7 @@ namespace GestionComercial.Desktop.ViewModels
             if (response.IsSuccessStatusCode)
             {
                 string token = await response.Content.ReadAsStringAsync();
-                App.AuthToken = token; // Guardamos el token globalmente
+                LoginUserCache.AuthToken = token; // Guardamos el token globalmente
                 MessageBox.Show("Inicio de sesión exitoso.");
 
                 // Abrir ventana principal

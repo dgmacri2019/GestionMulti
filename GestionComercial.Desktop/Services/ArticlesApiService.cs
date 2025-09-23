@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
 using GestionComercial.Domain.Response;
@@ -7,7 +8,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Windows;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -19,10 +19,10 @@ namespace GestionComercial.Desktop.Services
         public ArticlesApiService()
         {
             _apiService = new ApiService();
-            string token = App.AuthToken;
+            string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", App.AuthToken);
-            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));            
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
+            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 
 
@@ -76,10 +76,10 @@ namespace GestionComercial.Desktop.Services
                     {
                         articleResponse.Message = await response.Content.ReadAsStringAsync();
                         return articleResponse;
-                    }                    
+                    }
                 }
                 articleResponse.Success = true;
-                articleResponse.ArticleViewModels= allArticles;
+                articleResponse.ArticleViewModels = allArticles;
                 return articleResponse;
 
             }

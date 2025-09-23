@@ -270,10 +270,10 @@ namespace GestionComercial.Desktop.Views
         private void LogOut()
         {
             // Limpiar sesión
-            App.AuthToken = string.Empty;
-            App.UserName = string.Empty;
-            App.UserRole = string.Empty;
-            App.Password = string.Empty;
+            LoginUserCache.AuthToken = string.Empty;
+            LoginUserCache.UserName = string.Empty;
+            LoginUserCache.UserRole = string.Empty;
+            LoginUserCache.Password = string.Empty;
             CacheManager.ClearAll();
             LoginWindow loginView = new LoginWindow();
             loginView.Show();

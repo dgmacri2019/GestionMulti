@@ -35,7 +35,7 @@ namespace GestionComercial.Desktop.Views.Masters
                 BillingViewModel = new BillingViewModel
                 {
                     CreateDate = DateTime.Now,
-                    CreateUser = App.UserName,
+                    CreateUser = LoginUserCache.UserName,
                     IsEnabled = true,
                     PadronExpirationTime = DateTime.Now,
                     PadronGenerationTime = DateTime.Now,
@@ -52,7 +52,7 @@ namespace GestionComercial.Desktop.Views.Masters
             {
                 BillingViewModel.CertPass = CryptoHelper.Decrypt(BillingViewModel.CertPass);
                 BillingViewModel.UpdateDate = DateTime.Now;
-                BillingViewModel.UpdateUser = App.UserName;
+                BillingViewModel.UpdateUser = LoginUserCache.UserName;
                 rbProduct.IsChecked = BillingViewModel.Concept == 1;
                 rbService.IsChecked = BillingViewModel.Concept == 2;
                 rbProductAndService.IsChecked = BillingViewModel.Concept == 3;

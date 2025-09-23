@@ -22,6 +22,16 @@ namespace GestionComercial.Desktop.Controls.Users
         private UserViewModel UserViewModel { get; set; }
 
 
+        private List<UserRoleDto> Roles =
+                [
+                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+                    new UserRoleDto { Id = 1, Name = "Developer" },
+                    new UserRoleDto { Id = 2, Name = "Administrator" },
+                    new UserRoleDto { Id = 3, Name = "Supervisor" },
+                    new UserRoleDto { Id = 4, Name = "Operator" },
+                    new UserRoleDto { Id = 5, Name = "Cashier" },
+                ];
+
         public EditUserControlView(string userId = "")
         {
             InitializeComponent();
@@ -43,7 +53,7 @@ namespace GestionComercial.Desktop.Controls.Users
                     UserViewModel = viewModel;
                     btnAdd.Visibility = Visibility.Hidden;
                     btnUpdate.Visibility = Visibility.Visible;
-                    UserViewModel.RoleId = UserViewModel.UserRoleDtos.FirstOrDefault(r => r.Name == UserViewModel.RoleName).Id;
+                    UserViewModel.RoleId = Roles.FirstOrDefault(r => r.Name == UserViewModel.RoleName).Id;
 
                 }
                 else
@@ -51,26 +61,15 @@ namespace GestionComercial.Desktop.Controls.Users
             }
             if (UserViewModel != null)
             {
-                
-                List<UserRoleDto> roles =
-                [
-                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                    new UserRoleDto { Id = 1, Name = "Developer" },
-                    new UserRoleDto { Id = 2, Name = "Administrator" },
-                    new UserRoleDto { Id = 3, Name = "Supervisor" },
-                    new UserRoleDto { Id = 4, Name = "Operator" },
-                    new UserRoleDto { Id = 5, Name = "Cashier" },
-                ];
-
 
                 UserViewModel.UserRoleDtos.Clear();
                 UserViewModel.UserRoleDtos.Add(new UserRoleDto { Id = 0, Name = "Seleccione el Rol" });
-                int roleId = roles.First(r => r.Name == App.UserRole).Id;
+                int roleId = Roles.First(r => r.Name == LoginUserCache.UserRole).Id;
 
-                foreach (var rol in roles)
+                foreach (var rol in Roles.Where(r => r.Id >= roleId))
                 {
-                    if (rol.Id >= UserViewModel.RoleId)
-                        UserViewModel.UserRoleDtos.Add(rol);
+                    //if (rol.Id >= Roles.FirstOrDefault(r => r.Name == LoginUserCache.UserRole).Id)
+                    UserViewModel.UserRoleDtos.Add(rol);
                 }
             }
             DataContext = UserViewModel;
@@ -85,13 +84,7 @@ namespace GestionComercial.Desktop.Controls.Users
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            UserViewModel.UserRoleDtos.AddRange(
-                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                new UserRoleDto { Id = 1, Name = "Developer" },
-                new UserRoleDto { Id = 2, Name = "Administrator" },
-                new UserRoleDto { Id = 3, Name = "Supervisor" },
-                new UserRoleDto { Id = 4, Name = "Operator" },
-                new UserRoleDto { Id = 5, Name = "Cashier" });
+            UserViewModel.UserRoleDtos.AddRange(Roles);
 
             UsuarioActualizado?.Invoke(); // para notificar a la vista principal
         }
@@ -105,36 +98,57 @@ namespace GestionComercial.Desktop.Controls.Users
                 if (ValidateUser())
                 {
                     btnUpdate.IsEnabled = false;
-                    lblError.Text = string.Empty;
+                    UserViewModel.RoleName = Roles.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name;
 
-                    User user = ConverterHelper.ToUser(UserViewModel, false);
-                    return;
-                    GeneralResponse resultUpdate = await _apiService.UpdateAsync(user);
+                    GeneralResponse resultUpdate = await _apiService.UpdateAsync(UserViewModel);
                     if (resultUpdate.Success)
                     {
-                        UserViewModel.UserRoleDtos.AddRange(
-                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                new UserRoleDto { Id = 1, Name = "Developer" },
-                new UserRoleDto { Id = 2, Name = "Administrator" },
-                new UserRoleDto { Id = 3, Name = "Supervisor" },
-                new UserRoleDto { Id = 4, Name = "Operator" },
-                new UserRoleDto { Id = 5, Name = "Cashier" });
+                        UserViewModel.UserRoleDtos.AddRange(Roles);
                         UsuarioActualizado?.Invoke(); // para notificar a la vista principal
                     }
                     else
-                        lblError.Text = resultUpdate.Message;
+                        msgError(resultUpdate.Message);
                     btnUpdate.IsEnabled = true;
                 }
             }
             catch (Exception ex)
             {
-                lblError.Text = ex.Message;
+                msgError(ex.Message);
             }
         }
 
         private bool ValidateUser()
         {
-            return true;
+            bool result = true;
+
+            if (string.IsNullOrEmpty(txtFirstName.Text))
+            {
+                result = false;
+                msgError("El Nombre es un campo obligatorio");
+            }
+            if (string.IsNullOrEmpty(txtLastName.Text))
+            {
+                result = false;
+                msgError("El Apellido es un campo obligatorio");
+            }
+            if (string.IsNullOrEmpty(txtEmail.Text))
+            {
+                result = false;
+                msgError("El Email es un campo obligatorio");
+            }
+            if (!string.IsNullOrEmpty(txtEmail.Text) && !ValidatorHelper.ValidateEmail(txtEmail.Text))
+            {
+                result = false;
+                msgError("El Email ingresador no tiene un formato válido");
+            }
+            if (Convert.ToInt32(cbRoles.SelectedValue) == 0)
+            {
+                result = false;
+                msgError("Debe seleccionar el Rol");
+            }
+
+
+            return result;
         }
 
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -151,13 +165,7 @@ namespace GestionComercial.Desktop.Controls.Users
                     GeneralResponse resultUpdate = await _apiService.AddAsync(user);
                     if (resultUpdate.Success)
                     {
-                        UserViewModel.UserRoleDtos.AddRange(
-                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                new UserRoleDto { Id = 1, Name = "Developer" },
-                new UserRoleDto { Id = 2, Name = "Administrator" },
-                new UserRoleDto { Id = 3, Name = "Supervisor" },
-                new UserRoleDto { Id = 4, Name = "Operator" },
-                new UserRoleDto { Id = 5, Name = "Cashier" });
+                        UserViewModel.UserRoleDtos.AddRange(Roles);
                         UsuarioActualizado?.Invoke(); // para notificar a la vista principal
                     }
                     else

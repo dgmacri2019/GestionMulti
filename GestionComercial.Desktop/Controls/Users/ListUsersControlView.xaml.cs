@@ -1,11 +1,10 @@
-﻿using GestionComercial.Desktop.Controls.Providers;
-using GestionComercial.Desktop.ViewModels.Provider;
-using GestionComercial.Desktop.ViewModels.Users;
-using GestionComercial.Domain.DTOs.Provider;
+﻿using GestionComercial.Desktop.ViewModels.Users;
 using GestionComercial.Domain.DTOs.User;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace GestionComercial.Desktop.Controls.Users
 {
@@ -50,7 +49,7 @@ namespace GestionComercial.Desktop.Controls.Users
         }
 
 
-        private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (DgUsers.SelectedItem is UserViewModel user)
             {
@@ -79,7 +78,7 @@ namespace GestionComercial.Desktop.Controls.Users
             }
         }
 
-        private void Email_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void Email_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo($"mailto:{e.Uri}")
             {

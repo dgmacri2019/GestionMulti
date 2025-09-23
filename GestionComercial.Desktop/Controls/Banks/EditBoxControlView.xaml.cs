@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Desktop.Services;
+using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Helpers;
@@ -57,7 +58,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 BoxViewModel = result.BoxViewModel;
                 if (BoxId == 0)
                 {
-                    BoxViewModel.CreateUser = App.UserName;
+                    BoxViewModel.CreateUser = LoginUserCache.UserName;
                 }
                 DataContext = BoxViewModel;
             }
@@ -78,7 +79,7 @@ namespace GestionComercial.Desktop.Controls.Banks
                 lblError.Text = string.Empty;
                 btnAdd.IsEnabled = false;
                 lblError.Text = string.Empty;
-                BoxViewModel.CreateUser = App.UserName;
+                BoxViewModel.CreateUser = LoginUserCache.UserName;
                 BoxViewModel.BoxName = BoxViewModel.BoxName.ToUpper();
 
                 Box box = ConverterHelper.ToBox(BoxViewModel, BoxViewModel.Id == 0);
@@ -105,7 +106,7 @@ namespace GestionComercial.Desktop.Controls.Banks
 
                 btnUpdate.IsEnabled = false;
                 lblError.Text = string.Empty;
-                BoxViewModel.UpdateUser = App.UserName;
+                BoxViewModel.UpdateUser = LoginUserCache.UserName;
                 BoxViewModel.BoxName = BoxViewModel.BoxName.ToUpper();
                 BoxViewModel.UpdateDate = DateTime.Now;
 

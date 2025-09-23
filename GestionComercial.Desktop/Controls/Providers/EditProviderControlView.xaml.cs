@@ -52,7 +52,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 providerViewModel = result.ProviderViewModel;
                 if (ProviderId == 0)
                 {
-                    providerViewModel.CreateUser = App.UserName;
+                    providerViewModel.CreateUser = LoginUserCache.UserName;
                 }
                 DataContext = providerViewModel;
             }
@@ -80,7 +80,7 @@ namespace GestionComercial.Desktop.Controls.Providers
                 {
                     btnUpdate.IsEnabled = false;
                     lblError.Text = string.Empty;
-                    providerViewModel.UpdateUser = App.UserName;
+                    providerViewModel.UpdateUser = LoginUserCache.UserName;
                     providerViewModel.UpdateDate = DateTime.Now;
 
                     Provider provider = ConverterHelper.ToProvider(providerViewModel, providerViewModel.Id == 0);
