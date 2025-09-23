@@ -11,6 +11,7 @@ using GestionComercial.Applications.Notifications;
 using GestionComercial.Applications.Services;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
+using GestionComercial.Domain.Traslates;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -59,26 +60,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configuración de Identity
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-{
-    // Configuración de contraseñas
-    options.Password.RequireDigit = false;             // Números obligatorios
-    options.Password.RequireLowercase = false;         // Minúsculas obligatorias
-    options.Password.RequireUppercase = false;         // Mayúsculas obligatorias
-    options.Password.RequireNonAlphanumeric = false;   // Símbolos obligatorios
-    options.Password.RequiredLength = 4;               // Mínimo de caracteres
-    options.Password.RequiredUniqueChars = 1;          // Caracteres únicos
-
-
-    // Configuración de bloqueo (opcional)
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-
-    // Configuración de usuarios
-    options.User.RequireUniqueEmail = false;
-})
-.AddEntityFrameworkStores<AppDbContext>()
-.AddDefaultTokenProviders();
+builder.Services
+    .AddIdentity<User, IdentityRole>(options =>
+    {
+        // Configuración de contraseñas
+         options.Password.RequireDigit = false;             // Números obligatorios
+         options.Password.RequireLowercase = false;         // Minúsculas obligatorias
+         options.Password.RequireUppercase = false;         // Mayúsculas obligatorias
+         options.Password.RequireNonAlphanumeric = false;   // Símbolos obligatorios
+         options.Password.RequiredLength = 3;               // Mínimo de caracteres
+         options.Password.RequiredUniqueChars = 1;          // Caracteres únicos
+        
+        // Configuración de bloqueo (opcional)
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        // Configuración de usuarios
+        options.User.RequireUniqueEmail = false;
+    })
+    .AddErrorDescriber<SpanishIdentityErrorDescriber>() // 👈 clave
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 
 // SignalR
@@ -121,6 +122,7 @@ builder.Services.AddScoped<IBankParametersNotifier, SignalRBankParametersNotifie
 builder.Services.AddScoped<ISalesNotifier, SignalRSalesNotifier>();
 builder.Services.AddScoped<IParametersNotifier, SignalRParametersNotifier>();
 builder.Services.AddScoped<IMasterClassNotifier, SignalRMasterClassNotifier>();
+builder.Services.AddScoped<IUsersNotifier, SignalRUsersNotifier>();
 
 //builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -185,6 +187,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<SalesHub>("/hubs/sales");
     endpoints.MapHub<GeneralParametersHub>("/hubs/generalparameter");
     endpoints.MapHub<MasterClassHub>("/hubs/masterclass");
+    endpoints.MapHub<UsersHub>("/hubs/users");
 });
 using (var scope = app.Services.CreateScope())
 {

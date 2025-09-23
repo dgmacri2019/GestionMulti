@@ -154,7 +154,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<GeneralResponse> AddAsync(User user)
+        internal async Task<GeneralResponse> AddAsync(UserViewModel user)
         {
             try
             {

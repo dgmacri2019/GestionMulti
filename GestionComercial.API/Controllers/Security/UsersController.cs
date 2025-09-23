@@ -1,10 +1,13 @@
 ﻿using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
+using GestionComercial.Applications.Notifications;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Eventing.Reader;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Security
 {
@@ -15,10 +18,12 @@ namespace GestionComercial.API.Controllers.Security
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IUsersNotifier _notifier;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IUsersNotifier notifier)
         {
             _userService = userService;
+            _notifier = notifier;
         }
 
 
@@ -28,7 +33,13 @@ namespace GestionComercial.API.Controllers.Security
         public async Task<IActionResult> AddAsync(UserViewModel model)
         {
             IdentityResult resultAdd = await _userService.AddAsync(model);
-            return resultAdd.Succeeded ? Ok(new { message = "Usuario creado correctamente" }) : BadRequest(resultAdd.Errors);
+            if (resultAdd.Succeeded)
+            {
+                await _notifier.NotifyAsync("Usuario Creado", model.FullName, ChangeType.Created);
+                return Ok(new { message = "Usuario creado correctamente" });
+            }
+            else
+                return BadRequest(resultAdd.Errors);
         }
 
 
@@ -36,7 +47,13 @@ namespace GestionComercial.API.Controllers.Security
         public async Task<IActionResult> DeleteAsync(string id)
         {
             IdentityResult resultDelete = await _userService.DeleteAsync(id);
-            return resultDelete.Succeeded ? Ok(new { message = "Usuario eliminado correctamente" }) : BadRequest(resultDelete.Errors);
+            if (resultDelete.Succeeded)
+            {
+                await _notifier.NotifyAsync(id, "Usuario Borrado", ChangeType.Deleted);
+                return Ok(new { message = "Usuario eliminado correctamente" });
+            }
+            else
+                return BadRequest(resultDelete.Errors);
         }
 
 
@@ -44,7 +61,12 @@ namespace GestionComercial.API.Controllers.Security
         public async Task<IActionResult> UpdateAsync(UserViewModel model)
         {
             IdentityResult resultAdd = await _userService.UpdateAsync(model);
-            return resultAdd.Succeeded ? Ok(new { message = "Usuario actualizado correctamente" }) : BadRequest(resultAdd.Errors);
+            if (resultAdd.Succeeded)
+            {
+                await _notifier.NotifyAsync("Usuario Actualizado", model.FullName, ChangeType.Updated);
+                return Ok(new { message = "Usuario actualizado correctamente" });
+            }
+            else return BadRequest(resultAdd.Errors);
         }
 
 

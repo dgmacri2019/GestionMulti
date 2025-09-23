@@ -54,7 +54,7 @@ namespace GestionComercial.Desktop.Controls.Users
                     btnAdd.Visibility = Visibility.Hidden;
                     btnUpdate.Visibility = Visibility.Visible;
                     UserViewModel.RoleId = Roles.FirstOrDefault(r => r.Name == UserViewModel.RoleName).Id;
-
+                    txtUserName.IsEnabled = false;
                 }
                 else
                     lblError.Text = "No se reconoce el Usuario";
@@ -99,7 +99,7 @@ namespace GestionComercial.Desktop.Controls.Users
                 {
                     btnUpdate.IsEnabled = false;
                     UserViewModel.RoleName = Roles.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name;
-
+                    UserViewModel.Password = txtPassword.Password;
                     GeneralResponse resultUpdate = await _apiService.UpdateAsync(UserViewModel);
                     if (resultUpdate.Success)
                     {
@@ -117,40 +117,7 @@ namespace GestionComercial.Desktop.Controls.Users
             }
         }
 
-        private bool ValidateUser()
-        {
-            bool result = true;
-
-            if (string.IsNullOrEmpty(txtFirstName.Text))
-            {
-                result = false;
-                msgError("El Nombre es un campo obligatorio");
-            }
-            if (string.IsNullOrEmpty(txtLastName.Text))
-            {
-                result = false;
-                msgError("El Apellido es un campo obligatorio");
-            }
-            if (string.IsNullOrEmpty(txtEmail.Text))
-            {
-                result = false;
-                msgError("El Email es un campo obligatorio");
-            }
-            if (!string.IsNullOrEmpty(txtEmail.Text) && !ValidatorHelper.ValidateEmail(txtEmail.Text))
-            {
-                result = false;
-                msgError("El Email ingresador no tiene un formato válido");
-            }
-            if (Convert.ToInt32(cbRoles.SelectedValue) == 0)
-            {
-                result = false;
-                msgError("Debe seleccionar el Rol");
-            }
-
-
-            return result;
-        }
-
+       
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -160,18 +127,25 @@ namespace GestionComercial.Desktop.Controls.Users
                 if (ValidateUser())
                 {
                     btnAdd.IsEnabled = false;
-                    lblError.Text = string.Empty;
-                    User user = ConverterHelper.ToUser(UserViewModel, string.IsNullOrEmpty(UserViewModel.Id));
-                    GeneralResponse resultUpdate = await _apiService.AddAsync(user);
-                    if (resultUpdate.Success)
+                    UserViewModel.RoleName = Roles.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name;
+                    UserViewModel.Password = txtPassword.Password;
+                    if (string.IsNullOrEmpty(UserViewModel.Password))
                     {
-                        UserViewModel.UserRoleDtos.AddRange(Roles);
-                        UsuarioActualizado?.Invoke(); // para notificar a la vista principal
+                        msgError("El Password es un campo obligatorio");
                     }
                     else
-                        lblError.Text = resultUpdate.Message;
-                    btnAdd.IsEnabled = true;
+                    {
+                        GeneralResponse resultUpdate = await _apiService.AddAsync(UserViewModel);
+                        if (resultUpdate.Success)
+                        {
+                            UserViewModel.UserRoleDtos.AddRange(Roles);
+                            UsuarioActualizado?.Invoke(); // para notificar a la vista principal
+                        }
+                        else
+                            msgError(resultUpdate.Message);
+                    }
                 }
+                btnAdd.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -216,6 +190,44 @@ namespace GestionComercial.Desktop.Controls.Users
 
 
 
+        private bool ValidateUser()
+        {
+            bool result = true;
+
+            if (string.IsNullOrEmpty(txtUserName.Text))
+            {
+                result = false;
+                msgError("El Nombre de Usuario es un campo obligatorio");
+            }
+            if (string.IsNullOrEmpty(txtFirstName.Text))
+            {
+                result = false;
+                msgError("El Nombre es un campo obligatorio");
+            }
+            if (string.IsNullOrEmpty(txtLastName.Text))
+            {
+                result = false;
+                msgError("El Apellido es un campo obligatorio");
+            }
+            if (string.IsNullOrEmpty(txtEmail.Text))
+            {
+                result = false;
+                msgError("El Email es un campo obligatorio");
+            }
+            if (!string.IsNullOrEmpty(txtEmail.Text) && !ValidatorHelper.ValidateEmail(txtEmail.Text))
+            {
+                result = false;
+                msgError("El Email ingresador no tiene un formato válido");
+            }
+            if (Convert.ToInt32(cbRoles.SelectedValue) == 0)
+            {
+                result = false;
+                msgError("Debe seleccionar el Rol");
+            }
+
+
+            return result;
+        }
 
 
 

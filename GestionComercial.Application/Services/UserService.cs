@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Applications.Interfaces;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Masters.Security;
 using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -83,6 +84,7 @@ namespace GestionComercial.Applications.Services
                 LastName = model.LastName,
                 Enabled = model.IsEnabled,
                 PhoneNumber = model.PhoneNumber,
+                EmailConfirmed = true,
             };
             IdentityResult resultAddUser = await _userManager.CreateAsync(user, model.Password);
             if (!resultAddUser.Succeeded)
@@ -91,6 +93,29 @@ namespace GestionComercial.Applications.Services
             IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
             if (!resultAddRole.Succeeded)
                 await _userManager.DeleteAsync(user);
+
+
+            List<RolePermission> rolePermissions = await _context.RolePermissions
+                                .Where(rp => rp.RoleId == model.RoleId.ToString())
+                                .ToListAsync();
+
+            foreach (RolePermission rolePermission in rolePermissions)
+            {
+                UserPermission? userPermission = await _context.UserPermissions
+                    .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                    .FirstOrDefaultAsync();
+                if (userPermission == null)
+                    await _context.UserPermissions.AddAsync(new UserPermission
+                    {
+                        CreateDate = DateTime.Now,
+                        CreateUser = "System",
+                        IsDeleted = false,
+                        IsEnabled = rolePermission.IsEnabled,
+                        UserId = user.Id,
+                        PermissionId = rolePermission.PermissionId,
+                    });
+            }
+            await _context.SaveChangesAsync();
 
             return resultAddRole;
         }
@@ -133,6 +158,9 @@ namespace GestionComercial.Applications.Services
                 IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
                 if (!resultAddRole.Succeeded)
                     return resultAddRole;
+                IdentityResult resultRemovePass = await _userManager.RemovePasswordAsync(user);
+                if (!resultRemovePass.Succeeded)
+                    return resultRemovePass;
                 return await _userManager.AddPasswordAsync(user, model.Password);
             }
             else
@@ -253,7 +281,7 @@ namespace GestionComercial.Applications.Services
             return result;
         }
 
-        public async Task<UserViewModel> ToUserViewModelAsync(User user)
+        private async Task<UserViewModel> ToUserViewModelAsync(User user)
         {
             List<UserRoleDto> userRoleDtos =
             [

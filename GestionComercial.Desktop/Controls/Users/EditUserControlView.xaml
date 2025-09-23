@@ -32,6 +32,7 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Margin="0,0,0,8">
@@ -40,14 +41,14 @@
                     HorizontalAlignment="Center"
                     Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtFirstName"
-                  Style="{StaticResource TextBoxSearch}"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Stretch"
-                  MaxLength="8"
-                  Text="{Binding FirstName}"
-                  GotFocus="TextBox_SelectAll"
-                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                  KeyDown="TextBox_KeyDown_MoveNext"/>
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     MaxLength="30"
+                     Text="{Binding FirstName}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Margin="10,0,20,8">
@@ -56,13 +57,13 @@
                        HorizontalAlignment="Center"
                        Style="{StaticResource BlueBold10}"/>
             <TextBox x:Name="txtLastName"
-                  Style="{StaticResource TextBoxSearch}"
-                  VerticalAlignment="Center"  
-                  HorizontalAlignment="Stretch"
-                  Text="{Binding LastName}"
-                  GotFocus="TextBox_SelectAll"
-                  PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
-                  KeyDown="TextBox_KeyDown_MoveNext"/>
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"  
+                     HorizontalAlignment="Stretch"      
+                     Text="{Binding LastName}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="2" Margin="10,0,20,8">
@@ -87,7 +88,7 @@
             </TextBox>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="3" Margin="10,0,20,8">
             <TextBlock Text="Teléfono" 
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
@@ -102,8 +103,24 @@
                      KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Margin="10,0,20,8">
+            <TextBlock Text="Nombre de Usuario"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtUserName"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"   
+                     Text="{Binding UserName}" 
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Password"
+            <TextBlock Text="Passowrd"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        Style="{StaticResource BlueBold10}"/>
@@ -115,8 +132,21 @@
         </StackPanel>
 
 
-
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2" Margin="10,0,20,8">
+            <TextBlock Text="Cambiar Password" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <CheckBox x:Name="chbChangePassword"
+                      Style="{StaticResource CheckBox }"
+                      VerticalAlignment="Center"       
+                      HorizontalAlignment="Center"
+                      IsChecked="{Binding ChangePassword}"
+                      KeyDown="TextBox_KeyDown_MoveNext"/>
+        </StackPanel>
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="3" Margin="10,0,20,8">
             <TextBlock Text="Rol" 
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
@@ -132,9 +162,7 @@
                    KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
-
-
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Margin="10,0,20,8">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="10,0,20,8">
             <TextBlock Text="Habilitado" 
                        VerticalAlignment="Center" 
                        HorizontalAlignment="Center"
@@ -146,21 +174,6 @@
                       IsChecked="{Binding IsEnabled}"
                       KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="1" Margin="10,0,20,8">
-            <TextBlock Text="Cambiar Password" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center"
-                       Style="{StaticResource BlueBold10}"/>
-            <CheckBox x:Name="chbChangePassword"
-                      Style="{StaticResource CheckBox }"
-                      VerticalAlignment="Center"       
-                      HorizontalAlignment="Center"
-                      IsChecked="{Binding ChangePassword}"
-                      KeyDown="TextBox_KeyDown_MoveNext"/>
-        </StackPanel>
-
-
-
 
 
 
@@ -197,7 +210,7 @@
 
         <TextBlock x:Name="lblError"
                 Grid.Row="12" 
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="4"
                 HorizontalAlignment="Stretch"
                 Style="{StaticResource lblError12}"
                 TextWrapping="Wrap"/>

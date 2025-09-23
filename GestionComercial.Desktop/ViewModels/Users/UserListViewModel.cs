@@ -1,17 +1,24 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
+using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using static GestionComercial.Domain.Constant.Enumeration;
+using static GestionComercial.Domain.Notifications.ArticleChangeNotification;
+using static GestionComercial.Domain.Notifications.UserChangeNotification;
 
 namespace GestionComercial.Desktop.ViewModels.Users
 {
     internal class UserListViewModel : BaseViewModel
     {
         private readonly UsersApiService _usersApiService;
+        private readonly UsersHubService _hubService;
+
         public ObservableCollection<UserViewModel> Users { get; set; } = [];
 
         // 🔹 Propiedades de filtros
@@ -67,6 +74,10 @@ namespace GestionComercial.Desktop.ViewModels.Users
         public UserListViewModel()
         {
             _usersApiService = new UsersApiService();
+            var hubUrl = string.Format("{0}hubs/users", App.Configuration["ApiSettings:BaseUrl"]);
+            _hubService = new UsersHubService(hubUrl);
+            _hubService.UsuarioCambiado += OnUsuarioCambiado;
+            _ = _hubService.StartAsync();
             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
             SearchCommand = new RelayCommand1(async _ => await LoadUsersAsync());
             _ = LoadUsersAsync();
@@ -119,6 +130,18 @@ namespace GestionComercial.Desktop.ViewModels.Users
         }
 
 
+        private async void OnUsuarioCambiado(UsuarioChangeNotification notification)
+        {
+            UserResponse userResponse = await _usersApiService.GetAllAsync();
+            if (userResponse.Success)
+                await App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    UserCache.Instance.ClearCache();
+                    UserCache.Instance.Set(userResponse.UserViewModels);
+
+                    _ = LoadUsersAsync();
+                });
+        }
 
 
     }

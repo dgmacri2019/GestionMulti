@@ -16,13 +16,14 @@ namespace GestionComercial.API.Notifications.Background
         private readonly IHubContext<SalesHub, ISalesClient> _salesHub;
         private readonly IHubContext<GeneralParametersHub, IParametersClient> _parametersHub;
         private readonly IHubContext<MasterClassHub, IMasterClassClient> _masterClassHub;
+        private readonly IHubContext<UsersHub, IUsersClient> _userHub;
         // inyectá aquí también otros hubs si los vas a usar
 
         public NotificationDispatcher(INotificationQueue queue, ILogger<NotificationDispatcher> logger, IHubContext<ArticlesHub, IArticlesClient> articlesHub,
             IHubContext<BankParametersHub, IBankParametersClient> bankParametersHub, IHubContext<BoxAndBanksHub, IBoxAndBanksClient> boxAndBankHub,
-            IHubContext<ClientsHub, IClientsClient> clientsHub, IHubContext<ProvidersHub, IProvidersClient> providersHub, 
+            IHubContext<ClientsHub, IClientsClient> clientsHub, IHubContext<ProvidersHub, IProvidersClient> providersHub,
             IHubContext<SalesHub, ISalesClient> salesHub, IHubContext<GeneralParametersHub, IParametersClient> parametersHub,
-            IHubContext<MasterClassHub, IMasterClassClient> masterClassHub)
+            IHubContext<MasterClassHub, IMasterClassClient> masterClassHub, IHubContext<UsersHub, IUsersClient> userHub)
         {
             _queue = queue;
             _logger = logger;
@@ -34,6 +35,7 @@ namespace GestionComercial.API.Notifications.Background
             _salesHub = salesHub;
             _parametersHub = parametersHub;
             _masterClassHub = masterClassHub;
+            _userHub = userHub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,11 +54,12 @@ namespace GestionComercial.API.Notifications.Background
                         case BankParameterChangedItem c:
                             await _bankParametersHub.Clients.All.ParametrosBancariosActualizados(c.Notification);
                             break;
-
                         case BoxAndBankChangedItem p:
                             await _boxAndBankHub.Clients.All.CajasYBancosActualizados(p.Notification);
                             break;
-
+                        case UserChangedItem p:
+                            await _userHub.Clients.All.UsuariosActualizados(p.Notification);
+                            break;
                         case ClientChangedItem a:
                             await _clientsHub.Clients.All.ClientesActualizados(a.Notification);
                             break;

@@ -10,5 +10,6 @@ namespace GestionComercial.API.Notifications.Background
     public sealed record SaleChangedItem(SaleChangeNotification.VentaChangeNotification Notification) : INotificationItem;
     public sealed record GeneralParameterChangedItem(GeneralParameterChangeNotification.ParametroGeneralChangeNotification Notification) : INotificationItem;
     public sealed record MasterClassChangedItem(MasterClassChangeNotification.ClaseMaestraChangeNotification Notification) : INotificationItem;
+    public sealed record UserChangedItem(UserChangeNotification.UsuarioChangeNotification Notification) : INotificationItem;
 
 }

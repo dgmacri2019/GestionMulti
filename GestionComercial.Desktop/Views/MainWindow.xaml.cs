@@ -15,6 +15,7 @@ using GestionComercial.Desktop.ViewModels.Master;
 using GestionComercial.Desktop.ViewModels.Parameter;
 using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.ViewModels.Stock;
+using GestionComercial.Desktop.ViewModels.Users;
 using GestionComercial.Desktop.Views.Masters;
 using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
@@ -293,6 +294,10 @@ namespace GestionComercial.Desktop.Views
 
         private async Task CargarCacheAsync()
         {
+            GlobalProgressHelper.ReportIndeterminate("Cargando Lista de usuarios");
+            UserListViewModel userViewModel = new();
+            while (!UserCache.Instance.HasData)
+                await Task.Delay(10);
             GlobalProgressHelper.ReportIndeterminate("Cargando Lista de precios");
             PriceListListViewModel priceListViewModel = new();
             while (!PriceListCache.Instance.HasData)
