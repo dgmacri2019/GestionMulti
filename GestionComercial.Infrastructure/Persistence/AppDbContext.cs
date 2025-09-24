@@ -113,11 +113,11 @@ namespace GestionComercial.Infrastructure.Persistence
 
             // 📌 Seed de roles iniciales (opcional)
             modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Id = "1", Name = "Developer", NormalizedName = "DEVELOPER" },
-                new IdentityRole { Id = "2", Name = "Administrator", NormalizedName = "ADMINISTRADOR" },
-                new IdentityRole { Id = "3", Name = "Supervisor", NormalizedName = "SUPERVISOR" },
-                new IdentityRole { Id = "4", Name = "Operator", NormalizedName = "OPERADOR" },
-                new IdentityRole { Id = "5", Name = "Cashier", NormalizedName = "CAJERO" }
+                new IdentityRole { Id = "1", Name = "Developer", NormalizedName = "Developer".ToUpper() },
+                new IdentityRole { Id = "2", Name = "Administrador", NormalizedName = "Administrador".ToUpper() },
+                new IdentityRole { Id = "3", Name = "Supervisor", NormalizedName = "Supervisor".ToUpper() },
+                new IdentityRole { Id = "4", Name = "Operador", NormalizedName = "Operador".ToUpper() },
+                new IdentityRole { Id = "5", Name = "Cajero", NormalizedName = "Cajero".ToUpper() }
             );
 
             // Configuración de la relación de RolePermission

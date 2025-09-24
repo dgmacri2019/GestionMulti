@@ -48,7 +48,7 @@ namespace GestionComercial.API.Helpers
                     IdentityResult result = await userManager.CreateAsync(user, "@Diego248");
                     if (result.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(user, "DEVELOPER");
+                        await userManager.AddToRoleAsync(user, "Developer".ToUpper());
                     }
                 }
 
@@ -67,7 +67,7 @@ namespace GestionComercial.API.Helpers
                     IdentityResult result = await userManager.CreateAsync(user, "admin");
                     if (result.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(user, "ADMINISTRADOR");
+                        await userManager.AddToRoleAsync(user, "Administrador".ToUpper());
                     }
                 }
 

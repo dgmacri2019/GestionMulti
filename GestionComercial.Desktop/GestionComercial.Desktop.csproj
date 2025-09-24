@@ -610,14 +610,14 @@
 
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 

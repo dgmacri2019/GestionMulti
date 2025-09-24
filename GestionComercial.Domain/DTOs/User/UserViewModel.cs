@@ -25,12 +25,13 @@ namespace GestionComercial.Domain.DTOs.User
 
 
         public List<UserRoleDto> UserRoleDtos { get; set; } = [];
+        public string? CreateUser { get; set; }
     }
 
 
     public class UserRoleDto
     {
-        public required string Name { get; set; }
+        public required string Name { get; set; }        
         public required int Id { get; set; }
     }
 }

@@ -22,15 +22,15 @@ namespace GestionComercial.Desktop.Controls.Users
         private UserViewModel UserViewModel { get; set; }
 
 
-        private List<UserRoleDto> Roles =
-                [
-                    new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                    new UserRoleDto { Id = 1, Name = "Developer" },
-                    new UserRoleDto { Id = 2, Name = "Administrator" },
-                    new UserRoleDto { Id = 3, Name = "Supervisor" },
-                    new UserRoleDto { Id = 4, Name = "Operator" },
-                    new UserRoleDto { Id = 5, Name = "Cashier" },
-                ];
+        private List<UserRoleDto> UserRoleDtos =
+        [
+            new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+            new UserRoleDto { Id = 1, Name = "Developer"},
+            new UserRoleDto { Id = 2, Name = "Administrador"},
+            new UserRoleDto { Id = 3, Name = "Supervisor" },
+            new UserRoleDto { Id = 4, Name = "Operador"},
+            new UserRoleDto { Id = 5, Name = "Cajero" }
+        ];
 
         public EditUserControlView(string userId = "")
         {
@@ -53,7 +53,7 @@ namespace GestionComercial.Desktop.Controls.Users
                     UserViewModel = viewModel;
                     btnAdd.Visibility = Visibility.Hidden;
                     btnUpdate.Visibility = Visibility.Visible;
-                    UserViewModel.RoleId = Roles.FirstOrDefault(r => r.Name == UserViewModel.RoleName).Id;
+                    UserViewModel.RoleId = UserRoleDtos.FirstOrDefault(r => r.Name == UserViewModel.RoleName).Id;
                     txtUserName.IsEnabled = false;
                 }
                 else
@@ -63,10 +63,10 @@ namespace GestionComercial.Desktop.Controls.Users
             {
 
                 UserViewModel.UserRoleDtos.Clear();
-                UserViewModel.UserRoleDtos.Add(new UserRoleDto { Id = 0, Name = "Seleccione el Rol" });
-                int roleId = Roles.First(r => r.Name == LoginUserCache.UserRole).Id;
+                UserViewModel.UserRoleDtos.Add(new UserRoleDto { Id = 0, Name = "Seleccione el Rol"});
+                int roleId = UserRoleDtos.First(r => r.Name == LoginUserCache.UserRole).Id;
 
-                foreach (var rol in Roles.Where(r => r.Id >= roleId))
+                foreach (var rol in UserRoleDtos.Where(r => r.Id >= roleId))
                 {
                     //if (rol.Id >= Roles.FirstOrDefault(r => r.Name == LoginUserCache.UserRole).Id)
                     UserViewModel.UserRoleDtos.Add(rol);
@@ -84,7 +84,7 @@ namespace GestionComercial.Desktop.Controls.Users
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            UserViewModel.UserRoleDtos.AddRange(Roles);
+            UserViewModel.UserRoleDtos.AddRange(UserRoleDtos);
 
             UsuarioActualizado?.Invoke(); // para notificar a la vista principal
         }
@@ -98,12 +98,13 @@ namespace GestionComercial.Desktop.Controls.Users
                 if (ValidateUser())
                 {
                     btnUpdate.IsEnabled = false;
-                    UserViewModel.RoleName = Roles.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name;
+                    UserViewModel.CreateUser = LoginUserCache.UserName;
+                    UserViewModel.RoleName = UserRoleDtos.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name.ToUpper();
                     UserViewModel.Password = txtPassword.Password;
                     GeneralResponse resultUpdate = await _apiService.UpdateAsync(UserViewModel);
                     if (resultUpdate.Success)
                     {
-                        UserViewModel.UserRoleDtos.AddRange(Roles);
+                        UserViewModel.UserRoleDtos.AddRange(UserRoleDtos);
                         UsuarioActualizado?.Invoke(); // para notificar a la vista principal
                     }
                     else
@@ -117,7 +118,7 @@ namespace GestionComercial.Desktop.Controls.Users
             }
         }
 
-       
+
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -127,7 +128,8 @@ namespace GestionComercial.Desktop.Controls.Users
                 if (ValidateUser())
                 {
                     btnAdd.IsEnabled = false;
-                    UserViewModel.RoleName = Roles.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name;
+                    UserViewModel.CreateUser = LoginUserCache.UserName;
+                    UserViewModel.RoleName = UserRoleDtos.FirstOrDefault(r => r.Id == UserViewModel.RoleId).Name.ToUpper();
                     UserViewModel.Password = txtPassword.Password;
                     if (string.IsNullOrEmpty(UserViewModel.Password))
                     {
@@ -138,7 +140,7 @@ namespace GestionComercial.Desktop.Controls.Users
                         GeneralResponse resultUpdate = await _apiService.AddAsync(UserViewModel);
                         if (resultUpdate.Success)
                         {
-                            UserViewModel.UserRoleDtos.AddRange(Roles);
+                            UserViewModel.UserRoleDtos.AddRange(UserRoleDtos);
                             UsuarioActualizado?.Invoke(); // para notificar a la vista principal
                         }
                         else

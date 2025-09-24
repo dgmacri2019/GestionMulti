@@ -83,7 +83,7 @@ namespace GestionComercial.Domain.Cache
             _billingViewModel = billingViewModel;
         }
 
-        public bool HasData => _commerceData != null && _billingViewModel != null && _states != null && _states.Any() && _saleConditions != null && _saleConditions.Any()
+        public bool HasData => _states != null && _states.Any() && _saleConditions != null && _saleConditions.Any()
             && _ivaConditions != null && _ivaConditions.Any() && _documentTypes != null && _documentTypes.Any() && _taxes != null && _taxes.Any()
             && _measures != null && _measures.Any() && !Reading;
 

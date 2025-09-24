@@ -20,7 +20,15 @@ namespace GestionComercial.Applications.Services
         //private readonly DBHelper _dBHelper;
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-
+        private List<UserRoleDto> UserRoleDtos =
+            [
+            new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
+            new UserRoleDto { Id = 1, Name = "Developer"},
+            new UserRoleDto { Id = 2, Name = "Administrador" },
+            new UserRoleDto { Id = 3, Name = "Supervisor" },
+            new UserRoleDto { Id = 4, Name = "Operador"},
+            new UserRoleDto { Id = 5, Name = "Cajero" }
+            ];
         public UserService(AppDbContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -82,50 +90,74 @@ namespace GestionComercial.Applications.Services
             }
         }
 
-        public async Task<IdentityResult> AddAsync(UserViewModel model)
+        public async Task<UserResponse> AddAsync(UserViewModel model)
         {
-            User user = new()
+            UserResponse userResponse = new() { Success = false };
+
+            try
             {
-                UserName = model.UserName,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Enabled = model.IsEnabled,
-                PhoneNumber = model.PhoneNumber,
-                EmailConfirmed = true,
-            };
-            IdentityResult resultAddUser = await _userManager.CreateAsync(user, model.Password);
-            if (!resultAddUser.Succeeded)
-                return resultAddUser;
-
-            IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
-            if (!resultAddRole.Succeeded)
-                await _userManager.DeleteAsync(user);
-
-
-            List<RolePermission> rolePermissions = await _context.RolePermissions
-                                .Where(rp => rp.RoleId == model.RoleId.ToString())
-                                .ToListAsync();
-
-            foreach (RolePermission rolePermission in rolePermissions)
-            {
-                UserPermission? userPermission = await _context.UserPermissions
-                    .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
-                    .FirstOrDefaultAsync();
-                if (userPermission == null)
-                    await _context.UserPermissions.AddAsync(new UserPermission
+                User user = new()
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Enabled = model.IsEnabled,
+                    PhoneNumber = model.PhoneNumber,
+                    EmailConfirmed = true,
+                };
+                IdentityResult resultAddUser = await _userManager.CreateAsync(user, model.Password);
+                if (!resultAddUser.Succeeded)
+                    if (!resultAddUser.Succeeded)
                     {
-                        CreateDate = DateTime.Now,
-                        CreateUser = "System",
-                        IsDeleted = false,
-                        IsEnabled = rolePermission.IsEnabled,
-                        UserId = user.Id,
-                        PermissionId = rolePermission.PermissionId,
-                    });
-            }
-            await _context.SaveChangesAsync();
+                        userResponse.Message = $"Error: codigo {resultAddUser.Errors.First().Code}.\n{resultAddUser.Errors.First().Description}";
+                        return userResponse;
+                    }
 
-            return resultAddRole;
+                IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
+                if (!resultAddRole.Succeeded)
+                {
+                    await _userManager.DeleteAsync(user);
+                    userResponse.Message = $"Error: codigo {resultAddRole.Errors.First().Code}.\n{resultAddRole.Errors.First().Description}";
+                    return userResponse;
+                }
+                List<RolePermission> rolePermissions = await _context.RolePermissions
+                                    .Where(rp => rp.RoleId == model.RoleId.ToString())
+                                    .ToListAsync();
+
+                foreach (RolePermission rolePermission in rolePermissions)
+                {
+                    UserPermission? userPermission = await _context.UserPermissions
+                        .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                        .FirstOrDefaultAsync();
+                    if (userPermission == null)
+                        await _context.UserPermissions.AddAsync(new UserPermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = model.CreateUser,
+                            IsDeleted = false,
+                            IsEnabled = rolePermission.IsEnabled,
+                            UserId = user.Id,
+                            PermissionId = rolePermission.PermissionId,
+                        });
+                    else
+                    {
+                        userPermission.UpdateDate = DateTime.Now;
+                        userPermission.UpdateUser = model.CreateUser;
+                        userPermission.IsEnabled = rolePermission.IsEnabled;
+                        _context.Update(userPermission);
+                    }
+                }
+                await _context.SaveChangesAsync();
+
+                userResponse.Success = true;
+                return userResponse;
+            }
+            catch (Exception ex)
+            {
+                userResponse.Message = ex.Message;
+                return userResponse;
+            }
         }
 
         public async Task<IdentityResult> DeleteAsync(string id)
@@ -136,45 +168,116 @@ namespace GestionComercial.Applications.Services
             return await _userManager.DeleteAsync(user);
         }
 
-        public async Task<IdentityResult> UpdateAsync(UserViewModel model)
+        public async Task<UserResponse> UpdateAsync(UserViewModel model)
         {
-            User? user = await _userManager.FindByIdAsync(model.Id);
-
-            if (user == null)
-                return new IdentityResult();
-
-            user.UserName = model.UserName;
-            user.Email = model.Email;
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Enabled = model.IsEnabled;
-            if (model.ChangePassword && string.IsNullOrEmpty(model.Password))
-                user.ChangePassword = true;
-
-            if (model.ChangePassword && !string.IsNullOrEmpty(model.Password))
+            UserResponse userResponse = new UserResponse { Success = false, };
+            try
             {
-                var roles = await _userManager.GetRolesAsync(user);
+                User? user = await _userManager.FindByIdAsync(model.Id);
+                if (user == null)
+                {
+                    userResponse.Message = "No se reconoce el usuario.";
+                    return userResponse;
+                }
 
-                IdentityResult resultUpdate = await _userManager.UpdateAsync(user);
-                if (!resultUpdate.Succeeded)
-                    return resultUpdate;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Enabled = model.IsEnabled;
+                if (model.ChangePassword && string.IsNullOrEmpty(model.Password))
+                    user.ChangePassword = true;
+
+                if (model.ChangePassword && !string.IsNullOrEmpty(model.Password))
+                {
+                    IdentityResult resultRemovePass = await _userManager.RemovePasswordAsync(user);
+                    if (!resultRemovePass.Succeeded)
+                    {
+                        userResponse.Message = $"Error: codigo {resultRemovePass.Errors.First().Code}.\n{resultRemovePass.Errors.First().Description}";
+                        return userResponse;
+                    }
+                    IdentityResult resultAddPassword = await _userManager.AddPasswordAsync(user, model.Password);
+                    if (!resultAddPassword.Succeeded)
+                    {
+                        userResponse.Message = $"Error: codigo {resultAddPassword.Errors.First().Code}.\n{resultAddPassword.Errors.First().Description}";
+                        return userResponse;
+                    }
+                }
+                // IdentityResult resultAddRole1 = await _userManager.AddToRoleAsync(user, model.RoleName);
+                var roles = await _userManager.GetRolesAsync(user);
 
                 IdentityResult resultRemoveRole = await _userManager.RemoveFromRolesAsync(user, roles);
                 if (!resultRemoveRole.Succeeded)
-                    return resultRemoveRole;
+                    if (!resultRemoveRole.Succeeded)
+                    {
+                        userResponse.Message = $"Error: codigo {resultRemoveRole.Errors.First().Code}.\n{resultRemoveRole.Errors.First().Description}";
+                        return userResponse;
+                    }
+
+                foreach (UserPermission userPermission in await _context.UserPermissions.Where(up => up.UserId == user.Id).ToListAsync())
+                {
+                    if (userPermission != null)
+                    {
+                        userPermission.UpdateDate = DateTime.Now;
+                        userPermission.UpdateUser = model.CreateUser;
+                        userPermission.IsEnabled = false;
+                        _context.Update(userPermission);
+                    }
+                }
+                await _context.SaveChangesAsync();
+
+
                 IdentityResult resultAddRole = await _userManager.AddToRoleAsync(user, model.RoleName);
                 if (!resultAddRole.Succeeded)
-                    return resultAddRole;
-                IdentityResult resultRemovePass = await _userManager.RemovePasswordAsync(user);
-                if (!resultRemovePass.Succeeded)
-                    return resultRemovePass;
-                return await _userManager.AddPasswordAsync(user, model.Password);
+                {
+                    userResponse.Message = $"Error: codigo {resultAddRole.Errors.First().Code}.\n{resultAddRole.Errors.First().Description}";
+                    return userResponse;
+                }
+
+                List<RolePermission> rolePermissions = await _context.RolePermissions
+                               .Where(rp => rp.RoleId == model.RoleId.ToString())
+                               .ToListAsync();
+
+                foreach (RolePermission rolePermission in rolePermissions)
+                {
+                    UserPermission? userPermission = await _context.UserPermissions
+                        .Where(up => up.UserId == user.Id && up.PermissionId == rolePermission.PermissionId)
+                        .FirstOrDefaultAsync();
+                    if (userPermission == null)
+                        await _context.UserPermissions.AddAsync(new UserPermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = model.CreateUser,
+                            IsDeleted = false,
+                            IsEnabled = rolePermission.IsEnabled,
+                            UserId = user.Id,
+                            PermissionId = rolePermission.PermissionId,
+                        });
+                    else
+                    {
+                        userPermission.UpdateDate = DateTime.Now;
+                        userPermission.UpdateUser = model.CreateUser;
+                        userPermission.IsEnabled = rolePermission.IsEnabled;
+                        _context.Update(userPermission);
+                    }
+                }
+                await _context.SaveChangesAsync();
+
+                IdentityResult resultUpdate = await _userManager.UpdateAsync(user);
+                if (!resultUpdate.Succeeded)
+                {
+                    userResponse.Message = $"Error: codigo {resultUpdate.Errors.First().Code}.\n{resultUpdate.Errors.First().Description}";
+                    return userResponse;
+                }
+                userResponse.Success = true;
+                return userResponse;
             }
-            else
-                return await _userManager.UpdateAsync(user);
-
-
+            catch (Exception ex)
+            {
+                userResponse.Message = ex.Message;
+                return userResponse;
+            }
 
         }
 
@@ -249,23 +352,13 @@ namespace GestionComercial.Applications.Services
 
         private async Task<List<UserViewModel>> ToUserViewModelListAsync(List<User> users)
         {
-            List<UserRoleDto> userRoleDtos =
-            [
-                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                new UserRoleDto { Id = 1, Name = "Developer" },
-                new UserRoleDto { Id = 2, Name = "Administrator" },
-                new UserRoleDto { Id = 3, Name = "Supervisor" },
-                new UserRoleDto { Id = 4, Name = "Operator" },
-                new UserRoleDto { Id = 5, Name = "Cashier" }
-            ];
-
             List<UserViewModel> result = [];
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 var roleName = roles.FirstOrDefault(); // string con el nombre del rol
-                var roleId = userRoleDtos.FirstOrDefault(r => r.Name == roleName)?.Id ?? 0;
+                var roleId = UserRoleDtos.FirstOrDefault(r => r.Name == roleName)?.Id ?? 0;
 
                 result.Add(new UserViewModel
                 {
@@ -274,13 +367,13 @@ namespace GestionComercial.Applications.Services
                     LastName = user.LastName,
                     FullName = user.FullName,
                     UserName = user.UserName,
-                    RoleName = roleName,
+                    RoleName = UserRoleDtos.First(urd => urd.Id == roleId).Name,
                     ChangePassword = user.ChangePassword,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     IsDeleted = false,
                     IsEnabled = user.Enabled,
-                    UserRoleDtos = userRoleDtos,
+                    UserRoleDtos = UserRoleDtos,
                     RoleId = roleId,
 
                 });
@@ -291,18 +384,10 @@ namespace GestionComercial.Applications.Services
 
         private async Task<UserViewModel> ToUserViewModelAsync(User user)
         {
-            List<UserRoleDto> userRoleDtos =
-            [
-                new UserRoleDto { Id = 0, Name = "Seleccione el Rol" },
-                new UserRoleDto { Id = 1, Name = "Developer" },
-                new UserRoleDto { Id = 2, Name = "Administrator" },
-                new UserRoleDto { Id = 3, Name = "Supervisor" },
-                new UserRoleDto { Id = 4, Name = "Operator" },
-                new UserRoleDto { Id = 5, Name = "Cashier" }
-            ];
+
             var roles = await _userManager.GetRolesAsync(user);
             string? roleName = roles.FirstOrDefault(); // string con el nombre del rol
-            int roleId = userRoleDtos.FirstOrDefault(r => r.Name == roleName)?.Id ?? 0;
+            int roleId = UserRoleDtos.FirstOrDefault(r => r.Name == roleName)?.Id ?? 0;
 
             return new UserViewModel
             {
@@ -316,7 +401,7 @@ namespace GestionComercial.Applications.Services
                 FullName = user.FullName,
                 IsDeleted = false,
                 PhoneNumber = user.PhoneNumber,
-                UserRoleDtos = userRoleDtos,
+                UserRoleDtos = UserRoleDtos,
                 RoleId = roleId,
             };
         }
