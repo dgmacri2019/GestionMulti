@@ -109,6 +109,15 @@ namespace GestionComercial.Domain.Constant
             Permissions = 18,
         }
 
+        public enum OperationType
+        {
+            Lectura,
+            Agregar,
+            Editar,
+            Borrar,           
+        }
+
+
 
         // Tipo de factura a emitir
         public enum VaucherType

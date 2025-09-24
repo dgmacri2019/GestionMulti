@@ -26,11 +26,11 @@ namespace GestionComercial.Domain.Entities.Masters.Security
 
 
         // Relación con RolePermission (muchos a muchos con Roles)
-        [JsonIgnore] 
+       // [JsonIgnore] 
         public virtual ICollection<RolePermission> RolePermissions { get; set; }
 
         // Relación con UserPermission (para permisos asignados directamente a un usuario)
-        [JsonIgnore] 
+       // [JsonIgnore] 
         public virtual ICollection<UserPermission> UserPermissions { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace GestionComercial.Desktop.Views
             btnLogin.IsEnabled = false;
             lblError.Text = string.Empty;
             string username = txtUsername.Text;
-            string password = txtPassword.Password;            
+            string password = txtPassword.Password;
             string token = string.Empty;
 
             LoginResponse resultLogin = await _authService.LoginAsync(username, password);
@@ -38,7 +38,9 @@ namespace GestionComercial.Desktop.Views
                 {
                     LoginUserCache.UserName = TokenHelper.GetUsername(token);
                     LoginUserCache.UserRole = TokenHelper.GetRole(token);
-                    LoginUserCache.AuthToken = TokenHelper.ExtractTokenValue(token);
+                    LoginUserCache.AuthToken = resultLogin.Token;
+                    LoginUserCache.UserId = resultLogin.UserId;
+                    LoginUserCache.Permisions = resultLogin.Permissions;
 
                     // Abrir ventana principal y pasar el token
                     MainWindow main = new();

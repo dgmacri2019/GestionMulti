@@ -20,8 +20,11 @@ using GestionComercial.Desktop.Views.Masters;
 using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
+using GestionComercial.Domain.Entities.Masters.Security;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using System.Windows;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -45,9 +48,11 @@ namespace GestionComercial.Desktop.Views
 
         private List<MenuItemModel> CreateMenuItem()
         {
-            return
-                [
-                new()
+
+            List<MenuItemModel> menuItems = [];
+
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Clients))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Clientes",
                     Icon = "/Images/Clients 32.png",
@@ -55,8 +60,9 @@ namespace GestionComercial.Desktop.Views
                     [
                         new() { Title = "Clientes ", Icon = "/Images/Clients 32.png", Tag = "Clients" },
                     ]
-                },
-                new MenuItemModel
+                });
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Providers))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Proveedores",
                     Icon = "/Images/Provider 32.png",
@@ -64,8 +70,9 @@ namespace GestionComercial.Desktop.Views
                     [
                         new() { Title = "Proveedores ", Icon = "/Images/Provider 32.png", Tag = "Providers" },
                     ]
-                },
-                new MenuItemModel
+                });
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Articles))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Stock",
                     Icon = "/Images/Products 32.png",
@@ -82,13 +89,15 @@ namespace GestionComercial.Desktop.Views
                         },
 
                     ]
-                },
-                new MenuItemModel
+                });
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Sales))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Ventas",
                     Icon = "/Images/Sales 32.png",
                     Children =
                     [
+                        //TODO: Ver permisos subItems
                         new() { Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "NewSale" },
                         new() { Title = "Lista de ventas", Icon = "/Images/Sale List 32.png", Tag = "ListSales" },
                         new() {
@@ -99,10 +108,10 @@ namespace GestionComercial.Desktop.Views
                                 new() { Title = "Reporte Ventas", Icon = "/Images/Report 32.png", Tag = "Sale_Report" },
                             ]
                         },
-
                     ]
-                },
-                new MenuItemModel
+                });
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Banks))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Cajas y Bancos",
                     Icon = "/Images/Bank 32.png",
@@ -111,8 +120,9 @@ namespace GestionComercial.Desktop.Views
                         new() { Title = "Listado de Cajas Bancos", Icon = "/Images/Bank 32.png", Tag = "Banks" },
                         new() { Title = "Parametros de acreditación", Icon = "/Images/Bank 32.png", Tag = "Banks_Parameter" },
                     ]
-                },
-                new MenuItemModel
+                });
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Accountings))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Cuentas Contables",
                     Icon = "/Images/Acounting Book 32.png",
@@ -121,14 +131,16 @@ namespace GestionComercial.Desktop.Views
                         new() { Title = "Tipos de cuenta", Icon = "/Images/Acounting Book 32.png", Tag = "AccountTypes" },
                         new() { Title = "Cuentas", Icon = "/Images/Acounting Book 32.png", Tag = "Accounts" },
                     ]
-                },
-                new MenuItemModel
+                });
+            if (AutorizeOperationHelper.ValidateModule(ModuleType.Settings))
+                menuItems.Add(new MenuItemModel
                 {
                     Title = "Configuraciones",
                     Icon = "/Images/Config 32.png",
                     Children =
                     [
-                         new() {
+                        //TODO: Ver permisos subItems
+                        new() {
                             Title = "Maestros",
                             Icon = "/Images/Control Panel 32.png",
                             Children =
@@ -143,7 +155,7 @@ namespace GestionComercial.Desktop.Views
                                         new() { Title = "Rubros", Icon = "/Images/Product Category 32.png", Tag = "Categories" },
                                     ]
                                 },
-                                new() 
+                                new()
                                 {
                                     Title = "Seguridad",
                                     Icon = "/Images/Security 32.png",
@@ -152,9 +164,9 @@ namespace GestionComercial.Desktop.Views
                                         new() { Title = "Usuarios", Icon = "/Images/Users 32.png", Tag = "Users" },
                                         new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions" },
                                     ]
-                                },     
-                                
-                                new() 
+                                },
+
+                                new()
                                 {
                                     Title = "Empresa",
                                     Icon = "/Images/Bienes.png",
@@ -163,8 +175,8 @@ namespace GestionComercial.Desktop.Views
                                         new() { Title = "Datos de la empresa", Icon = "/Images/Data Commerce 32.png", Tag = "CommerceData" },
                                         new() { Title = "Datos Fiscales", Icon = "/Images/Billing Data Commerce 32.png", Tag = "Billing" },
                                     ]
-                                },     
-                                
+                                },
+
                             ]
                         },
                         new() {
@@ -186,21 +198,23 @@ namespace GestionComercial.Desktop.Views
 
                             ]
                         },
-                        
+
 
                     ]
-                },
-                new MenuItemModel
-                {
-                    Title = "Cerrar Sesión",
-                    Icon = "/Images/Block 32.png",
-                    Tag = "LogOut",
-                    //Children =
-                    //[
-                    //    new() { Title = "Cerrar Sesión ", Icon = "/Images/Block 32.png", Tag = "LogOut" },
-                    //]
-                },
-            ];
+                });
+
+            menuItems.Add(new MenuItemModel
+            {
+                Title = "Cerrar Sesión",
+                Icon = "/Images/Block 32.png",
+                Tag = "LogOut",
+                //Children =
+                //[
+                //    new() { Title = "Cerrar Sesión ", Icon = "/Images/Block 32.png", Tag = "LogOut" },
+                //]
+            });
+
+            return menuItems;
         }
 
         private void NavigationTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -275,6 +289,8 @@ namespace GestionComercial.Desktop.Views
             LoginUserCache.UserName = string.Empty;
             LoginUserCache.UserRole = string.Empty;
             LoginUserCache.Password = string.Empty;
+            LoginUserCache.UserId = string.Empty;
+            LoginUserCache.Permisions.Clear();
             CacheManager.ClearAll();
             LoginWindow loginView = new LoginWindow();
             loginView.Show();
@@ -294,39 +310,59 @@ namespace GestionComercial.Desktop.Views
 
         private async Task CargarCacheAsync()
         {
-            GlobalProgressHelper.ReportIndeterminate("Cargando Lista de usuarios");
-            UserListViewModel userViewModel = new();
-            while (!UserCache.Instance.HasData)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando Lista de precios");
-            PriceListListViewModel priceListViewModel = new();
-            while (!PriceListCache.Instance.HasData)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando clase maestra");
-            MasterClassListViewModel masterClassListViewModel = new();
-            while (!MasterCache.Instance.HasData)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando Rubros");
-            CategoryListViewModel categoryListViewModel = new();
-            while (!CategoryCache.Instance.HasData)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando Clientes");
-            ClientListViewModel clientListViewModel = new();
-            while (!ClientCache.Instance.HasData)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando Articulos");
-            ArticleListViewModel articleListViewModel = new();
-            while (!ArticleCache.Instance.HasData)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
-            ParameterListViewModel parameterListViewModel = new();
-            while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters)
-                await Task.Delay(10);
-            GlobalProgressHelper.ReportIndeterminate("Cargando Ventas");
-            SaleListViewModel saleListViewModel = new();
-            while (!ClientCache.Instance.HasData)
-                await Task.Delay(10);
-            await GlobalProgressHelper.CompleteAsync();
+            if (AutorizeOperationHelper.ValidateOperation(ModuleType.Users, OperationType.Lectura))
+            {
+                GlobalProgressHelper.ReportIndeterminate("Cargando Lista de usuarios");
+                UserListViewModel userViewModel = new();
+                while (!UserCache.Instance.HasData)
+                    await Task.Delay(10);
+            }
+            if (AutorizeOperationHelper.ValidateOperation(ModuleType.PriceLists, OperationType.Lectura))
+            {
+                GlobalProgressHelper.ReportIndeterminate("Cargando Lista de precios");
+                PriceListListViewModel priceListViewModel = new();
+                while (!PriceListCache.Instance.HasData)
+                    await Task.Delay(10);
+            }
+            if (AutorizeOperationHelper.ValidateOperation(ModuleType.Parameters, OperationType.Lectura))
+            {
+                GlobalProgressHelper.ReportIndeterminate("Cargando clase maestra");
+                MasterClassListViewModel masterClassListViewModel = new();
+                while (!MasterCache.Instance.HasData)
+                    await Task.Delay(10);
+
+                GlobalProgressHelper.ReportIndeterminate("Cargando Rubros");
+                CategoryListViewModel categoryListViewModel = new();
+                while (!CategoryCache.Instance.HasData)
+                    await Task.Delay(10);
+
+                GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
+                ParameterListViewModel parameterListViewModel = new();
+                while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters)
+                    await Task.Delay(10);
+            }
+            if (AutorizeOperationHelper.ValidateOperation(ModuleType.Clients, OperationType.Lectura))
+            {
+                GlobalProgressHelper.ReportIndeterminate("Cargando Clientes");
+                ClientListViewModel clientListViewModel = new();
+                while (!ClientCache.Instance.HasData)
+                    await Task.Delay(10);
+            }
+            if (AutorizeOperationHelper.ValidateOperation(ModuleType.Articles, OperationType.Lectura))
+            {
+                GlobalProgressHelper.ReportIndeterminate("Cargando Articulos");
+                ArticleListViewModel articleListViewModel = new();
+                while (!ArticleCache.Instance.HasData)
+                    await Task.Delay(10);
+            }
+            if (AutorizeOperationHelper.ValidateOperation(ModuleType.Sales, OperationType.Lectura))
+            {
+                GlobalProgressHelper.ReportIndeterminate("Cargando Ventas");
+                SaleListViewModel saleListViewModel = new();
+                while (!ClientCache.Instance.HasData)
+                    await Task.Delay(10);
+                await GlobalProgressHelper.CompleteAsync();
+            }
         }
     }
 }

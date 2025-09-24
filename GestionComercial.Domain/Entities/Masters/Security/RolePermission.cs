@@ -13,10 +13,10 @@ namespace GestionComercial.Domain.Entities.Masters.Security
 
 
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual IdentityRole? Role { get; set; }
 
-        [JsonIgnore] 
+        //[JsonIgnore] 
         public virtual Permission? Permission { get; set; }
     }
 }

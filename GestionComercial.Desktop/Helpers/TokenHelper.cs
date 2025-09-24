@@ -8,9 +8,9 @@ namespace GestionComercial.Desktop.Helpers
         public static string GetClaim(string token, string claimType)
         {
             var handler = new JwtSecurityTokenHandler();
-            string realToken = ExtractTokenValue(token);
-
-            var jwtToken = handler.ReadJwtToken(realToken);
+            //string realToken = ExtractTokenValue(token);
+            //var jwtToken = handler.ReadJwtToken(realToken);
+            var jwtToken = handler.ReadJwtToken(token);
 
             // Buscar el claim exacto
             var claim = jwtToken.Claims.FirstOrDefault(c => c.Type == claimType);

@@ -23,12 +23,14 @@ namespace GestionComercial.API.Controllers.Security
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto request)
         {
             LoginResponse resultLogin = await _userService.LoginAsync(request.UserName, request.Password);
-            if (!resultLogin.Success)
-                return BadRequest(resultLogin.Message);
-            if (resultLogin.Success && resultLogin.Token == null)
-                return Unauthorized(new { message = "Usuario o contraseña inválidos" });
+            return Ok(resultLogin);
 
-            return Ok(new { resultLogin.Token });
+            //if (!resultLogin.Success)
+            //    return BadRequest(resultLogin.Message);
+            //if (resultLogin.Success && resultLogin.Token == null)
+            //    return Unauthorized(new { message = "Usuario o contraseña inválidos" });
+
+            //return Ok(new { resultLogin.Token });
         }
     }
 }

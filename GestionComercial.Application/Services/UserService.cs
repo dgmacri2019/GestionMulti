@@ -37,6 +37,8 @@ namespace GestionComercial.Applications.Services
             try
             {
                 User? user = await _userManager.FindByNameAsync(username);
+                if (!user.Enabled)
+                    return new LoginResponse { Success = false, Token = null, Message = "Usuario Inhabilitado" };
                 if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
                     return new LoginResponse { Success = false, Token = null, Message = "Usuario o contraseña inválidos" };
 
@@ -61,7 +63,13 @@ namespace GestionComercial.Applications.Services
                 return new LoginResponse
                 {
                     Success = true,
-                    Token = new JwtSecurityTokenHandler().WriteToken(token)
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    UserId = user.Id,
+                    Permissions = await _context.Permissions
+                                                    .Include(up => up.UserPermissions)
+                                                    .Include(rp => rp.RolePermissions)
+                                                    .Where(up => up.UserPermissions.Count(x => x.UserId == user.Id) > 0)
+                                                    .ToListAsync(),
                 };
             }
             catch (Exception ex)
