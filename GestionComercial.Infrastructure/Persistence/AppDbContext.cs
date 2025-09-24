@@ -118,7 +118,7 @@ namespace GestionComercial.Infrastructure.Persistence
                 new IdentityRole { Id = "3", Name = "Supervisor", NormalizedName = "Supervisor".ToUpper() },
                 new IdentityRole { Id = "4", Name = "Operador", NormalizedName = "Operador".ToUpper() },
                 new IdentityRole { Id = "5", Name = "Cajero", NormalizedName = "Cajero".ToUpper() }
-            );
+            );          
 
             // Configuración de la relación de RolePermission
             modelBuilder.Entity<RolePermission>()

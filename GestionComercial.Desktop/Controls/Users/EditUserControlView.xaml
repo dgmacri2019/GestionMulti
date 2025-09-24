@@ -156,7 +156,7 @@
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Center"
                    ItemsSource="{Binding UserRoleDtos}"
-                   DisplayMemberPath="DisplayName"
+                   DisplayMemberPath="Name"
                    SelectedValuePath="Id"
                    SelectedValue="{Binding RoleId}"
                    KeyDown="TextBox_KeyDown_MoveNext"/>

@@ -29,7 +29,18 @@ namespace GestionComercial.Desktop.Views.Masters
         public BillingWindow()
         {
             InitializeComponent();
+            if (MasterCache.Instance.GetCommerceData() == null)
+            {
+                Loaded += (s, e) =>
+                {
+                    MsgBoxAlertHelper.MsgAlertError("No se cargaron los datos de la empresa.");
+                    Close(); // cierra inmediatamente después de cargar
+                };
+                return;
+            }
+           
             _apiService = new MasterClassApiService();
+
             BillingViewModel = MasterCache.Instance.GetBilling();
             if (BillingViewModel == null)
                 BillingViewModel = new BillingViewModel

@@ -179,6 +179,20 @@ namespace GestionComercial.API.Helpers
                 GeneralResponse resultPermisionInModules = await CheckPermisionInModulesAsync(dbContext);
                 if (!resultPermisionInModules.Success)
                     return resultPermisionInModules;
+                if (!dbContext.Articles.Any())
+                {
+                    GeneralResponse resultArticle = await CheckArticleAsync(dbContext);
+                    if (!resultPermisionInModules.Success)
+                        return resultPermisionInModules;
+                }
+                if (!dbContext.Clients.Any())
+                {
+                    GeneralResponse resultClient = await CheckClientAsync(dbContext);
+                    if (!resultPermisionInModules.Success)
+                        return resultPermisionInModules;
+                }
+
+
 
                 resultResponse.Success = true;
                 return resultResponse;
@@ -187,6 +201,76 @@ namespace GestionComercial.API.Helpers
             catch (Exception ex)
             {
                 return new GeneralResponse { Success = false, Message = ex.Message };
+            }
+        }
+
+        private static async Task<GeneralResponse> CheckClientAsync(AppDbContext _context)
+        {
+            GeneralResponse result = new() { Success = false };
+            try
+            {
+                while (StaticCommon.ContextInUse)
+                    await Task.Delay(100);
+
+                StaticCommon.ContextInUse = true;
+                await _context.AddAsync(new Client
+                {
+                    CreateDate = DateTime.Now,
+                    CreateUser = "System",
+                    IsDeleted = false,
+                    IsEnabled = true,
+                    BusinessName = "Cliente Predefinido",
+                    DocumentTypeId = 1,
+                    IvaConditionId = 1,
+                    DocumentNumber = "12345678",
+                    Address = "Dirección",
+                    PostalCode = "1234",
+                    StateId = 1,
+                    City = "Ciudad",
+                    PriceListId = 1,
+                });
+                StaticCommon.ContextInUse = false;
+                await _context.SaveChangesAsync();
+                result.Success = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+        }
+
+        private static async Task<GeneralResponse> CheckArticleAsync(AppDbContext _context)
+        {
+            GeneralResponse result = new() { Success = false };
+            try
+            {
+                while (StaticCommon.ContextInUse)
+                    await Task.Delay(100);
+
+                StaticCommon.ContextInUse = true;
+                await _context.AddAsync(new Article
+                {
+                    CreateDate = DateTime.Now,
+                    CreateUser = "System",
+                    IsDeleted = false,
+                    IsEnabled = true,
+                    Description = "Artículo Predefinido",
+                    Code = "1",
+                    TaxId = 1,
+                    MeasureId = 1,
+                    CategoryId = 1,
+                });
+                StaticCommon.ContextInUse = false;
+                await _context.SaveChangesAsync();
+                result.Success = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
             }
         }
 
@@ -1000,6 +1084,15 @@ namespace GestionComercial.API.Helpers
                             PermissionId = permission.Id,
                             RoleId = operatorRole.Id,
                         });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = cashierRole.Id,
+                        });
 
                         await _context.SaveChangesAsync();
 
@@ -1079,6 +1172,16 @@ namespace GestionComercial.API.Helpers
                             PermissionId = permission.Id,
                             RoleId = operatorRole.Id,
                         });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = cashierRole.Id,
+                        });
+
                         await _context.SaveChangesAsync();
 
                         foreach (User user in await _context.Users.ToListAsync())
@@ -1156,6 +1259,16 @@ namespace GestionComercial.API.Helpers
                             PermissionId = permission.Id,
                             RoleId = operatorRole.Id,
                         });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = cashierRole.Id,
+                        });
+
                         await _context.SaveChangesAsync();
 
                         foreach (User user in await _context.Users.ToListAsync())
@@ -1233,6 +1346,16 @@ namespace GestionComercial.API.Helpers
                             PermissionId = permission.Id,
                             RoleId = operatorRole.Id,
                         });
+                        await _context.RolePermissions.AddAsync(new RolePermission
+                        {
+                            CreateDate = DateTime.Now,
+                            CreateUser = "System",
+                            IsDeleted = false,
+                            IsEnabled = true,
+                            PermissionId = permission.Id,
+                            RoleId = cashierRole.Id,
+                        });
+
                         await _context.SaveChangesAsync();
 
                         foreach (User user in await _context.Users.ToListAsync())
