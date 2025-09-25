@@ -107,6 +107,10 @@ namespace GestionComercial.Domain.Constant
             DataBases = 17,
             [Display(Name = "Permisos")]
             Permissions = 18,
+            [Display(Name = "Parametros Generales")]
+            GeneralParameters = 19,
+            [Display(Name = "Parametros de Pc")]
+            PcParameters = 20,
         }
 
         public enum OperationType

@@ -87,8 +87,10 @@
                   CanUserSortColumns="True"
                   FrozenColumnCount="3" 
                   ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                  MouseDoubleClick="DataGrid_MouseDoubleClick" Loaded="DgArticles_Loaded">
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
+                  MouseDoubleClick="DataGrid_MouseDoubleClick" 
+                  Loaded="DgArticles_Loaded">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Categoría" Width="100" SortMemberPath="Category">
                     <DataGridTemplateColumn.CellTemplate>

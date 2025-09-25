@@ -113,7 +113,7 @@ namespace GestionComercial.Applications.Services
             {
                 try
                 {
-                    _context.Update(model);
+                     _context.Update(model);
 
                     GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
                     if (result.Success)

@@ -4,7 +4,6 @@ using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
 using GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock;
 using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
-using GestionComercial.Desktop.Controls.Permissions;
 using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
@@ -21,7 +20,9 @@ using GestionComercial.Desktop.Views.Masters;
 using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
+using GestionComercial.Domain.Entities.Masters.Security;
 using System.Windows;
+using System.Windows.Controls;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Views
@@ -119,7 +120,8 @@ namespace GestionComercial.Desktop.Views
                         MainContent.Content = new ListUsersControlView();
                         break;
                     case "Permissions":
-                        MainContent.Content = new ListPermissionsControlView();
+                        var userPermissionWindow = new UserPermissionsWindow() { Owner = Window.GetWindow(this) };
+                        userPermissionWindow.Show();
                         break;
                     case "NewSale":
                         var saleAddWindow = new SaleAddWindow(0) { Owner = Window.GetWindow(this) };
@@ -170,6 +172,7 @@ namespace GestionComercial.Desktop.Views
             LoginWindow loginView = new LoginWindow();
             loginView.Show();
             // Importante: cerrar la ventana actual correctamente
+                    
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is MainWindow)

@@ -4,8 +4,8 @@ namespace GestionComercial.Desktop.Dictionary
 {
     public static class MenuRepository
     {
-        public static List<MenuDefinition> Definitions = new()
-    {
+        public static List<MenuDefinition> Definitions =
+    [
         new MenuDefinition
         {
             Title = "Clientes",
@@ -13,7 +13,7 @@ namespace GestionComercial.Desktop.Dictionary
             Module = ModuleType.Clients,
             Children =
             {
-                new() { Title = "Clientes", Icon = "/Images/Clients 32.png", Tag = "Clients", PermissionKey = "Clientes-Lectura" }
+                new() {  Module = ModuleType.Clients, Title = "Clientes", Icon = "/Images/Clients 32.png", Tag = "Clients", PermissionKey = "Clientes-Lectura" }
             }
         },
         new MenuDefinition
@@ -23,7 +23,7 @@ namespace GestionComercial.Desktop.Dictionary
             Module = ModuleType.Providers,
             Children =
             {
-                new() { Title = "Proveedores", Icon = "/Images/Provider 32.png", Tag = "Providers", PermissionKey = "Proveedores-Lectura" }
+                new() { Module = ModuleType.Providers, Title = "Proveedores", Icon = "/Images/Provider 32.png", Tag = "Providers", PermissionKey = "Proveedores-Lectura" }
             }
         },
         new MenuDefinition
@@ -33,15 +33,16 @@ namespace GestionComercial.Desktop.Dictionary
             Module = ModuleType.Articles,
             Children =
             {
-                new() { Title = "Articulos", Icon = "/Images/Products 32.png", Tag = "Stock", PermissionKey = "Articulos-Lectura" },
+                new() { Module = ModuleType.Articles, Title = "Articulos", Icon = "/Images/Products 32.png", Tag = "Stock", PermissionKey = "Articulos-Lectura" },
                 new MenuDefinition
                 {
                     Title = "Reportes",
                     Icon = "/Images/Report 20.png",
                     PermissionKey = "Stock.Report",
+                    //Module = ModuleType.Articles,
                     Children =
                     {
-                        new() { Title = "Reporte Stock", Icon = "/Images/Report 32.png", Tag = "Stock_Report", PermissionKey = "Reportes-Lectura" }
+                        new() { Module = ModuleType.Reports,Title = "Reporte Stock", Icon = "/Images/Report 32.png", Tag = "Stock_Report", PermissionKey = "Reportes-Lectura" }
                     }
                 }
             }
@@ -53,16 +54,17 @@ namespace GestionComercial.Desktop.Dictionary
             Module = ModuleType.Sales,
             Children =
             {
-                new() { Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "NewSale", PermissionKey = "Ventas-Agregar" },
-                new() { Title = "Lista de ventas", Icon = "/Images/Sale List 32.png", Tag = "ListSales", PermissionKey = "Ventas-Lectura" },
+                new() { Module = ModuleType.Sales,Title = "Nueva Venta", Icon = "/Images/Sales 32.png", Tag = "NewSale", PermissionKey = "Ventas-Agregar" },
+                new() {Module = ModuleType.Sales, Title = "Lista de ventas", Icon = "/Images/Sale List 32.png", Tag = "ListSales", PermissionKey = "Ventas-Lectura" },
                 new MenuDefinition
                 {
                     Title = "Reportes",
                     Icon = "/Images/Report 20.png",
                     PermissionKey = "Sales.Report",
+                    //Module = ModuleType.Sales,
                     Children =
                     {
-                        new() { Title = "Reporte Ventas", Icon = "/Images/Report 32.png", Tag = "Sale_Report", PermissionKey = "Reportes-Lectura" }
+                        new() {Module = ModuleType.Reports, Title = "Reporte Ventas", Icon = "/Images/Report 32.png", Tag = "Sale_Report", PermissionKey = "Reportes-Lectura" }
                     }
                 }
             }
@@ -74,8 +76,8 @@ namespace GestionComercial.Desktop.Dictionary
             Module = ModuleType.Banks,
             Children =
             {
-                new() { Title = "Listado de Cajas Bancos", Icon = "/Images/Bank 32.png", Tag = "Banks", PermissionKey = "Bancos-Lectura" },
-                new() { Title = "Parametros de acreditación", Icon = "/Images/Bank 32.png", Tag = "Banks_Parameter", PermissionKey = "Bancos-Lectura" }
+                new() { Module = ModuleType.Banks,Title = "Listado de Cajas Bancos", Icon = "/Images/Bank 32.png", Tag = "Banks", PermissionKey = "Bancos-Lectura" },
+                new() { Module = ModuleType.Banks,Title = "Parametros de acreditación", Icon = "/Images/Bank 32.png", Tag = "Banks_Parameter", PermissionKey = "Bancos-Lectura" }
             }
         },
         new MenuDefinition
@@ -85,8 +87,8 @@ namespace GestionComercial.Desktop.Dictionary
             Module = ModuleType.Accountings,
             Children =
             {
-                new() { Title = "Tipos de cuenta", Icon = "/Images/Acounting Book 32.png", Tag = "AccountTypes", PermissionKey = "Cuentas Contables-Lectura" },
-                new() { Title = "Cuentas", Icon = "/Images/Acounting Book 32.png", Tag = "Accounts", PermissionKey = "Cuentas Contables-Lectura" }
+                new() { Module = ModuleType.Accountings,Title = "Tipos de cuenta", Icon = "/Images/Acounting Book 32.png", Tag = "AccountTypes", PermissionKey = "Cuentas Contables-Lectura" },
+                new() {Module = ModuleType.Accountings, Title = "Cuentas", Icon = "/Images/Acounting Book 32.png", Tag = "Accounts", PermissionKey = "Cuentas Contables-Lectura" }
             }
         },
         new MenuDefinition
@@ -100,36 +102,40 @@ namespace GestionComercial.Desktop.Dictionary
                 {
                     Title = "Maestros",
                     Icon = "/Images/Control Panel 32.png",
+                    //Module = ModuleType.Settings,
                     Children =
                     {
                         new MenuDefinition
                         {
                             Title="Stock",
                             Icon = "/Images/Products 32.png",
+                            //Module = ModuleType.Articles,
                             Children =
                             {
-                                new() { Title = "Listas de Precios", Icon = "/Images/Price List 32.png", Tag = "PriceLists", PermissionKey = "Listas de Precios-Lectura" },
-                                new() { Title = "Rubros", Icon = "/Images/Product Category 32.png", Tag = "Categories", PermissionKey = "Listas de Precios-Lectura" }
+                                new() {Module = ModuleType.PriceLists, Title = "Listas de Precios", Icon = "/Images/Price List 32.png", Tag = "PriceLists", PermissionKey = "Listas de Precios-Lectura" },
+                                new() {Module = ModuleType.PriceLists, Title = "Rubros", Icon = "/Images/Product Category 32.png", Tag = "Categories", PermissionKey = "Listas de Precios-Lectura" }
                             }
                         },
                         new MenuDefinition
                         {
                             Title = "Seguridad",
                             Icon = "/Images/Security 32.png",
+                            Module = ModuleType.Settings,
                             Children =
                             {
-                                new() { Title = "Usuarios", Icon = "/Images/Users 32.png", Tag = "Users", PermissionKey = "Usuarios-Lectura" },
-                                new() { Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions", PermissionKey = "Permisos-Lectura" }
+                                new() { Module = ModuleType.Users,Title = "Usuarios", Icon = "/Images/Users 32.png", Tag = "Users", PermissionKey = "Usuarios-Lectura" },
+                                new() { Module = ModuleType.Permissions,Title = "Permisos", Icon = "/Images/Security 32.png", Tag = "Permissions", PermissionKey = "Permisos-Lectura" }
                             }
                         },
                         new MenuDefinition
                         {
                             Title = "Empresa",
                             Icon = "/Images/Bienes.png",
+                            Module = ModuleType.Settings,
                             Children =
                             {
-                                new() { Title = "Datos de la empresa", Icon = "/Images/Data Commerce 32.png", Tag = "CommerceData", PermissionKey = "Configuraciones-Lectura" },
-                                new() { Title = "Datos Fiscales", Icon = "/Images/Billing Data Commerce 32.png", Tag = "Billing", PermissionKey = "Configuraciones-Lectura" }
+                                new() { Module = ModuleType.Settings,Title = "Datos de la empresa", Icon = "/Images/Data Commerce 32.png", Tag = "CommerceData", PermissionKey = "Configuraciones-Lectura" },
+                                new() {Module = ModuleType.Settings, Title = "Datos Fiscales", Icon = "/Images/Billing Data Commerce 32.png", Tag = "Billing", PermissionKey = "Configuraciones-Lectura" }
                             }
                         }
                     }
@@ -138,10 +144,11 @@ namespace GestionComercial.Desktop.Dictionary
                 {
                     Title = "Parámetros",
                     Icon = "/Images/Setting Config 32.png",
+                    Module = ModuleType.Parameters,
                     Children =
                     {
-                        new() { Title = "Parámetros Generales", Icon ="/Images/Setting 32.png", Tag = "GeneralParameter_Setup", PermissionKey = "Parametros-Lectura" },
-                        new() { Title = "Parámetros de PC", Icon ="/Images/Setting 32.png", Tag = "PcParameter_Setup", PermissionKey = "Parametros-Lectura" }
+                        new() {Module = ModuleType.GeneralParameters, Title = "Parámetros Generales", Icon ="/Images/Setting 32.png", Tag = "GeneralParameter_Setup", PermissionKey = "Parametros Generales-Lectura" },
+                        new() {Module = ModuleType.PcParameters, Title = "Parámetros de PC", Icon ="/Images/Setting 32.png", Tag = "PcParameter_Setup", PermissionKey = "Parametros de Pc-Lectura" }
                     }
                 }
             }
@@ -149,7 +156,7 @@ namespace GestionComercial.Desktop.Dictionary
         // Fijos
         new MenuDefinition { Title = "Cerrar Sesión", Icon = "/Images/Block 32.png", Tag = "LogOut" },
         new MenuDefinition { Title = "Salir", Icon = "/Images/Exit 32.png", Tag = "Close" }
-    };
+    ];
     }
 
 }

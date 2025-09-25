@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controls\Maters\Configurations\Maestros\Security\Permissions\ListPermissionsControlView.xaml.cs" />
     <Compile Remove="Helpers\MultiConverter.cs" />
     <Compile Remove="Services\PriceListsApiService.cs" />
     <Compile Remove="ViewModels\Stock\ArticleViewModel.cs" />
@@ -606,6 +607,10 @@
     <None Remove="Images\Users 64.png" />
     <None Remove="Images\usuario.png" />
     <None Remove="Images\whataspp_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Controls\Maters\Configurations\Maestros\Security\Permissions\ListPermissionsControlView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1232,6 +1237,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\Maters\Configurations\Maestros\Security\Permissions\" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,9 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.DTOs.Security;
 using GestionComercial.Domain.Entities.Masters.Security;
 using GestionComercial.Domain.Response;
+using GestionComercial.Domain.Statics;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Applications.Services
 {
@@ -22,9 +21,13 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        public async Task<IEnumerable<Permission>> GetAllAsync(bool isEnabled, bool isDeleted)
+        public async Task<IEnumerable<Permission>> GetAllPermissionsAsync()
         {
-            return await _context.Permissions.AsNoTracking().Where(p => p.IsEnabled == isEnabled && p.IsDeleted == isDeleted).ToListAsync();
+            return await _context.Permissions
+                .AsNoTracking()
+                .Include(p => p.UserPermissions)
+                .Include(p => p.RolePermissions)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<RolePermission>> GetAllRolePermisionAsync(bool isEnabled, bool isDeleted)
@@ -39,26 +42,17 @@ namespace GestionComercial.Applications.Services
 
         public async Task<PermissionResponse> GetAllUserPermisionFromUserAsync(string userId)
         {
-            PermissionResponse response = new PermissionResponse { Success = false };
+            PermissionResponse response = new() { Success = false };
 
             try
             {
-                List<UserPermission> userPermissions = await _context.UserPermissions.ToListAsync();
+                response.UserPermissions = await _context.UserPermissions
+                    .AsNoTracking()
+                    .Include(p => p.Permission)
+                    .Where(p => p.UserId == userId)
+                    .ToListAsync();
 
-                foreach (ModuleType module in Enum.GetValues(typeof(ModuleType)))
-                {
-                    PermissionViewModel vm = new() { Module = module };
-                    
-                    // Buscar permisos disponibles en este módulo
-                    List<Permission> modulePermissions = await _context.Permissions.Where(p => p.ModuleType == module).ToListAsync();
 
-                    vm.CanRead = modulePermissions.Any(p => p.Name.EndsWith("Lectura") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
-                    vm.CanAdd = modulePermissions.Any(p => p.Name.EndsWith("Agregar") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
-                    vm.CanEdit = modulePermissions.Any(p => p.Name.EndsWith("Editar") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
-                    vm.CanDelete = modulePermissions.Any(p => p.Name.EndsWith("Borrar") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
-
-                    response.PermissionViewModels.Add(vm);
-                }
                 response.Success = true;
                 return response;
             }
@@ -82,6 +76,51 @@ namespace GestionComercial.Applications.Services
         public async Task<UserPermission> GetUserPermissionByIdAsync(int id)
         {
             return await _context.UserPermissions.FindAsync(id);
+        }
+
+        public async Task<GeneralResponse> UpdatePermissionsAsync(List<UserPermission> userPermissions)
+        {
+            while (StaticCommon.ContextInUse)
+                await Task.Delay(100);
+
+            using (var transacction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (UserPermission userPermission in userPermissions)
+                    {
+                        _context.Update(userPermission);
+                    }
+
+
+                    GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
+                    if (result.Success)
+                    {
+
+                        transacction.Commit();
+                        return result;
+                    }
+                    else
+                    {
+                        transacction.Rollback();
+                        return result;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    transacction.Rollback();
+                    return new GeneralResponse
+                    {
+                        Message = ex.Message,
+                        Success = false,
+                    };
+                }
+                finally
+                {
+                    StaticCommon.ContextInUse = false;
+                }
+            }
         }
 
         public async Task<bool> UserHasPermissionAsync(string userId, string permission)

@@ -5,7 +5,7 @@ namespace GestionComercial.Applications.Interfaces
 {
     public interface IPermissionService
     {
-        Task<IEnumerable<Permission>> GetAllAsync(bool isEnabled, bool isDeleted);
+        Task<IEnumerable<Permission>> GetAllPermissionsAsync();
 
         Task<Permission> GetByIdAsync(int id);
 
@@ -19,5 +19,6 @@ namespace GestionComercial.Applications.Interfaces
 
         Task<bool> UserHasPermissionAsync(string userId, string permission);
         Task<PermissionResponse> GetAllUserPermisionFromUserAsync(string userId);
+        Task<GeneralResponse> UpdatePermissionsAsync(List<UserPermission> model);
     }
 }

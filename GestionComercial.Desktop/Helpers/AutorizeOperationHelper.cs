@@ -8,7 +8,7 @@ namespace GestionComercial.Desktop.Helpers
     {
         public static bool ValidateModule(ModuleType moduleType)
         {
-            return LoginUserCache.Permisions.Count(p => p.ModuleType == moduleType) > 0;            
+            return LoginUserCache.Permisions.Count(p => p.ModuleType == moduleType) > 0;
         }
 
         public static bool ValidateOperation(ModuleType moduleType, string operationType)
@@ -16,14 +16,16 @@ namespace GestionComercial.Desktop.Helpers
             List<Permission> permissions = LoginUserCache.Permisions;
             if (permissions.Count() == 0)
                 return false;
-            Permission permission = permissions
-                .First(p => p.ModuleType == moduleType && p.Name == operationType);
-            if (permission == null)
-                return false;
-            UserPermission userPermission = permission.UserPermissions
-                .First(up => up.PermissionId == permission.Id && up.UserId == LoginUserCache.UserId);
+            
+                Permission? permission = permissions
+                .FirstOrDefault(p => p.ModuleType == moduleType && p.Name == operationType);
+                if (permission == null)
+                    return false;
+                UserPermission userPermission = permission.UserPermissions
+                    .First(up => up.PermissionId == permission.Id && up.UserId == LoginUserCache.UserId);
 
-            return userPermission != null && userPermission.IsEnabled;
+                return userPermission != null && userPermission.IsEnabled;
+            
         }
     }
 }

@@ -3,13 +3,10 @@ using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.Utils;
 using GestionComercial.Domain.Cache;
-using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using static GestionComercial.Domain.Constant.Enumeration;
-using static GestionComercial.Domain.Notifications.ArticleChangeNotification;
 using static GestionComercial.Domain.Notifications.UserChangeNotification;
 
 namespace GestionComercial.Desktop.ViewModels.Users

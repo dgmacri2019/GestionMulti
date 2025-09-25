@@ -108,8 +108,8 @@ namespace GestionComercial.Domain.Cache
         {
             try
             {
-
-                _sales.Clear();
+                if (_sales != null)
+                    _sales.Clear();
             }
             catch (Exception)
             {

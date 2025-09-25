@@ -26,8 +26,8 @@ namespace GestionComercial.API.Controllers.Security
 
 
 
-        [HttpPost("GetAllUserPermissionAsync")]
-        public async Task<IActionResult> GetAllUserPermissionAsync([FromBody] SecurityFilterDto filter)
+        [HttpPost("GetAllUserPermisionFromUserAsync")]
+        public async Task<IActionResult> GetAllUserPermisionFromUserAsync([FromBody] SecurityFilterDto filter)
         {
             PermissionResponse permissionResponse = await _permissionService.GetAllUserPermisionFromUserAsync(filter.UserId);
             return permissionResponse.Success ?
@@ -128,10 +128,10 @@ namespace GestionComercial.API.Controllers.Security
 
 
 
-        [HttpPost("GetAllPermissionAsync")]
+        [HttpPost("GetAllPermissionsAsync")]
         public async Task<IActionResult> GetAllPermissionAsync([FromBody] SecurityFilterDto filter)
         {
-            IEnumerable<Permission> permissions = await _permissionService.GetAllAsync(filter.IsEnabled, filter.IsDeleted);
+            IEnumerable<Permission> permissions = await _permissionService.GetAllPermissionsAsync();
             return Ok(permissions);
         }
 
@@ -191,6 +191,16 @@ namespace GestionComercial.API.Controllers.Security
             GeneralResponse resultAdd = await _masterService.UpdateAsync(model);
             return resultAdd.Success ?
                 Ok("Permiso actualizado correctamente")
+                :
+                BadRequest(resultAdd.Message);
+        }
+
+        [HttpPost("UpdateUserPermissionsAsync")]
+        public async Task<IActionResult> UpdateUserPermissionsAsync([FromBody] List<UserPermission> model)
+        {
+            GeneralResponse resultAdd = await _permissionService.UpdatePermissionsAsync(model);
+            return resultAdd.Success ?
+                Ok("Permisos de usuario actualizados correctamente")
                 :
                 BadRequest(resultAdd.Message);
         }
