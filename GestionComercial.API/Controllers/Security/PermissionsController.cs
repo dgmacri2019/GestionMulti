@@ -25,6 +25,28 @@ namespace GestionComercial.API.Controllers.Security
         }
 
 
+
+        [HttpPost("GetAllUserPermissionAsync")]
+        public async Task<IActionResult> GetAllUserPermissionAsync([FromBody] SecurityFilterDto filter)
+        {
+            PermissionResponse permissionResponse = await _permissionService.GetAllUserPermisionFromUserAsync(filter.UserId);
+            return permissionResponse.Success ?
+                Ok(permissionResponse)
+                :
+                BadRequest(permissionResponse.Message);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpPost("AddPermissionAsync")]
         public async Task<IActionResult> AddPermissionAsync([FromBody] Permission permission)
         {

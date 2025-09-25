@@ -82,8 +82,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
 
             _hubService = new SalesHubService(hubUrl);
             _hubService.VentaCambiado += OnVentaCambiado;
-            _hubService.SalesChanged += OnSalesChanged;
-            ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
+             ToggleEnabledCommand = new RelayCommand1(async _ => await ToggleEnabled());
             SearchCommand = new RelayCommand1(async _ => await LoadSalesAsync());
 
             _ = Task.Run(async () =>
@@ -141,6 +140,9 @@ namespace GestionComercial.Desktop.ViewModels.Sale
                         MsgBoxAlertHelper.MsgAlertError(resultSale.Message);
                         return;
                     }
+                    if (resultSale.SaleViewModels.Count() == 0)
+                        SaleCache.ReadingOk = true;
+
                     List<SaleViewModel> sales = resultSale.SaleViewModels;
 
                     SaleCache.Instance.SetSales(sales);
@@ -182,11 +184,6 @@ namespace GestionComercial.Desktop.ViewModels.Sale
                 MsgBoxAlertHelper.MsgAlertError(saleResponse.Message);
         }
 
-        private void OnSalesChanged(string json)
-        {
-            // acá podés deserializar el objeto si lo necesitas
-            // var data = JsonConvert.DeserializeObject<ChangedItem<Sale>>(json);
-            // actualizar tu lista o disparar notificación visual
-        }
+       
     }
 }

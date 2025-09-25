@@ -62,6 +62,15 @@ namespace GestionComercial.Desktop.Views.Sales
 
         public SaleAddWindow(int saleId)
         {
+            if (MasterCache.Instance.GetCommerceData() == null)
+            {
+                Loaded += (s, e) =>
+                {
+                    MsgBoxAlertHelper.MsgAlertError("No se cargaron los datos de la empresa.");
+                    Close(); // cierra inmediatamente después de cargar
+                };
+                return;
+            }
             InitializeComponent();
 
             _salesApiService = new SalesApiService();

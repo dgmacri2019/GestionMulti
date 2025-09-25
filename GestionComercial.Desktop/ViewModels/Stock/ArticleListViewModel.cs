@@ -105,7 +105,11 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
                     ArticleResponse articleResponse = await _articlesApiService.GetAllAsync();
                     if (articleResponse.Success)
+                    {
+                        if (articleResponse.ArticleViewModels.Count() == 0)
+                            ArticleCache.ReadingOk = true;
                         ArticleCache.Instance.Set(articleResponse.ArticleViewModels);
+                    }
                     else
                         MessageBox.Show($"Error al cargar articulos, el error fue:\n{articleResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
 

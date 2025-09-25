@@ -11,15 +11,17 @@ namespace GestionComercial.Desktop.Helpers
             return LoginUserCache.Permisions.Count(p => p.ModuleType == moduleType) > 0;            
         }
 
-        public static bool ValidateOperation(ModuleType moduleType, OperationType operationType)
+        public static bool ValidateOperation(ModuleType moduleType, string operationType)
         {
             List<Permission> permissions = LoginUserCache.Permisions;
             if (permissions.Count() == 0)
                 return false;
-            Permission permission = permissions.First(p => p.ModuleType == moduleType && p.Name.Contains(operationType.ToString()));
+            Permission permission = permissions
+                .First(p => p.ModuleType == moduleType && p.Name == operationType);
             if (permission == null)
                 return false;
-            UserPermission userPermission = permission.UserPermissions.First(up => up.PermissionId == permission.Id && up.UserId == LoginUserCache.UserId);
+            UserPermission userPermission = permission.UserPermissions
+                .First(up => up.PermissionId == permission.Id && up.UserId == LoginUserCache.UserId);
 
             return userPermission != null && userPermission.IsEnabled;
         }

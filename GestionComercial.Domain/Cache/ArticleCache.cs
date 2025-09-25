@@ -15,7 +15,7 @@ namespace GestionComercial.Domain.Cache
         private List<ArticleViewModel> _articles;
 
         public static bool Reading { get; set; } = false;
-
+        public static bool ReadingOk { get; set; } = false;
         private ArticleCache()
         {
             CacheManager.Register(this);

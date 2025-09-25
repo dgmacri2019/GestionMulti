@@ -15,7 +15,7 @@ namespace GestionComercial.Desktop.Controls.Articles
     {
 
         public ListAticleControlView()
-        {
+        {           
             InitializeComponent();
             DataContext = new ArticleListViewModel();
         }
@@ -77,7 +77,8 @@ namespace GestionComercial.Desktop.Controls.Articles
         {
             try
             {
-                bool showPricesWithoutIva = MasterCache.Instance.GetCommerceData().IvaConditionId == 1;
+                bool showPricesWithoutIva = MasterCache.Instance.GetCommerceData() != null
+                                    && MasterCache.Instance.GetCommerceData().IvaConditionId == 1;
                 bool showCostPrices = false;
                 // Buscar columnas por Header o por índice
                 DataGridColumn? costoSinIvaCol = DgArticles.Columns.FirstOrDefault(c => (c.Header as TextBlock)?.Text == "Costo sin IVA");
@@ -121,7 +122,7 @@ namespace GestionComercial.Desktop.Controls.Articles
                     if (ventaConIvaCol != null) ventaConIvaCol.Visibility = Visibility.Collapsed;
                     if (ventaCol != null) ventaCol.Visibility = Visibility.Visible;
 
-                    
+
                     if (showCostPrices)
                     {
                         //TODO: Resolver Vista para monotributo

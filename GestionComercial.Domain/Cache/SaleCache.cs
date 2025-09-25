@@ -11,6 +11,7 @@ namespace GestionComercial.Domain.Cache
 
         private int _lastSaleNumber;
         public static bool Reading { get; set; } = false;
+        public static bool ReadingOk { get; set; } = false;
 
         private SaleCache()
         {

@@ -76,7 +76,7 @@ namespace GestionComercial.Applications.Services
                     Permissions = await _context.Permissions
                                                     .Include(up => up.UserPermissions)
                                                     .Include(rp => rp.RolePermissions)
-                                                    .Where(up => up.UserPermissions.Count(x => x.UserId == user.Id) > 0)
+                                                    .Where(up => up.UserPermissions.Count(x => x.UserId == user.Id && x.IsEnabled) > 0)
                                                     .ToListAsync(),
                 };
             }

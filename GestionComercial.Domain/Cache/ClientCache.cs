@@ -10,6 +10,7 @@ namespace GestionComercial.Domain.Cache
         private List<ClientViewModel>? _clients;
 
         public static bool Reading { get; set; } = false;
+        public static bool ReadingOk { get; set; } = false;
         private ClientCache()
         {
             CacheManager.Register(this);

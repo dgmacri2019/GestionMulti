@@ -1,7 +1,10 @@
 ﻿using GestionComercial.Applications.Interfaces;
+using GestionComercial.Domain.DTOs.Security;
 using GestionComercial.Domain.Entities.Masters.Security;
+using GestionComercial.Domain.Response;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Applications.Services
 {
@@ -32,6 +35,38 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<UserPermission>> GetAllUserPermisionAsync(bool isEnabled, bool isDeleted)
         {
             return await _context.UserPermissions.AsNoTracking().Where(up => up.IsEnabled == isEnabled && up.IsDeleted == isDeleted).ToListAsync();
+        }
+
+        public async Task<PermissionResponse> GetAllUserPermisionFromUserAsync(string userId)
+        {
+            PermissionResponse response = new PermissionResponse { Success = false };
+
+            try
+            {
+                List<UserPermission> userPermissions = await _context.UserPermissions.ToListAsync();
+
+                foreach (ModuleType module in Enum.GetValues(typeof(ModuleType)))
+                {
+                    PermissionViewModel vm = new() { Module = module };
+                    
+                    // Buscar permisos disponibles en este módulo
+                    List<Permission> modulePermissions = await _context.Permissions.Where(p => p.ModuleType == module).ToListAsync();
+
+                    vm.CanRead = modulePermissions.Any(p => p.Name.EndsWith("Lectura") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
+                    vm.CanAdd = modulePermissions.Any(p => p.Name.EndsWith("Agregar") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
+                    vm.CanEdit = modulePermissions.Any(p => p.Name.EndsWith("Editar") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
+                    vm.CanDelete = modulePermissions.Any(p => p.Name.EndsWith("Borrar") && userPermissions.Any(up => up.PermissionId == p.Id && up.UserId == userId && up.IsEnabled));
+
+                    response.PermissionViewModels.Add(vm);
+                }
+                response.Success = true;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                return response;
+            }
         }
 
         public async Task<Permission> GetByIdAsync(int id)

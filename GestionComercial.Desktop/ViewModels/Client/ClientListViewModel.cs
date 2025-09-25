@@ -101,6 +101,8 @@ namespace GestionComercial.Desktop.ViewModels.Client
                 ClientResponse clientResponse = await _clientsApiService.GetAllAsync();
                 if (clientResponse.Success)
                 {
+                    if (clientResponse.ClientViewModels.Count() == 0)
+                        ClientCache.ReadingOk = true;
                     ClientCache.Instance.Set(clientResponse.ClientViewModels);
                     //MasterCahe.Instance.SetData(clientResponse.PriceLists, clientResponse.States,
                     //    clientResponse.SaleConditions, clientResponse.IvaConditions, clientResponse.DocumentTypes);

@@ -1,4 +1,5 @@
 ﻿using GestionComercial.Domain.Entities.Masters.Security;
+using GestionComercial.Domain.Response;
 
 namespace GestionComercial.Applications.Interfaces
 {
@@ -17,5 +18,6 @@ namespace GestionComercial.Applications.Interfaces
         Task<UserPermission> GetUserPermissionByIdAsync(int id);
 
         Task<bool> UserHasPermissionAsync(string userId, string permission);
+        Task<PermissionResponse> GetAllUserPermisionFromUserAsync(string userId);
     }
 }
