@@ -32,6 +32,7 @@ namespace GestionComercial.Desktop.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Window _currentWindow = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -91,71 +92,77 @@ namespace GestionComercial.Desktop.Views
         }
         private void NavigationTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is MenuItemModel selected && !string.IsNullOrEmpty(selected.Tag))
+            if (!(e.NewValue is MenuItemModel selected) || string.IsNullOrEmpty(selected.Tag))
+                return;
+
+            // 1) Cerrar ventana abierta, si hay
+            _currentWindow?.Close();
+            _currentWindow = null;
+
+            // 2) Limpiar UserControl actual
+            MainContent.Content = null;
+
+            // 3) Abrir nuevo contenido según Tag
+            switch (selected.Tag)
             {
-                switch (selected.Tag)
-                {
-                    case "Banks":
-                        MainContent.Content = new ListBankControlView();
-                        break;
-                    case "Banks_Parameter":
-                        MainContent.Content = new ListBankParameterControlView();
-                        break;
-                    case "Stock":
-                        MainContent.Content = new ListAticleControlView();
-                        break;
-                    case "Clients":
-                        MainContent.Content = new ListClientControlView();
-                        break;
-                    case "Providers":
-                        MainContent.Content = new ListProviderControlView();
-                        break;
-                    case "PriceLists":
-                        MainContent.Content = new ListPriceListControlView();
-                        break;
-                    case "Accounts":
-                        MainContent.Content = new ListAccountControlView();
-                        break;
-                    case "Users":
-                        MainContent.Content = new ListUsersControlView();
-                        break;
-                    case "Permissions":
-                        var userPermissionWindow = new UserPermissionsWindow() { Owner = Window.GetWindow(this) };
-                        userPermissionWindow.Show();
-                        break;
-                    case "NewSale":
-                        var saleAddWindow = new SaleAddWindow(0) { Owner = Window.GetWindow(this) };
-                        saleAddWindow.Show();
-                        break;
-                    case "ListSales":
-                        MainContent.Content = new ListSaleControlView();
-                        break;
-                    case "Sales_Report":
-                        break;
-                    case "GeneralParameter_Setup":
-                        break;
-                    case "PcParameter_Setup":
-                        MainContent.Content = new PcParametersControlView();
-                        break;
-                    case "Categories":
-                        MainContent.Content = new ListCategoryControlView();
-                        break;
-                    case "CommerceData":
-                        var commerceDataWindow = new CommerceDataWindow() { Owner = Window.GetWindow(this) };
-                        commerceDataWindow.ShowDialog();
-                        break;
-                    case "Billing":
-                        var bilingWindow = new BillingWindow() { Owner = Window.GetWindow(this) };
-                        bilingWindow.ShowDialog();
-                        break;
-                    case "LogOut":
-                        LogOut();
-                        break;
-                    case "Close":
-                        if (MessageBox.Show("Confima que desea cerrar el programa", "Aviso al operador", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
-                            Close();
-                        break;
-                }
+                case "Banks":
+                    MainContent.Content = new ListBankControlView();
+                    break;
+                case "Banks_Parameter":
+                    MainContent.Content = new ListBankParameterControlView();
+                    break;
+                case "Stock":
+                    MainContent.Content = new ListAticleControlView();
+                    break;
+                case "Clients":
+                    MainContent.Content = new ListClientControlView();
+                    break;
+                case "Providers":
+                    MainContent.Content = new ListProviderControlView();
+                    break;
+                case "PriceLists":
+                    MainContent.Content = new ListPriceListControlView();
+                    break;
+                case "Accounts":
+                    MainContent.Content = new ListAccountControlView();
+                    break;
+                case "Users":
+                    MainContent.Content = new ListUsersControlView();
+                    break;
+                case "Permissions":
+                    _currentWindow = new UserPermissionsWindow() { Owner = this };
+                    _currentWindow.Show();
+                    break;
+                case "NewSale":
+                    _currentWindow = new SaleAddWindow(0) { Owner = this };
+                    _currentWindow.Show();
+                    break;
+                case "ListSales":
+                    MainContent.Content = new ListSaleControlView();
+                    break;
+                case "PcParameter_Setup":
+                    MainContent.Content = new PcParametersControlView();
+                    break;
+                case "Categories":
+                    MainContent.Content = new ListCategoryControlView();
+                    break;
+                case "CommerceData":
+                    _currentWindow = new CommerceDataWindow() { Owner = this };
+                    _currentWindow.ShowDialog();
+                    _currentWindow = null; // como es ShowDialog(), se cierra solo al terminar
+                    break;
+                case "Billing":
+                    _currentWindow = new BillingWindow() { Owner = this };
+                    _currentWindow.ShowDialog();
+                    _currentWindow = null;
+                    break;
+                case "LogOut":
+                    LogOut();
+                    break;
+                case "Close":
+                    if (MessageBox.Show("Confirma que desea cerrar el programa", "Aviso al operador", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                        Close();
+                    break;
             }
         }
 
