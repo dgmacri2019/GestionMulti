@@ -4,29 +4,29 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales
+namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints
 {
     /// <summary>
-    /// Lógica de interacción para ListPurchaseAndSaleControlView.xaml
+    /// Lógica de interacción para ListPcSalePointControlView.xaml
     /// </summary>
-    public partial class ListPurchaseAndSaleControlView : UserControl
+    public partial class ListPcSalePointControlView : UserControl
     {
         public event Action Actualizado;
 
-        public ListPurchaseAndSaleControlView()
+        public ListPcSalePointControlView()
         {
             InitializeComponent();
-            DataContext = new ParameterListViewModel();
+            DataContext = new PcParameterListViewModel();
             Actualizado?.Invoke();
         }
 
         private void DgParameter_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DgParameter.SelectedItem is PurchaseAndSalesListViewModel parameter)
+            if (DgParameter.SelectedItem is PcSalePointsListViewModel parameter)
             {
                 DgParameter.Visibility = Visibility.Hidden;
                 PanelEdicion.Visibility = Visibility.Visible;
-                var ventana = new EditPcParameterControlView(parameter.Id);
+                var ventana = new EditPcSalePointControlView(parameter.Id);
                 ventana.PuntoVentaActualizado += () =>
                 {
                     DgParameter.Visibility = Visibility.Visible;

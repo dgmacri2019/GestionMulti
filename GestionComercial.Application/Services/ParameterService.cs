@@ -69,10 +69,9 @@ namespace GestionComercial.Applications.Services
                 await _dBHelper.SaveChangesAsync(_context);
             }
             return pcParameter;
-
         }
 
-        public async Task<IEnumerable<PurchaseAndSalesListViewModel>> GetAllPcParametersAsync()
+        public async Task<IEnumerable<PcSalePointsListViewModel>> GetAllPcParametersAsync()
         {
             ICollection<PcParameter> pcParameters = await _context.PcParameters
                 .AsNoTracking()
@@ -82,9 +81,42 @@ namespace GestionComercial.Applications.Services
             return ToPurchaseAndSalesList(pcParameters);
         }
 
-        private IEnumerable<PurchaseAndSalesListViewModel> ToPurchaseAndSalesList(ICollection<PcParameter> pcParameters)
+
+        public async Task<IEnumerable<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync()
         {
-            return pcParameters.Select(pcParameter => new PurchaseAndSalesListViewModel
+            ICollection<PrinterParameter> printerParameters = await _context.PrinterParameters
+                .AsNoTracking()
+                .ToListAsync();
+
+            return ToPcPrinterParametersList(printerParameters);
+        }
+
+
+
+        public async Task<IEnumerable<PrinterParameter>> GetPrinterParameterFromPcAsync(string pcName)
+        {
+            if (string.IsNullOrEmpty(pcName))
+                return null;
+
+            return await _context.PrinterParameters
+                .AsNoTracking()
+                .Where(ppp => ppp.ComputerName == pcName)
+                .ToListAsync();
+        }
+
+
+
+        public async Task<PcParameter?> GetPcParameterByIdAsync(int id)
+        {
+            return await _context.PcParameters.FindAsync(id);
+        }
+
+
+
+
+        private IEnumerable<PcSalePointsListViewModel> ToPurchaseAndSalesList(ICollection<PcParameter> pcParameters)
+        {
+            return pcParameters.Select(pcParameter => new PcSalePointsListViewModel
             {
                 Id = pcParameter.Id,
                 CreateDate = pcParameter.CreateDate,
@@ -99,9 +131,51 @@ namespace GestionComercial.Applications.Services
             });
         }
 
-        public async Task<PcParameter?> GetPcParameterByIdAsync(int id)
+
+
+        private IEnumerable<PcPrinterParametersListViewModel> ToPcPrinterParametersList(ICollection<PrinterParameter> printerParameters)
         {
-            return await _context.PcParameters.FindAsync(id);
+            return printerParameters.Select(pcPrinterParameter => new PcPrinterParametersListViewModel
+            {
+                BarCodePrinter = pcPrinterParameter.BarCodePrinter,
+                BudgetPrinter = pcPrinterParameter.BudgetPrinter,
+                ComputerName = pcPrinterParameter.ComputerName,
+                RemitPrinter = pcPrinterParameter.RemitPrinter,
+                CreateDate = pcPrinterParameter.CreateDate,
+                CreateUser = pcPrinterParameter.CreateUser,
+                EnablePrintBarCode = pcPrinterParameter.EnablePrintBarCode,
+                EnablePrintBudget = pcPrinterParameter.EnablePrintBudget,
+                EnablePrintInvoice = pcPrinterParameter.EnablePrintInvoice,
+                EnablePrintOrder = pcPrinterParameter.EnablePrintOrder,
+                EnablePrintRemit = pcPrinterParameter.EnablePrintRemit,
+                EnablePrintSale = pcPrinterParameter.EnablePrintSale,
+                EnablePrintTicketChange = pcPrinterParameter.EnablePrintTicketChange,
+                Id = pcPrinterParameter.Id,
+                InvoicePrinter = pcPrinterParameter.InvoicePrinter,
+                IsDeleted = pcPrinterParameter.IsDeleted,
+                IsEnabled = pcPrinterParameter.IsEnabled,
+                MaxWidthBarCodePrinter = pcPrinterParameter.MaxWidthBarCodePrinter,
+                MaxWidthBudgetPrinter = pcPrinterParameter.MaxWidthBudgetPrinter,
+                MaxWidthInvoicePrinter = pcPrinterParameter.MaxWidthInvoicePrinter,
+                MaxWidthOrderPrinter = pcPrinterParameter.MaxWidthOrderPrinter,
+                MaxWidthRemitPrinter = pcPrinterParameter.MaxWidthRemitPrinter,
+                MaxWidthSalePrinter = pcPrinterParameter.MaxWidthSalePrinter,
+                MaxWidthTicketChangePrinter = pcPrinterParameter.MaxWidthTicketChangePrinter,
+                OrderPrinter = pcPrinterParameter.OrderPrinter,
+                SalePoint = pcPrinterParameter.SalePoint,
+                SalePrinter = pcPrinterParameter.SalePrinter,
+                TicketChangePrinter = pcPrinterParameter.TicketChangePrinter,
+                UpdateDate = pcPrinterParameter.UpdateDate,
+                UpdateUser = pcPrinterParameter.UpdateUser,
+                UseAllPrinters = pcPrinterParameter.UseAllPrinters,
+                UseContinuousBarCodePrinter = pcPrinterParameter.UseContinuousBarCodePrinter,
+                UseContinuousBudgetPrinter = pcPrinterParameter.UseContinuousBudgetPrinter,
+                UseContinuousInvoicePrinter = pcPrinterParameter.UseContinuousInvoicePrinter,
+                UseContinuousOrderPrinter = pcPrinterParameter.UseContinuousOrderPrinter,
+                UseContinuousRemitPrinter = pcPrinterParameter.UseContinuousRemitPrinter,
+                UseContinuousSalePrinter = pcPrinterParameter.UseContinuousSalePrinter,
+                UseContinuousTicketChangePrinter = pcPrinterParameter.UseContinuousTicketChangePrinter,                 
+            });
         }
     }
 }

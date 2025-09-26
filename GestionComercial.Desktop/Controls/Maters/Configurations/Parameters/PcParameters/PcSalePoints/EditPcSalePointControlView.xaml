@@ -1,14 +1,12 @@
-﻿<UserControl x:Class="GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales.EditPcParameterControlView"
+﻿<UserControl x:Class="GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints.EditPcSalePointControlView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales"
-             mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1024"
+             xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints"
              x:Name="miUserControl"
              Loaded="miUserControl_Loaded"
-             Background="LightGray">
+             Background="Gray">
     <Grid x:Name="GridGeneral"
       HorizontalAlignment="Left"   
       VerticalAlignment="Top"

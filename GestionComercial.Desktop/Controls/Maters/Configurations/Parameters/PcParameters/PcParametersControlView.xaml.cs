@@ -1,20 +1,7 @@
-﻿using GestionComercial.Desktop.Controls.Articles;
-using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales;
-using GestionComercial.Domain.Entities.Stock;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcPrinters;
+using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters
 {
@@ -33,10 +20,10 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
 
         }
 
-        private void BtnPurchaseAndSalePonit_Click(object sender, RoutedEventArgs e)
+        private void BtnSalePonit_Click(object sender, RoutedEventArgs e)
         {
-            var ventana = new ListPurchaseAndSaleControlView();
-            lblHeader.Content = "Parámetros de Compras y Ventas";
+            var ventana = new ListPcSalePointControlView();
+            lblHeader.Content = "Puntos de Ventas";
             ventana.Actualizado += () =>
             {
                 PanelList.Content = null;
@@ -48,7 +35,15 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
 
         private void BtnPrinters_Click(object sender, RoutedEventArgs e)
         {
+            var ventana = new ListPcPrinterControlView();
+            lblHeader.Content = "Impresoras";
+            ventana.Actualizado += () =>
+            {
+                PanelList.Content = null;
+                lblHeader.Content = "Parámetros de PC";
+            };
 
+            PanelList.Content = ventana;
         }
     }
 }

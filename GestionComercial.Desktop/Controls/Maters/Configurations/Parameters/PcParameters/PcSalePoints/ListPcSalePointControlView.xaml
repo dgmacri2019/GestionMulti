@@ -1,13 +1,12 @@
-﻿<UserControl x:Class="GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales.ListPurchaseAndSaleControlView"
+﻿<UserControl x:Class="GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints.ListPcSalePointControlView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales"
-             mc:Ignorable="d" 
+             xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="Gray">
+             Background="LightGray">
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
         <Grid.RowDefinitions>
@@ -21,8 +20,8 @@
 
         <StackPanel x:Name="SpParameter" Grid.Row="2">
             <DataGrid x:Name="DgParameter" 
-                   Background="Gray"
-                   ItemsSource="{Binding PurchaseAndSaleViewModel}"
+                   Background="LightGray"
+                   ItemsSource="{Binding SalePointsListViewModels}"
                    AutoGenerateColumns="False"  
                    CanUserAddRows="False"
                    CanUserSortColumns="True"
@@ -80,7 +79,7 @@
                 x:Name="BtnCancel"
                 Grid.Row="3"
                 HorizontalAlignment="Center"
-                Content="Cancelar"
+                Content="Cerrar"
                 Margin="0,5,0,0" 
                 Style="{StaticResource BtnCancel}" 
                 Click="BtnCancel_Click"/>

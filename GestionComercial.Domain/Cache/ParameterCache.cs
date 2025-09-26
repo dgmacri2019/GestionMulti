@@ -1,11 +1,5 @@
-﻿using GestionComercial.Domain.DTOs.Client;
+﻿using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace GestionComercial.Domain.Cache
 {
@@ -16,7 +10,9 @@ namespace GestionComercial.Domain.Cache
 
         private List<GeneralParameter>? _generalParameters;
 
-        private PcParameter? _pcParameter;
+        private PcParameter? _pcSalePointParameter;
+
+        private List<PrinterParameter> _printerParameters;
 
         public static bool Reading { get; set; } = false;
 
@@ -47,14 +43,14 @@ namespace GestionComercial.Domain.Cache
 
         public PcParameter GetPcParameter()
         {
-            return _pcParameter;
+            return _pcSalePointParameter;
         }
 
         public void SetPCParameter(PcParameter pcParameter)
         {
             try
             {
-                _pcParameter = pcParameter;
+                _pcSalePointParameter = pcParameter;
             }
             catch (Exception)
             {
@@ -64,17 +60,36 @@ namespace GestionComercial.Domain.Cache
         }
 
 
+        public List<PrinterParameter> GetAllPrinterParameters()
+        {
+            return _printerParameters;
+        }
 
+        public void SetPrinterParameters(List<PrinterParameter> printerParameters)
+        {
+            try
+            {
+                _printerParameters = printerParameters;
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
 
 
         public void ClearCache()
         {
-            _generalParameters?.Clear();
-            _pcParameter = null;
+            if (_generalParameters != null)
+                _generalParameters?.Clear();
+            if (_printerParameters != null)
+                _printerParameters.Clear();
+            _pcSalePointParameter = null;
         }
 
         public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any() && !Reading;
-        public bool HasDataPCParameters => _pcParameter != null && !Reading;
+        public bool HasDataPCParameters => _pcSalePointParameter != null && !Reading;
+        public bool HasDataPcPrinterParameters => _printerParameters != null && !Reading;
     }
 }

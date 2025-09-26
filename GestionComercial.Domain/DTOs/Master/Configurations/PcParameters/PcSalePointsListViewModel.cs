@@ -2,7 +2,7 @@
 
 namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
 {
-    public class PurchaseAndSalesListViewModel
+    public class PcSalePointsListViewModel
     {
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Id { get; set; }

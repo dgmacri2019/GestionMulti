@@ -9,13 +9,14 @@ using static GestionComercial.Domain.Notifications.GeneralParameterChangeNotific
 
 namespace GestionComercial.Desktop.ViewModels.Parameter
 {
-    internal class ParameterListViewModel : BaseViewModel
+    internal class PcParameterListViewModel : BaseViewModel
     {
         private readonly ParametersApiService _parametersApiService;
         private readonly GeneralParametersHubService _hubService;
 
 
-        public ObservableCollection<PurchaseAndSalesListViewModel> PurchaseAndSaleViewModel { get; } = [];
+        public ObservableCollection<PcSalePointsListViewModel> SalePointsListViewModels { get; } = [];
+        public ObservableCollection<PcPrinterParametersListViewModel> PcPrintersListViewModels { get; } = [];
 
 
         // 🔹 Propiedades de filtros
@@ -69,7 +70,7 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
 
 
-        public ParameterListViewModel()
+        public PcParameterListViewModel()
         {
             var hubUrl = string.Format("{0}hubs/generalparameter", App.Configuration["ApiSettings:BaseUrl"]);
 
@@ -102,14 +103,26 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
                 ParameterCache.Instance.SetPCParameter(pcParameter);
                 ParameterCache.Reading = false;
             }
+            if (!ParameterCache.Instance.HasDataPcPrinterParameters)
+            {
+                ParameterCache.Reading = true;
+                List<PrinterParameter> printerParameters = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
+                ParameterCache.Instance.SetPrinterParameters(printerParameters);
+                ParameterCache.Reading = false;
+            }
 
-            List<PurchaseAndSalesListViewModel> purchaseAndSales = await _parametersApiService.GetAllPcParametersAsync();
+
+            List<PcSalePointsListViewModel> salePoints = await _parametersApiService.GetAllPcParametersAsync();
+            List<PcPrinterParametersListViewModel> pcPrinterParameters = await _parametersApiService.GetAllPcPrinterParametersAsync();
 
             App.Current.Dispatcher.Invoke(() =>
             {
-                PurchaseAndSaleViewModel.Clear();
-                foreach (var c in purchaseAndSales)
-                    PurchaseAndSaleViewModel.Add(c);
+                SalePointsListViewModels.Clear();
+                PcPrintersListViewModels.Clear();
+                foreach (var c in salePoints)
+                    SalePointsListViewModels.Add(c);
+                foreach (var x in pcPrinterParameters)
+                    PcPrintersListViewModels.Add(x);
             });
 
         }
@@ -118,13 +131,15 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         private async void OnParametroGeneralCambiado(ParametroGeneralChangeNotification notification)
         {
             List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
-            PcParameter pcParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
+            PcParameter pcSalePointParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
+            List<PrinterParameter> printerParameters = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
 
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 ParameterCache.Instance.ClearCache();
                 ParameterCache.Instance.SetGeneralParameters(generalParameters);
-                ParameterCache.Instance.SetPCParameter(pcParameter);
+                ParameterCache.Instance.SetPCParameter(pcSalePointParameter);
+                ParameterCache.Instance.SetPrinterParameters(printerParameters);
                 _ = LoadParametersAsync();
             });
         }

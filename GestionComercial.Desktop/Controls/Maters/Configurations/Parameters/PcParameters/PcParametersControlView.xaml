@@ -7,12 +7,12 @@
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Background="LightGray" 
+             Background="Gray" 
              SizeChanged="UserControl_SizeChanged">
 
 
     <Grid x:Name="GridGeneral" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" 
-          Background="LightGray">
+          Background="Gray">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -42,15 +42,15 @@
         </StackPanel>
 
         <Button 
-            x:Name="BtnPurchaseAndSalePonit"
+            x:Name="BtnSalePonit"
             Grid.Row="1"
             Grid.Column="0" 
             Padding="00,20,0,20" 
             Margin="20,0,20,10"
-            Click="BtnPurchaseAndSalePonit_Click" 
+            Click="BtnSalePonit_Click" 
             Style="{StaticResource BtnCancel}">
             <Button.Content>
-                <TextBlock Text="Compras y Ventas"
+                <TextBlock Text="Puntos de Ventas"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            TextAlignment="Center"
@@ -58,15 +58,14 @@
             </Button.Content>
         </Button>
 
-        <Button 
-            x:Name="BtnPrinters"
-            Grid.Row="1" 
-            Grid.Column="1" 
-            Content="Impresiones"  
-            Padding="0,20,0,20" 
-            Margin="20,0,20,10"            
-            Click="BtnPrinters_Click" 
-            Style="{StaticResource BtnCancel}"/>
+        <Button x:Name="BtnPrinters"
+                Grid.Row="1" 
+                Grid.Column="1" 
+                Content="Impresiones"  
+                Padding="0,20,0,20" 
+                Margin="20,0,20,10"    
+                Click="BtnPrinters_Click" 
+                Style="{StaticResource BtnCancel}"/>
 
 
         <ContentControl x:Name="PanelList" Grid.Row="2" Grid.ColumnSpan="4"/>

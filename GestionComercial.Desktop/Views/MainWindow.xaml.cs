@@ -222,7 +222,7 @@ namespace GestionComercial.Desktop.Views
                     await Task.Delay(10);
 
                 GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
-                ParameterListViewModel parameterListViewModel = new();
+                PcParameterListViewModel parameterListViewModel = new();
                 while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters)
                     await Task.Delay(10);
             }

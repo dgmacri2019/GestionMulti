@@ -125,7 +125,7 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("GetAllPcParametersAsync")]
         public async Task<IActionResult> GetAllPcParametersAsync()
         {
-            IEnumerable<PurchaseAndSalesListViewModel> pcParameters = await _parameterService.GetAllPcParametersAsync();
+            IEnumerable<PcSalePointsListViewModel> pcParameters = await _parameterService.GetAllPcParametersAsync();
             return Ok(pcParameters);
         }
 
@@ -143,6 +143,19 @@ namespace GestionComercial.API.Controllers.Admin
 
 
 
+        [HttpPost("GetPrinterParameterFromPcAsync")]
+        public async Task<IActionResult> GetPrinterParameterFromPcAsync([FromBody] ParameterFilterDto filter)
+        {
+            IEnumerable<PrinterParameter> pcPrinterParameters = await _parameterService.GetPrinterParameterFromPcAsync(filter.PcName);
+            return Ok(pcPrinterParameters);
+        }
 
+
+        [HttpPost("GetAllPcPrinterParametersAsync")]
+        public async Task<IActionResult> GetAllPcPrinterParametersAsync()
+        {
+            IEnumerable<PcPrinterParametersListViewModel> pcPrinterParameters = await _parameterService.GetAllPcPrinterParametersAsync();
+            return Ok(pcPrinterParameters);
+        }
     }
 }

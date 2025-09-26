@@ -5,12 +5,12 @@ using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PurchaseAndSales
+namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcSalePoints
 {
     /// <summary>
-    /// Lógica de interacción para EditPcParameterControlView.xaml
+    /// Lógica de interacción para EditPcSalePointControlView.xaml
     /// </summary>
-    public partial class EditPcParameterControlView : UserControl
+    public partial class EditPcSalePointControlView : UserControl
     {
 
         private readonly ParametersApiService _parametersApiService;
@@ -19,7 +19,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
 
         public event Action PuntoVentaActualizado;
 
-        public EditPcParameterControlView(int id)
+        public EditPcSalePointControlView(int id)
         {
             InitializeComponent();
             _parametersApiService = new ParametersApiService();

@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -16,12 +17,15 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
+        private readonly JsonSerializerOptions Options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
         public ParametersApiService()
         {
             _apiService = new ApiService();
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
-            _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 
         internal async Task<List<GeneralParameter>> GetAllGeneralParametersAsync()
@@ -40,14 +44,7 @@ namespace GestionComercial.Desktop.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    List<GeneralParameter>? generalParameters = JsonSerializer.Deserialize<List<GeneralParameter>>(jsonResponse, options);
-
+                    List<GeneralParameter>? generalParameters = JsonSerializer.Deserialize<List<GeneralParameter>>(jsonResponse, Options);
 
                     return generalParameters;
                 }
@@ -65,7 +62,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<List<PurchaseAndSalesListViewModel>> GetAllPcParametersAsync()
+        internal async Task<List<PcSalePointsListViewModel>> GetAllPcParametersAsync()
         {
             try
             {
@@ -81,14 +78,7 @@ namespace GestionComercial.Desktop.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    List<PurchaseAndSalesListViewModel>? pcParameters = JsonSerializer.Deserialize<List<PurchaseAndSalesListViewModel>>(jsonResponse, options);
-
+                    List<PcSalePointsListViewModel>? pcParameters = JsonSerializer.Deserialize<List<PcSalePointsListViewModel>>(jsonResponse, Options);
 
                     return pcParameters;
                 }
@@ -105,6 +95,7 @@ namespace GestionComercial.Desktop.Services
                 throw;
             }
         }
+
 
         internal async Task<PcParameter> GetPcParameterAsync(string pcName)
         {
@@ -123,12 +114,7 @@ namespace GestionComercial.Desktop.Services
                 if (response.IsSuccessStatusCode)
                 {
 
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    PcParameter? pcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, options);
+                    PcParameter? pcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, Options);
 
 
                     return pcParameter;
@@ -158,18 +144,14 @@ namespace GestionComercial.Desktop.Services
                     Id = parameterId,
                     //IsEnabled = isEnabled,
                 });
-
-                JsonSerializerOptions options = new()
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+                               
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                     return new PcParameterResponse
                     {
                         Success = true,
-                        PcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, options),
+                        PcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, Options),
                     };
                 else
                     return new PcParameterResponse
@@ -188,6 +170,7 @@ namespace GestionComercial.Desktop.Services
                 };
             }
         }
+
 
         internal async Task<GeneralResponse> UpdatePcParameterAsync(PcParameter pcParameter)
         {
@@ -209,6 +192,72 @@ namespace GestionComercial.Desktop.Services
                     Success = false,
                     Message = ex.Message
                 };
+            }
+        }
+
+
+        internal async Task<List<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync()
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetAllPcPrinterParametersAsync", new
+                {
+                    //IsDeleted = isDeleted,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonSerializer.Deserialize<List<PcPrinterParametersListViewModel>>(jsonResponse, Options);
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        internal async Task<List<PrinterParameter>> GetPrinterParameterFromPcAsync(string pcName)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetPrinterParameterFromPcAsync", new
+                {
+                    PcName = pcName,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonSerializer.Deserialize<List<PrinterParameter>>(jsonResponse, Options);
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
