@@ -24,148 +24,329 @@
             <!-- Footer -->
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="auto"/>
-        </Grid.ColumnDefinitions>
-
-
         <!-- Encabezado -->
-        <Border Background="#C8C81E" Height="70" Grid.Row="0" Grid.ColumnSpan="5">
+        <StackPanel Background="#C8C81E" Height="70" Grid.Row="0" Orientation="Horizontal">
             <TextBlock Text="Configuración de Impresoras"
                        Foreground="White"
                        FontFamily="Tahoma"
                        FontSize="18"
                        VerticalAlignment="Center"
                        Margin="10,0,0,0"/>
-        </Border>
 
-        <!-- Cabecera columnas -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,5,0,5">
-            <TextBlock Text=" " Width="280" Grid.Column="0"/>
-            <TextBlock Text="¿Es Térmica?"
-                       Width="80" 
-                       Grid.Column="1"
-                       VerticalAlignment="Center"/>
-            <TextBlock Text="Ancho (mm)" 
-                       Width="80" 
-                       Grid.Column="2"
-                       VerticalAlignment="Center"/>
-            <TextBlock Text="Habilitar" 
-                       Width="80" 
-                       Grid.Column="3"
-                       VerticalAlignment="Center"/>
-            <TextBlock Text="Impresora instalada"  
-                       VerticalAlignment="Center"/>
-            <CheckBox Content="Única Impresora" IsChecked="{Binding UseAllPrinters, Mode=TwoWay}"
-                      VerticalAlignment="Center" Margin="20,0,0,0"/>
+            <TextBlock Text="{Binding ComputerName, StringFormat=Nombre Pc: {0}}"
+                       VerticalAlignment="Center"  
+                       Margin="150,40,0,0"
+                       Style="{StaticResource BlackBold14}"/>
+
+            <TextBlock Text="{Binding SalePoint, StringFormat=Punto de venta: {0:00000}}" 
+                       VerticalAlignment="Center"
+                       Style="{StaticResource BlackBold14}"
+                       Margin="40,40,0,0"/>
+
         </StackPanel>
 
-        <!-- Contenido impresoras -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="10">
+        <!-- Cabecera columnas -->
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <!-- Factura -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Facturas" 
-                               Width="280" 
-                               VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousInvoicePrinter}" 
-                              Width="80" 
-                              VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthInvoicePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80"
-                             IsEnabled="{Binding EnablePrintInvoice}" 
-                             Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintInvoice}" 
-                              Width="80"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersInvoice}"
-                              SelectedItem="{Binding InvoicePrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- Nota Pedido / Sale -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Notas de Pedido" Width="280" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousSalePrinter}" Width="80" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthSalePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" IsEnabled="{Binding EnablePrintSale}" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintSale}" Width="80" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersSale}"
-                              SelectedItem="{Binding SalePrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
 
-                <!-- Presupuesto -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Presupuestos" Width="280" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousBudgetPrinter}" Width="80" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthBudgetPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" IsEnabled="{Binding EnablePrintBudget}" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintBudget}" Width="80" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersBudget}"
-                              SelectedItem="{Binding BudgetPrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
+            <TextBlock Text="Impresoras" 
+                       Grid.Column="0" 
+                       Grid.Row="0"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="¿Es Térmica?"
+                       Grid.Row="0"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Ancho (mm)" 
+                       Grid.Row="0" 
+                       Grid.Column="2"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Habilitar" 
+                       Grid.Row="0" 
+                       Grid.Column="3"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Impresoras instaladas" 
+                       Grid.Row="0"
+                       Grid.Column="4"
+                       VerticalAlignment="Center"/>
+            <CheckBox Content="Única Impresora" 
+                      Grid.Row="0"
+                      Grid.Column="5"
+                      IsChecked="{Binding UseAllPrinters, Mode=TwoWay}"
+                      VerticalAlignment="Center" 
+                      Margin="10,0,0,0"/>
 
-                <!-- Códigos de Barra -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Códigos de Barra" Width="280" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousBarCodePrinter}" Width="80" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthBarCodePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" IsEnabled="{Binding EnablePrintBarCode}" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintBarCode}" Width="80" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersBarCode}"
-                              SelectedItem="{Binding BarCodePrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
 
-                <!-- Ticket Cambio -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Ticket Cambio" Width="280" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousTicketChangePrinter}" Width="80" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthTicketChangePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" IsEnabled="{Binding EnablePrintTicketChange}" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintTicketChange}" Width="80" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersTicketChange}"
-                              SelectedItem="{Binding TicketChangePrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
+            <!-- Contenido impresoras -->
 
-                <!-- Remitos -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Remitos" Width="280" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousRemitPrinter}" Width="80" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthRemitPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" IsEnabled="{Binding EnablePrintRemit}" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintRemit}" Width="80" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersRemit}"
-                              SelectedItem="{Binding RemitPrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
-
-                <!-- Pedidos -->
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <TextBlock Text="Impresora de Pedidos" Width="280" VerticalAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding UseContinuousOrderPrinter}" Width="80" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MaxWidthOrderPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" IsEnabled="{Binding EnablePrintOrder}" Margin="0,0,5,0"/>
-                    <CheckBox IsChecked="{Binding EnablePrintOrder}" Width="80" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding InstalledPrintersOrder}"
-                              SelectedItem="{Binding OrderPrinter, Mode=TwoWay}"
-                              Width="200"/>
-                </StackPanel>
-
+            <!-- Factura -->
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Impresora de Facturas" 
+                           Grid.Row="1"
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding InvoicePrinter, Mode=TwoWay}"
+                         Margin="0,2,0,0"
+                         IsReadOnly="True"/>
             </StackPanel>
-        </ScrollViewer>
+            <CheckBox IsChecked="{Binding UseContinuousInvoicePrinter}" 
+                      Grid.Row="1"
+                      Grid.Column="1" 
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <TextBox Text="{Binding MaxWidthInvoicePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Grid.Column="2"
+                     Grid.Row="1"
+                     IsEnabled="{Binding EnablePrintInvoice}" 
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintInvoice}"
+                      Grid.Row="1"
+                      Grid.Column="3"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersInvoice}"
+                      SelectedItem="{Binding InvoicePrinter, Mode=TwoWay}"
+                      Grid.Column="4"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
 
-        <!-- Botones -->        
-            <Button x:Name="btnCancel"
+
+            <!-- Nota Pedido / Sale -->
+            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Impresora de Notas de Pedido" 
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding SalePrinter, Mode=TwoWay}"
+                         Margin="0,2,0,0"
+                         IsReadOnly="True"/>
+            </StackPanel>
+            <CheckBox IsChecked="{Binding UseContinuousSalePrinter}" 
+                      Grid.Column="1" 
+                      Grid.Row="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <TextBox Text="{Binding MaxWidthSalePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Grid.Column="2" 
+                     Grid.Row="2" 
+                     IsEnabled="{Binding EnablePrintSale}" 
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintSale}" 
+                      Grid.Column="3"                      
+                      Grid.Row="2" 
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersSale}"
+                      SelectedItem="{Binding SalePrinter, Mode=TwoWay}"                          
+                      Grid.Column="4"                       
+                      Grid.Row="2"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
+
+
+            <!-- Presupuesto -->
+            <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Impresora de Presupuestos"
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding BudgetPrinter, Mode=TwoWay}"
+                         Margin="0,2,0,0"
+                         IsReadOnly="True"/>
+            </StackPanel>
+            <CheckBox IsChecked="{Binding UseContinuousBudgetPrinter}"
+                      Grid.Row="3"
+                      Grid.Column="1"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <TextBox Text="{Binding MaxWidthBudgetPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                     
+                     Grid.Row="3"
+                     Grid.Column="2" 
+                     IsEnabled="{Binding EnablePrintBudget}"
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintBudget}" 
+                      Grid.Row="3"
+                      Grid.Column="3"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersBudget}"
+                      SelectedItem="{Binding BudgetPrinter, Mode=TwoWay}"
+                      Grid.Row="3"
+                      Grid.Column="4"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
+
+            <!-- Códigos de Barra -->
+            <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Impresora de Códigos de Barra" 
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding BarCodePrinter, Mode=TwoWay}"
+                         Margin="0,2,0,0"
+                         IsReadOnly="True"/>
+            </StackPanel>
+            <CheckBox IsChecked="{Binding UseContinuousBarCodePrinter}" 
+                      Grid.Row="4"
+                      Grid.Column="1"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <TextBox Text="{Binding MaxWidthBarCodePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Grid.Row="4"
+                     Grid.Column="2"
+                     IsEnabled="{Binding EnablePrintBarCode}" 
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintBarCode}" 
+                      Grid.Row="4"
+                      Grid.Column="3"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersBarCode}"
+                      SelectedItem="{Binding BarCodePrinter, Mode=TwoWay}"
+                      Grid.Row="4"                      
+                      Grid.Column="4"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
+
+
+            <!-- Ticket Cambio -->
+            <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Impresora de Ticket Cambio" 
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding TicketChangePrinter, Mode=TwoWay}"
+                         Margin="0,2,0,0"
+                         IsReadOnly="True"/>
+            </StackPanel>
+            <CheckBox IsChecked="{Binding UseContinuousTicketChangePrinter}" 
+                       Grid.Row="5"
+                      Grid.Column="1"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <TextBox Text="{Binding MaxWidthTicketChangePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Grid.Row="5"
+                     Grid.Column="2"
+                     IsEnabled="{Binding EnablePrintTicketChange}" 
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintTicketChange}" 
+                       Grid.Row="5"
+                      Grid.Column="3"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersTicketChange}"
+                      SelectedItem="{Binding TicketChangePrinter, Mode=TwoWay}"
+                       Grid.Row="5"
+                      Grid.Column="4"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
+
+            <!-- Remitos -->
+            <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Vertical">
+                <TextBlock Text="Impresora de Remitos" 
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding RemitPrinter, Mode=TwoWay}"
+                         Margin="0,2,0,0"
+                         IsReadOnly="True"/>
+            </StackPanel>
+            <CheckBox IsChecked="{Binding UseContinuousRemitPrinter}" 
+                      Grid.Row="6"
+                      Grid.Column="1" 
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <TextBox Text="{Binding MaxWidthRemitPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Grid.Row="6"
+                     Grid.Column="2" 
+                     IsEnabled="{Binding EnablePrintRemit}" 
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintRemit}" 
+                      Grid.Row="6"
+                      Grid.Column="3"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,15,0,0"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersRemit}"
+                      SelectedItem="{Binding RemitPrinter, Mode=TwoWay}"
+                      Grid.Row="6"
+                      Grid.Column="4"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
+
+
+            <!-- Pedidos -->
+            <StackPanel Grid.Row="7" Grid.Column="0" Orientation="Vertical" Margin="0,2,0,0">
+                <TextBlock Text="Impresora de Pedidos" 
+                           VerticalAlignment="Center"/>
+                <!-- TextBox debajo -->
+                <TextBox Text="{Binding OrderPrinter, Mode=TwoWay}"                         
+                         IsReadOnly="True"/>
+            </StackPanel>
+            <CheckBox IsChecked="{Binding UseContinuousOrderPrinter}" 
+                      Grid.Row="7"
+                      Grid.Column="1"
+                      Margin="0,15,0,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+            <TextBox Text="{Binding MaxWidthOrderPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Grid.Row="7"
+                     Grid.Column="2" 
+                     IsEnabled="{Binding EnablePrintOrder}" 
+                     Margin="0,15,0,0"/>
+            <CheckBox IsChecked="{Binding EnablePrintOrder}"
+                      Grid.Row="7"
+                      Grid.Column="3"                       
+                      Margin="0,15,0,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding InstalledPrintersOrder}"
+                      SelectedItem="{Binding OrderPrinter, Mode=TwoWay}"
+                      Grid.Row="7"
+                      Grid.Column="4"
+                      Grid.ColumnSpan="2"
+                      Margin="0,15,0,0"/>
+
+        </Grid>
+
+
+        <!-- Botones -->
+        <Button x:Name="btnCancel"
                     Content="Cerrar"
                     Grid.Row="3"
                     Grid.Column="0" 
@@ -176,7 +357,7 @@
                     Click="BtnCancel_Click" 
                     Style="{StaticResource BtnCancel}"/>
 
-            <Button x:Name="btnUpdate" 
+        <Button x:Name="btnUpdate" 
                     Content="Guardar" 
                     Grid.Row="3"
                     Grid.Column="0" 
