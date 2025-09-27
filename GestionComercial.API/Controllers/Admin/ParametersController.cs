@@ -5,6 +5,7 @@ using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
 using GestionComercial.Domain.DTOs.Parameter;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
+using GestionComercial.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static GestionComercial.Domain.Constant.Enumeration;
@@ -166,6 +167,7 @@ namespace GestionComercial.API.Controllers.Admin
                 await _masterService.UpdateAsync(printerParameter);
             if (resultAdd.Success)
             {
+                await _notifier.NotifyAsync(printerParameter.Id, "PrinterParameter", ChangeType.Updated);
                 return Ok("Parametro impresora actualizado correctamente");
             }
             else return BadRequest(resultAdd.Message);

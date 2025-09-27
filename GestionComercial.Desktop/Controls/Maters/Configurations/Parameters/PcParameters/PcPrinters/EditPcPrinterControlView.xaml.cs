@@ -31,6 +31,8 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
                     CreateUser = LoginUserCache.UserName,
                     ComputerName = Environment.MachineName,
                     SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint,
+                    IsDeleted = false,
+                    IsEnabled = true,
                 };
             else
             {

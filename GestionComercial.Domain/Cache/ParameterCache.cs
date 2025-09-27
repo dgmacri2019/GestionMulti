@@ -13,6 +13,7 @@ namespace GestionComercial.Domain.Cache
         private PcParameter? _pcSalePointParameter;
 
         private List<PcPrinterParametersListViewModel> _printerParameters;
+
         private PcPrinterParametersListViewModel? _printerParameter;
 
         public static bool Reading { get; set; } = false;
@@ -111,6 +112,7 @@ namespace GestionComercial.Domain.Cache
 
         public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any() && !Reading;
         public bool HasDataPCParameters => _pcSalePointParameter != null && !Reading;
+        public bool HasDataPcPrinterParameter => _printerParameter != null && !Reading;
         public bool HasDataPcPrinterParameters => _printerParameters != null && !Reading;
     }
 }
