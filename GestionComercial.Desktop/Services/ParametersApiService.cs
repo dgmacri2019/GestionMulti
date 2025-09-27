@@ -144,7 +144,7 @@ namespace GestionComercial.Desktop.Services
                     Id = parameterId,
                     //IsEnabled = isEnabled,
                 });
-                               
+
                 var jsonResponse = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -229,7 +229,7 @@ namespace GestionComercial.Desktop.Services
         }
 
 
-        internal async Task<List<PrinterParameter>> GetPrinterParameterFromPcAsync(string pcName)
+        internal async Task<PrinterParameter?> GetPrinterParameterFromPcAsync(string pcName)
         {
             try
             {
@@ -242,10 +242,11 @@ namespace GestionComercial.Desktop.Services
                 });
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-
+                if (string.IsNullOrEmpty(jsonResponse))
+                    return null;
                 if (response.IsSuccessStatusCode)
                 {
-                    return JsonSerializer.Deserialize<List<PrinterParameter>>(jsonResponse, Options);
+                    return JsonSerializer.Deserialize<PrinterParameter>(jsonResponse, Options);
                 }
                 else
                 {
@@ -254,10 +255,10 @@ namespace GestionComercial.Desktop.Services
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
+                return null;
             }
         }
     }

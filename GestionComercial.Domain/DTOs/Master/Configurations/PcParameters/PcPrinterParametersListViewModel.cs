@@ -127,7 +127,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
 
 
         [Display(Name = "Punto de venta")]
-        public string? SalePoint { get; set; }
+        public int SalePoint { get; set; }
 
         [Display(Name = "Nombre Pc")]
         public string? ComputerName { get; set; }

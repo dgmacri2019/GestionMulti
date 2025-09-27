@@ -1,7 +1,6 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
-using GestionComercial.Domain.Response;
-using System.Reflection.Metadata;
+using GestionComercial.Domain.Entities.Masters.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,15 +12,25 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
     public partial class EditPcPrinterControlView : UserControl
     {
         private readonly ParametersApiService _parametersApiService;
-        private readonly int PcPrinterParameterId;
+        private PrinterParameter? PrinterParameter { get; set; }
         //private PcPrinterParameter PcPrinterParameter { get; set; }
 
         public event Action ImpresorasActualizadas;
-        public EditPcPrinterControlView(int id)
+        public EditPcPrinterControlView()
         {
             InitializeComponent();
+            ImpresorasActualizadas?.Invoke();
             _parametersApiService = new ParametersApiService();
-            PcPrinterParameterId = id;
+            PrinterParameter = ParameterCache.Instance.GetPrinterParameter();
+            if (PrinterParameter == null)
+                PrinterParameter = new PrinterParameter
+                {
+                    CreateDate = DateTime.Now,
+                    CreateUser = LoginUserCache.UserName,
+                    ComputerName = Environment.MachineName,
+                    SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint,
+                };
+            DataContext = PrinterParameter;
         }
 
 

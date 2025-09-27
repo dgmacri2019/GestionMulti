@@ -100,7 +100,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
 
 
         public string? ComputerName { get; set; }
-        public string? SalePoint { get; set; }
+        public int SalePoint { get; set; }
 
     }
 }

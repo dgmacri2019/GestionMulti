@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controls\Maters\Configurations\Parameters\PcParameters\PcPrinters\ListPcPrinterControlView.xaml.cs" />
     <Compile Remove="Helpers\MultiConverter.cs" />
     <Compile Remove="Services\PriceListsApiService.cs" />
     <Compile Remove="ViewModels\Stock\ArticleViewModel.cs" />
@@ -606,6 +607,10 @@
     <None Remove="Images\Users 64.png" />
     <None Remove="Images\usuario.png" />
     <None Remove="Images\whataspp_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Controls\Maters\Configurations\Parameters\PcParameters\PcPrinters\ListPcPrinterControlView.xaml" />
   </ItemGroup>
 
   <ItemGroup>

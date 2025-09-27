@@ -20,9 +20,7 @@ using GestionComercial.Desktop.Views.Masters;
 using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
-using GestionComercial.Domain.Entities.Masters.Security;
 using System.Windows;
-using System.Windows.Controls;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Views
@@ -179,7 +177,7 @@ namespace GestionComercial.Desktop.Views
             LoginWindow loginView = new LoginWindow();
             loginView.Show();
             // Importante: cerrar la ventana actual correctamente
-                    
+
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is MainWindow)

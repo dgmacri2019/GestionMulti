@@ -12,7 +12,8 @@ namespace GestionComercial.Domain.Cache
 
         private PcParameter? _pcSalePointParameter;
 
-        private List<PrinterParameter> _printerParameters;
+        private List<PcPrinterParametersListViewModel> _printerParameters;
+        private PrinterParameter? _printerParameter;
 
         public static bool Reading { get; set; } = false;
 
@@ -60,16 +61,35 @@ namespace GestionComercial.Domain.Cache
         }
 
 
-        public List<PrinterParameter> GetAllPrinterParameters()
+        public List<PcPrinterParametersListViewModel> GetAllPrinterParameters()
         {
             return _printerParameters;
         }
 
-        public void SetPrinterParameters(List<PrinterParameter> printerParameters)
+        public PrinterParameter? GetPrinterParameter()
+        {
+            return _printerParameter;
+        }
+
+
+
+        public void SetPrinterParameters(List<PcPrinterParametersListViewModel> printerParameters)
         {
             try
             {
                 _printerParameters = printerParameters;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public void SetPrinterParameter(PrinterParameter? printerParameter)
+        {
+            try
+            {
+                _printerParameter = printerParameter;
             }
             catch (Exception)
             {
@@ -86,6 +106,7 @@ namespace GestionComercial.Domain.Cache
             if (_printerParameters != null)
                 _printerParameters.Clear();
             _pcSalePointParameter = null;
+            _printerParameter = null;
         }
 
         public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any() && !Reading;

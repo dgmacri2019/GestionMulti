@@ -146,8 +146,8 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("GetPrinterParameterFromPcAsync")]
         public async Task<IActionResult> GetPrinterParameterFromPcAsync([FromBody] ParameterFilterDto filter)
         {
-            IEnumerable<PrinterParameter> pcPrinterParameters = await _parameterService.GetPrinterParameterFromPcAsync(filter.PcName);
-            return Ok(pcPrinterParameters);
+            PrinterParameter? pcPrinterParameter = await _parameterService.GetPrinterParameterFromPcAsync(filter.PcName);
+            return Ok(pcPrinterParameter);
         }
 
 

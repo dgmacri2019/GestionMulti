@@ -12,6 +12,6 @@ namespace GestionComercial.Applications.Interfaces
 
         Task<PcParameter?> GetPcParameterAsync(string pcName);
         Task<PcParameter?> GetPcParameterByIdAsync(int id);
-        Task<IEnumerable<PrinterParameter>> GetPrinterParameterFromPcAsync(string pcName);
+        Task<PrinterParameter?> GetPrinterParameterFromPcAsync(string pcName);
     }
 }

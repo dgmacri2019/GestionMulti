@@ -93,15 +93,14 @@ namespace GestionComercial.Applications.Services
 
 
 
-        public async Task<IEnumerable<PrinterParameter>> GetPrinterParameterFromPcAsync(string pcName)
+        public async Task<PrinterParameter?> GetPrinterParameterFromPcAsync(string pcName)
         {
             if (string.IsNullOrEmpty(pcName))
                 return null;
 
             return await _context.PrinterParameters
                 .AsNoTracking()
-                .Where(ppp => ppp.ComputerName == pcName)
-                .ToListAsync();
+                .FirstOrDefaultAsync(ppp => ppp.ComputerName == pcName);
         }
 
 
@@ -174,7 +173,7 @@ namespace GestionComercial.Applications.Services
                 UseContinuousOrderPrinter = pcPrinterParameter.UseContinuousOrderPrinter,
                 UseContinuousRemitPrinter = pcPrinterParameter.UseContinuousRemitPrinter,
                 UseContinuousSalePrinter = pcPrinterParameter.UseContinuousSalePrinter,
-                UseContinuousTicketChangePrinter = pcPrinterParameter.UseContinuousTicketChangePrinter,                 
+                UseContinuousTicketChangePrinter = pcPrinterParameter.UseContinuousTicketChangePrinter,
             });
         }
     }

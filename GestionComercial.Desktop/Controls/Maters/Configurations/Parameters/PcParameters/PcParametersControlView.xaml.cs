@@ -35,9 +35,9 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
 
         private void BtnPrinters_Click(object sender, RoutedEventArgs e)
         {
-            var ventana = new ListPcPrinterControlView();
-            lblHeader.Content = "Impresoras";
-            ventana.Actualizado += () =>
+            var ventana = new EditPcPrinterControlView();
+            lblHeader.Content = "Parametros de Impresoras";
+            ventana.ImpresorasActualizadas += () =>
             {
                 PanelList.Content = null;
                 lblHeader.Content = "Parámetros de PC";
