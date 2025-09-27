@@ -12,7 +12,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         // ================== Datos base ==================
-
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Id { get; set; }
 
@@ -40,8 +39,9 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         [Display(Name = "Habilitado?")]
         public bool IsEnabled { get; set; }
 
-        // ================== Impresora Factura ==================
+        public bool IsEnabledOtherPrinters => !UseAllPrinters;
 
+        // ================== Impresora Factura ==================
         private string? _invoicePrinter;
         public string? InvoicePrinter
         {
@@ -52,11 +52,21 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _invoicePrinter = value;
                     OnPropertyChanged(nameof(InvoicePrinter));
+                    // 🔹 Si está en modo "Única impresora", propagar al resto
+                    if (UseAllPrinters && !string.IsNullOrEmpty(_invoicePrinter))
+                    {
+                        RemitPrinter = _invoicePrinter;
+                        BudgetPrinter = _invoicePrinter;
+                        OrderPrinter = _invoicePrinter;
+                        BarCodePrinter = _invoicePrinter;
+                        TicketChangePrinter = _invoicePrinter;
+                        SalePrinter = _invoicePrinter;
+                    }
                 }
             }
         }
 
-        private int _maxWidthInvoicePrinter;
+        private int _maxWidthInvoicePrinter = 210;
         public int MaxWidthInvoicePrinter
         {
             get => _maxWidthInvoicePrinter;
@@ -81,7 +91,16 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                     _useContinuousInvoicePrinter = value;
                     OnPropertyChanged(nameof(UseContinuousInvoicePrinter));
 
-                    // lógica de ejemplo
+                    if (UseAllPrinters)
+                        RaiseAllEffectiveThermalProperties();   // 🔹 agregado
+                       
+                    // 🔹 Propagar el ancho al resto
+                    MaxWidthRemitPrinter = value ? 80 : 210;
+                    MaxWidthBudgetPrinter = value ? 80 : 210;
+                    MaxWidthOrderPrinter = value ? 80 : 210;
+                    MaxWidthBarCodePrinter = value ? 80 : 210;
+                    MaxWidthTicketChangePrinter = value ? 80 : 210;
+                    MaxWidthSalePrinter = value ? 80 : 210;
                     MaxWidthInvoicePrinter = value ? 80 : 210;
                 }
             }
@@ -104,7 +123,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersInvoice { get; set; } = new();
 
         // ================== Impresora Remito ==================
-
         private string? _remitPrinter;
         public string? RemitPrinter
         {
@@ -119,7 +137,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-        private int _maxWidthRemitPrinter;
+        private int _maxWidthRemitPrinter = 210;
         public int MaxWidthRemitPrinter
         {
             get => _maxWidthRemitPrinter;
@@ -143,11 +161,14 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useContinuousRemitPrinter = value;
                     OnPropertyChanged(nameof(UseContinuousRemitPrinter));
-
-                    MaxWidthRemitPrinter = value ? 80 : 210;
+                    OnPropertyChanged(nameof(UseContinuousRemitPrinterEffective));
                 }
+                MaxWidthRemitPrinter = value ? 80 : 210;
             }
         }
+
+        public bool UseContinuousRemitPrinterEffective =>
+            UseAllPrinters ? UseContinuousInvoicePrinter : UseContinuousRemitPrinter;
 
         private bool _enablePrintRemit;
         public bool EnablePrintRemit
@@ -166,7 +187,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersRemit { get; set; } = new();
 
         // ================== Impresora Presupuesto ==================
-
         private string? _budgetPrinter;
         public string? BudgetPrinter
         {
@@ -181,7 +201,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-        private int _maxWidthBudgetPrinter;
+        private int _maxWidthBudgetPrinter = 210;
         public int MaxWidthBudgetPrinter
         {
             get => _maxWidthBudgetPrinter;
@@ -193,7 +213,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                     OnPropertyChanged(nameof(MaxWidthBudgetPrinter));
                 }
             }
-        }
+        } 
 
         private bool _useContinuousBudgetPrinter;
         public bool UseContinuousBudgetPrinter
@@ -205,11 +225,14 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useContinuousBudgetPrinter = value;
                     OnPropertyChanged(nameof(UseContinuousBudgetPrinter));
-
-                    MaxWidthBudgetPrinter = value ? 80 : 210;
+                    OnPropertyChanged(nameof(UseContinuousBudgetPrinterEffective));
                 }
+                MaxWidthBudgetPrinter = value ? 80 : 210;
             }
         }
+
+        public bool UseContinuousBudgetPrinterEffective =>
+            UseAllPrinters ? UseContinuousInvoicePrinter : UseContinuousBudgetPrinter;
 
         private bool _enablePrintBudget;
         public bool EnablePrintBudget
@@ -228,7 +251,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersBudget { get; set; } = new();
 
         // ================== Impresora Pedido ==================
-
         private string? _orderPrinter;
         public string? OrderPrinter
         {
@@ -243,7 +265,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-        private int _maxWidthOrderPrinter;
+        private int _maxWidthOrderPrinter = 210;
         public int MaxWidthOrderPrinter
         {
             get => _maxWidthOrderPrinter;
@@ -267,11 +289,14 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useContinuousOrderPrinter = value;
                     OnPropertyChanged(nameof(UseContinuousOrderPrinter));
-
-                    MaxWidthOrderPrinter = value ? 80 : 210;
+                    OnPropertyChanged(nameof(UseContinuousOrderPrinterEffective));
                 }
+                MaxWidthOrderPrinter = value ? 80 : 210;
             }
         }
+
+        public bool UseContinuousOrderPrinterEffective =>
+            UseAllPrinters ? UseContinuousInvoicePrinter : UseContinuousOrderPrinter;
 
         private bool _enablePrintOrder;
         public bool EnablePrintOrder
@@ -290,7 +315,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersOrder { get; set; } = new();
 
         // ================== Impresora Código de Barra ==================
-
         private string? _barCodePrinter;
         public string? BarCodePrinter
         {
@@ -305,7 +329,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-        private int _maxWidthBarCodePrinter;
+        private int _maxWidthBarCodePrinter = 210;
         public int MaxWidthBarCodePrinter
         {
             get => _maxWidthBarCodePrinter;
@@ -329,11 +353,14 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useContinuousBarCodePrinter = value;
                     OnPropertyChanged(nameof(UseContinuousBarCodePrinter));
-
-                    MaxWidthBarCodePrinter = value ? 80 : 210;
+                    OnPropertyChanged(nameof(UseContinuousBarCodePrinterEffective));
                 }
+                MaxWidthBarCodePrinter = value ? 80 : 210;
             }
         }
+
+        public bool UseContinuousBarCodePrinterEffective =>
+            UseAllPrinters ? UseContinuousInvoicePrinter : UseContinuousBarCodePrinter;
 
         private bool _enablePrintBarCode;
         public bool EnablePrintBarCode
@@ -352,7 +379,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersBarCode { get; set; } = new();
 
         // ================== Impresora Ticket Cambio ==================
-
         private string? _ticketChangePrinter;
         public string? TicketChangePrinter
         {
@@ -367,7 +393,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-        private int _maxWidthTicketChangePrinter;
+        private int _maxWidthTicketChangePrinter = 210;
         public int MaxWidthTicketChangePrinter
         {
             get => _maxWidthTicketChangePrinter;
@@ -391,11 +417,14 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useContinuousTicketChangePrinter = value;
                     OnPropertyChanged(nameof(UseContinuousTicketChangePrinter));
-
-                    MaxWidthTicketChangePrinter = value ? 80 : 210;
+                    OnPropertyChanged(nameof(UseContinuousTicketChangePrinterEffective));
                 }
+                MaxWidthTicketChangePrinter = value ? 80 : 210;
             }
         }
+
+        public bool UseContinuousTicketChangePrinterEffective =>
+            UseAllPrinters ? UseContinuousInvoicePrinter : UseContinuousTicketChangePrinter;
 
         private bool _enablePrintTicketChange;
         public bool EnablePrintTicketChange
@@ -414,7 +443,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersTicketChange { get; set; } = new();
 
         // ================== Impresora Venta ==================
-
         private string? _salePrinter;
         public string? SalePrinter
         {
@@ -429,7 +457,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-        private int _maxWidthSalePrinter;
+        private int _maxWidthSalePrinter = 210;
         public int MaxWidthSalePrinter
         {
             get => _maxWidthSalePrinter;
@@ -453,11 +481,14 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useContinuousSalePrinter = value;
                     OnPropertyChanged(nameof(UseContinuousSalePrinter));
-
-                    MaxWidthSalePrinter = value ? 80 : 210;
+                    OnPropertyChanged(nameof(UseContinuousSalePrinterEffective));
                 }
+                MaxWidthSalePrinter = value ? 80 : 210;
             }
         }
+
+        public bool UseContinuousSalePrinterEffective =>
+            UseAllPrinters ? UseContinuousInvoicePrinter : UseContinuousSalePrinter;
 
         private bool _enablePrintSale;
         public bool EnablePrintSale
@@ -476,7 +507,6 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         public ObservableCollection<string> InstalledPrintersSale { get; set; } = new();
 
         // ================== Global ==================
-
         private bool _useAllPrinters;
         public bool UseAllPrinters
         {
@@ -487,10 +517,11 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                 {
                     _useAllPrinters = value;
                     OnPropertyChanged(nameof(UseAllPrinters));
+                    OnPropertyChanged(nameof(IsEnabledOtherPrinters));   // 🔹 agregado
+                    RaiseAllEffectiveThermalProperties();                // 🔹 agregado
 
                     if (value && !string.IsNullOrEmpty(InvoicePrinter))
                     {
-                        // aplica la impresora de facturas a todas
                         RemitPrinter = InvoicePrinter;
                         BudgetPrinter = InvoicePrinter;
                         OrderPrinter = InvoicePrinter;
@@ -500,6 +531,23 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
                     }
                 }
             }
+        }
+
+
+        
+
+
+
+
+        private void RaiseAllEffectiveThermalProperties()
+        {
+            OnPropertyChanged(nameof(UseContinuousRemitPrinterEffective));
+            OnPropertyChanged(nameof(UseContinuousBudgetPrinterEffective));
+            OnPropertyChanged(nameof(UseContinuousOrderPrinterEffective));
+            OnPropertyChanged(nameof(UseContinuousBarCodePrinterEffective));
+            OnPropertyChanged(nameof(UseContinuousTicketChangePrinterEffective));
+            OnPropertyChanged(nameof(UseContinuousSalePrinterEffective));
+            OnPropertyChanged(nameof(UseContinuousSalePrinter));
         }
 
         public void LoadInstalledPrinters()
@@ -524,7 +572,7 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
             }
         }
 
-            [Display(Name = "Punto de venta")]
+        [Display(Name = "Punto de venta")]
         public int SalePoint { get; set; }
 
         [Display(Name = "Nombre Pc")]

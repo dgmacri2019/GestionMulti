@@ -35,7 +35,7 @@
 
             <TextBlock Text="{Binding ComputerName, StringFormat=Nombre Pc: {0}}"
                        VerticalAlignment="Center"  
-                       Margin="150,40,0,0"
+                       Margin="140,40,0,0"
                        Style="{StaticResource BlackBold14}"/>
 
             <TextBlock Text="{Binding SalePoint, StringFormat=Punto de venta: {0:00000}}" 
@@ -151,9 +151,10 @@
                          Margin="0,2,0,0"
                          IsReadOnly="True"/>
             </StackPanel>
-            <CheckBox IsChecked="{Binding UseContinuousSalePrinter}" 
+            <CheckBox IsChecked="{Binding UseContinuousSalePrinterEffective, Mode=OneWay}"
                       Grid.Column="1" 
                       Grid.Row="2"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       Margin="0,15,0,0"/>
@@ -169,7 +170,8 @@
                       VerticalAlignment="Center"
                       Margin="0,15,0,0"/>
             <ComboBox ItemsSource="{Binding InstalledPrintersSale}"
-                      SelectedItem="{Binding SalePrinter, Mode=TwoWay}"                          
+                      SelectedItem="{Binding SalePrinter, Mode=TwoWay}"  
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       Grid.Column="4"                       
                       Grid.Row="2"
                       Grid.ColumnSpan="2"
@@ -185,9 +187,10 @@
                          Margin="0,2,0,0"
                          IsReadOnly="True"/>
             </StackPanel>
-            <CheckBox IsChecked="{Binding UseContinuousBudgetPrinter}"
+            <CheckBox IsChecked="{Binding UseContinuousBudgetPrinterEffective, Mode=OneWay}"
                       Grid.Row="3"
                       Grid.Column="1"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       Margin="0,15,0,0"/>
@@ -204,6 +207,7 @@
                       Margin="0,15,0,0"/>
             <ComboBox ItemsSource="{Binding InstalledPrintersBudget}"
                       SelectedItem="{Binding BudgetPrinter, Mode=TwoWay}"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       Grid.Row="3"
                       Grid.Column="4"
                       Grid.ColumnSpan="2"
@@ -218,9 +222,10 @@
                          Margin="0,2,0,0"
                          IsReadOnly="True"/>
             </StackPanel>
-            <CheckBox IsChecked="{Binding UseContinuousBarCodePrinter}" 
+            <CheckBox IsChecked="{Binding UseContinuousBarCodePrinterEffective, Mode=OneWay}"
                       Grid.Row="4"
                       Grid.Column="1"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       Margin="0,15,0,0"/>
@@ -237,6 +242,7 @@
                       Margin="0,15,0,0"/>
             <ComboBox ItemsSource="{Binding InstalledPrintersBarCode}"
                       SelectedItem="{Binding BarCodePrinter, Mode=TwoWay}"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       Grid.Row="4"                      
                       Grid.Column="4"
                       Grid.ColumnSpan="2"
@@ -252,9 +258,10 @@
                          Margin="0,2,0,0"
                          IsReadOnly="True"/>
             </StackPanel>
-            <CheckBox IsChecked="{Binding UseContinuousTicketChangePrinter}" 
-                       Grid.Row="5"
+            <CheckBox IsChecked="{Binding UseContinuousTicketChangePrinterEffective, Mode=OneWay}"
+                      Grid.Row="5"
                       Grid.Column="1"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       Margin="0,15,0,0"/>
@@ -271,7 +278,8 @@
                       Margin="0,15,0,0"/>
             <ComboBox ItemsSource="{Binding InstalledPrintersTicketChange}"
                       SelectedItem="{Binding TicketChangePrinter, Mode=TwoWay}"
-                       Grid.Row="5"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
+                      Grid.Row="5"
                       Grid.Column="4"
                       Grid.ColumnSpan="2"
                       Margin="0,15,0,0"/>
@@ -285,9 +293,10 @@
                          Margin="0,2,0,0"
                          IsReadOnly="True"/>
             </StackPanel>
-            <CheckBox IsChecked="{Binding UseContinuousRemitPrinter}" 
+            <CheckBox IsChecked="{Binding UseContinuousRemitPrinterEffective, Mode=OneWay}"
                       Grid.Row="6"
                       Grid.Column="1" 
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       Margin="0,15,0,0"/>
@@ -304,6 +313,7 @@
                       Margin="0,15,0,0"/>
             <ComboBox ItemsSource="{Binding InstalledPrintersRemit}"
                       SelectedItem="{Binding RemitPrinter, Mode=TwoWay}"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       Grid.Row="6"
                       Grid.Column="4"
                       Grid.ColumnSpan="2"
@@ -318,9 +328,10 @@
                 <TextBox Text="{Binding OrderPrinter, Mode=TwoWay}"                         
                          IsReadOnly="True"/>
             </StackPanel>
-            <CheckBox IsChecked="{Binding UseContinuousOrderPrinter}" 
+            <CheckBox IsChecked="{Binding UseContinuousOrderPrinterEffective, Mode=OneWay}"
                       Grid.Row="7"
                       Grid.Column="1"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       Margin="0,15,0,0"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"/>
@@ -337,6 +348,7 @@
                       VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding InstalledPrintersOrder}"
                       SelectedItem="{Binding OrderPrinter, Mode=TwoWay}"
+                      IsEnabled="{Binding IsEnabledOtherPrinters}"
                       Grid.Row="7"
                       Grid.Column="4"
                       Grid.ColumnSpan="2"
