@@ -2,6 +2,7 @@
 using GestionComercial.Domain.DTOs.Banks;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
+using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Provider;
 using GestionComercial.Domain.DTOs.Sale;
@@ -11,6 +12,7 @@ using GestionComercial.Domain.Entities.AccountingBook;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
+using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
 
@@ -377,7 +379,6 @@ namespace GestionComercial.Domain.Helpers
 
         #endregion
 
-
         #region Commerce Data
 
         public static BillingViewModel? ToBillingViewModel(Billing? billing)
@@ -446,6 +447,55 @@ namespace GestionComercial.Domain.Helpers
                 UseHomologacion = billingViewModel.UseHomologacion,
             };
         }
+
+        #endregion
+
+        #region Parameters
+        public static PrinterParameter ToPrinterParameter(PcPrinterParametersListViewModel? pcPrinterParameter, bool isNew)
+        {
+            return new PrinterParameter
+            {
+                Id = isNew ? 0 : pcPrinterParameter.Id,
+                BarCodePrinter = pcPrinterParameter.BarCodePrinter,
+                BudgetPrinter = pcPrinterParameter.BudgetPrinter,
+                ComputerName = pcPrinterParameter.ComputerName,
+                RemitPrinter = pcPrinterParameter.RemitPrinter,
+                CreateDate = pcPrinterParameter.CreateDate,
+                CreateUser = pcPrinterParameter.CreateUser,
+                EnablePrintBarCode = pcPrinterParameter.EnablePrintBarCode,
+                EnablePrintBudget = pcPrinterParameter.EnablePrintBudget,
+                EnablePrintInvoice = pcPrinterParameter.EnablePrintInvoice,
+                EnablePrintOrder = pcPrinterParameter.EnablePrintOrder,
+                EnablePrintRemit = pcPrinterParameter.EnablePrintRemit,
+                EnablePrintSale = pcPrinterParameter.EnablePrintSale,
+                EnablePrintTicketChange = pcPrinterParameter.EnablePrintTicketChange,
+                InvoicePrinter = pcPrinterParameter.InvoicePrinter,
+                IsDeleted = pcPrinterParameter.IsDeleted,
+                IsEnabled = pcPrinterParameter.IsEnabled,
+                MaxWidthBarCodePrinter = pcPrinterParameter.MaxWidthBarCodePrinter,
+                MaxWidthBudgetPrinter = pcPrinterParameter.MaxWidthBudgetPrinter,
+                MaxWidthInvoicePrinter = pcPrinterParameter.MaxWidthInvoicePrinter,
+                MaxWidthOrderPrinter = pcPrinterParameter.MaxWidthOrderPrinter,
+                MaxWidthRemitPrinter = pcPrinterParameter.MaxWidthRemitPrinter,
+                MaxWidthSalePrinter = pcPrinterParameter.MaxWidthSalePrinter,
+                MaxWidthTicketChangePrinter = pcPrinterParameter.MaxWidthTicketChangePrinter,
+                OrderPrinter = pcPrinterParameter.OrderPrinter,
+                SalePoint = pcPrinterParameter.SalePoint,
+                SalePrinter = pcPrinterParameter.SalePrinter,
+                TicketChangePrinter = pcPrinterParameter.TicketChangePrinter,
+                UpdateDate = pcPrinterParameter.UpdateDate,
+                UpdateUser = pcPrinterParameter.UpdateUser,
+                UseAllPrinters = pcPrinterParameter.UseAllPrinters,
+                UseContinuousBarCodePrinter = pcPrinterParameter.UseContinuousBarCodePrinter,
+                UseContinuousBudgetPrinter = pcPrinterParameter.UseContinuousBudgetPrinter,
+                UseContinuousInvoicePrinter = pcPrinterParameter.UseContinuousInvoicePrinter,
+                UseContinuousOrderPrinter = pcPrinterParameter.UseContinuousOrderPrinter,
+                UseContinuousRemitPrinter = pcPrinterParameter.UseContinuousRemitPrinter,
+                UseContinuousSalePrinter = pcPrinterParameter.UseContinuousSalePrinter,
+                UseContinuousTicketChangePrinter = pcPrinterParameter.UseContinuousTicketChangePrinter,
+            };
+        }
+
 
         #endregion
 
@@ -687,10 +737,7 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = saleViewModel.TotalIVA27,
             };
         }
-
-
-
-
+       
         #endregion
     }
 }

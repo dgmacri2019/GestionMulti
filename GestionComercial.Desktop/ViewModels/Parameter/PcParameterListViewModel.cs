@@ -108,7 +108,7 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
             if (!ParameterCache.Instance.HasDataPcPrinterParameters)
             {
                 ParameterCache.Reading = true;
-                PrinterParameter? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
+                PcPrinterParametersListViewModel? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
                 ParameterCache.Instance.SetPrinterParameter(printerParameter);
                 List<PcPrinterParametersListViewModel> printerParameters = await _parametersApiService.GetAllPcPrinterParametersAsync();
                 ParameterCache.Instance.SetPrinterParameters(printerParameters);
@@ -137,7 +137,7 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
             List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
             PcParameter pcSalePointParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
             List<PcPrinterParametersListViewModel> printerParameters = await _parametersApiService.GetAllPcPrinterParametersAsync();
-            PrinterParameter? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
+            PcPrinterParametersListViewModel? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
 
             await App.Current.Dispatcher.InvokeAsync(() =>
             {

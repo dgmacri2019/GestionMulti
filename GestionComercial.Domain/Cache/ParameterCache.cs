@@ -13,7 +13,7 @@ namespace GestionComercial.Domain.Cache
         private PcParameter? _pcSalePointParameter;
 
         private List<PcPrinterParametersListViewModel> _printerParameters;
-        private PrinterParameter? _printerParameter;
+        private PcPrinterParametersListViewModel? _printerParameter;
 
         public static bool Reading { get; set; } = false;
 
@@ -66,7 +66,7 @@ namespace GestionComercial.Domain.Cache
             return _printerParameters;
         }
 
-        public PrinterParameter? GetPrinterParameter()
+        public PcPrinterParametersListViewModel? GetPrinterParameter()
         {
             return _printerParameter;
         }
@@ -85,7 +85,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void SetPrinterParameter(PrinterParameter? printerParameter)
+        public void SetPrinterParameter(PcPrinterParametersListViewModel? printerParameter)
         {
             try
             {

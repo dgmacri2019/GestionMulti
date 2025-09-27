@@ -1,6 +1,8 @@
 ﻿using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
-using GestionComercial.Domain.Entities.Masters.Configuration;
+using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
+using GestionComercial.Domain.Helpers;
+using GestionComercial.Domain.Response;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,7 +14,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
     public partial class EditPcPrinterControlView : UserControl
     {
         private readonly ParametersApiService _parametersApiService;
-        private PrinterParameter? PrinterParameter { get; set; }
+        private PcPrinterParametersListViewModel? PrinterParameterViewModel { get; set; }
         //private PcPrinterParameter PcPrinterParameter { get; set; }
 
         public event Action ImpresorasActualizadas;
@@ -21,22 +23,28 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
             InitializeComponent();
             ImpresorasActualizadas?.Invoke();
             _parametersApiService = new ParametersApiService();
-            PrinterParameter = ParameterCache.Instance.GetPrinterParameter();
-            if (PrinterParameter == null)
-                PrinterParameter = new PrinterParameter
+            PrinterParameterViewModel = ParameterCache.Instance.GetPrinterParameter();
+            if (PrinterParameterViewModel == null)
+                PrinterParameterViewModel = new PcPrinterParametersListViewModel
                 {
                     CreateDate = DateTime.Now,
                     CreateUser = LoginUserCache.UserName,
                     ComputerName = Environment.MachineName,
                     SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint,
                 };
-            DataContext = PrinterParameter;
+            else
+            {
+                PrinterParameterViewModel.UpdateDate = DateTime.Now;
+                PrinterParameterViewModel.UpdateUser = LoginUserCache.UserName;
+
+            }
+            PrinterParameterViewModel.LoadInstalledPrinters();
+            DataContext = PrinterParameterViewModel;
         }
 
 
         private void miUserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            GridGeneral.MaxWidth = this.ActualWidth;
             lblError.MaxWidth = this.ActualWidth;
         }
 
@@ -50,15 +58,15 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
             try
             {
                 lblError.Text = string.Empty;
+                lblConfirm.Text = string.Empty;
                 btnUpdate.IsEnabled = false;
-                //PcParameter.UpdateUser = LoginUserCache.UserName;
-                //PcParameter.UpdateDate = DateTime.Now;
 
-                //GeneralResponse resultUpdate = await _parametersApiService.UpdatePcParameterAsync(PcParameter);
-                //if (resultUpdate.Success)
-                //    ImpresorasActualizadas?.Invoke();
-                //else
-                //    msgError(resultUpdate.Message);
+
+                GeneralResponse resultUpdate = await _parametersApiService.UpdatePcPrinterParameterAsync(ConverterHelper.ToPrinterParameter(PrinterParameterViewModel, PrinterParameterViewModel.Id == 0));
+                if (resultUpdate.Success)
+                    ImpresorasActualizadas?.Invoke();
+                else
+                    msgError(resultUpdate.Message);
                 btnUpdate.IsEnabled = true;
 
             }
@@ -69,23 +77,7 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
         }
 
 
-        private async Task FindParameterAsync()
-        {
-            //PcParameterResponse result = await _parametersApiService.GetPcParameterByIdAsync(ParameterId);
 
-            //if (result.Success)
-            //{
-            //    PcParameter = result.PcParameter;
-            //    if (ParameterId == 0)
-            //    {
-            //        PcParameter.CreateUser = LoginUserCache.UserName;
-            //    }
-
-            //    DataContext = PcParameter;
-            //}
-            //else
-            //    msgError(result.Message);
-        }
 
         private void msgError(string msg)
         {

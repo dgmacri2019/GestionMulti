@@ -228,8 +228,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-
-        internal async Task<PrinterParameter?> GetPrinterParameterFromPcAsync(string pcName)
+        internal async Task<PcPrinterParametersListViewModel?> GetPrinterParameterFromPcAsync(string pcName)
         {
             try
             {
@@ -246,7 +245,7 @@ namespace GestionComercial.Desktop.Services
                     return null;
                 if (response.IsSuccessStatusCode)
                 {
-                    return JsonSerializer.Deserialize<PrinterParameter>(jsonResponse, Options);
+                    return JsonSerializer.Deserialize<PcPrinterParametersListViewModel>(jsonResponse, Options);
                 }
                 else
                 {
@@ -259,6 +258,29 @@ namespace GestionComercial.Desktop.Services
             {
                 MsgBoxAlertHelper.MsgAlertError(ex.Message);
                 return null;
+            }
+        }
+
+        internal async Task<GeneralResponse> UpdatePcPrinterParameterAsync(PrinterParameter printerParameter)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdatePcPrinterParameterAsync", printerParameter);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
             }
         }
     }

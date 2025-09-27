@@ -32,7 +32,7 @@ namespace GestionComercial.API.Controllers.Admin
         }
 
 
-       [HttpPost("AddGeneralParameterAsync")]
+        [HttpPost("AddGeneralParameterAsync")]
         public async Task<IActionResult> AddAsync([FromBody] GeneralParameter generalParameter)
         {
             GeneralResponse resultAdd = await _masterService.AddAsync(generalParameter);
@@ -146,10 +146,9 @@ namespace GestionComercial.API.Controllers.Admin
         [HttpPost("GetPrinterParameterFromPcAsync")]
         public async Task<IActionResult> GetPrinterParameterFromPcAsync([FromBody] ParameterFilterDto filter)
         {
-            PrinterParameter? pcPrinterParameter = await _parameterService.GetPrinterParameterFromPcAsync(filter.PcName);
+            PcPrinterParametersListViewModel? pcPrinterParameter = await _parameterService.GetPrinterParameterFromPcAsync(filter.PcName);
             return Ok(pcPrinterParameter);
         }
-
 
         [HttpPost("GetAllPcPrinterParametersAsync")]
         public async Task<IActionResult> GetAllPcPrinterParametersAsync()
@@ -157,5 +156,20 @@ namespace GestionComercial.API.Controllers.Admin
             IEnumerable<PcPrinterParametersListViewModel> pcPrinterParameters = await _parameterService.GetAllPcPrinterParametersAsync();
             return Ok(pcPrinterParameters);
         }
+
+        [HttpPost("UpdatePcPrinterParameterAsync")]
+        public async Task<IActionResult> UpdatePcPrinterParameterAsync([FromBody] PrinterParameter printerParameter)
+        {
+            GeneralResponse resultAdd = printerParameter.Id == 0 ?
+                await _masterService.AddAsync(printerParameter)
+                :
+                await _masterService.UpdateAsync(printerParameter);
+            if (resultAdd.Success)
+            {
+                return Ok("Parametro impresora actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
     }
 }

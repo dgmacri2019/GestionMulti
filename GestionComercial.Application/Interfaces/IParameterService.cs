@@ -6,12 +6,18 @@ namespace GestionComercial.Applications.Interfaces
     public interface IParameterService
     {
         Task<IEnumerable<GeneralParameter>> GetAllGeneralParametersAsync();
-        Task<IEnumerable<PcSalePointsListViewModel>> GetAllPcParametersAsync();
-        Task<IEnumerable<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync();
         Task<GeneralParameter?> GetGeneralParameterByIdAsync(int id);
+
+
 
         Task<PcParameter?> GetPcParameterAsync(string pcName);
         Task<PcParameter?> GetPcParameterByIdAsync(int id);
-        Task<PrinterParameter?> GetPrinterParameterFromPcAsync(string pcName);
+        Task<IEnumerable<PcSalePointsListViewModel>> GetAllPcParametersAsync();
+
+
+
+        Task<PcPrinterParametersListViewModel?> GetPrinterParameterFromPcAsync(string pcName);
+        Task<IEnumerable<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync();
+
     }
 }

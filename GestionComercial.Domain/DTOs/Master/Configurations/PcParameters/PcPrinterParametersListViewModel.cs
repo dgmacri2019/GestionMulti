@@ -1,9 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing.Printing;
 
 namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
 {
-    public class PcPrinterParametersListViewModel
+    public class PcPrinterParametersListViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        // ================== Datos base ==================
+
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int Id { get; set; }
 
@@ -31,102 +40,491 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.PcParameters
         [Display(Name = "Habilitado?")]
         public bool IsEnabled { get; set; }
 
-        [Display(Name = "Impresora de Facturas")]
-        public string? InvoicePrinter { get; set; }
+        // ================== Impresora Factura ==================
 
-        [Display(Name = "Ancho Maximo Impresora de Facturas")]
-        public int MaxWidthInvoicePrinter { get; set; }
+        private string? _invoicePrinter;
+        public string? InvoicePrinter
+        {
+            get => _invoicePrinter;
+            set
+            {
+                if (_invoicePrinter != value)
+                {
+                    _invoicePrinter = value;
+                    OnPropertyChanged(nameof(InvoicePrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Usar Papel Continuo Impresora de Facturas")]
-        public bool UseContinuousInvoicePrinter { get; set; }
+        private int _maxWidthInvoicePrinter;
+        public int MaxWidthInvoicePrinter
+        {
+            get => _maxWidthInvoicePrinter;
+            set
+            {
+                if (_maxWidthInvoicePrinter != value)
+                {
+                    _maxWidthInvoicePrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthInvoicePrinter));
+                }
+            }
+        }
 
+        private bool _useContinuousInvoicePrinter;
+        public bool UseContinuousInvoicePrinter
+        {
+            get => _useContinuousInvoicePrinter;
+            set
+            {
+                if (_useContinuousInvoicePrinter != value)
+                {
+                    _useContinuousInvoicePrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousInvoicePrinter));
 
+                    // lógica de ejemplo
+                    MaxWidthInvoicePrinter = value ? 80 : 210;
+                }
+            }
+        }
 
+        private bool _enablePrintInvoice;
+        public bool EnablePrintInvoice
+        {
+            get => _enablePrintInvoice;
+            set
+            {
+                if (_enablePrintInvoice != value)
+                {
+                    _enablePrintInvoice = value;
+                    OnPropertyChanged(nameof(EnablePrintInvoice));
+                }
+            }
+        }
 
-        [Display(Name = "Impresora de Remitos")]
-        public string? RemitPrinter { get; set; }
+        public ObservableCollection<string> InstalledPrintersInvoice { get; set; } = new();
 
-        [Display(Name = "Ancho Maximo Impresora de Remitos")]
-        public int MaxWidthRemitPrinter { get; set; }
+        // ================== Impresora Remito ==================
 
-        [Display(Name = "Usar Papel Continuo Impresora de Remitos")]
-        public bool UseContinuousRemitPrinter { get; set; }
+        private string? _remitPrinter;
+        public string? RemitPrinter
+        {
+            get => _remitPrinter;
+            set
+            {
+                if (_remitPrinter != value)
+                {
+                    _remitPrinter = value;
+                    OnPropertyChanged(nameof(RemitPrinter));
+                }
+            }
+        }
 
+        private int _maxWidthRemitPrinter;
+        public int MaxWidthRemitPrinter
+        {
+            get => _maxWidthRemitPrinter;
+            set
+            {
+                if (_maxWidthRemitPrinter != value)
+                {
+                    _maxWidthRemitPrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthRemitPrinter));
+                }
+            }
+        }
 
+        private bool _useContinuousRemitPrinter;
+        public bool UseContinuousRemitPrinter
+        {
+            get => _useContinuousRemitPrinter;
+            set
+            {
+                if (_useContinuousRemitPrinter != value)
+                {
+                    _useContinuousRemitPrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousRemitPrinter));
 
+                    MaxWidthRemitPrinter = value ? 80 : 210;
+                }
+            }
+        }
 
-        [Display(Name = "Impresora de Presupuestos")]
-        public string? BudgetPrinter { get; set; }
+        private bool _enablePrintRemit;
+        public bool EnablePrintRemit
+        {
+            get => _enablePrintRemit;
+            set
+            {
+                if (_enablePrintRemit != value)
+                {
+                    _enablePrintRemit = value;
+                    OnPropertyChanged(nameof(EnablePrintRemit));
+                }
+            }
+        }
 
-        [Display(Name = "Ancho Maximo Impresora de Presupuestos")]
-        public int MaxWidthBudgetPrinter { get; set; }
+        public ObservableCollection<string> InstalledPrintersRemit { get; set; } = new();
 
-        [Display(Name = "Usar Papel Continuo Impresora de Presupuestos")]
-        public bool UseContinuousBudgetPrinter { get; set; }
+        // ================== Impresora Presupuesto ==================
 
+        private string? _budgetPrinter;
+        public string? BudgetPrinter
+        {
+            get => _budgetPrinter;
+            set
+            {
+                if (_budgetPrinter != value)
+                {
+                    _budgetPrinter = value;
+                    OnPropertyChanged(nameof(BudgetPrinter));
+                }
+            }
+        }
 
+        private int _maxWidthBudgetPrinter;
+        public int MaxWidthBudgetPrinter
+        {
+            get => _maxWidthBudgetPrinter;
+            set
+            {
+                if (_maxWidthBudgetPrinter != value)
+                {
+                    _maxWidthBudgetPrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthBudgetPrinter));
+                }
+            }
+        }
 
+        private bool _useContinuousBudgetPrinter;
+        public bool UseContinuousBudgetPrinter
+        {
+            get => _useContinuousBudgetPrinter;
+            set
+            {
+                if (_useContinuousBudgetPrinter != value)
+                {
+                    _useContinuousBudgetPrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousBudgetPrinter));
 
-        [Display(Name = "Impresora de Pedidos")]
-        public string? OrderPrinter { get; set; }
+                    MaxWidthBudgetPrinter = value ? 80 : 210;
+                }
+            }
+        }
 
-        [Display(Name = "Ancho Maximo Impresora de Pedidos")]
-        public int MaxWidthOrderPrinter { get; set; }
+        private bool _enablePrintBudget;
+        public bool EnablePrintBudget
+        {
+            get => _enablePrintBudget;
+            set
+            {
+                if (_enablePrintBudget != value)
+                {
+                    _enablePrintBudget = value;
+                    OnPropertyChanged(nameof(EnablePrintBudget));
+                }
+            }
+        }
 
-        [Display(Name = "Usar Papel Continuo Impresora de Pedidos")]
-        public bool UseContinuousOrderPrinter { get; set; }
+        public ObservableCollection<string> InstalledPrintersBudget { get; set; } = new();
 
+        // ================== Impresora Pedido ==================
 
+        private string? _orderPrinter;
+        public string? OrderPrinter
+        {
+            get => _orderPrinter;
+            set
+            {
+                if (_orderPrinter != value)
+                {
+                    _orderPrinter = value;
+                    OnPropertyChanged(nameof(OrderPrinter));
+                }
+            }
+        }
 
+        private int _maxWidthOrderPrinter;
+        public int MaxWidthOrderPrinter
+        {
+            get => _maxWidthOrderPrinter;
+            set
+            {
+                if (_maxWidthOrderPrinter != value)
+                {
+                    _maxWidthOrderPrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthOrderPrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Impresora de Códigos de Barra")]
-        public string? BarCodePrinter { get; set; }
+        private bool _useContinuousOrderPrinter;
+        public bool UseContinuousOrderPrinter
+        {
+            get => _useContinuousOrderPrinter;
+            set
+            {
+                if (_useContinuousOrderPrinter != value)
+                {
+                    _useContinuousOrderPrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousOrderPrinter));
 
-        [Display(Name = "Ancho Maximo Impresora de Códigos de Barra")]
-        public int MaxWidthBarCodePrinter { get; set; }
+                    MaxWidthOrderPrinter = value ? 80 : 210;
+                }
+            }
+        }
 
-        [Display(Name = "Usar Papel Continuo Impresora de Códigos de Barra")]
-        public bool UseContinuousBarCodePrinter { get; set; }
+        private bool _enablePrintOrder;
+        public bool EnablePrintOrder
+        {
+            get => _enablePrintOrder;
+            set
+            {
+                if (_enablePrintOrder != value)
+                {
+                    _enablePrintOrder = value;
+                    OnPropertyChanged(nameof(EnablePrintOrder));
+                }
+            }
+        }
 
+        public ObservableCollection<string> InstalledPrintersOrder { get; set; } = new();
 
+        // ================== Impresora Código de Barra ==================
 
+        private string? _barCodePrinter;
+        public string? BarCodePrinter
+        {
+            get => _barCodePrinter;
+            set
+            {
+                if (_barCodePrinter != value)
+                {
+                    _barCodePrinter = value;
+                    OnPropertyChanged(nameof(BarCodePrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Impresora de Ticket de Cambio")]
-        public string? TicketChangePrinter { get; set; }
+        private int _maxWidthBarCodePrinter;
+        public int MaxWidthBarCodePrinter
+        {
+            get => _maxWidthBarCodePrinter;
+            set
+            {
+                if (_maxWidthBarCodePrinter != value)
+                {
+                    _maxWidthBarCodePrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthBarCodePrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Ancho Maximo Impresora de Ticket de Cambio")]
-        public int MaxWidthTicketChangePrinter { get; set; }
+        private bool _useContinuousBarCodePrinter;
+        public bool UseContinuousBarCodePrinter
+        {
+            get => _useContinuousBarCodePrinter;
+            set
+            {
+                if (_useContinuousBarCodePrinter != value)
+                {
+                    _useContinuousBarCodePrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousBarCodePrinter));
 
-        [Display(Name = "Usar Papel Continuo Impresora de Ticket de Cambio")]
-        public bool UseContinuousTicketChangePrinter { get; set; }
+                    MaxWidthBarCodePrinter = value ? 80 : 210;
+                }
+            }
+        }
 
+        private bool _enablePrintBarCode;
+        public bool EnablePrintBarCode
+        {
+            get => _enablePrintBarCode;
+            set
+            {
+                if (_enablePrintBarCode != value)
+                {
+                    _enablePrintBarCode = value;
+                    OnPropertyChanged(nameof(EnablePrintBarCode));
+                }
+            }
+        }
 
+        public ObservableCollection<string> InstalledPrintersBarCode { get; set; } = new();
 
+        // ================== Impresora Ticket Cambio ==================
 
-        [Display(Name = "Impresora de Ventas")]
-        public string? SalePrinter { get; set; }
+        private string? _ticketChangePrinter;
+        public string? TicketChangePrinter
+        {
+            get => _ticketChangePrinter;
+            set
+            {
+                if (_ticketChangePrinter != value)
+                {
+                    _ticketChangePrinter = value;
+                    OnPropertyChanged(nameof(TicketChangePrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Ancho Maximo Impresora de Ventas")]
-        public int MaxWidthSalePrinter { get; set; }
+        private int _maxWidthTicketChangePrinter;
+        public int MaxWidthTicketChangePrinter
+        {
+            get => _maxWidthTicketChangePrinter;
+            set
+            {
+                if (_maxWidthTicketChangePrinter != value)
+                {
+                    _maxWidthTicketChangePrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthTicketChangePrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Usar Papel Continuo Impresora de Ventas")]
-        public bool UseContinuousSalePrinter { get; set; }
+        private bool _useContinuousTicketChangePrinter;
+        public bool UseContinuousTicketChangePrinter
+        {
+            get => _useContinuousTicketChangePrinter;
+            set
+            {
+                if (_useContinuousTicketChangePrinter != value)
+                {
+                    _useContinuousTicketChangePrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousTicketChangePrinter));
 
+                    MaxWidthTicketChangePrinter = value ? 80 : 210;
+                }
+            }
+        }
 
+        private bool _enablePrintTicketChange;
+        public bool EnablePrintTicketChange
+        {
+            get => _enablePrintTicketChange;
+            set
+            {
+                if (_enablePrintTicketChange != value)
+                {
+                    _enablePrintTicketChange = value;
+                    OnPropertyChanged(nameof(EnablePrintTicketChange));
+                }
+            }
+        }
 
+        public ObservableCollection<string> InstalledPrintersTicketChange { get; set; } = new();
 
-        [Display(Name = "Usar la misma impresora")]
-        public bool UseAllPrinters { get; set; }
-        public bool EnablePrintInvoice { get; set; }
-        public bool EnablePrintBudget { get; set; }
-        public bool EnablePrintOrder { get; set; }
-        public bool EnablePrintRemit { get; set; }
-        public bool EnablePrintBarCode { get; set; }
-        public bool EnablePrintTicketChange { get; set; }
-        public bool EnablePrintSale { get; set; }
+        // ================== Impresora Venta ==================
 
+        private string? _salePrinter;
+        public string? SalePrinter
+        {
+            get => _salePrinter;
+            set
+            {
+                if (_salePrinter != value)
+                {
+                    _salePrinter = value;
+                    OnPropertyChanged(nameof(SalePrinter));
+                }
+            }
+        }
 
-        [Display(Name = "Punto de venta")]
+        private int _maxWidthSalePrinter;
+        public int MaxWidthSalePrinter
+        {
+            get => _maxWidthSalePrinter;
+            set
+            {
+                if (_maxWidthSalePrinter != value)
+                {
+                    _maxWidthSalePrinter = value;
+                    OnPropertyChanged(nameof(MaxWidthSalePrinter));
+                }
+            }
+        }
+
+        private bool _useContinuousSalePrinter;
+        public bool UseContinuousSalePrinter
+        {
+            get => _useContinuousSalePrinter;
+            set
+            {
+                if (_useContinuousSalePrinter != value)
+                {
+                    _useContinuousSalePrinter = value;
+                    OnPropertyChanged(nameof(UseContinuousSalePrinter));
+
+                    MaxWidthSalePrinter = value ? 80 : 210;
+                }
+            }
+        }
+
+        private bool _enablePrintSale;
+        public bool EnablePrintSale
+        {
+            get => _enablePrintSale;
+            set
+            {
+                if (_enablePrintSale != value)
+                {
+                    _enablePrintSale = value;
+                    OnPropertyChanged(nameof(EnablePrintSale));
+                }
+            }
+        }
+
+        public ObservableCollection<string> InstalledPrintersSale { get; set; } = new();
+
+        // ================== Global ==================
+
+        private bool _useAllPrinters;
+        public bool UseAllPrinters
+        {
+            get => _useAllPrinters;
+            set
+            {
+                if (_useAllPrinters != value)
+                {
+                    _useAllPrinters = value;
+                    OnPropertyChanged(nameof(UseAllPrinters));
+
+                    if (value && !string.IsNullOrEmpty(InvoicePrinter))
+                    {
+                        // aplica la impresora de facturas a todas
+                        RemitPrinter = InvoicePrinter;
+                        BudgetPrinter = InvoicePrinter;
+                        OrderPrinter = InvoicePrinter;
+                        BarCodePrinter = InvoicePrinter;
+                        TicketChangePrinter = InvoicePrinter;
+                        SalePrinter = InvoicePrinter;
+                    }
+                }
+            }
+        }
+
+        public void LoadInstalledPrinters()
+        {
+            InstalledPrintersInvoice.Clear();
+            InstalledPrintersRemit.Clear();
+            InstalledPrintersBudget.Clear();
+            InstalledPrintersOrder.Clear();
+            InstalledPrintersBarCode.Clear();
+            InstalledPrintersTicketChange.Clear();
+            InstalledPrintersSale.Clear();
+
+            foreach (string printer in PrinterSettings.InstalledPrinters)
+            {
+                InstalledPrintersInvoice.Add(printer);
+                InstalledPrintersRemit.Add(printer);
+                InstalledPrintersBudget.Add(printer);
+                InstalledPrintersOrder.Add(printer);
+                InstalledPrintersBarCode.Add(printer);
+                InstalledPrintersTicketChange.Add(printer);
+                InstalledPrintersSale.Add(printer);
+            }
+        }
+
+            [Display(Name = "Punto de venta")]
         public int SalePoint { get; set; }
 
         [Display(Name = "Nombre Pc")]

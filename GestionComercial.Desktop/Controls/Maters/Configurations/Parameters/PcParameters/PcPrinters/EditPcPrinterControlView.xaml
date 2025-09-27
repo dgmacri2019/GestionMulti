@@ -6,465 +6,200 @@
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters.PcPrinters"
              x:Name="miUserControl"
              mc:Ignorable="d"              
-             Loaded="miUserControl_Loaded"
              Background="Gray">
 
 
-    <Canvas Background="LightGray" Margin="80,10,0,0">
+    <Grid x:Name="GridGeneral" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10" 
+          Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Encabezado -->
+            <RowDefinition Height="Auto"/>
+            <!-- Cabecera columnas -->
+            <RowDefinition Height="*"/>
+            <!-- Contenido impresoras -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botones -->
+            <RowDefinition Height="Auto"/>
+            <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
 
         <!-- Encabezado -->
-        <Border x:Name="pnlTitle" Background="#C8C81E" Width="834" Height="70" Canvas.Left="0" Canvas.Top="0">
-            <TextBlock x:Name="lblTitle" 
-                       Text="Configuración de Impresoras"
+        <Border Background="#C8C81E" Height="70" Grid.Row="0" Grid.ColumnSpan="5">
+            <TextBlock Text="Configuración de Impresoras"
                        Foreground="White"
                        FontFamily="Tahoma"
                        FontSize="18"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Left"
                        Margin="10,0,0,0"/>
         </Border>
 
-        <!-- Labels -->
-        <TextBlock x:Name="label1" 
-                   Text="Impresora de Facturas" 
-                   Canvas.Left="13" 
-                   Canvas.Top="120"
-                   Style="{StaticResource BlackNormal12}"/>
-        <TextBlock x:Name="label10" 
-                   Text="Impresora de Notas de Pedido" 
-                   Canvas.Left="13" 
-                   Canvas.Top="180"
-                   Style="{StaticResource BlackNormal12}"/>
-        <TextBlock x:Name="label3" 
-                   Text="Impresora de Presupuestos" 
-                   Canvas.Left="13" 
-                   Canvas.Top="240"
-                   Style="{StaticResource BlackNormal12}"/>
-        <TextBlock x:Name="label7" 
-                   Text="Impresora de Códigos de Barra"                   
-                   Canvas.Left="13" 
-                   Canvas.Top="300"
-                   Style="{StaticResource BlackNormal12}"/>
-        <TextBlock x:Name="label8" 
-                   Text="Impresora de Ticket Cambio" 
-                   Canvas.Left="13" 
-                   Canvas.Top="360"
-                   Style="{StaticResource BlackNormal12}"/>
-        <TextBlock x:Name="label2" 
-                   Text="Impresora de Remitos" 
-                   Canvas.Left="13" 
-                   Canvas.Top="420"
-                   Style="{StaticResource BlackNormal12}"/>
-        <TextBlock x:Name="label4" 
-                   Text="Impresora de Pedidos" 
-                   Canvas.Left="13" 
-                   Canvas.Top="480"
-                   Style="{StaticResource BlackNormal12}"/>
+        <!-- Cabecera columnas -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,5,0,5">
+            <TextBlock Text=" " Width="280" Grid.Column="0"/>
+            <TextBlock Text="¿Es Térmica?"
+                       Width="80" 
+                       Grid.Column="1"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Ancho (mm)" 
+                       Width="80" 
+                       Grid.Column="2"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Habilitar" 
+                       Width="80" 
+                       Grid.Column="3"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="Impresora instalada"  
+                       VerticalAlignment="Center"/>
+            <CheckBox Content="Única Impresora" IsChecked="{Binding UseAllPrinters, Mode=TwoWay}"
+                      VerticalAlignment="Center" Margin="20,0,0,0"/>
+        </StackPanel>
 
-        <!-- Factura -->
-        <TextBox x:Name="txtPrinterInvoice" 
-                 Width="280" 
-                 Height="20" 
-                 Canvas.Left="13" 
-                 Canvas.Top="140" 
-                 IsReadOnly="True"
-                 Text="{Binding InvoicePrinter}"/>
-        <CheckBox x:Name="chbTermalInvoice" 
-                  Canvas.Left="325" 
-                  Canvas.Top="140"
-                  IsChecked="{Binding UseContinuousInvoicePrinter}"
-                  Checked="chbTermalInvoice_CheckedChanged" 
-                  Unchecked="chbTermalInvoice_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthInvoice" 
-                 Width="60" 
-                 Height="20" 
-                 Canvas.Left="383" 
-                 Canvas.Top="140" 
-                 IsEnabled="False"
-                 TextChanged="txtMaxWidthInvoice_TextChanged" 
-                 PreviewTextInput="txtMaxWidthInvoice_KeyPress"
-                 Text="{Binding MaxWidthInvoicePrinter}"/>
-        <CheckBox x:Name="chbEnablePrintInvoice" 
-                  IsChecked="True" 
-                  Canvas.Left="492" 
-                  Canvas.Top="140"/>
-        <ComboBox x:Name="cbInstalledPrintersInvoice" 
-                  Width="211" 
-                  Height="21" 
-                  Canvas.Left="550" 
-                  Canvas.Top="140"
-                  SelectionChanged="cbInstalledPrintersInvoice_SelectedIndexChanged"/>
+        <!-- Contenido impresoras -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10">
 
-        <!-- Nota Pedido / Sale -->
-        <TextBox x:Name="txtPrinterSale" 
-                 Width="280" 
-                 Height="20" 
-                 Canvas.Left="13" 
-                 Canvas.Top="200" 
-                 IsReadOnly="True"
-                 Text="{Binding SalePrinter}"/>
-        <CheckBox x:Name="chbTermalSale" 
-                  Canvas.Left="325" 
-                  Canvas.Top="200" 
-                  IsChecked="{Binding UseContinuousSalePrinter}"
-                  Checked="chbTermalSale_CheckedChanged" 
-                  Unchecked="chbTermalSale_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthSale" 
-                 Width="60"
-                 Height="20"
-                 Canvas.Left="383"
-                 Canvas.Top="200" 
-                 IsEnabled="False"
-                 Text="{Binding MaxWidthSalePrinter}"
-                 PreviewTextInput="txtMaxWidthSale_KeyPress"/>
-        <CheckBox x:Name="chbEnablePrintSale" 
-                  IsChecked="True" 
-                  Canvas.Left="492"
-                  Canvas.Top="200"/>
-        <ComboBox x:Name="cbInstalledPrintersSale" 
-                  Width="211" 
-                  Height="21" 
-                  Canvas.Left="550" 
-                  Canvas.Top="200"
-                  SelectionChanged="cbInstalledPrintersSale_SelectedIndexChanged"/>
+                <!-- Factura -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Facturas" 
+                               Width="280" 
+                               VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousInvoicePrinter}" 
+                              Width="80" 
+                              VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthInvoicePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80"
+                             IsEnabled="{Binding EnablePrintInvoice}" 
+                             Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintInvoice}" 
+                              Width="80"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersInvoice}"
+                              SelectedItem="{Binding InvoicePrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Presupuesto -->
-        <TextBox x:Name="txtPrinterBudget" 
-                 Width="280" 
-                 Height="20" 
-                 Canvas.Left="13"
-                 Canvas.Top="260" 
-                 IsReadOnly="True"
-                 Text="{Binding BudgetPrinter}"/>
-        <CheckBox x:Name="chbTermalBudget" 
-                  Canvas.Left="325" 
-                  Canvas.Top="260" 
-                  IsChecked="{Binding UseContinuousBudgetPrinter}"
-                  Checked="chbTermalBudget_CheckedChanged" 
-                  Unchecked="chbTermalBudget_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthBudget" 
-                 Width="60" 
-                 Height="20" 
-                 Canvas.Left="383" 
-                 Canvas.Top="260" 
-                 IsEnabled="False"
-                 Text="{Binding MaxWidthBudgetPrinter}"
-                 PreviewTextInput="txtMaxWidthBudget_KeyPress"/>
-        <CheckBox x:Name="chbEnablePrintBudget" 
-                  IsChecked="True" 
-                  Canvas.Left="492" 
-                  Canvas.Top="260"/>
-        <ComboBox x:Name="cbInstalledPrintersBudget" 
-                  Width="211" 
-                  Height="21" 
-                  Canvas.Left="550" 
-                  Canvas.Top="260"
-                  SelectionChanged="cbInstalledPrintersBudget_SelectedIndexChanged"/>
+                <!-- Nota Pedido / Sale -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Notas de Pedido" Width="280" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousSalePrinter}" Width="80" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthSalePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80" IsEnabled="{Binding EnablePrintSale}" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintSale}" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersSale}"
+                              SelectedItem="{Binding SalePrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Códigos de Barra -->
-        <TextBox x:Name="txtPrinterBarCode"
-                 Width="280" 
-                 Height="20" 
-                 Canvas.Left="13"
-                 Canvas.Top="320" 
-                 IsReadOnly="True"
-                 Text="{Binding BarCodePrinter}"/>
-        <CheckBox x:Name="chbTermalBarCode" 
-                  Canvas.Left="325" 
-                  Canvas.Top="320" 
-                  IsChecked="{Binding UseContinuousBarCodePrinter}"
-                  Checked="chbTermalBarCode_CheckedChanged" 
-                  Unchecked="chbTermalBarCode_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthBarCode" 
-                 Width="60" 
-                 Height="20"
-                 Canvas.Left="383" 
-                 Canvas.Top="320"
-                 IsEnabled="False"
-                 Text="{Binding MaxWidthBarCodePrinter}"
-                 PreviewTextInput="txtMaxWidthBarCode_KeyPress"/>
-        <CheckBox x:Name="chbEnablePrintBarCode" 
-                  IsChecked="True" 
-                  Canvas.Left="492" 
-                  Canvas.Top="320"/>
-        <ComboBox x:Name="cbInstalledPrintersBarCode" 
-                  Width="211" Height="21" 
-                  Canvas.Left="550"
-                  Canvas.Top="320"
-                  SelectionChanged="cbInstalledPrintersBarCode_SelectedIndexChanged"/>
+                <!-- Presupuesto -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Presupuestos" Width="280" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousBudgetPrinter}" Width="80" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthBudgetPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80" IsEnabled="{Binding EnablePrintBudget}" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintBudget}" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersBudget}"
+                              SelectedItem="{Binding BudgetPrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Ticket Cambio -->
-        <TextBox x:Name="txtPrinterTicketChange" 
-                 Width="280" 
-                 Height="20" 
-                 Canvas.Left="13"
-                 Canvas.Top="380" 
-                 IsReadOnly="True"
-                 Text="{Binding TicketChangePrinter}"/>
-        <CheckBox x:Name="chbTermalTicketChange" 
-                  Canvas.Left="325" 
-                  Canvas.Top="380" 
-                  IsChecked="{Binding UseContinuousTicketChangePrinter}"
-                  Checked="chbTermalTicketChange_CheckedChanged" 
-                  Unchecked="chbTermalTicketChange_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthTicketChange" 
-                 Width="60" 
-                 Height="20" 
-                 Canvas.Left="383" 
-                 Canvas.Top="380" 
-                 Text="{Binding MaxWidthTicketChangePrinter}"
-                 IsEnabled="False"
-                 PreviewTextInput="txtMaxWidthTicketChange_KeyPress"/>
-        <CheckBox x:Name="chbEnablePrintTicketChange" 
-                  IsChecked="True" 
-                  Canvas.Left="492" 
-                  Canvas.Top="380"/>
-        <ComboBox x:Name="cbInstalledPrintersTicketChange"
-                  Width="211" 
-                  Height="21"
-                  Canvas.Left="550" 
-                  Canvas.Top="380"
-                  SelectionChanged="cbInstalledPrintersTicketChange_SelectedIndexChanged"/>
+                <!-- Códigos de Barra -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Códigos de Barra" Width="280" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousBarCodePrinter}" Width="80" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthBarCodePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80" IsEnabled="{Binding EnablePrintBarCode}" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintBarCode}" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersBarCode}"
+                              SelectedItem="{Binding BarCodePrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Remitos -->
-        <TextBox x:Name="txtPrinterRemit"
-                 Width="280" 
-                 Height="20"
-                 Canvas.Left="13"
-                 Canvas.Top="440" 
-                 IsReadOnly="True"/>
-        <CheckBox x:Name="chbTermalRemit" 
-                  Canvas.Left="325" 
-                  Canvas.Top="440" 
-                  Checked="chbTermalRemit_CheckedChanged"
-                  Unchecked="chbTermalRemit_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthRemit"
-                 Width="60" Height="20" 
-                 Canvas.Left="383" 
-                 Canvas.Top="440" 
-                 IsEnabled="False"
-                 PreviewTextInput="txtMaxWidthRemit_KeyPress"/>
-        <CheckBox x:Name="chbEnablePrintRemit" 
-                  IsChecked="True" 
-                  Canvas.Left="492" 
-                  Canvas.Top="440"/>
-        <ComboBox x:Name="cbInstalledPrintersRemit" 
-                  Width="211" 
-                  Height="21" 
-                  Canvas.Left="550" 
-                  Canvas.Top="440"
-                  SelectionChanged="cbInstalledPrintersRemit_SelectedIndexChanged"/>
+                <!-- Ticket Cambio -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Ticket Cambio" Width="280" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousTicketChangePrinter}" Width="80" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthTicketChangePrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80" IsEnabled="{Binding EnablePrintTicketChange}" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintTicketChange}" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersTicketChange}"
+                              SelectedItem="{Binding TicketChangePrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Pedidos -->
-        <TextBox x:Name="txtPrinterOrder" 
-                 Width="280" 
-                 Height="20" 
-                 Canvas.Left="13"
-                 Canvas.Top="500" 
-                 IsReadOnly="True"/>
-        <CheckBox x:Name="chbTermalOrder" 
-                  Canvas.Left="325" 
-                  Canvas.Top="500" 
-                  Checked="chbTermalOrder_CheckedChanged" 
-                  Unchecked="chbTermalOrder_CheckedChanged"/>
-        <TextBox x:Name="txtMaxWidthOrder" 
-                 Width="60" 
-                 Height="20" 
-                 Canvas.Left="383" 
-                 Canvas.Top="500" 
-                 IsEnabled="False"
-                 PreviewTextInput="txtMaxWidthOrder_KeyPress"/>
-        <CheckBox x:Name="chbEnablePrintOrder" 
-                  IsChecked="True" 
-                  Canvas.Left="492"
-                  Canvas.Top="500"/>
-        <ComboBox x:Name="cbInstalledPrintersOrder" 
-                  Width="211" 
-                  Height="21" 
-                  Canvas.Left="550" 
-                  Canvas.Top="500"
-                  SelectionChanged="cbInstalledPrintersOrder_SelectedIndexChanged"/>
+                <!-- Remitos -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Remitos" Width="280" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousRemitPrinter}" Width="80" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthRemitPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80" IsEnabled="{Binding EnablePrintRemit}" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintRemit}" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersRemit}"
+                              SelectedItem="{Binding RemitPrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Labels de encabezados -->
-        <TextBlock Text="¿Es Térmica?" 
-                   FontFamily="Arial" 
-                   FontSize="10" 
-                   Canvas.Left="300" 
-                   Canvas.Top="95"/>
-        <TextBlock Text="Ancho (mm)" 
-                   FontFamily="Arial" 
-                   FontSize="10"
-                   Canvas.Left="380" 
-                   Canvas.Top="95"/>
-        <TextBlock Text="Habilitar Impresión" 
-                   FontFamily="Arial" 
-                   FontSize="10" 
-                   Canvas.Left="460" 
-                   Canvas.Top="95"/>
+                <!-- Pedidos -->
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Impresora de Pedidos" Width="280" VerticalAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding UseContinuousOrderPrinter}" Width="80" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding MaxWidthOrderPrinter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="80" IsEnabled="{Binding EnablePrintOrder}" Margin="0,0,5,0"/>
+                    <CheckBox IsChecked="{Binding EnablePrintOrder}" Width="80" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding InstalledPrintersOrder}"
+                              SelectedItem="{Binding OrderPrinter, Mode=TwoWay}"
+                              Width="200"/>
+                </StackPanel>
 
-        <!-- Check general -->
-        <CheckBox x:Name="chbAllPrinters" 
-                  Content="Única Impresora" 
-                  FontFamily="Arial"
-                  FontSize="10" 
-                  Canvas.Left="610" 
-                  Canvas.Top="90"
-                  Checked="chbAllPrinters_CheckedChanged" 
-                  Unchecked="chbAllPrinters_CheckedChanged"/>
+            </StackPanel>
+        </ScrollViewer>
 
-        <!-- Footer -->
-        <StackPanel Orientation="Horizontal" 
-                    HorizontalAlignment="Center"
-                    Canvas.Left="150" 
-                    Canvas.Top="550" 
-                    Width="834" 
-                    Height="100" 
-                    Background="Transparent">
-            
-            <Label x:Name="lblError" 
-                   Foreground="Red" 
-                   Visibility="Collapsed" 
-                   Width="300" 
-                   VerticalAlignment="Center"/>
-            
-            <Label x:Name="lblConfirm" 
-                   Foreground="Green" 
-                   Visibility="Collapsed" 
-                   Width="300" 
-                   VerticalAlignment="Center"/>
-            
-            <Button x:Name="btnCancel" 
+        <!-- Botones -->        
+            <Button x:Name="btnCancel"
                     Content="Cerrar"
+                    Grid.Row="3"
+                    Grid.Column="0" 
                     HorizontalAlignment="Center"
-                    Width="160" 
-                    Height="40" 
-                    Margin="0,40,150,0"
-                    Click="BtnCancel_Click"
+                    VerticalAlignment="Center"
+                    Grid.ColumnSpan="5"
+                    Margin="0,40,120,0" 
+                    Click="BtnCancel_Click" 
                     Style="{StaticResource BtnCancel}"/>
-            
+
             <Button x:Name="btnUpdate" 
                     Content="Guardar" 
-                    Margin="0,40,150,0"
+                    Grid.Row="3"
+                    Grid.Column="0" 
                     HorizontalAlignment="Center"
-                    Width="160" 
-                    Height="40" 
-                    Click="BtnUpdate_Click"
+                    VerticalAlignment="Center"
+                    Grid.ColumnSpan="5"
+                    Margin="120,40,0,0" 
+                    Click="BtnUpdate_Click" 
                     Style="{StaticResource BtnUpdate}"/>
-        </StackPanel>
-    </Canvas>
 
-    <!--<Grid x:Name="GridGeneral" 
-          HorizontalAlignment="Center" 
-          VerticalAlignment="Stretch" 
-          Margin="10" 
-          Background="LightGray">
-
-        --><!-- Fijamos todas las filas en Auto para que crezcan según contenido
-     (si usás "*", el Grid intenta encajar todo y no aparece el scroll) --><!--
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-
-        </Grid.RowDefinitions>
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Orientation="Vertical" 
-                    HorizontalAlignment="Stretch" 
-                    Grid.Row="0" 
-                    Grid.Column="0" 
-                    Margin="10,0,0,8">
-            <TextBlock Text="Nombre Pc" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"                      
-                       Style="{StaticResource BlueBold10}"/>
-            <TextBox x:Name="txtPcName"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     VerticalAlignment="Center"
-                     IsReadOnly="True"
-                     Text="{Binding ComputerName}"/>
-        </StackPanel>
-
-        <StackPanel Orientation="Vertical" 
-                    HorizontalAlignment="Stretch" 
-                    Grid.Row="0"                    
-                    Grid.Column="1"                   
-                    Margin="10,0,0,8">
-            <TextBlock Text="Punto de Venta" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center"
-                       Style="{StaticResource BlueBold10}"/>
-            <TextBox x:Name="txtSalePoint"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="150"
-                     VerticalAlignment="Center" 
-                     IsReadOnly="True"
-                     MaxLength="5"
-                     Text="{Binding SalePoint, StringFormat={}{0:00000}}"/>
-        </StackPanel>
-
-        <StackPanel Orientation="Vertical" 
-                    HorizontalAlignment="Stretch" 
-                    Grid.Row="1" 
-                    Grid.Column="0" 
-                    Margin="10,0,0,8">
-            <TextBlock Text="Impresora de Facturas" 
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"                      
-                       Style="{StaticResource BlueBold10}"/>
-            <TextBox x:Name="txtInvoicePrinter"
-                     Style="{StaticResource TextBoxSearch}"
-                     Width="auto"
-                     MinWidth="150"
-                     VerticalAlignment="Center"
-                     IsReadOnly="True"
-                     Text="{Binding InvoicePrinter}"/>
-        </StackPanel>
-
-
-
-        <Button x:Name="btnCancel"
-            Grid.Row="10" 
-            Grid.ColumnSpan="4"
-                HorizontalAlignment="Center"
-            Content="Cerrar"
-            Margin="0,40,150,0" 
-            Click="BtnCancel_Click"
-            Style="{StaticResource BtnCancel}"/>
-
-        <Button x:Name="btnUpdate"
-                Grid.Row="10" 
-                Grid.ColumnSpan="4"   
-                HorizontalAlignment="Center"
-                Content="Guardar" 
-                Margin="150,40,0,0"  
-                Click="BtnUpdate_Click"
-                Style="{StaticResource BtnUpdate}"/>
-
+        <!-- Footer -->
         <TextBlock x:Name="lblError"
-               Grid.Row="11" 
-               Grid.ColumnSpan="4"
-               Style="{StaticResource lblError}"
-               TextWrapping="Wrap"/>
+                   Grid.Row="5" 
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Stretch"
+                   Style="{StaticResource lblError12}"
+                   TextWrapping="Wrap"/>
 
-    </Grid>-->
+        <TextBlock x:Name="lblConfirm" 
+                   Grid.Row="5" 
+                   Grid.ColumnSpan="3"
+                   HorizontalAlignment="Stretch"
+                   Style="{StaticResource lblConfirm12}"/>
+    </Grid>
 </UserControl>
+
