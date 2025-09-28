@@ -178,7 +178,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 if (currentItem == null) return;
                 if (string.IsNullOrWhiteSpace(currentItem.Code) && !string.IsNullOrEmpty(currentItem.Description))
                 {
-                    MessageBox.Show("Código de artículo vacio", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MsgBoxAlertHelper.MsgAlertError("Código de artículo vacio");
                     // ✅ Poner foco en la celda Código
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -203,7 +203,9 @@ namespace GestionComercial.Desktop.Views.Sales
                 // Si cambió el código, buscar artículo
                 if (e.Column.Header.ToString() == "Código" && !string.IsNullOrWhiteSpace(currentItem.Code))
                 {
-                    bool isProductWeight = currentItem.Code.Length > 2 && currentItem.Code.Substring(0, 2) == "20" && currentItem.Code.Length > 8;
+                    bool isProductWeight = currentItem.Code.Length > 2 &&
+                        currentItem.Code.Substring(0, 2) == ParameterCache.Instance.GetGeneralParameter().WeightIdentificator
+                        && currentItem.Code.Length > 8;
                     decimal quantity = 1m;
 
                     ArticleViewModel? article = isProductWeight ?
@@ -215,7 +217,7 @@ namespace GestionComercial.Desktop.Views.Sales
                     {
                         if (article.IsDeleted)
                         {
-                            MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MsgBoxAlertHelper.MsgAlertError("Artículo Eliminado");
                             Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 var dataGrid = (DataGrid)sender;
@@ -234,7 +236,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         }
                         if (!article.IsEnabled)
                         {
-                            MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MsgBoxAlertHelper.MsgAlertError("Artículo no habilitado para la venta");
                             Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 var dataGrid = (DataGrid)sender;
@@ -253,7 +255,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         }
                         if (article.SalePrice == 0 || article.SalePriceWithTaxes == 0)
                         {
-                            MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MsgBoxAlertHelper.MsgAlertError("Artículo sin precio de venta");
                             return;
                         }
                         var priceLists = article.PriceLists;
@@ -320,7 +322,7 @@ namespace GestionComercial.Desktop.Views.Sales
                     }
                     else
                     {
-                        MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MsgBoxAlertHelper.MsgAlertError("Artículo no encontrado.");
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             var dataGrid = (DataGrid)sender;
@@ -350,7 +352,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                     if (priceListId == 0)
                     {
-                        MessageBox.Show("La lista de precios no puede ser 0", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MsgBoxAlertHelper.MsgAlertError("La lista de precios no puede ser 0");
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             var dataGrid = (DataGrid)sender;
@@ -371,7 +373,7 @@ namespace GestionComercial.Desktop.Views.Sales
 
                     if (article != null && !article.PriceLists.Any(pl => pl.Id == priceListId))
                     {
-                        MessageBox.Show($"La lista de precios {priceListId}, no existe para este producto", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MsgBoxAlertHelper.MsgAlertError($"La lista de precios {priceListId}, no existe para este producto");
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             var dataGrid = (DataGrid)sender;
@@ -445,7 +447,7 @@ namespace GestionComercial.Desktop.Views.Sales
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxAlertHelper.MsgAlertError($"Error: {ex.Message}");
 
             }
         }
@@ -469,7 +471,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         {
                             if (selectedArticle.SalePrice == 0 || selectedArticle.SalePriceWithTaxes == 0)
                             {
-                                MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo sin precio de venta");
                                 return;
                             }
                             int priceListId = Convert.ToInt32(cbPriceLists.SelectedValue);
@@ -535,9 +537,20 @@ namespace GestionComercial.Desktop.Views.Sales
                 {
                     txtFansatyName.Text = string.IsNullOrEmpty(client.FantasyName) ? client.BusinessName : client.FantasyName;
                     txtAddress.Text = $"{client.Address}\n{client.City}, {client.State}\nC.P.{client.PostalCode}";
-                    txtEmail.Text = !string.IsNullOrEmpty(client.Email) ? client.Email : string.Empty;
-                    chSendEmail.IsChecked = !string.IsNullOrEmpty(client.Email);
 
+                    if (ParameterCache.Instance.GetEmailParameter() != null
+                        && ParameterCache.Instance.GetEmailParameter().IsEnabled)
+                    {
+                        txtEmail.IsEnabled = true;
+                        chSendEmail.IsEnabled = true;
+                        txtEmail.Text = !string.IsNullOrEmpty(client.Email) ? client.Email : string.Empty;
+                        chSendEmail.IsChecked = !string.IsNullOrEmpty(client.Email);
+                    }
+                    else
+                    {
+                        txtEmail.IsEnabled = false;
+                        chSendEmail.IsEnabled = false;
+                    }
                     cbPriceLists.ItemsSource = client.PriceLists;
                     cbPriceLists.SelectedValue = client.PriceListId;
 
@@ -550,7 +563,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 }
                 else
                 {
-                    MessageBox.Show("El código informado no existe", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MsgBoxAlertHelper.MsgAlertError("El código informado no existe");
                     dgArticles.Visibility = Visibility.Hidden;
                     dgPostMethod.Visibility = Visibility.Hidden;
                 }
@@ -599,7 +612,7 @@ namespace GestionComercial.Desktop.Views.Sales
                     string code = txtBarcode.Text.Trim();
                     if (!string.IsNullOrEmpty(code))
                     {
-                        bool isProductWeight = code.Length > 2 && code.Substring(0, 2) == "20" && code.Length > 8;
+                        bool isProductWeight = code.Length > 2 && code.Substring(0, 2) == ParameterCache.Instance.GetGeneralParameter().WeightIdentificator && code.Length > 8;
                         decimal quantity = 1m;
 
                         ArticleViewModel? article = isProductWeight ?
@@ -609,20 +622,19 @@ namespace GestionComercial.Desktop.Views.Sales
 
                         if (article != null)
                         {
-                            //isProductWeight = article.IsWeight && code.Length > 8;
                             if (article.IsDeleted)
                             {
-                                MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo Eliminado");
                                 return;
                             }
                             if (!article.IsEnabled)
                             {
-                                MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo no habilitado para la venta");
                                 return;
                             }
                             if (article.SalePrice == 0 || article.SalePriceWithTaxes == 0)
                             {
-                                MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo sin precio de venta");
                                 return;
                             }
                             var priceLists = article.PriceLists;
@@ -646,9 +658,11 @@ namespace GestionComercial.Desktop.Views.Sales
 
 
                             // Verificar si el artículo ya está en la grilla
-                            ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
+                            ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code
+                                                                                 && x.PriceListId == priceListId);
 
-                            if (existingItem != null && ParameterCache.Instance.GetGeneralParameter().SumQuantityItems && !isProductWeight)
+                            if (existingItem != null && ParameterCache.Instance.GetGeneralParameter().SumQuantityItems
+                                && !isProductWeight)
                             {
                                 // Ya existe → solo aumentar la cantidad
                                 existingItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;
@@ -708,7 +722,7 @@ namespace GestionComercial.Desktop.Views.Sales
                         }
                         else
                         {
-                            MessageBox.Show("Artículo no encontrado.", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MsgBoxAlertHelper.MsgAlertError("Artículo no encontrado.");
                         }
                         // limpiar el textbox y volver a enfocarlo
                         txtBarcode.Clear();
@@ -726,17 +740,17 @@ namespace GestionComercial.Desktop.Views.Sales
                             //isProductWeight = article.IsWeight && code.Length > 8;
                             if (article.IsDeleted)
                             {
-                                MessageBox.Show("Artículo Eliminado", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo Eliminado");
                                 return;
                             }
                             if (!article.IsEnabled)
                             {
-                                MessageBox.Show("Artículo no habilitado para la venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo no habilitado para la venta");
                                 return;
                             }
                             if (article.SalePrice == 0 || article.SalePriceWithTaxes == 0)
                             {
-                                MessageBox.Show("Artículo sin precio de venta", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MsgBoxAlertHelper.MsgAlertError("Artículo sin precio de venta");
                                 return;
                             }
 
@@ -801,7 +815,7 @@ namespace GestionComercial.Desktop.Views.Sales
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxAlertHelper.MsgAlertError($"Error: {ex.Message}");
 
             }
         }
@@ -843,14 +857,14 @@ namespace GestionComercial.Desktop.Views.Sales
         private void BtnBuscar_Click(object sender, RoutedEventArgs e)
         {
             // lógica buscar
-            MessageBox.Show("Buscar...");
+            MsgBoxAlertHelper.MsgAlertError("Buscar...");
         }
 
 
         private void BtnImprimir_Click(object sender, RoutedEventArgs e)
         {
             // lógica imprimir
-            MessageBox.Show("Imprimiendo...");
+            MsgBoxAlertHelper.MsgAlertError("Imprimiendo...");
         }
 
 
@@ -1065,7 +1079,7 @@ namespace GestionComercial.Desktop.Views.Sales
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
 
             }
             dpDate.SelectedDate = DateTime.Now;

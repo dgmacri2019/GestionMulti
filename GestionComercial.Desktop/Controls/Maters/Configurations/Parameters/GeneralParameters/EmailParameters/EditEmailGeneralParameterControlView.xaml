@@ -4,9 +4,231 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.GeneralParameters.EmailParameters"
+             x:Name="miUserControl"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             Background="Gray">
+    <Grid x:Name="GridGeneral" 
+      HorizontalAlignment="Center"
+      VerticalAlignment="Stretch" 
+      Margin="10" 
+      Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Encabezado -->
+            <RowDefinition Height="Auto"/>
+            <!-- Cabecera columnas -->
+            <RowDefinition Height="*"/>
+            <!-- Contenido impresoras -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botones -->
+            <RowDefinition Height="Auto"/>
+            <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado -->
+        <StackPanel Background="#C8C81E" Height="70" Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Configuración de Parametros De Email"
+               Foreground="White"
+               FontFamily="Tahoma"
+               FontSize="18"
+               VerticalAlignment="Center"
+               Margin="10,0,0,0"/>
+        </StackPanel>
+
+        <!-- Cabecera columnas -->
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+
+            <StackPanel Orientation="Vertical"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="10">
+                <TextBlock Text="Servidor de Salida (SMTP)"  
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,0"
+                           Style="{StaticResource BlueBold12}"/>
+                <TextBox Text="{Binding AddressServer}" 
+                         Margin="0,8,0,0"
+                         Width="250"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" 
+                        Grid.Row="1" 
+                        Grid.Column="0"
+                        Margin="10">
+                <TextBlock Text="Nombre de usuario" 
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,0"
+                       Style="{StaticResource BlueBold12}"/>
+                <TextBox Text="{Binding UserName}" 
+                         Margin="0,8,0,0"
+                         Width="250"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Stretch" 
+                        Grid.Row="2" 
+                        Grid.Column="0" 
+                        Margin="10">
+                <TextBlock Text="Password" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold12}"/>
+                <TextBox Text="{Binding Password}" 
+                         Margin="0,8,0,0"
+                         Width="250"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Stretch" 
+                        Grid.Row="0" 
+                        Grid.Column="1" 
+                        Margin="10">
+                <TextBlock Text="Remitente" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource BlueBold12}"/>
+                <TextBox Text="{Binding FromName}" 
+                         Margin="0,8,0,0"
+                         Width="250"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Stretch" 
+                        Grid.Row="1" 
+                        Grid.Column="1" 
+                        Margin="10">
+                <TextBlock Text="Responder A" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource BlueBold12}"/>
+                <TextBox Text="{Binding RaplyTo}" 
+                         Margin="0,8,0,0"
+                         Width="250"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
             
+
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Stretch" 
+                        Grid.Row="0" 
+                        Grid.Column="2" 
+                        Margin="10">
+                <TextBlock Text="Puerto" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource BlueBold12}"/>
+                <TextBox Text="{Binding SMTPPort}" 
+                         Margin="0,8,0,0"
+                         Width="80"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Stretch" 
+                        Grid.Row="1" 
+                        Grid.Column="2" 
+                        Margin="10">
+                <TextBlock Text="Usar SSL" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource BlueBold12}"/>
+                <CheckBox IsChecked="{Binding UseSSL}" 
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="0,8,0,0"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" 
+                        HorizontalAlignment="Stretch" 
+                        Grid.Row="2" 
+                        Grid.Column="1" 
+                        Grid.ColumnSpan="2"
+                        Margin="10">
+                <TextBlock Text="Habilitar Servicio" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource BlueBold12}"/>
+                <CheckBox IsChecked="{Binding IsEnabled}" 
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="0,8,0,0"/>
+            </StackPanel>
+
+
+
+           
+
+
+
+        </Grid>
+
+
+        <!-- Botones -->
+        <Button x:Name="btnCancel"
+                Content="Cerrar"
+                Grid.Row="2"
+                Grid.Column="0" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.ColumnSpan="5"
+                Margin="0,40,120,0" 
+                Click="BtnCancel_Click" 
+                Style="{StaticResource BtnCancel}"/>
+
+        <Button x:Name="btnUpdate" 
+                Content="Guardar" 
+                Grid.Row="2"                
+                Grid.Column="0" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.ColumnSpan="5"
+                Margin="120,40,0,0" 
+                Click="BtnUpdate_Click" 
+                Style="{StaticResource BtnUpdate}"/>
+
+        <!-- Footer -->
+        <TextBlock x:Name="lblError"
+                   Grid.Row="3" 
+                   Grid.ColumnSpan="5"
+                   HorizontalAlignment="Stretch"
+                   Style="{StaticResource lblError12}"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock x:Name="lblConfirm" 
+                   Grid.Row="3" 
+                   Grid.ColumnSpan="5"
+                   HorizontalAlignment="Stretch"
+                   Style="{StaticResource lblConfirm12}"/>
     </Grid>
 </UserControl>

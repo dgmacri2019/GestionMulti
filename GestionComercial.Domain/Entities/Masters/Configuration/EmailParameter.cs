@@ -13,7 +13,7 @@ namespace GestionComercial.Domain.Entities.Masters.Configuration
         [Display(Name = "User SSL")]
         public bool UseSSL { get; set; }
 
-        [Display(Name = "Number de usuario")]
+        [Display(Name = "Nombre de usuario")]
         public string UserName { get; set; }
 
         [Display(Name = "Password")]

@@ -1,6 +1,4 @@
-﻿using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.DTOs.Stock;
-using GestionComercial.Domain.Entities.Masters;
+﻿using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
@@ -9,10 +7,10 @@ namespace GestionComercial.Domain.Cache
 {
     public class ArticleCache : ICache
     {
-        private static ArticleCache _instance;
+        private static ArticleCache? _instance;
         public static ArticleCache Instance => _instance ??= new ArticleCache();
 
-        private List<ArticleViewModel> _articles;
+        private List<ArticleViewModel?>? _articles;
 
         public static bool Reading { get; set; } = false;
         public static bool ReadingOk { get; set; } = false;
@@ -21,11 +19,11 @@ namespace GestionComercial.Domain.Cache
             CacheManager.Register(this);
         }
 
-        public List<ArticleViewModel> GetAll()
+        public List<ArticleViewModel?>? GetAll()
         {
             return _articles;
         }
-        public List<ArticleViewModel> Search(string name, bool isEnabled, bool isDeleted)
+        public List<ArticleViewModel?> Search(string name, bool isEnabled, bool isDeleted)
         {
             return _articles != null ? _articles
                 .Where(a => a.IsEnabled == isEnabled && a.IsDeleted == isDeleted
@@ -36,11 +34,11 @@ namespace GestionComercial.Domain.Cache
                 :
                 [];
         }
-        public void Set(List<ArticleViewModel> articles)
+        public void Set(List<ArticleViewModel?> articles)
         {
             _articles = articles;
         }
-        public void Set(ArticleViewModel article)
+        public void Set(ArticleViewModel? article)
         {
             try
             {
@@ -114,7 +112,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        
+
         public ArticleResponse GenerateNewBarCode()
         {
             try
@@ -169,7 +167,7 @@ namespace GestionComercial.Domain.Cache
             }
         }
 
-        
+
 
 
 
@@ -216,6 +214,6 @@ namespace GestionComercial.Domain.Cache
             }
         }
 
-        
+
     }
 }
