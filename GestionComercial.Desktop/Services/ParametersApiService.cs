@@ -8,7 +8,6 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Windows;
-using System.Xml.Linq;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -21,6 +20,7 @@ namespace GestionComercial.Desktop.Services
         {
             PropertyNameCaseInsensitive = true
         };
+
         public ParametersApiService()
         {
             _apiService = new ApiService();
@@ -28,25 +28,26 @@ namespace GestionComercial.Desktop.Services
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
         }
 
-        internal async Task<List<GeneralParameter>> GetAllGeneralParametersAsync()
+
+
+        internal async Task<GeneralParameter?> GetGeneralParameterAsync()
         {
             try
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetAllGeneralParametersAsync", new
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetGeneralParameterAsync", new
                 {
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
                 });
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-
+                if (string.IsNullOrEmpty(jsonResponse))
+                    return null;
                 if (response.IsSuccessStatusCode)
                 {
-                    List<GeneralParameter>? generalParameters = JsonSerializer.Deserialize<List<GeneralParameter>>(jsonResponse, Options);
-
-                    return generalParameters;
+                    return JsonSerializer.Deserialize<GeneralParameter?>(jsonResponse, Options);
                 }
                 else
                 {
@@ -61,6 +62,30 @@ namespace GestionComercial.Desktop.Services
                 throw;
             }
         }
+
+        internal async Task<GeneralResponse> UpdateGeneralParameterAsync(GeneralParameter generalParameter)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdateGeneralParameterAsync", generalParameter);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
 
         internal async Task<List<PcSalePointsListViewModel>> GetAllPcParametersAsync()
         {
@@ -96,8 +121,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-
-        internal async Task<PcParameter> GetPcParameterAsync(string pcName)
+        internal async Task<PcParameter?> GetPcParameterAsync(string pcName)
         {
             try
             {
@@ -110,14 +134,13 @@ namespace GestionComercial.Desktop.Services
                 });
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-
+                if (string.IsNullOrEmpty(jsonResponse))
+                    return null;
                 if (response.IsSuccessStatusCode)
                 {
 
-                    PcParameter? pcParameter = JsonSerializer.Deserialize<PcParameter>(jsonResponse, Options);
+                    return JsonSerializer.Deserialize<PcParameter?>(jsonResponse, Options);
 
-
-                    return pcParameter;
                 }
                 else
                 {
@@ -171,7 +194,6 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-
         internal async Task<GeneralResponse> UpdatePcParameterAsync(PcParameter pcParameter)
         {
             try
@@ -194,6 +216,7 @@ namespace GestionComercial.Desktop.Services
                 };
             }
         }
+
 
 
         internal async Task<List<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync()
@@ -267,6 +290,64 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
                 var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdatePcPrinterParameterAsync", printerParameter);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+
+
+        internal async Task<EmailParameter?> GetEmailParameterAsync()
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetEmailParamaterAsync", new
+                {
+                    //PcName = pcName,
+                    //IsEnabled = isEnabled,
+                });
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(jsonResponse))
+                    return null;
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonSerializer.Deserialize<EmailParameter?>(jsonResponse, Options);
+                }
+                else
+                {
+                    // Manejo de error
+                    MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
+                return null;
+            }
+        }
+
+        internal async Task<GeneralResponse> UpdateEmailParameterAsync(EmailParameter emailParameter)
+        {
+            try
+            {
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdateEmailParameterAsync", emailParameter);
                 var error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {

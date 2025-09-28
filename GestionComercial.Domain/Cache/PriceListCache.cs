@@ -7,7 +7,7 @@ namespace GestionComercial.Domain.Cache
         private static PriceListCache? _instance;
         public static PriceListCache Instance => _instance ??= new PriceListCache();
 
-        private List<PriceListViewModel> _priceLists;
+        private List<PriceListViewModel?> _priceLists;
         public static bool Reading { get; set; } = false;
 
         public bool HasData => _priceLists != null && _priceLists.Any() && !Reading;
@@ -18,11 +18,11 @@ namespace GestionComercial.Domain.Cache
         }
 
 
-        public List<PriceListViewModel> GetAll()
+        public List<PriceListViewModel?> GetAll()
         {
             return _priceLists.OrderBy(c => c.Description).ToList();
         }
-        public List<PriceListViewModel> Search(string name, bool isEnabled, bool isDeleted)
+        public List<PriceListViewModel?> Search(string name, bool isEnabled, bool isDeleted)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Set(List<PriceListViewModel> categories)
+        public void Set(List<PriceListViewModel?> categories)
         {
             try
             {

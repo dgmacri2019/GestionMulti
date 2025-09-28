@@ -90,11 +90,11 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
         // 🔹 Carga clientes aplicando filtros
         public async Task LoadParametersAsync()
         {
-            if (!ParameterCache.Instance.HasDataGeneralParameters)
+            if (!ParameterCache.Instance.HasDataGeneralParameter)
             {
                 ParameterCache.Reading = true;
-                List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
-                ParameterCache.Instance.SetGeneralParameters(generalParameters);
+                GeneralParameter? generalParameter = await _parametersApiService.GetGeneralParameterAsync();
+                ParameterCache.Instance.SetGeneralParameter(generalParameter);
                 ParameterCache.Reading = false;
             }
             if (!ParameterCache.Instance.HasDataPCParameters)
@@ -108,13 +108,26 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
             if (!ParameterCache.Instance.HasDataPcPrinterParameters)
             {
                 ParameterCache.Reading = true;
-                PcPrinterParametersListViewModel? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
-                ParameterCache.Instance.SetPrinterParameter(printerParameter);
                 List<PcPrinterParametersListViewModel> printerParameters = await _parametersApiService.GetAllPcPrinterParametersAsync();
                 ParameterCache.Instance.SetPrinterParameters(printerParameters);
                 ParameterCache.Reading = false;
             }
+            if(!ParameterCache.Instance.HasDataPcPrinterParameter)
+            {
+                ParameterCache.Reading = true;
+                PcPrinterParametersListViewModel? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
+                ParameterCache.Instance.SetPrinterParameter(printerParameter);
+                ParameterCache.Reading = false;
+            }
+            if(!ParameterCache.Instance.HasDataEmailParameter)
+            {
+                ParameterCache.Reading = true;
+                EmailParameter? emailParameter = await _parametersApiService.GetEmailParameterAsync();
+                ParameterCache.Instance.SetEmailParameter(emailParameter);
+                ParameterCache.Reading = false;
+            }
 
+            
 
             List<PcSalePointsListViewModel> salePoints = await _parametersApiService.GetAllPcParametersAsync();
             List<PcPrinterParametersListViewModel> pcPrinterParameters = await _parametersApiService.GetAllPcPrinterParametersAsync();
@@ -128,24 +141,26 @@ namespace GestionComercial.Desktop.ViewModels.Parameter
                 foreach (var x in pcPrinterParameters)
                     PcPrintersListViewModels.Add(x);
             });
-
+            ParameterCache.ReadingOk = true;
         }
 
         // 🔹 SignalR recibe notificación y actualiza cache + lista
         private async void OnParametroGeneralCambiado(ParametroGeneralChangeNotification notification)
         {
-            List<GeneralParameter> generalParameters = await _parametersApiService.GetAllGeneralParametersAsync();
+            GeneralParameter? generalParameter = await _parametersApiService.GetGeneralParameterAsync();
             PcParameter pcSalePointParameter = await _parametersApiService.GetPcParameterAsync(Environment.MachineName);
             List<PcPrinterParametersListViewModel> printerParameters = await _parametersApiService.GetAllPcPrinterParametersAsync();
             PcPrinterParametersListViewModel? printerParameter = await _parametersApiService.GetPrinterParameterFromPcAsync(Environment.MachineName);
+            EmailParameter? emailParameter = await _parametersApiService.GetEmailParameterAsync();
 
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 ParameterCache.Instance.ClearCache();
-                ParameterCache.Instance.SetGeneralParameters(generalParameters);
+                ParameterCache.Instance.SetGeneralParameter(generalParameter);
                 ParameterCache.Instance.SetPCParameter(pcSalePointParameter);
                 ParameterCache.Instance.SetPrinterParameters(printerParameters);
                 ParameterCache.Instance.SetPrinterParameter(printerParameter);
+                ParameterCache.Instance.SetEmailParameter(emailParameter);
                 _ = LoadParametersAsync();
             });
         }

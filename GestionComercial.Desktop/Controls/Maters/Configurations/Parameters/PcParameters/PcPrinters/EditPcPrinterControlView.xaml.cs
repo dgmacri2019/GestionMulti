@@ -66,7 +66,10 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcP
 
                 GeneralResponse resultUpdate = await _parametersApiService.UpdatePcPrinterParameterAsync(ConverterHelper.ToPrinterParameter(PrinterParameterViewModel, PrinterParameterViewModel.Id == 0));
                 if (resultUpdate.Success)
-                    ImpresorasActualizadas?.Invoke();
+                {
+                    lblConfirm.Text = resultUpdate.Message;
+                    ImpresorasActualizadas?.Invoke();                    
+                }
                 else
                     msgError(resultUpdate.Message);
                 btnUpdate.IsEnabled = true;

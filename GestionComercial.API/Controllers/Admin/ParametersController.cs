@@ -5,7 +5,6 @@ using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
 using GestionComercial.Domain.DTOs.Parameter;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
-using GestionComercial.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static GestionComercial.Domain.Constant.Enumeration;
@@ -33,42 +32,29 @@ namespace GestionComercial.API.Controllers.Admin
         }
 
 
-        [HttpPost("AddGeneralParameterAsync")]
-        public async Task<IActionResult> AddAsync([FromBody] GeneralParameter generalParameter)
+        [HttpPost("GetGeneralParameterAsync")]
+        public async Task<IActionResult> GetGeneralParameterAsync()
         {
-            GeneralResponse resultAdd = await _masterService.AddAsync(generalParameter);
-
-            if (resultAdd.Success)
-            {
-                await _notifier.NotifyAsync(generalParameter.Id, "Parametro General", ChangeType.Created);
-
-                return
-                    Ok("Parametro general creado correctamente");
-            }
-            else return BadRequest(resultAdd.Message);
+            GeneralParameter? generalParameter = await _parameterService.GetGeneralParameterAsync();
+            return Ok(generalParameter);
         }
-
 
         [HttpPost("UpdateGeneralParameterAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] GeneralParameter generalParameter)
         {
-            GeneralResponse resultAdd = await _masterService.UpdateAsync(generalParameter);
+            GeneralResponse resultAdd = generalParameter.Id == 0 ?
+                await _masterService.AddAsync(generalParameter)
+                :
+                await _masterService.UpdateAsync(generalParameter);
             if (resultAdd.Success)
             {
                 await _notifier.NotifyAsync(generalParameter.Id, "GeneralParameter", ChangeType.Updated);
-
                 return Ok("Parametro general actualizado correctamente");
             }
             else return BadRequest(resultAdd.Message);
         }
 
 
-        [HttpPost("GetAllGeneralParametersAsync")]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            IEnumerable<GeneralParameter> generalParameters = await _parameterService.GetAllGeneralParametersAsync();
-            return Ok(generalParameters);
-        }
 
 
         [HttpPost("GetGeneralParameterByIdAsync")]
@@ -168,6 +154,30 @@ namespace GestionComercial.API.Controllers.Admin
             if (resultAdd.Success)
             {
                 await _notifier.NotifyAsync(printerParameter.Id, "PrinterParameter", ChangeType.Updated);
+                return Ok("Parametro impresora actualizado correctamente");
+            }
+            else return BadRequest(resultAdd.Message);
+        }
+
+
+
+        [HttpPost("GetEmailParamaterAsync")]
+        public async Task<IActionResult> GetEmailParamaterAsync()
+        {
+            EmailParameter? emailParameter = await _parameterService.GetEmailParameterAsync();
+            return Ok(emailParameter);
+        }
+
+        [HttpPost("UpdateEmailParameterAsync")]
+        public async Task<IActionResult> UpdateEmailParameterAsync([FromBody] EmailParameter emailParameter)
+        {
+            GeneralResponse resultAdd = emailParameter.Id == 0 ?
+                await _masterService.AddAsync(emailParameter)
+                :
+                await _masterService.UpdateAsync(emailParameter);
+            if (resultAdd.Success)
+            {
+                await _notifier.NotifyAsync(emailParameter.Id, "EmailParameter", ChangeType.Updated);
                 return Ok("Parametro impresora actualizado correctamente");
             }
             else return BadRequest(resultAdd.Message);

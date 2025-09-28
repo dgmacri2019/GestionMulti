@@ -8,15 +8,18 @@ namespace GestionComercial.Domain.Cache
         private static ParameterCache? _instance;
         public static ParameterCache Instance => _instance ??= new ParameterCache();
 
-        private List<GeneralParameter>? _generalParameters;
+        private GeneralParameter? _generalParameter;
 
         private PcParameter? _pcSalePointParameter;
+
+        private EmailParameter? _emailParameter;
 
         private List<PcPrinterParametersListViewModel> _printerParameters;
 
         private PcPrinterParametersListViewModel? _printerParameter;
 
         public static bool Reading { get; set; } = false;
+        public static bool ReadingOk { get; set; } = false;
 
         private ParameterCache()
         {
@@ -25,15 +28,15 @@ namespace GestionComercial.Domain.Cache
 
 
 
-        public List<GeneralParameter> GetAllGeneralParameters()
+        public GeneralParameter? GetGeneralParameter()
         {
-            return _generalParameters;
+            return _generalParameter;
         }
-        public void SetGeneralParameters(List<GeneralParameter> generalParameters)
+        public void SetGeneralParameter(GeneralParameter? generalParameter)
         {
             try
             {
-                _generalParameters = generalParameters;
+                _generalParameter = generalParameter;
             }
             catch (Exception)
             {
@@ -43,7 +46,7 @@ namespace GestionComercial.Domain.Cache
         }
 
 
-        public PcParameter GetPcParameter()
+        public PcParameter? GetPcParameter()
         {
             return _pcSalePointParameter;
         }
@@ -60,6 +63,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
+
 
 
         public List<PcPrinterParametersListViewModel> GetAllPrinterParameters()
@@ -100,19 +104,44 @@ namespace GestionComercial.Domain.Cache
         }
 
 
-        public void ClearCache()
+
+        public EmailParameter? GetEmailParameter()
         {
-            if (_generalParameters != null)
-                _generalParameters?.Clear();
-            if (_printerParameters != null)
-                _printerParameters.Clear();
-            _pcSalePointParameter = null;
-            _printerParameter = null;
+            return _emailParameter;
         }
 
-        public bool HasDataGeneralParameters => _generalParameters != null && _generalParameters.Any() && !Reading;
+        public void SetEmailParameter(EmailParameter? emailParameter)
+        {
+            try
+            {
+                _emailParameter = emailParameter;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+
+
+
+        public void ClearCache()
+        {
+            if (_printerParameters != null)
+                _printerParameters.Clear();
+            _generalParameter = null;
+            _pcSalePointParameter = null;
+            _printerParameter = null;
+            _emailParameter = null;
+        }
+
+
+        public bool HasDataGeneralParameter => _generalParameter != null && !Reading;
         public bool HasDataPCParameters => _pcSalePointParameter != null && !Reading;
         public bool HasDataPcPrinterParameter => _printerParameter != null && !Reading;
-        public bool HasDataPcPrinterParameters => _printerParameters != null && !Reading;
+        public bool HasDataEmailParameter => _emailParameter != null && !Reading;
+        public bool HasDataPcPrinterParameters => _printerParameters != null && _printerParameters.Any() && !Reading;
     }
 }

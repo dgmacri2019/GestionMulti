@@ -3,6 +3,7 @@ using GestionComercial.Desktop.Controls.Articles;
 using GestionComercial.Desktop.Controls.Banks;
 using GestionComercial.Desktop.Controls.Clients;
 using GestionComercial.Desktop.Controls.Maters.Configurations.Maestros.Stock;
+using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.GeneralParameters;
 using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.PcParameters;
 using GestionComercial.Desktop.Controls.Providers;
 using GestionComercial.Desktop.Controls.Sales;
@@ -138,6 +139,9 @@ namespace GestionComercial.Desktop.Views
                 case "ListSales":
                     MainContent.Content = new ListSaleControlView();
                     break;
+                case "GeneralParameter_Setup":
+                    MainContent.Content = new GeneralParametersControlView();
+                    break;
                 case "PcParameter_Setup":
                     MainContent.Content = new PcParametersControlView();
                     break;
@@ -221,7 +225,9 @@ namespace GestionComercial.Desktop.Views
 
                 GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
                 PcParameterListViewModel parameterListViewModel = new();
-                while (!ParameterCache.Instance.HasDataPCParameters || !ParameterCache.Instance.HasDataGeneralParameters)
+                while (!ParameterCache.Instance.HasDataPCParameters && !ParameterCache.Instance.HasDataPcPrinterParameter &&
+                    !ParameterCache.Instance.HasDataGeneralParameter && !ParameterCache.Instance.HasDataEmailParameter &&
+                    !ParameterCache.Instance.HasDataPcPrinterParameters && !ParameterCache.ReadingOk)
                     await Task.Delay(10);
             }
             if (AutorizeOperationHelper.ValidateModule(ModuleType.Clients))

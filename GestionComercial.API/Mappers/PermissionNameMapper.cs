@@ -16,7 +16,7 @@
                 "Parameters" => "Parametros",
                 "Settings" => "Configuraciones",
                 "Accounts" => "Cuentas Contables",
-                "PriceLists" => "Lista de Precios",
+                "PriceLists" => "Listas de Precios",
                 "Users" => "Usuarios",
                 "PurchaseOrders" => "Ordenes de Compra",
                 "BackUps" => "BackUps",

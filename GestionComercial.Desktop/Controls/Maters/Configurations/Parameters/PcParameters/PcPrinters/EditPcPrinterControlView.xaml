@@ -35,7 +35,7 @@
 
             <TextBlock Text="{Binding ComputerName, StringFormat=Nombre Pc: {0}}"
                        VerticalAlignment="Center"  
-                       Margin="140,40,0,0"
+                       Margin="110,40,0,0"
                        Style="{StaticResource BlackBold14}"/>
 
             <TextBlock Text="{Binding SalePoint, StringFormat=Punto de venta: {0:00000}}" 

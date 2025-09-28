@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.GeneralParameters.EmailParameters;
+using GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.GeneralParameters.GeneralParameters;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.GeneralParameters
 {
@@ -23,6 +13,37 @@ namespace GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.Gen
         public GeneralParametersControlView()
         {
             InitializeComponent();
+        }
+
+        private void BtnGeneralParameters_Click(object sender, RoutedEventArgs e)
+        {
+            var ventana = new EditGeneralParameterControlView();
+            lblHeader.Content = "Parámetros Generales";
+            ventana.ParametroGeneralActualizado += () =>
+            {
+                PanelList.Content = null;
+                lblHeader.Content = "Parámetros Generales de la empresa";
+            };
+
+            PanelList.Content = ventana;
+        }
+
+        private void BtnEmailParameters_Click(object sender, RoutedEventArgs e)
+        {
+            var ventana = new EditEmailGeneralParameterControlView();
+            lblHeader.Content = "Parámetros de Email";
+            ventana.ParametroEmailActualizado += () =>
+            {
+                PanelList.Content = null;
+                lblHeader.Content = "Parámetros Generales de la empresa";
+            };
+
+            PanelList.Content = ventana;
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
         }
     }
 }

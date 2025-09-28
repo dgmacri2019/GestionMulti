@@ -5,8 +5,79 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GestionComercial.Desktop.Controls.Maters.Configurations.Parameters.GeneralParameters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             Background="Gray" 
+             SizeChanged="UserControl_SizeChanged">
+
+    <Grid x:Name="GridGeneral"
+          HorizontalAlignment="Stretch" 
+          VerticalAlignment="Stretch" 
+          Margin="10" 
+          Background="Gray">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel x:Name="PanelHeader" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Grid.Row="0" 
+                    Grid.ColumnSpan="4"
+                    Margin="0,5,0,10">
+
+            <Label x:Name="lblHeader" 
+                   Content="Parámetros Generales de la empresa" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center"
+                   Style="{StaticResource lblHeader}"
+                   Foreground="#324F52"/>
+        </StackPanel>
+
+        <Button x:Name="BtnGeneralParameters"
+                Grid.Row="1"
+                Grid.Column="0" 
+                Padding="00,20,0,20" 
+                Margin="20,0,20,10"
+                Click="BtnGeneralParameters_Click" 
+                Style="{StaticResource BtnCancel}">
+            <Button.Content>
+                <TextBlock Text="Parámetros Generales"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"/>
+            </Button.Content>
+        </Button>
+
+        <Button x:Name="BtnEmailParameters"
+                Grid.Row="1" 
+                Grid.Column="1" 
+                Padding="0,20,0,20" 
+                Margin="20,0,20,10"    
+                Click="BtnEmailParameters_Click" 
+                Style="{StaticResource BtnCancel}">
+            <Button.Content>
+                <TextBlock Text="Parámetros de Email"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               TextAlignment="Center"
+               TextWrapping="Wrap"/>
+            </Button.Content>
+        </Button>
+
+
+        <ContentControl x:Name="PanelList" Grid.Row="2" Grid.ColumnSpan="4"/>
+
     </Grid>
 </UserControl>

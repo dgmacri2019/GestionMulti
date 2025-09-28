@@ -105,7 +105,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 return;
             }
 
-            UsePostMethod = ParameterCache.Instance.GetAllGeneralParameters().First().UsePostMethod;
+            UsePostMethod = ParameterCache.Instance.GetGeneralParameter().UsePostMethod;
             SalePoint = ParameterCache.Instance.GetPcParameter().SalePoint;
             SaleNumber = SaleCache.Instance.GetLastSaleNumber() + 1;
             await LoadSaleAsync();
@@ -128,7 +128,7 @@ namespace GestionComercial.Desktop.Views.Sales
             var start = DateTime.Now;
 
             while (!ParameterCache.Instance.HasDataPCParameters ||
-                   !ParameterCache.Instance.HasDataGeneralParameters ||
+                   !ParameterCache.Instance.HasDataGeneralParameter ||
                    !ClientCache.Instance.HasData ||
                    !ArticleCache.Instance.HasData)
             {
@@ -262,13 +262,13 @@ namespace GestionComercial.Desktop.Views.Sales
                         // Calcular cantidad en caso de producto por peso
                         if (isProductWeight)
                         {
-                            if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
+                            if (ParameterCache.Instance.GetGeneralParameter().ProductBarCodePrice)
                             {
                                 string quantityString = currentItem.Code.Substring(7, 5);
                                 decimal price = priceLists.Where(pl => pl.Id == defaultPriceListId).First().FinalPrice;
                                 quantity = Math.Round(Convert.ToDecimal(quantityString) / price, 3);
                             }
-                            else if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodeWeight)
+                            else if (ParameterCache.Instance.GetGeneralParameter().ProductBarCodeWeight)
                             {
                                 string quantityString = currentItem.Code.Substring(7, 5);
                                 quantity = Math.Round(Convert.ToDecimal(quantityString) / 1000, 3);
@@ -630,13 +630,13 @@ namespace GestionComercial.Desktop.Views.Sales
 
                             if (isProductWeight)
                             {
-                                if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodePrice)
+                                if (ParameterCache.Instance.GetGeneralParameter().ProductBarCodePrice)
                                 {
                                     string quantityString = code.Substring(7, 5);
                                     decimal price = priceLists.Where(pl => pl.Id == priceListId).First().FinalPrice;
                                     quantity = Math.Round(Convert.ToDecimal(quantityString) / price, 3);
                                 }
-                                else if (ParameterCache.Instance.GetAllGeneralParameters().First().ProductBarCodeWeight)
+                                else if (ParameterCache.Instance.GetGeneralParameter().ProductBarCodeWeight)
                                 {
                                     string quantityString = code.Substring(7, 5);
                                     quantity = Math.Round(Convert.ToDecimal(quantityString) / 1000, 3);
@@ -648,7 +648,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             // Verificar si el artículo ya está en la grilla
                             ArticleItem? existingItem = ArticleItems.FirstOrDefault(x => x.Code == article.Code && x.PriceListId == priceListId);
 
-                            if (existingItem != null && ParameterCache.Instance.GetAllGeneralParameters().First().SumQuantityItems && !isProductWeight)
+                            if (existingItem != null && ParameterCache.Instance.GetGeneralParameter().SumQuantityItems && !isProductWeight)
                             {
                                 // Ya existe → solo aumentar la cantidad
                                 existingItem.IsLowStock = article.StockCheck && article.Stock <= article.MinimalStock;

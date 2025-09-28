@@ -18,12 +18,11 @@ namespace GestionComercial.Applications.Services
 
         }
 
-        public async Task<IEnumerable<GeneralParameter>> GetAllGeneralParametersAsync()
+        public async Task<GeneralParameter?> GetGeneralParameterAsync()
         {
             return await _context.GeneralParameters
                 .AsNoTracking()
-                .Where(gp => gp.IsEnabled && !gp.IsDeleted)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<GeneralParameter?> GetGeneralParameterByIdAsync(int id)
@@ -31,6 +30,14 @@ namespace GestionComercial.Applications.Services
             return await _context.GeneralParameters.FindAsync(id);
         }
 
+
+
+        public async Task<EmailParameter?> GetEmailParameterAsync()
+        {
+            return await _context.EmailParameters
+               .AsNoTracking()
+               .FirstOrDefaultAsync();
+        }
 
 
 
@@ -80,7 +87,6 @@ namespace GestionComercial.Applications.Services
 
             return ToPurchaseAndSalesList(pcParameters);
         }
-
 
         public async Task<IEnumerable<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync()
         {
@@ -220,5 +226,7 @@ namespace GestionComercial.Applications.Services
                 UseContinuousTicketChangePrinter = pcPrinterParameter.UseContinuousTicketChangePrinter,
             };
         }
+
+
     }
 }
