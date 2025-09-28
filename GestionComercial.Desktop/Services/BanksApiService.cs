@@ -16,9 +16,9 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
-        public BanksApiService()
+        public BanksApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/banks/") :new ApiService("api/caches/banks/");
             string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
@@ -29,7 +29,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/banks/SearchBankAndBoxToListAsync", new
+            var response = await _httpClient.PostAsJsonAsync("SearchBankAndBoxToListAsync", new
             {
                 //Name = name,
                 //IsDeleted = isDeleted,
@@ -61,7 +61,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/banks/GetBankByIdAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetBankByIdAsync", new
             {
                 Id = bankId,
                 IsDeleted = isDeleted,
@@ -93,7 +93,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/banks/GetBoxByIdAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetBoxByIdAsync", new
             {
                 Id = boxId,
                 IsDeleted = isDeleted,
@@ -125,7 +125,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/Banks/UpdateBankAsync", bank);
+            var response = await _httpClient.PostAsJsonAsync("UpdateBankAsync", bank);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -137,7 +137,7 @@ namespace GestionComercial.Desktop.Services
         internal async Task<GeneralResponse> AddBankAsync(Bank bank)
         {
 
-            var response = await _httpClient.PostAsJsonAsync("api/Banks/AddBankAsync", bank);
+            var response = await _httpClient.PostAsJsonAsync("AddBankAsync", bank);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -150,7 +150,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/Banks/AddBoxAsync", box);
+            var response = await _httpClient.PostAsJsonAsync("AddBoxAsync", box);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -163,7 +163,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/Banks/UpdateBoxAsync", box);
+            var response = await _httpClient.PostAsJsonAsync("UpdateBoxAsync", box);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -177,7 +177,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/banks/SearchBankParameterToListAsync", new
+            var response = await _httpClient.PostAsJsonAsync("SearchBankParameterToListAsync", new
             {
                 //Name = name,
                 //IsDeleted = isDeleted,
@@ -209,7 +209,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/banks/GetBankParameterByIdAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetBankParameterByIdAsync", new
             {
                 Id = bankParameterId,
                 IsDeleted = isDeleted,
@@ -240,7 +240,7 @@ namespace GestionComercial.Desktop.Services
         internal async Task<GeneralResponse> AddBankParameterAsync(BankParameter bankParameter)
         {
 
-            var response = await _httpClient.PostAsJsonAsync("api/Banks/AddBankParameterAsync", bankParameter);
+            var response = await _httpClient.PostAsJsonAsync("AddBankParameterAsync", bankParameter);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -253,7 +253,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/Banks/UpdateBankParameterAsync", bankParameter);
+            var response = await _httpClient.PostAsJsonAsync("UpdateBankParameterAsync", bankParameter);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {

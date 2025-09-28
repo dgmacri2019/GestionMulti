@@ -68,9 +68,9 @@ namespace GestionComercial.Desktop.ViewModels.Users
 
 
         public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
-        public UserListViewModel()
+        public UserListViewModel(string superToken = "")
         {
-            _usersApiService = new UsersApiService();
+            _usersApiService = new UsersApiService(superToken);
             var hubUrl = string.Format("{0}hubs/users", App.Configuration["ApiSettings:BaseUrl"]);
             _hubService = new UsersHubService(hubUrl);
             _hubService.UsuarioCambiado += OnUsuarioCambiado;
@@ -103,8 +103,6 @@ namespace GestionComercial.Desktop.ViewModels.Users
                         UserCache.Instance.Set(userResponse.UserViewModels);
                     else
                         MsgBoxAlertHelper.MsgAlertError($"Error al cargar usuarios, el error fue:\n{userResponse.Message}");
-
-
                     UserCache.Reading = false;
                 }
 

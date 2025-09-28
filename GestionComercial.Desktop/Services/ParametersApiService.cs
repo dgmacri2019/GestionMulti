@@ -21,9 +21,9 @@ namespace GestionComercial.Desktop.Services
             PropertyNameCaseInsensitive = true
         };
 
-        public ParametersApiService()
+        public ParametersApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/parameters/") : new ApiService("api/caches/parameters/");
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
         }
@@ -36,7 +36,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetGeneralParameterAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetGeneralParameterAsync", new
                 {
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
@@ -68,7 +68,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
                 // Llama al endpoint y deserializa la respuesta
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdateGeneralParameterAsync", generalParameter);
+                var response = await _httpClient.PostAsJsonAsync("UpdateGeneralParameterAsync", generalParameter);
                 var error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -93,7 +93,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetAllPcParametersAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetAllPcParametersAsync", new
                 {
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
@@ -127,7 +127,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetPcParameterAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetPcParameterAsync", new
                 {
                     PcName = pcName,
                     //IsEnabled = isEnabled,
@@ -162,7 +162,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetPcParameterByIdAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetPcParameterByIdAsync", new
                 {
                     Id = parameterId,
                     //IsEnabled = isEnabled,
@@ -199,7 +199,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
                 // Llama al endpoint y deserializa la respuesta
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdatePcParameterAsync", pcParameter);
+                var response = await _httpClient.PostAsJsonAsync("UpdatePcParameterAsync", pcParameter);
                 var error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -225,7 +225,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetAllPcPrinterParametersAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetAllPcPrinterParametersAsync", new
                 {
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
@@ -257,7 +257,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetPrinterParameterFromPcAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetPrinterParameterFromPcAsync", new
                 {
                     PcName = pcName,
                     //IsEnabled = isEnabled,
@@ -289,7 +289,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
                 // Llama al endpoint y deserializa la respuesta
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdatePcPrinterParameterAsync", printerParameter);
+                var response = await _httpClient.PostAsJsonAsync("UpdatePcPrinterParameterAsync", printerParameter);
                 var error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -315,7 +315,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/GetEmailParamaterAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetEmailParamaterAsync", new
                 {
                     //PcName = pcName,
                     //IsEnabled = isEnabled,
@@ -347,7 +347,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
                 // Llama al endpoint y deserializa la respuesta
-                var response = await _httpClient.PostAsJsonAsync("api/parameters/UpdateEmailParameterAsync", emailParameter);
+                var response = await _httpClient.PostAsJsonAsync("UpdateEmailParameterAsync", emailParameter);
                 var error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {

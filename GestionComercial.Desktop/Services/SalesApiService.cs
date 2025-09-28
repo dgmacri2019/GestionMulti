@@ -19,9 +19,9 @@ namespace GestionComercial.Desktop.Services
         {
             PropertyNameCaseInsensitive = true
         };
-        public SalesApiService()
+        public SalesApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/sales/") : new ApiService("api/caches/sales/");
             string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
@@ -43,7 +43,7 @@ namespace GestionComercial.Desktop.Services
             {
                 while (moreData)
                 {
-                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/sales/GetAllAsync", new
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllAsync", new
                     {
                         Page = page,
                         PageSize = pageSize
@@ -103,7 +103,7 @@ namespace GestionComercial.Desktop.Services
             {
                 while (moreData)
                 {
-                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/sales/GetAllBySalePointAsync", new
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllBySalePointAsync", new
                     {
                         SalePoint = salePoint,
                         SaleDate = DateTime.Now.Date,
@@ -158,7 +158,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/sales/GetByIdAsync", new
+                var response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
                 {
                     Id = saleId,
                     PcName = pcName
@@ -196,7 +196,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                var response = await _httpClient.PostAsJsonAsync("api/sales/UpdateAsync", sale);
+                var response = await _httpClient.PostAsJsonAsync("UpdateAsync", sale);
                 var error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -220,7 +220,7 @@ namespace GestionComercial.Desktop.Services
                 if (saleCheck == null)
                     if (!generateInvoice)
                     {
-                        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
+                        HttpResponseMessage response = await _httpClient.PostAsJsonAsync("AddAsync", sale);
                         string jsonResponse = await response.Content.ReadAsStringAsync();
                         return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
                     }

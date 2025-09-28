@@ -75,9 +75,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
 
 
-        public CategoryListViewModel()
+        public CategoryListViewModel(string superToken = "")
         {
-            _apiService = new MasterClassApiService();
+            _apiService = new MasterClassApiService(superToken);
             var hubUrl = string.Format("{0}hubs/masterclass", App.Configuration["ApiSettings:BaseUrl"]);
             _hubService = new MasterClassHubService(hubUrl);
             _hubService.ClaseMaestraCambiado += OnCategoriaCambiado;

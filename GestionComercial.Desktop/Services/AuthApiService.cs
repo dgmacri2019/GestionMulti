@@ -20,7 +20,7 @@ namespace GestionComercial.Desktop.Services
         public AuthApiService()
         {
 
-            _httpClient = new ApiService().GetHttpClient();
+            _httpClient = new ApiService("api/auth/").GetHttpClient();
             _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 
@@ -29,7 +29,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
 
-                var response = await _httpClient.PostAsJsonAsync("api/auth/LoginAsync", new { username, password });
+                var response = await _httpClient.PostAsJsonAsync("LoginAsync", new { username, password });
                 if (response.IsSuccessStatusCode)
                 {
                     response.EnsureSuccessStatusCode();

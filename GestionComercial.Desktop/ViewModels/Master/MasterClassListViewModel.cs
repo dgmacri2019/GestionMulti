@@ -78,9 +78,9 @@ namespace GestionComercial.Desktop.ViewModels.Master
 
 
 
-        public MasterClassListViewModel()
+        public MasterClassListViewModel(string superToken = "")
         {
-            _masterClassApiService = new MasterClassApiService();
+            _masterClassApiService = new MasterClassApiService(superToken);
 
             var hubUrl = string.Format("{0}hubs/masterclass", App.Configuration["ApiSettings:BaseUrl"]);
 
@@ -115,7 +115,7 @@ namespace GestionComercial.Desktop.ViewModels.Master
                         result.DocumentTypes, result.Measures, result.Taxes, result.CommerceData, result.BillingViewModel);
                 }
                 else
-                    MessageBox.Show($"Error al cargar clientes, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Error al cargar clase maestra, el error fue:\n{result.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 MasterCache.Reading = false;
             }

@@ -1,16 +1,12 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.Cache;
-using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Security;
 using GestionComercial.Domain.Response;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Windows.Controls;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -24,9 +20,9 @@ namespace GestionComercial.Desktop.Services
             PropertyNameCaseInsensitive = true
         };
 
-        public PermissionsApiService()
+        public PermissionsApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/permissions/") : new ApiService("api/caches/permissions/");
             string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
@@ -47,7 +43,7 @@ namespace GestionComercial.Desktop.Services
             try
             {
                 // Enviar la solicitud al endpoint con parámetros de paginación
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/permissions/GetAllPermissionsAsync", new
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllPermissionsAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -87,7 +83,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/permissions/GetPermissionByIdAsync", new
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetPermissionByIdAsync", new
                 {
                     Id = permissionId,
                     //IsDeleted = isDeleted,
@@ -117,7 +113,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/permissions/UpdatePermissionAsync", permission);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("UpdatePermissionAsync", permission);
                 string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -141,7 +137,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/permissions/AddPermissionAsync", permission);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("AddPermissionAsync", permission);
                 string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -165,7 +161,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/permissions/GetAllUserPermisionFromUserAsync", new
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllUserPermisionFromUserAsync", new
                 {
                     UserId = userId,
                 });
@@ -205,7 +201,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/permissions/UpdateUserPermissionsAsync", userPermissions);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("UpdateUserPermissionsAsync", userPermissions);
                 string error = await response.Content.ReadAsStringAsync();
                 return new PermissionResponse
                 {

@@ -71,9 +71,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
 
         public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
 
-        public ArticleListViewModel()
+        public ArticleListViewModel(string superToken = "")
         {
-            _articlesApiService = new ArticlesApiService();
+            _articlesApiService = new ArticlesApiService(superToken);
             var hubUrl = string.Format("{0}hubs/articles", App.Configuration["ApiSettings:BaseUrl"]);
             _hubService = new ArticlesHubService(hubUrl);
             _hubService.ArticuloCambiado += OnArticuloCambiado;

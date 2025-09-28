@@ -16,9 +16,9 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
-        public ArticlesApiService()
+        public ArticlesApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/articles/") : new ApiService("api/caches/articles/");
             string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
@@ -45,7 +45,7 @@ namespace GestionComercial.Desktop.Services
 
                 while (moreData)
                 {
-                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/articles/GetAllAsync", new
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllAsync", new
                     {
                         Page = page,
                         PageSize = pageSize
@@ -94,7 +94,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/articles/GetByIdAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
             {
                 Id = articleId,
             });
@@ -123,7 +123,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/articles/UpdateAsync", article);
+            var response = await _httpClient.PostAsJsonAsync("UpdateAsync", article);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -136,7 +136,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/articles/AddAsync", article);
+            var response = await _httpClient.PostAsJsonAsync("AddAsync", article);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -144,45 +144,6 @@ namespace GestionComercial.Desktop.Services
                 Success = response.IsSuccessStatusCode,
             };
         }
-
-
-        /*
-          internal async Task<List<ArticleWithPricesDto>> SearchToListAsync(string description, bool isEnabled, bool isDeleted)
-        {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/articles/SearchToListAsync", new
-            {
-                Description = description,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
-            });
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                var articles = JsonSerializer.Deserialize<List<ArticleWithPricesDto>>(jsonResponse, options);
-
-
-                return articles;
-            }
-            else
-            {
-                // Manejo de error
-                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                return null;
-            }
-        }
- 
-         */
-
-
+        
     }
 }

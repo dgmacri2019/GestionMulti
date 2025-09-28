@@ -72,9 +72,9 @@ namespace GestionComercial.Desktop.ViewModels.Sale
         public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
 
 
-        public SaleListViewModel()
+        public SaleListViewModel(string superToken = "")
         {
-            _salesApiService = new SalesApiService();
+            _salesApiService = new SalesApiService(superToken);
 
             //var hubUrl = string.Format("{0}hubs/clients", LoginUserCache.Configuration["ApiSettings:ClientsHubUrl"]);
             var hubUrl = string.Format("{0}hubs/sales", App.Configuration["ApiSettings:BaseUrl"]);

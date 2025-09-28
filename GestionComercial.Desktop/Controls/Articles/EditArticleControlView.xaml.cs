@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.Services;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Stock;
 using GestionComercial.Domain.Entities.Stock;
@@ -8,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Controls.Articles
 {
@@ -27,6 +29,8 @@ namespace GestionComercial.Desktop.Controls.Articles
         public EditArticleControlView(int articleId)
         {
             InitializeComponent();
+            btnAdd.Visibility = AutorizeOperationHelper.ValidateOperation(ModuleType.Sales, "Articulos-Agregar") ? Visibility.Visible : Visibility.Collapsed;
+            btnUpdate.Visibility = AutorizeOperationHelper.ValidateOperation(ModuleType.Sales, "Articulos-Editar") ? Visibility.Visible : Visibility.Collapsed;
             _articlesApiService = new ArticlesApiService();
             ArticleId = articleId;
 

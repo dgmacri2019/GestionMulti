@@ -72,9 +72,9 @@ namespace GestionComercial.Desktop.ViewModels.Client
 
         public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitados" : "Ver Habilitados";
 
-        public ClientListViewModel()
+        public ClientListViewModel(string superToken = "")
         {
-            _clientsApiService = new ClientsApiService();
+            _clientsApiService = new ClientsApiService(superToken);
             var hubUrl = string.Format("{0}hubs/clients", App.Configuration["ApiSettings:BaseUrl"]);
             _hubService = new ClientsHubService(hubUrl);
             _hubService.ClienteCambiado += OnClienteCambiado;
@@ -104,8 +104,6 @@ namespace GestionComercial.Desktop.ViewModels.Client
                     if (clientResponse.ClientViewModels.Count() == 0)
                         ClientCache.ReadingOk = true;
                     ClientCache.Instance.Set(clientResponse.ClientViewModels);
-                    //MasterCahe.Instance.SetData(clientResponse.PriceLists, clientResponse.States,
-                    //    clientResponse.SaleConditions, clientResponse.IvaConditions, clientResponse.DocumentTypes);
                 }
                 else
                     MessageBox.Show($"Error al cargar clientes, el error fue:\n{clientResponse.Message}", "Aviso al operador", MessageBoxButton.OK, MessageBoxImage.Error);

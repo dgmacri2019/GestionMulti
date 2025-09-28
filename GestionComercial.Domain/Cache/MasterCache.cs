@@ -91,17 +91,16 @@ namespace GestionComercial.Domain.Cache
         {
             try
             {
-                _states.Clear();
-                _saleConditions.Clear();
-                _ivaConditions.Clear();
-                _documentTypes.Clear();
-                _taxes.Clear();
-                _measures.Clear();
+                _states?.Clear();
+                _saleConditions?.Clear();
+                _ivaConditions?.Clear();
+                _documentTypes?.Clear();
+                _taxes?.Clear();
+                _measures?.Clear();
             }
             catch (Exception ex)
             {
-
-                throw;
+                string error = ex.Message;
             }
         }
 

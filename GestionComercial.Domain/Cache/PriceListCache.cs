@@ -7,7 +7,7 @@ namespace GestionComercial.Domain.Cache
         private static PriceListCache? _instance;
         public static PriceListCache Instance => _instance ??= new PriceListCache();
 
-        private List<PriceListViewModel?> _priceLists;
+        private List<PriceListViewModel?>? _priceLists;
         public static bool Reading { get; set; } = false;
 
         public bool HasData => _priceLists != null && _priceLists.Any() && !Reading;
@@ -18,11 +18,11 @@ namespace GestionComercial.Domain.Cache
         }
 
 
-        public List<PriceListViewModel?> GetAll()
+        public List<PriceListViewModel?>? GetAll()
         {
             return _priceLists.OrderBy(c => c.Description).ToList();
         }
-        public List<PriceListViewModel?> Search(string name, bool isEnabled, bool isDeleted)
+        public List<PriceListViewModel?>? Search(string name, bool isEnabled, bool isDeleted)
         {
             try
             {
@@ -39,11 +39,11 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Set(List<PriceListViewModel?> categories)
+        public void Set(List<PriceListViewModel?>? priceLists)
         {
             try
             {
-                _priceLists = categories;
+                _priceLists = priceLists;
             }
             catch (Exception)
             {
@@ -51,11 +51,11 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Set(PriceListViewModel client)
+        public void Set(PriceListViewModel? priceList)
         {
             try
             {
-                _priceLists.Add(client);
+                _priceLists.Add(priceList);
             }
             catch (Exception)
             {
@@ -63,15 +63,15 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Update(PriceListViewModel categoryNew)
+        public void Update(PriceListViewModel? priceListNew)
         {
             try
             {
-                PriceListViewModel? category = _priceLists.FirstOrDefault(c => c.Id == categoryNew.Id);
-                if (category != null)
+                PriceListViewModel? priceListOld = _priceLists.FirstOrDefault(c => c.Id == priceListNew.Id);
+                if (priceListOld != null)
                 {
-                    _priceLists.Remove(category);
-                    _priceLists.Add(categoryNew);
+                    _priceLists.Remove(priceListOld);
+                    _priceLists.Add(priceListNew);
                 }
             }
             catch (Exception)
@@ -80,13 +80,13 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Remove(PriceListViewModel client)
+        public void Remove(PriceListViewModel? priceList)
         {
             try
             {
-                PriceListViewModel? Category = _priceLists.FirstOrDefault(c => c.Id == client.Id);
-                if (Category != null)
-                    _priceLists.Remove(Category);
+                PriceListViewModel? priceListOld = _priceLists.FirstOrDefault(c => c.Id == priceList.Id);
+                if (priceListOld != null)
+                    _priceLists.Remove(priceListOld);
             }
             catch (Exception)
             {

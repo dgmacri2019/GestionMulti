@@ -7,10 +7,10 @@ namespace GestionComercial.Desktop.Helpers
     {
         private readonly HttpClient _client;
 
-        public ApiService()
+        public ApiService(string controllerName)
         {
             var config = ConfigurationHelper.GetConfiguration();
-            string baseUrl = config["ApiSettings:BaseUrl"];
+            string baseUrl = string.Format("{0}{1}", config["ApiSettings:BaseUrl"], controllerName);
 
             _client = new HttpClient
             {

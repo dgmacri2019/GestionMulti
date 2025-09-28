@@ -203,7 +203,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 // Si cambió el código, buscar artículo
                 if (e.Column.Header.ToString() == "Código" && !string.IsNullOrWhiteSpace(currentItem.Code))
                 {
-                    bool isProductWeight = currentItem.Code.Substring(0, 2) == "20" && currentItem.Code.Length > 8;
+                    bool isProductWeight = currentItem.Code.Length > 2 && currentItem.Code.Substring(0, 2) == "20" && currentItem.Code.Length > 8;
                     decimal quantity = 1m;
 
                     ArticleViewModel? article = isProductWeight ?
@@ -599,7 +599,7 @@ namespace GestionComercial.Desktop.Views.Sales
                     string code = txtBarcode.Text.Trim();
                     if (!string.IsNullOrEmpty(code))
                     {
-                        bool isProductWeight = code.Substring(0, 2) == "20" && code.Length > 8;
+                        bool isProductWeight = code.Length > 2 && code.Substring(0, 2) == "20" && code.Length > 8;
                         decimal quantity = 1m;
 
                         ArticleViewModel? article = isProductWeight ?

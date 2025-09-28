@@ -15,7 +15,7 @@ namespace GestionComercial.Domain.Cache
             new UserRoleDto { Id = 4, Name = "Operador"},
             new UserRoleDto { Id = 5, Name = "Cajero" }
        ];
-        private List<UserViewModel> _users;
+        private List<UserViewModel?> _users;
 
         public static bool Reading { get; set; } = false;
 
@@ -28,7 +28,7 @@ namespace GestionComercial.Domain.Cache
         {
             return _users;
         }
-        public List<UserViewModel> Search(string name, bool isEnabled, bool isDeleted)
+        public List<UserViewModel?> Search(string name, bool isEnabled, bool isDeleted)
         {
 
             int userRoleId = UserRoleDtos.FirstOrDefault(r => r.Name == LoginUserCache.UserRole).Id;
@@ -41,11 +41,11 @@ namespace GestionComercial.Domain.Cache
                 :
                 [];
         }
-        public void Set(List<UserViewModel> users)
+        public void Set(List<UserViewModel?> users)
         {
             _users = users;
         }
-        public void Set(UserViewModel user)
+        public void Set(UserViewModel? user)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Update(UserViewModel user)
+        public void Update(UserViewModel? user)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace GestionComercial.Domain.Cache
                 throw;
             }
         }
-        public void Remove(UserViewModel user)
+        public void Remove(UserViewModel? user)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace GestionComercial.Domain.Cache
 
         public void ClearCache()
         {
-            _users.Clear();
+            _users?.Clear();
         }
         public bool HasData => _users != null && _users.Any() && !Reading;
     }

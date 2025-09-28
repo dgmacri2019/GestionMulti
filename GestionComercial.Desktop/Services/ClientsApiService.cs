@@ -16,9 +16,9 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
-        public ClientsApiService()
+        public ClientsApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/clients/") : new ApiService("api/caches/clients/");
             string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
@@ -30,8 +30,7 @@ namespace GestionComercial.Desktop.Services
             List<ClientViewModel> allClients = [];
             int page = 1;
             bool moreData = true;
-            //bool hasPriceList = false, hasStates = false, hasSaleConditions = false, hasIvaConditions = false, hasDocumentTypes = false;
-            ClientResponse clientResponse = new()
+             ClientResponse clientResponse = new()
             {
                 Success = false
             };
@@ -45,7 +44,7 @@ namespace GestionComercial.Desktop.Services
                 while (moreData)
                 {
                     // Enviar la solicitud al endpoint con parámetros de paginación
-                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/GetAllAsync", new
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllAsync", new
                     {
                         Page = page,
                         PageSize = pageSize
@@ -96,7 +95,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/GetByIdAsync", new
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
                 {
                     Id = clientId,
                     //IsDeleted = isDeleted,
@@ -138,7 +137,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/UpdateAsync", client);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("UpdateAsync", client);
                 string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -162,7 +161,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/clients/AddAsync", client);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("AddAsync", client);
                 string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {

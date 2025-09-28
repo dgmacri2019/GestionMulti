@@ -5,6 +5,7 @@ using GestionComercial.Domain.DTOs.Stock;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Controls.Articles
 {
@@ -17,13 +18,16 @@ namespace GestionComercial.Desktop.Controls.Articles
         public ListAticleControlView()
         {           
             InitializeComponent();
+            btnAdd.Visibility = AutorizeOperationHelper.ValidateOperation(ModuleType.Articles, "Articulos-Agregar") ? Visibility.Visible : Visibility.Collapsed;
             DataContext = new ArticleListViewModel();
         }
 
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DgArticles.SelectedItem is ArticleViewModel article)
+            
+            if (DgArticles.SelectedItem is ArticleViewModel article &&
+                AutorizeOperationHelper.ValidateOperation(ModuleType.Articles, "Articulos-Editar"))
             {
                 DgArticles.Visibility = Visibility.Hidden;
                 PanelSearch.Visibility = Visibility.Hidden;

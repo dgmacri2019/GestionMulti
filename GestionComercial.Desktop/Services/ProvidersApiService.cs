@@ -16,53 +16,19 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
-        public ProvidersApiService()
+        public ProvidersApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/providers/") : new ApiService("api/caches/providers/");
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
             _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(200));
         }
 
-        internal async Task<List<ProviderViewModel>> SearchAsync(string name, bool isEnabled, bool isDeleted)
+         internal async Task<List<ProviderViewModel>> GetAllAsync()
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/providers/SearchToListAsync", new
-            {
-                Name = name,
-                IsDeleted = isDeleted,
-                IsEnabled = isEnabled,
-            });
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                var providers = JsonSerializer.Deserialize<List<ProviderViewModel>>(jsonResponse, options);
-
-
-                return providers;
-            }
-            else
-            {
-                // Manejo de error
-                MessageBox.Show($"Error: {response.StatusCode}\n{jsonResponse}");
-                return null;
-            }
-        }
-
-        internal async Task<List<ProviderViewModel>> GetAllAsync()
-        {
-            // Llama al endpoint y deserializa la respuesta
-
-            var response = await _httpClient.PostAsJsonAsync("api/providers/GetAllAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetAllAsync", new
             {
                 //IsDeleted = isDeleted,
                 //IsEnabled = isEnabled,
@@ -95,7 +61,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/providers/GetByIdAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
             {
                 Id = clientId,
                 //IsDeleted = isDeleted,
@@ -126,7 +92,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/providers/UpdateAsync", provider);
+            var response = await _httpClient.PostAsJsonAsync("UpdateAsync", provider);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -139,7 +105,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/providers/AddAsync", provider);
+            var response = await _httpClient.PostAsJsonAsync("AddAsync", provider);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {

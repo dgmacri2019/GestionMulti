@@ -1,7 +1,6 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.User;
-using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Response;
 using System.IO;
 using System.Net.Http;
@@ -20,9 +19,9 @@ namespace GestionComercial.Desktop.Services
         {
             PropertyNameCaseInsensitive = true
         };
-        public UsersApiService()
+        public UsersApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/users/") : new ApiService("api/caches/users/");
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
         }
@@ -42,7 +41,7 @@ namespace GestionComercial.Desktop.Services
                 // Llama al endpoint y deserializa la respuesta
                 while (moreData)
                 {
-                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/GetAllAsync", new
+                    HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllAsync", new
                     {
                         Page = page,
                         PageSize = pageSize
@@ -97,7 +96,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/GetByIdAsync", new
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
                 {
                     Id = userId,
                     //IsDeleted = isDeleted,
@@ -136,7 +135,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/UpdateAsync", user);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("UpdateAsync", user);
                 string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {
@@ -160,7 +159,7 @@ namespace GestionComercial.Desktop.Services
             {
                 // Llama al endpoint y deserializa la respuesta
 
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/users/AddAsync", user);
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("AddAsync", user);
                 string error = await response.Content.ReadAsStringAsync();
                 return new GeneralResponse
                 {

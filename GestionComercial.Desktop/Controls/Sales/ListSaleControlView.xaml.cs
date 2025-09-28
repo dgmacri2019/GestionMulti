@@ -1,7 +1,9 @@
-﻿using GestionComercial.Desktop.ViewModels.Sale;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.Views.Sales;
 using System.Windows;
 using System.Windows.Controls;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Controls.Sales
 {
@@ -13,6 +15,7 @@ namespace GestionComercial.Desktop.Controls.Sales
         public ListSaleControlView()
         {
             InitializeComponent();
+            btnAdd.Visibility = AutorizeOperationHelper.ValidateOperation(ModuleType.Sales, "Ventas-Agregar") ? Visibility.Visible : Visibility.Collapsed;
             DataContext = new SaleListViewModel();
         }
 

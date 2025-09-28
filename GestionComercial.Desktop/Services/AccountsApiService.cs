@@ -16,9 +16,9 @@ namespace GestionComercial.Desktop.Services
         private readonly HttpClient _httpClient;
         private readonly ApiService _apiService;
 
-        public AccountsApiService()
+        public AccountsApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/accounts/") : new ApiService("api/caches/accounts/");
             string token = LoginUserCache.AuthToken;
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
@@ -30,7 +30,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/SearchToListAsync", new
+            var response = await _httpClient.PostAsJsonAsync("SearchToListAsync", new
             {
                 Name = name,
                 IsDeleted = isDeleted,
@@ -61,7 +61,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/GetAllAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetAllAsync", new
             {
                 IsDeleted = isDeleted,
                 IsEnabled = isEnabled,
@@ -92,7 +92,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/GetByIdAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
             {
                 Id = id,
             });
@@ -119,7 +119,7 @@ namespace GestionComercial.Desktop.Services
 
         internal async Task<List<AccountType>> GetAllAccountTypesAsync(bool isEnabled, bool isDeleted, bool all)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/GetAllAccountTypesAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetAllAccountTypesAsync", new
             {
                 IsDeleted = isDeleted,
                 IsEnabled = isEnabled,
@@ -148,7 +148,7 @@ namespace GestionComercial.Desktop.Services
 
         internal async Task<List<Account>> GetAllAccountAsync(bool isEnabled, bool isDeleted, bool all)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/GetAllAccountsAsync", new
+            var response = await _httpClient.PostAsJsonAsync("GetAllAccountsAsync", new
             {
                 IsDeleted = isDeleted,
                 IsEnabled = isEnabled,
@@ -177,7 +177,7 @@ namespace GestionComercial.Desktop.Services
 
         internal async Task<GeneralResponse> UpdateAsync(Account account)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/UpdateAccountAsync", account);
+            var response = await _httpClient.PostAsJsonAsync("UpdateAccountAsync", account);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -188,7 +188,7 @@ namespace GestionComercial.Desktop.Services
 
         internal async Task<GeneralResponse> AddAsync(Account account)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/accounts/AddAccountAsync", account);
+            var response = await _httpClient.PostAsJsonAsync("AddAccountAsync", account);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {

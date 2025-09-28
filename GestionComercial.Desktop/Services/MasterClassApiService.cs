@@ -26,17 +26,59 @@ namespace GestionComercial.Desktop.Services
             PropertyNameCaseInsensitive = true
         };
 
-        public MasterClassApiService()
+        public MasterClassApiService(string superToken = "")
         {
-            _apiService = new ApiService();
+            _apiService = string.IsNullOrEmpty(superToken) ? new ApiService("api/masterclass/") : new ApiService("api/caches/masterclass/");
             _httpClient = _apiService.GetHttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginUserCache.AuthToken);
             _httpClient.Timeout.Add(TimeSpan.FromMilliseconds(2000));
         }
 
+        internal async Task<GeneralResponse> AddOrUpdateBillingAsync(BillingViewModel billing)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                using var form = new MultipartFormDataContent();
+
+                // 1. Archivo
+                if (!string.IsNullOrEmpty(billing.CertPath) && File.Exists(billing.CertPath))
+                {
+                    var fileStream = File.OpenRead(billing.CertPath);
+                    var fileContent = new StreamContent(fileStream);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                    // "file" debe coincidir con el parámetro en la API
+                    form.Add(fileContent, "file", Path.GetFileName(billing.CertPath));
+                }
+
+                // 2. ViewModel como JSON
+                var json = JsonSerializer.Serialize(billing);
+                form.Add(new StringContent(json, Encoding.UTF8, "application/json"), "masterclass");
+
+
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("AddOrUpdateBillingAsync", billing);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+
+            }
+        }
         internal async Task<GeneralResponse> AddOrUpdateCommerceDataAsync(CommerceData commerceData)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddOrUpdateCommerceDataAsync", commerceData);
+            var response = await _httpClient.PostAsJsonAsync("AddOrUpdateCommerceDataAsync", commerceData);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -44,7 +86,6 @@ namespace GestionComercial.Desktop.Services
                 Success = response.IsSuccessStatusCode,
             };
         }
-
         internal async Task<MasterClassResponse> GetAllAsync()
         {
             //bool hasPriceList = false, hasStates = false, hasSaleConditions = false, hasIvaConditions = false, hasDocumentTypes = false;
@@ -61,7 +102,7 @@ namespace GestionComercial.Desktop.Services
                 List<Measure>? measures;
                 List<Tax>? taxes;
                 // Enviar la solicitud al endpoint Provincias
-                HttpResponseMessage responseStates = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllStatesAsync", new
+                HttpResponseMessage responseStates = await _httpClient.PostAsJsonAsync("GetAllStatesAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -84,7 +125,7 @@ namespace GestionComercial.Desktop.Services
                 }
 
                 // Enviar la solicitud al endpoint Tipos de Documentos
-                HttpResponseMessage responseDocumentType = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllDocumentTypesAsync", new
+                HttpResponseMessage responseDocumentType = await _httpClient.PostAsJsonAsync("GetAllDocumentTypesAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -107,7 +148,7 @@ namespace GestionComercial.Desktop.Services
                 }
 
                 // Enviar la solicitud al endpoint Condiciones de IVA
-                HttpResponseMessage responseIvaCondition = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllIvaConditionsAsync", new
+                HttpResponseMessage responseIvaCondition = await _httpClient.PostAsJsonAsync("GetAllIvaConditionsAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -130,7 +171,7 @@ namespace GestionComercial.Desktop.Services
                 }
 
                 // Enviar la solicitud al endpoint Condiciones de Venta
-                HttpResponseMessage responseSaleCondition = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllSaleConditionsAsync", new
+                HttpResponseMessage responseSaleCondition = await _httpClient.PostAsJsonAsync("GetAllSaleConditionsAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -152,7 +193,7 @@ namespace GestionComercial.Desktop.Services
                     return masterClassResponse;
                 }
                 // Enviar la solicitud al endpoint Unidades de medida
-                HttpResponseMessage responseMeasure = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllMeasuresAsync", new
+                HttpResponseMessage responseMeasure = await _httpClient.PostAsJsonAsync("GetAllMeasuresAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -175,7 +216,7 @@ namespace GestionComercial.Desktop.Services
                 }
 
                 // Enviar la solicitud al endpoint Tipos de IVA
-                HttpResponseMessage responseTax = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllTaxesAsync", new
+                HttpResponseMessage responseTax = await _httpClient.PostAsJsonAsync("GetAllTaxesAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false
@@ -198,7 +239,7 @@ namespace GestionComercial.Desktop.Services
                 }
 
                 // Enviar la solicitud al endpoint Datos Comerciales
-                HttpResponseMessage responseCommerceData = await _httpClient.PostAsJsonAsync("api/masterclass/GetCommerceDataAsync", new
+                HttpResponseMessage responseCommerceData = await _httpClient.PostAsJsonAsync("GetCommerceDataAsync", new
                 {
 
                 });
@@ -225,7 +266,7 @@ namespace GestionComercial.Desktop.Services
                 }
 
                 // Enviar la solicitud al endpoint Datos Comerciales
-                HttpResponseMessage responseBilling = await _httpClient.PostAsJsonAsync("api/masterclass/GetBillingAsync", new
+                HttpResponseMessage responseBilling = await _httpClient.PostAsJsonAsync("GetBillingAsync", new
                 {
 
                 });
@@ -276,7 +317,7 @@ namespace GestionComercial.Desktop.Services
             {
 
                 // Enviar la solicitud al endpoint Rubros
-                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllCategoriesAsync", new
+                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("GetAllCategoriesAsync", new
                 {
                     //IsEnabled = true,
                     //IsDeleted = false
@@ -318,7 +359,7 @@ namespace GestionComercial.Desktop.Services
             {
 
                 // Enviar la solicitud al endpoint Rubros
-                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("api/masterclass/GetCategoryByIdAsync", new
+                HttpResponseMessage responseCategory = await _httpClient.PostAsJsonAsync("GetCategoryByIdAsync", new
                 {
                     IsEnabled = true,
                     IsDeleted = false,
@@ -353,7 +394,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddCategoryAsync", category);
+            var response = await _httpClient.PostAsJsonAsync("AddCategoryAsync", category);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -366,7 +407,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/masterclass/UpdateCategoryAsync", category);
+            var response = await _httpClient.PostAsJsonAsync("UpdateCategoryAsync", category);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -390,7 +431,7 @@ namespace GestionComercial.Desktop.Services
             {
 
                 // Enviar la solicitud al endpoint Rubros
-                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api/masterclass/GetAllPriceListAsync", new
+                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("GetAllPriceListAsync", new
                 {
                     //IsEnabled = true,
                     //IsDeleted = false
@@ -432,7 +473,7 @@ namespace GestionComercial.Desktop.Services
             {
 
                 // Enviar la solicitud al endpoint Rubros
-                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("api/masterclass/GetPriceListByIdAsync", new
+                HttpResponseMessage responsePriceList = await _httpClient.PostAsJsonAsync("GetPriceListByIdAsync", new
                 {
                     //IsEnabled = true,
                     //IsDeleted = false,
@@ -467,7 +508,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddPriceListAsync", priceList);
+            var response = await _httpClient.PostAsJsonAsync("AddPriceListAsync", priceList);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -480,7 +521,7 @@ namespace GestionComercial.Desktop.Services
         {
             // Llama al endpoint y deserializa la respuesta
 
-            var response = await _httpClient.PostAsJsonAsync("api/masterclass/UpdatePriceListAsync", priceList);
+            var response = await _httpClient.PostAsJsonAsync("UpdatePriceListAsync", priceList);
             var error = await response.Content.ReadAsStringAsync();
             return new GeneralResponse
             {
@@ -488,50 +529,7 @@ namespace GestionComercial.Desktop.Services
                 Success = response.IsSuccessStatusCode,
             };
         }
-
-        internal async Task<GeneralResponse> AddOrUpdateBillingAsync(BillingViewModel billing)
-        {
-            try
-            {
-                using var client = new HttpClient();
-                using var form = new MultipartFormDataContent();
-
-                // 1. Archivo
-                if (!string.IsNullOrEmpty(billing.CertPath) && File.Exists(billing.CertPath))
-                {
-                    var fileStream = File.OpenRead(billing.CertPath);
-                    var fileContent = new StreamContent(fileStream);
-                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-
-                    // "file" debe coincidir con el parámetro en la API
-                    form.Add(fileContent, "file", Path.GetFileName(billing.CertPath));
-                }
-
-                // 2. ViewModel como JSON
-                var json = JsonSerializer.Serialize(billing);
-                form.Add(new StringContent(json, Encoding.UTF8, "application/json"), "masterclass");
-
-
-                // Llama al endpoint y deserializa la respuesta
-                var response = await _httpClient.PostAsJsonAsync("api/masterclass/AddOrUpdateBillingAsync", billing);
-                var error = await response.Content.ReadAsStringAsync();
-                return new GeneralResponse
-                {
-                    Message = $"Error: {response.StatusCode}\n{error}",
-                    Success = response.IsSuccessStatusCode,
-                };
-            }
-            catch (Exception ex)
-            {
-                return new GeneralResponse
-                {
-                    Success = false,
-                    Message = ex.Message,
-                };
-
-            }
-        }
-
+               
         #endregion
 
                

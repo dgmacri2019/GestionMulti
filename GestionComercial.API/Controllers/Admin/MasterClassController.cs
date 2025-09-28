@@ -277,6 +277,8 @@ namespace GestionComercial.API.Controllers.Admin
 
 
 
+
+
         [HttpPost("AddDocumentTypeAsync")]
         public async Task<IActionResult> AddDocumentTypeAsync([FromBody] DocumentType documentType)
         {

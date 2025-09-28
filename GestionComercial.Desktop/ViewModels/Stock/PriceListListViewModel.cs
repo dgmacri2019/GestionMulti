@@ -70,9 +70,9 @@ namespace GestionComercial.Desktop.ViewModels.Stock
         public string ToggleEnabledText => IsEnabledFilter ? "Ver Inhabilitadas" : "Ver Habilitadas";
 
 
-        public PriceListListViewModel()
+        public PriceListListViewModel(string superToken = "")
         {
-            _apiService = new MasterClassApiService();
+            _apiService = new MasterClassApiService(superToken);
             var hubUrl = string.Format("{0}hubs/masterclass", App.Configuration["ApiSettings:BaseUrl"]);
             _hubService = new MasterClassHubService(hubUrl);
             _hubService.ClaseMaestraCambiado += OnListaPrecioCambiado;
