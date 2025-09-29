@@ -55,6 +55,8 @@ namespace GestionComercial.Domain.DTOs.Master.Configurations.Commerce
         public string? CertPath { get; set; }
 
         public bool UseHomologacion { get; set; }
+        public bool LejendInvoice { get; set; }
+        public bool CBUInform { get; set; }
 
         public int CommerceDataId { get; set; }
         public byte[]? CertificateByteArray { get; set; }

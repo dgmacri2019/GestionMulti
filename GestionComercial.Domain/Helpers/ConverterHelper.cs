@@ -412,7 +412,10 @@ namespace GestionComercial.Domain.Helpers
                 WSDLSign = billing.WSDLSign,
                 WSDLToken = billing.WSDLToken,
                 CertPath = string.Empty,
-                UseHomologacion = billing.UseHomologacion
+                UseHomologacion = billing.UseHomologacion,
+                CBUInform = billing.CBUInform,
+                LejendInvoice = billing.LejendInvoice,
+
             };
         }
         public static Billing? ToBilling(BillingViewModel? billingViewModel, bool isNew)
@@ -445,6 +448,8 @@ namespace GestionComercial.Domain.Helpers
                 WSDLSign = billingViewModel.WSDLSign,
                 WSDLToken = billingViewModel.WSDLToken,
                 UseHomologacion = billingViewModel.UseHomologacion,
+                CBUInform = billingViewModel.CBUInform,
+                LejendInvoice = billingViewModel.LejendInvoice,
             };
         }
 
@@ -642,7 +647,7 @@ namespace GestionComercial.Domain.Helpers
         #endregion
 
         #region Users
-               
+
         public static User ToUser(UserViewModel userViewModel, bool isNew)
         {
             return new User
@@ -652,9 +657,9 @@ namespace GestionComercial.Domain.Helpers
                 Enabled = userViewModel.IsEnabled,
                 FirstName = userViewModel.FirstName,
                 LastName = userViewModel.LastName,
-                UserName = userViewModel.UserName, 
+                UserName = userViewModel.UserName,
                 PhoneNumber = userViewModel.PhoneNumber,
-                ChangePassword = userViewModel.ChangePassword,                
+                ChangePassword = userViewModel.ChangePassword,
             };
         }
 
@@ -737,7 +742,7 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = saleViewModel.TotalIVA27,
             };
         }
-       
+
         #endregion
     }
 }

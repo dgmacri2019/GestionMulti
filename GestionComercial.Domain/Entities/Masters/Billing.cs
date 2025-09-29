@@ -77,10 +77,11 @@ namespace GestionComercial.Domain.Entities.Masters
         public int CommerceDataId { get; set; }
 
         public bool UseHomologacion { get; set; }
+        public bool CBUInform { get; set; }
+        public bool LejendInvoice { get; set; }
 
         //[JsonIgnore] 
         public virtual CommerceData? CommerceData { get; set; }
-
-
+        
     }
 }

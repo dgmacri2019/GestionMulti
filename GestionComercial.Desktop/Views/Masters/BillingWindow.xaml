@@ -29,6 +29,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -123,7 +125,7 @@
                       KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>      
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="2" Margin="0,0,0,8">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="2" Grid.RowSpan="3" Margin="0,0,0,8">
             <TextBlock Text="Concepto de las Facturas" 
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
@@ -131,6 +133,39 @@
             <RadioButton x:Name="rbProduct" Content="Productos" Tag="1" Checked="RadioButton_Checked" IsChecked="True"/>
             <RadioButton x:Name="rbService" Content="Servicios" Tag="2" Checked="RadioButton_Checked"/>
             <RadioButton x:Name="rbProductAndService" Content="Productos y Servicios" Tag="3" Checked="RadioButton_Checked"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="0" Margin="0,0,0,8">
+            <TextBlock Text="Web Service de ARCA" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource BlueBold10}"/>
+            <RadioButton x:Name="rbProduction" Content="Producción" Tag="1" Checked="RadioButton1_Checked" IsChecked="True"/>
+            <RadioButton x:Name="rbHomo" Content="Homologación" Tag="2" Checked="RadioButton1_Checked"/>
+        </StackPanel>
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="1" Margin="0,0,0,0">
+            <TextBlock Text='Adicionales Comprobante tipo "A"'                       
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"
+                       Margin="0,0,0,5"/>
+            <CheckBox x:Name="chbCBUInform"
+                      Style="{StaticResource CheckBox}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Left"
+                      IsChecked="{Binding CBUInform}"
+                      KeyDown="TextBox_KeyDown_MoveNext"
+                      Content="CBU Informado"
+                      Margin="0,0,0,5"/>
+            <CheckBox x:Name="chbLejendInvoice"
+                      Style="{StaticResource CheckBox}"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Left"
+                      IsChecked="{Binding LejendInvoice}"
+                      KeyDown="TextBox_KeyDown_MoveNext"
+                      Content="Sujeto a Retención"/>
         </StackPanel>
 
 
@@ -141,7 +176,7 @@
 
 
         <!-- Botones -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="4" Margin="0,5,0,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="5" Grid.ColumnSpan="4" Margin="0,5,0,0">
             <Button x:Name="btnAdd"
                  Content="Aceptar (F2)"
                  Width="100" 
@@ -158,7 +193,7 @@
 
         <!-- Label error -->
         <TextBlock x:Name="lblError"
-                Grid.Row="4" 
+                Grid.Row="6" 
                 Grid.ColumnSpan="3"
                 HorizontalAlignment="Stretch"
                 Style="{StaticResource lblError12}"

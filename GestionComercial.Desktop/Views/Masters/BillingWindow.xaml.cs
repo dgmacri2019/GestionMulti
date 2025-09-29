@@ -154,6 +154,14 @@ namespace GestionComercial.Desktop.Views.Masters
                 // Ahora opcionSeleccionada tiene 1, 2 o 3 según la opción
             }
         }
+        private void RadioButton1_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is RadioButton rb && rb.Tag != null && BillingViewModel != null)
+            {
+                BillingViewModel.UseHomologacion = int.Parse(rb.Tag.ToString()!) == 2;
+                // Ahora opcionSeleccionada tiene 1, 2 o 3 según la opción
+            }
+        }
         private void Cancelar_Click(object sender, RoutedEventArgs e)
         {
             LogOut();
