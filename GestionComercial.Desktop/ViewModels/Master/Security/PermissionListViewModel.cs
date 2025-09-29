@@ -1,6 +1,7 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.Constant;
 using GestionComercial.Domain.DTOs.Security;
 using GestionComercial.Domain.DTOs.User;
 using GestionComercial.Domain.Entities.Masters.Security;
@@ -26,6 +27,9 @@ namespace GestionComercial.Desktop.ViewModels.Master.Security
         private readonly PermissionsApiService _permissionsApiService;
         public ObservableCollection<UserViewModel> Users { get; set; }
         public ObservableCollection<PermissionGroupViewModel> PermissionGroups { get; set; }
+
+        public ObservableCollection<PermissionGroupViewModel> LoggedUserPermissionGroups { get; set; }
+
 
         private UserViewModel _selectedUser;
         public UserViewModel SelectedUser
@@ -108,6 +112,7 @@ namespace GestionComercial.Desktop.ViewModels.Master.Security
             Users = new ObservableCollection<UserViewModel>(UserCache.Instance.GetAll().Where(u => u.RoleId >= roleId));
             _permissionsApiService = new PermissionsApiService();
             PermissionGroups = [];
+            LoggedUserPermissionGroups = [];
         }
 
 
@@ -116,8 +121,25 @@ namespace GestionComercial.Desktop.ViewModels.Master.Security
             try
             {
                 PermissionGroups.Clear();
+                LoggedUserPermissionGroups.Clear();
 
                 List<UserPermission> userPermissions;
+
+                foreach (var module in Enum.GetValues(typeof(ModuleType)).Cast<ModuleType>())
+                {
+                    if (AutorizeOperationHelper.ValidateModule(module))
+                    {
+                        PermissionGroupViewModel group = new(module)
+                        {
+                            CanRead = AutorizeOperationHelper.ValidateOperation(module, string.Format("{0}-Lectura", EnumExtensionService.GetDisplayName(module))),
+                            CanAdd = AutorizeOperationHelper.ValidateOperation(module, string.Format("{0}-Agregar", EnumExtensionService.GetDisplayName(module))),
+                            CanEdit = AutorizeOperationHelper.ValidateOperation(module, string.Format("{0}-Editar", EnumExtensionService.GetDisplayName(module))),
+                            CanDelete = AutorizeOperationHelper.ValidateOperation(module, string.Format("{0}-Borrar", EnumExtensionService.GetDisplayName(module))),
+                        };
+                        LoggedUserPermissionGroups.Add(group);
+                    }
+                }
+
 
                 PermissionResponse permissionResponse = await _permissionsApiService.GetUserPermissionsForUserAsync(userId);
 
@@ -132,6 +154,7 @@ namespace GestionComercial.Desktop.ViewModels.Master.Security
                             PermissionGroupViewModel group = new(module)
                             {
                                 CanRead = userPermissions.First(p => p.Permission.ModuleType == module && p.Permission.Name.EndsWith("Lectura") && p.Permission.IsEnabled).IsEnabled,
+                                IsEnabledCanRead = AutorizeOperationHelper.ValidateOperation(module, string.Format("{0}-Lectura", EnumExtensionService.GetDisplayName(module))),
                                 CanAdd = userPermissions.First(p => p.Permission.ModuleType == module && p.Permission.Name.EndsWith("Agregar") && p.Permission.IsEnabled).IsEnabled,
                                 CanEdit = userPermissions.First(p => p.Permission.ModuleType == module && p.Permission.Name.EndsWith("Editar") && p.Permission.IsEnabled).IsEnabled,
                                 CanDelete = userPermissions.First(p => p.Permission.ModuleType == module && p.Permission.Name.EndsWith("Borrar") && p.Permission.IsEnabled).IsEnabled

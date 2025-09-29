@@ -31,6 +31,9 @@ namespace GestionComercial.Domain.DTOs.Security
             }
         }
 
+        public bool IsEnabledCanRead { get; set; }
+
+
         private bool _canAdd;
         public bool CanAdd
         {
