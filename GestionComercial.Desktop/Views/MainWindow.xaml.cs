@@ -42,7 +42,9 @@ namespace GestionComercial.Desktop.Views
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             NavigationTree.ItemsSource = CreateMenuItem();
-            await Task.Run(async () => await CargarCacheAsync());
+            //await Task.Run(async () => await CargarCacheAsync());
+            await Task.Run(CargarCacheAsync);
+            DataContext = new MainViewModel();
         }
 
 
@@ -253,7 +255,7 @@ namespace GestionComercial.Desktop.Views
                 while (!SaleCache.Instance.HasData && !SaleCache.ReadingOk)
                     await Task.Delay(10);
                 await GlobalProgressHelper.CompleteAsync();
-            
+
         }
     }
 }

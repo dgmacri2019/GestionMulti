@@ -1,9 +1,11 @@
 ﻿using GestionComercial.Desktop.Helpers;
 using GestionComercial.Desktop.Services;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +20,13 @@ namespace GestionComercial.Desktop.Views.Masters
     {
         private MasterClassApiService _apiService;
         private CommerceData CommerceData;
-
+        private OpenFileDialog FileDialogLogo = new()
+        {
+            Filter = "Imágenes (*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+            FilterIndex = 1,
+            Multiselect = false,
+            Title = "Seleccione el logo"
+        };
         public CommerceDataWindow()
         {
             InitializeComponent();
@@ -72,6 +80,16 @@ namespace GestionComercial.Desktop.Views.Masters
                 lblError.Text = string.Empty;
                 if (ValidateCommerceData())
                 {
+                    if (CommerceData.LogoPath != null)
+                    {
+                        byte[]? logoByteArray = null;
+                        logoByteArray = FileHelper.FilePathToByteArray(CommerceData.LogoPath);
+                        if (logoByteArray != null && logoByteArray.Length > 0)
+                        {
+                            CommerceData.LogoByteArray = logoByteArray;
+                        }
+                    }
+
                     var x = CommerceData;
                     GeneralResponse resultAdd = await _apiService.AddOrUpdateCommerceDataAsync(CommerceData);
                     if (resultAdd.Success)
@@ -202,5 +220,13 @@ namespace GestionComercial.Desktop.Views.Masters
             DialogResult = false;
         }
 
+        private void btnLogo_Click(object sender, RoutedEventArgs e)
+        {
+            if (FileDialogLogo.ShowDialog() == true)
+            {
+                txtLogo.Text = FileDialogLogo.FileName;
+                CommerceData.LogoPath = FileDialogLogo.FileName;
+            }
+        }
     }
 }

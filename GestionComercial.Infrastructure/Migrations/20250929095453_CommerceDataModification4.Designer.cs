@@ -4,6 +4,7 @@ using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComercial.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250929095453_CommerceDataModification4")]
+    partial class CommerceDataModification4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1565,9 +1568,6 @@ namespace GestionComercial.Infrastructure.Migrations
 
                     b.Property<int>("IvaConditionId")
                         .HasColumnType("int");
-
-                    b.Property<byte[]>("LogoByteArray")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("LogoPath")
                         .HasColumnType("nvarchar(max)");

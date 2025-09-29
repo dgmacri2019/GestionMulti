@@ -1,5 +1,6 @@
 ﻿using GestionComercial.Domain.Entities.Afip;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using static GestionComercial.Domain.Constant.Enumeration;
 
@@ -87,7 +88,10 @@ namespace GestionComercial.Domain.Entities.Masters
         [Display(Name = "Utilizar Cuantas Contables")]
         public bool UseAccounting { get; set; }
 
+        public string? LogoPath { get; set; }
 
+       // [NotMapped]
+        public byte[]? LogoByteArray { get; set; }
 
 
         // [JsonIgnore] 
@@ -106,6 +110,6 @@ namespace GestionComercial.Domain.Entities.Masters
         
         [JsonIgnore] 
         public ICollection<State>? States { get; set; }
-
+        
     }
 }

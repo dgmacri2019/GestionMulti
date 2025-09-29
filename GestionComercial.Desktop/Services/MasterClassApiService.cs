@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Data;
 
 namespace GestionComercial.Desktop.Services
 {
@@ -78,13 +79,45 @@ namespace GestionComercial.Desktop.Services
         }
         internal async Task<GeneralResponse> AddOrUpdateCommerceDataAsync(CommerceData commerceData)
         {
-            var response = await _httpClient.PostAsJsonAsync("AddOrUpdateCommerceDataAsync", commerceData);
-            var error = await response.Content.ReadAsStringAsync();
-            return new GeneralResponse
+            try
             {
-                Message = $"Error: {response.StatusCode}\n{error}",
-                Success = response.IsSuccessStatusCode,
-            };
+                using var client = new HttpClient();
+                using var form = new MultipartFormDataContent();
+
+                // 1. Archivo
+                if (!string.IsNullOrEmpty(commerceData.LogoPath) && File.Exists(commerceData.LogoPath))
+                {
+                    var fileStream = File.OpenRead(commerceData.LogoPath);
+                    var fileContent = new StreamContent(fileStream);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                    // "file" debe coincidir con el parámetro en la API
+                    form.Add(fileContent, "file", Path.GetFileName(commerceData.LogoPath));
+                }
+
+                // 2. ViewModel como JSON
+                var json = JsonSerializer.Serialize(commerceData);
+                form.Add(new StringContent(json, Encoding.UTF8, "application/json"), "masterclass");
+
+
+                // Llama al endpoint y deserializa la respuesta
+                var response = await _httpClient.PostAsJsonAsync("AddOrUpdateCommerceDataAsync", commerceData);
+                var error = await response.Content.ReadAsStringAsync();
+                return new GeneralResponse
+                {
+                    Message = $"Error: {response.StatusCode}\n{error}",
+                    Success = response.IsSuccessStatusCode,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+
+            }
         }
         internal async Task<MasterClassResponse> GetAllAsync()
         {

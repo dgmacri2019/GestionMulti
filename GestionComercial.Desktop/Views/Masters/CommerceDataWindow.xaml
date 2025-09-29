@@ -315,8 +315,27 @@
                      KeyDown="TextBox_KeyDown_MoveNext"/>
         </StackPanel>
 
-        
-        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,0,8">
+            <TextBlock Text="Logo Comercial" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource BlueBold10}"/>
+            <TextBox x:Name="txtLogo"
+                     Style="{StaticResource TextBoxSearch}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding CertPath}"
+                     GotFocus="TextBox_SelectAll"
+                     PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown_SelectAll"
+                     KeyDown="TextBox_KeyDown_MoveNext"/>
+            <Button x:Name="btnLogo" 
+                    Content="Seleccionar Archivo" 
+                    Width="150" 
+                    Margin="5"
+                    Style="{StaticResource BtnCancel}" Click="btnLogo_Click"/>
+        </StackPanel>
+
+
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="0" Margin="0,0,0,8">
             <TextBlock Text="Email de Registro" 
                        VerticalAlignment="Center" 

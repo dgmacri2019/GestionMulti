@@ -10,7 +10,6 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Admin
@@ -146,6 +145,28 @@ namespace GestionComercial.API.Controllers.Admin
         {
             CommerceData? commerceDataCheck = await _masterClassService.GetCommerceDataAsync();
 
+            if (commerceDataCheck != null && commerceDataCheck.LogoByteArray != null && commerceData.LogoByteArray == null)
+                commerceData.LogoByteArray = commerceDataCheck.LogoByteArray;
+            //if (commerceData.LogoByteArray != null)
+            //{
+            //    if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Imagenes", "Logo")))
+            //        Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Imagenes", "Logo"));
+
+            //    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Imagenes", "Logo", "logo.png");
+
+            //    if (System.IO.File.Exists(path))
+            //        System.IO.File.Delete(path);
+
+            //    if (System.IO.File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Imagenes", "Logo", "logo.png")))
+            //        System.IO.File.Delete(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Imagenes", "Logo", "logo.png"));
+
+
+            //    GeneralResponse resultAddFile = FileHelper.SaveByteArrayToFile(commerceData.LogoByteArray, path);
+            //    if (!resultAddFile.Success)
+            //        return BadRequest(resultAddFile.Message);
+            //    commerceData.LogoPath = path;
+            //}
+
             GeneralResponse resultAdd = commerceDataCheck == null ?
                 await _masterService.AddAsync(commerceData)
                 :
@@ -175,7 +196,7 @@ namespace GestionComercial.API.Controllers.Admin
         {
             try
             {
-                if(billingViewModel == null)
+                if (billingViewModel == null)
                     return BadRequest("No se pudieron recibir correctamente los datos. Por favor reintente nuevamente");
                 CommerceData commerceData = await _masterClassService.GetCommerceDataAsync();
                 if (commerceData == null)
@@ -183,29 +204,24 @@ namespace GestionComercial.API.Controllers.Admin
 
                 BillingViewModel? billingCheck = await _masterClassService.GetBillingAsync();
 
-                if(billingViewModel.CertificateByteArray != null)
+                if (billingViewModel.CertificateByteArray != null)
                 {
-                    GeneralResponse resultAddFile = FileHelper.SaveByteArrayToFile(billingViewModel.CertificateByteArray, string.Format("{0}.pfx", commerceData.CUIT));
+                    if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados")))
+                        Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados"));
+
+                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados", string.Format("{0}.pfx", commerceData.CUIT));
+
+                    if (System.IO.File.Exists(path))
+                        System.IO.File.Delete(path);
+
+                    if (System.IO.File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados", "0.pdf")))
+                        System.IO.File.Delete(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados", "0.pdf"));
+
+
+                    GeneralResponse resultAddFile = FileHelper.SaveByteArrayToFile(billingViewModel.CertificateByteArray, path);
                     if (!resultAddFile.Success)
                         return BadRequest(resultAddFile.Message);
                 }
-                //if (file != null && !string.IsNullOrEmpty(file.FileName))
-                //{
-                //    // Carpeta dentro de la API
-                //    string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados");
-
-                //    if (!Directory.Exists(basePath))
-                //        Directory.CreateDirectory(basePath);
-
-                //    string path = Path.Combine(basePath, file.FileName);
-
-                //    // Si existe lo borramos
-                //    if (System.IO.File.Exists(path))
-                //        System.IO.File.Delete(path);
-
-                //    // Guardar archivo en el servidor
-                //}
-
                 Billing billing = ConverterHelper.ToBilling(billingViewModel, billingViewModel.Id == 0);
                 billing.CommerceDataId = commerceData.Id;
 

@@ -9,6 +9,8 @@ namespace GestionComercial.Domain.DTOs.Security
         public ModuleType Module { get; set; }
         public string ModuleName => EnumExtensionService.GetDisplayName(Module);
 
+        public bool IsEnabledCanRead { get; set; }
+
         private bool _canRead;
         public bool CanRead
         {
@@ -31,7 +33,7 @@ namespace GestionComercial.Domain.DTOs.Security
             }
         }
 
-        public bool IsEnabledCanRead { get; set; }
+        public bool IsEnabledCanAdd { get; set; }
 
 
         private bool _canAdd;
@@ -60,6 +62,9 @@ namespace GestionComercial.Domain.DTOs.Security
             }
         }
 
+        public bool IsEnabledCanEdit { get; set; }
+
+
         private bool _canEdit;
         public bool CanEdit
         {
@@ -85,6 +90,9 @@ namespace GestionComercial.Domain.DTOs.Security
                 }
             }
         }
+
+        public bool IsEnabledCanDelete { get; set; }
+
 
         private bool _canDelete;
         public bool CanDelete

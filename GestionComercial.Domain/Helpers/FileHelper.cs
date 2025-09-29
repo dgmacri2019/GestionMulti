@@ -169,18 +169,7 @@ namespace GestionComercial.Domain.Helpers
             }
 
             try
-            {
-                if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados")))
-                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados"));
-
-                if (File.Exists(path))
-                    File.Delete(path);
-
-                if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "Archivos\\Certificados\\0.pdf"))
-                    File.Delete(AppDomain.CurrentDomain.BaseDirectory + "Archivos\\Certificados\\0.pdf");
-
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Archivos", "Certificados", path);
-
+            {                
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     foreach (byte b in file)

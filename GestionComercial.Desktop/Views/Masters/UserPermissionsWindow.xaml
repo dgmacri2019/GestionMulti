@@ -85,9 +85,9 @@
 
                                     <TextBlock Text="{Binding ModuleName}" Grid.Column="0" VerticalAlignment="Center" Padding="4,2"/>
                                     <CheckBox IsChecked="{Binding CanRead, Mode=TwoWay}" Grid.Column="1" HorizontalAlignment="Center" IsEnabled="{Binding IsEnabledCanRead, Mode=TwoWay}"/>
-                                    <CheckBox IsChecked="{Binding CanAdd, Mode=TwoWay}" Grid.Column="2" HorizontalAlignment="Center"/>
-                                    <CheckBox IsChecked="{Binding CanEdit, Mode=TwoWay}" Grid.Column="3" HorizontalAlignment="Center"/>
-                                    <CheckBox IsChecked="{Binding CanDelete, Mode=TwoWay}" Grid.Column="4" HorizontalAlignment="Center"/>
+                                    <CheckBox IsChecked="{Binding CanAdd, Mode=TwoWay}" Grid.Column="2" HorizontalAlignment="Center" IsEnabled="{Binding IsEnabledCanAdd, Mode=TwoWay}"/>
+                                    <CheckBox IsChecked="{Binding CanEdit, Mode=TwoWay}" Grid.Column="3" HorizontalAlignment="Center" IsEnabled="{Binding IsEnabledCanEdit, Mode=TwoWay}"/>
+                                    <CheckBox IsChecked="{Binding CanDelete, Mode=TwoWay}" Grid.Column="4" HorizontalAlignment="Center" IsEnabled="{Binding IsEnabledCanDelete, Mode=TwoWay}"/>
                                 </Grid>
 
                                 <!-- DataTrigger para alternar colores según el índice -->

@@ -1,8 +1,10 @@
-﻿using GestionComercial.Desktop.Utils;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Utils;
 using GestionComercial.Desktop.Views;
 using GestionComercial.Domain.Cache;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace GestionComercial.Desktop.ViewModels
@@ -32,6 +34,19 @@ namespace GestionComercial.Desktop.ViewModels
             set => SetProperty(ref _rol, value);
         }
 
+        private string _bussinessName;
+        public string BussinessName
+        {
+            get => _bussinessName;
+            set => SetProperty(ref _bussinessName, value);
+        }
+        private BitmapImage _logo;
+        public BitmapImage Logo
+        {
+            get => _logo;
+            set => SetProperty(ref _logo, value);
+        }
+
         private readonly DispatcherTimer _timer;
 
         public MainViewModel()
@@ -45,8 +60,13 @@ namespace GestionComercial.Desktop.ViewModels
             _timer.Tick += (s, e) => HoraActual = DateTime.Now.ToString("HH:mm:ss");
             _timer.Start();
 
+            BussinessName = MasterCache.Instance.GetCommerceData() == null ? "" : MasterCache.Instance.GetCommerceData().FantasyName ?? MasterCache.Instance.GetCommerceData().BusinessName;
             Usuario = LoginUserCache.UserName ?? "Invitado";
             Rol = LoginUserCache.UserRole ?? "Rol Sin Definir";
+
+            if (MasterCache.Instance.GetCommerceData() != null && MasterCache.Instance.GetCommerceData().LogoByteArray != null)
+                Logo = ImageHelper.ByteArrayToImage(MasterCache.Instance.GetCommerceData().LogoByteArray);
+
         }
 
 
@@ -58,7 +78,7 @@ namespace GestionComercial.Desktop.ViewModels
             LoginUserCache.UserRole = string.Empty;
             LoginUserCache.Password = string.Empty;
 
-            LoginWindow loginView = new LoginWindow();
+            LoginWindow loginView = new();
             loginView.Show();
             // Importante: cerrar la ventana actual correctamente
             foreach (Window window in Application.Current.Windows)
