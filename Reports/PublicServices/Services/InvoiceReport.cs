@@ -1,4 +1,6 @@
 ﻿using Reports.PublicServices.Interfaces;
+using Reports.Responses;
+using Reports.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,26 @@ namespace Reports.PublicServices.Services
 
         public InvoiceReport()
         {
-                
+
+        }
+
+
+
+
+        public async Task<ReportResponse> GenerateInvoicePDFAsync(List<InvoiceReportViewModel> model)
+        {
+            ReportResponse response = new ReportResponse { Success = false };
+            try
+            {
+
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                return response;
+            }
         }
     }
 }
