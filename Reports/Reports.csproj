@@ -109,6 +109,7 @@
   <ItemGroup>
     <Folder Include="DataSets\" />
     <Folder Include="Reports\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
