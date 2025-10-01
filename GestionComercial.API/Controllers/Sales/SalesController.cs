@@ -1,4 +1,5 @@
 ﻿using Afip.PublicServices.Interfaces;
+using GestionComercial.API.Helpers;
 using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
@@ -8,9 +9,13 @@ using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Reports.PublicServices.Interfaces;
+using Reports.Responses;
+using Reports.ViewModels;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Sales
@@ -28,12 +33,14 @@ namespace GestionComercial.API.Controllers.Sales
         private readonly ISalesNotifier _notifierSales;
         private readonly IArticlesNotifier _notifierArticles;
         private readonly IClientsNotifier _notifierClients;
+        private readonly IInvoiceReport _invoiceReport;
         private readonly IWSFEHomologacionService _wSFEHomologacion;
 
 
         public SalesController(ISalesService saleService, IMasterService masterService,
             ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients,
-            IMasterClassService masterClassService, IClientService clientService, IWSFEHomologacionService wSFEHomologacion)
+            IMasterClassService masterClassService, IClientService clientService, IWSFEHomologacionService wSFEHomologacion,
+            IInvoiceReport invoiceReport)
         {
             _saleService = saleService;
             _masterService = masterService;
@@ -43,6 +50,7 @@ namespace GestionComercial.API.Controllers.Sales
             _masterClassService = masterClassService;
             _clientService = clientService;
             _wSFEHomologacion = wSFEHomologacion;
+            _invoiceReport = invoiceReport;
         }
 
         [HttpPost("AddAsync")]
@@ -149,7 +157,7 @@ namespace GestionComercial.API.Controllers.Sales
                             CBU = commerceData.CBU,
                             InternalTax = Convert.ToDouble(sale.InternalTax),
                             IvaConditionId = commerceData.IvaConditionId,
-                            InvoiceDetails = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3? null : 
+                            InvoiceDetails = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? null :
                             [
                                 new InvoiceDetail
                                 {
@@ -204,7 +212,40 @@ namespace GestionComercial.API.Controllers.Sales
                             if (!invoiceAddResponse.Success)
                                 return BadRequest(new SaleResponse { Success = false, Message = invoiceAddResponse.Message });
                             else
-                                return Ok(new SaleResponse { Success = true, Message = "Factura generada correctamente" });
+                            {
+                                IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
+
+                                List<InvoiceReportViewModel> model = ToReportConverterHelper
+                                    .ToInvoiceReport(sale, invoice, commerceData, client, saleConditions.ToList(), ivaConditions.ToList());
+                                FacturaViewModel factura = new()
+                                {
+                                    CAE = invoice.CAE,
+                                    CompNro = invoice.CompNro,
+                                    CompTypeId = invoice.CompTypeId,
+                                    Cuit = invoice.Cuit,
+                                    DocNro = invoice.ClientDocNro,
+                                    DocType = invoice.ClientDocType,
+                                    ImpTotal = invoice.ImpTotal,
+                                    InvoiceDate = invoice.InvoiceDate,
+                                    PtoVenta = invoice.PtoVenta,
+                                    LogoByte = commerceData.LogoByteArray,
+                                };
+                                ReportResponse reportResponse = await _invoiceReport.GenerateInvoicePDFAsync(model, factura);
+
+                                return reportResponse.Success ?
+                                    Ok(new SaleResponse
+                                    {
+                                        Success = true,
+                                        Message = "Factura generada correctamente",
+                                        Bytes = reportResponse.Bytes
+                                    })
+                                    :
+                                    BadRequest(new SaleResponse
+                                    {
+                                        Success = false,
+                                        Message = reportResponse.Message,
+                                    });
+                            }
                         }
                         return BadRequest(new SaleResponse
                         {

@@ -57,6 +57,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Purchase\" />
+    <Folder Include="Images\Logos\" />
     <Folder Include="ReportTemplates\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>

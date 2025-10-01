@@ -7,6 +7,6 @@ namespace Reports.PublicServices.Interfaces
 {
     public interface IInvoiceReport
     {
-        Task<ReportResponse> GenerateInvoicePDFAsync(List<InvoiceReportViewModel> model);
+        Task<ReportResponse> GenerateInvoicePDFAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura);
     }
 }

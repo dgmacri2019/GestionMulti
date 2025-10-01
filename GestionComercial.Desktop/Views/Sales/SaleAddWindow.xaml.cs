@@ -12,7 +12,9 @@ using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing.Printing;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -1138,9 +1140,14 @@ namespace GestionComercial.Desktop.Views.Sales
                             sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
 
 
-                            GeneralResponse resultAdd = await _salesApiService.AddAsync(sale, generateInvoice);
+                            SaleResponse resultAdd = await _salesApiService.AddAsync(sale, generateInvoice);
                             if (resultAdd.Success)
                             {
+                                if (generateInvoice)
+                                {
+                                    Print(resultAdd.Bytes, true);
+                                }
+
                                 ClearClient();
                                 ArticleItems.Clear();
                                 txtClientCode.Focus();
@@ -1164,6 +1171,28 @@ namespace GestionComercial.Desktop.Views.Sales
             catch (Exception ex)
             {
                 lblError.Text = ex.Message;
+            }
+        }
+
+        private void Print(byte[] bytes, bool isInvoice)
+        {
+            if (isInvoice && ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintInvoice)
+            {
+                string printerName = ParameterCache.Instance.GetPrinterParameter().InvoicePrinter;
+
+                using (var ms = new MemoryStream(bytes))
+                using (var document = PdfiumViewer.PdfDocument.Load(ms))
+                {
+                    using (var printDocument = document.CreatePrintDocument())
+                    {
+                        printDocument.PrinterSettings = new PrinterSettings
+                        {
+                            PrinterName = printerName
+                        };
+
+                        printDocument.Print();
+                    }
+                }
             }
         }
 
