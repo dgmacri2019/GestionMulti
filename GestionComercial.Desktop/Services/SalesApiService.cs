@@ -226,13 +226,13 @@ namespace GestionComercial.Desktop.Services
                     }
                     else
                     {
-                        HttpResponseMessage responseAddSale = await _httpClient.PostAsJsonAsync("api/sales/AddAsync", sale);
+                        HttpResponseMessage responseAddSale = await _httpClient.PostAsJsonAsync("AddAsync", sale);
                         string jsonResponseAddSale = await responseAddSale.Content.ReadAsStringAsync();
                         SaleResponse resultAddSale = JsonSerializer.Deserialize<SaleResponse>(jsonResponseAddSale, options);
                         if (!resultAddSale.Success)
                             return resultAddSale;
 
-                        HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("api/sales/AddInvoiceAsync", new
+                        HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("AddInvoiceAsync", new
                         {
                             Id = resultAddSale.SaleId,
                             //IsDeleted = isDeleted,
@@ -244,7 +244,7 @@ namespace GestionComercial.Desktop.Services
                     }
                 else if (saleCheck != null && generateInvoice)
                 {
-                    HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("api/sales/AddInvoiceAsync", new
+                    HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("AddInvoiceAsync", new
                     {
                         Id = saleCheck.Id,
                         //IsDeleted = isDeleted,
