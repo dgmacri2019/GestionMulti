@@ -55,173 +55,54 @@ namespace Reports.PublicServices.Services
                 switch (factura.CompTypeId)
                 {
                     case 1:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
                     case 2:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
                     case 3:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
-                    case 4:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "Recibo A.rpt";
-                            break;
-                        }
                     case 5:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
-                    case 6:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 7:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 8:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 9:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "Recibo B.rpt";
-                            break;
-                        }
-                    case 10:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 11:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 12:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 13:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "Factura B.rpt";
-                            break;
-                        }
-                    case 15:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "Recibo B.rpt";
-                            break;
-                        }
                     case 51:
-                        {
-                            letraCbe = "M";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
                     case 52:
-                        {
-                            letraCbe = "M";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
                     case 53:
-                        {
-                            letraCbe = "M";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
                     case 54:
-                        {
-                            letraCbe = "M";
-                            cbeRptName = "Factura A.rpt";
-                            break;
-                        }
                     case 201:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "MiPyMEs A.rpt";
-                            break;
-                        }
                     case 202:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "MiPyMEs A.rpt";
-                            break;
-                        }
                     case 203:
-                        {
-                            letraCbe = "A";
-                            cbeRptName = "MiPyMEs A.rpt";
-                            break;
-                        }
-                    case 206:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "MiPyMEs B.rpt";
-                            break;
-                        }
-                    case 207:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "MiPyMEs B.rpt";
-                            break;
-                        }
-                    case 208:
-                        {
-                            letraCbe = "B";
-                            cbeRptName = "MiPyMEs B.rpt";
-                            break;
-                        }
-                    case 211:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "MiPyMEs B.rpt";
-                            break;
-                        }
-                    case 212:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "MiPyMEs B.rpt";
-                            break;
-                        }
-                    case 213:
-                        {
-                            letraCbe = "C";
-                            cbeRptName = "MiPyMEs B.rpt";
-                            break;
-                        }
-                    default:
-                        {
-                            break;
-                        }
-                }
+                        cbeRptName = "Factura A.rpt";
+                        break;
 
+                    case 4:
+                        cbeRptName = "Recibo A.rpt";
+                        break;
+
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 10:
+                    case 206:
+                    case 207:
+                    case 208:
+                        cbeRptName = "Factura B.rpt";
+                        break;
+
+                    case 9:
+                        cbeRptName = "Recibo B.rpt";
+                        break;
+
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 211:
+                    case 212:
+                    case 213:
+                        cbeRptName = "Factura B.rpt";
+                        break;
+
+                    case 15:
+                        cbeRptName = "Recibo B.rpt";
+                        break;
+
+                    default:
+                        cbeRptName = "Factura A.rpt";
+                        break;
+                }
 
                 reportName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports", "Invoices", cbeRptName);
                 PaperSize _paperSize = new PaperSize
@@ -230,10 +111,7 @@ namespace Reports.PublicServices.Services
                     RawKind = 9,
                 };
 
-                ReportDocument reportDocument = new ReportDocument();
-                reportDocument.Load(reportName);
-
-                var query = (from r in model.ToList()
+               var query = (from r in model.ToList()
                              select new
                              {
                                  r.CAE,
@@ -282,26 +160,30 @@ namespace Reports.PublicServices.Services
                                  r.DiscountText,
                                  QrBytes = qrCode,
                                  factura.LogoByte,
-                             }).ToList();
-                reportDocument.SetDataSource(query);
+                             }).ToList();               
 
-                Stream stream = reportDocument.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                using (MemoryStream ms = new MemoryStream())
+                // 📌 Generar reporte
+                using (var reportDocument = new ReportDocument())
                 {
-                    await stream.CopyToAsync(ms);
-                    response.Bytes = ms.ToArray();
+                    reportDocument.Load(reportName);
+                    reportDocument.SetDataSource(query);
+
+                    using (var stream = reportDocument.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat))
+                    using (var ms = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(ms);
+                        response.Bytes = ms.ToArray();
+                    }
                 }
 
-                response.Success = true;
-                return response;
+                response.Success = true;                
             }
             catch (Exception ex)
             {
                 response.Message = ex.Message;
-                return response;
             }
+            return response;
+
         }
     }
 }
