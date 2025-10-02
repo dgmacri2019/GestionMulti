@@ -1,4 +1,4 @@
-﻿namespace Reports.ViewModels
+﻿namespace GestionComercial.Contract.ViewModels
 {
     public class InvoiceReportViewModel
     {

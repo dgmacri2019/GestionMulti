@@ -1,15 +1,15 @@
-﻿using Gma.QrCodeNet.Encoding;
+﻿using GestionComercial.Contract.Responses;
+using GestionComercial.Contract.ViewModels;
+using Gma.QrCodeNet.Encoding;
 using Gma.QrCodeNet.Encoding.Windows.Render;
 using Newtonsoft.Json;
-using Reports.Responses;
-using Reports.ViewModels;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 
-namespace Reports.Helpers
+namespace GestionComercial.ReportServiceHost.Helpers
 {
     internal class ImageHelper
     {

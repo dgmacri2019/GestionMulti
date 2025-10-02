@@ -19,8 +19,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Reports.PublicServices.Interfaces;
-using Reports.PublicServices.Services;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -113,7 +111,6 @@ builder.Services.AddScoped<IParameterService, ParameterService>();
 builder.Services.AddScoped<IMasterClassService, MasterClassService>();
 builder.Services.AddScoped<IWSFEHomologacionService, WSFEHomologacionService>();
 builder.Services.AddScoped<ILoginCMSHomologacionService, LoginCMSHomologacionService>();
-builder.Services.AddScoped<IInvoiceReport, InvoiceReport>();
 
 
 

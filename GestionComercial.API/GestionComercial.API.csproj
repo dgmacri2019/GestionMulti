@@ -35,12 +35,13 @@
     <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.26" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.5" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    <PackageReference Include="System.ServiceModel.NetNamedPipe" Version="8.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Afip\Afip.csproj" />
     <ProjectReference Include="..\GestionComercial.Application\GestionComercial.Applications.csproj" />
-    <ProjectReference Include="..\Reports\Reports.csproj" />
+    <ProjectReference Include="..\GestionComercial.Contract\GestionComercial.Contract.csproj" />
   </ItemGroup>
 
   <ItemGroup>

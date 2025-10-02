@@ -1,4 +1,4 @@
-﻿namespace Reports.Responses
+﻿namespace GestionComercial.Contract.Responses
 {
     public class ReportResponse
     {

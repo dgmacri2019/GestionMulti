@@ -1,9 +1,9 @@
-﻿using GestionComercial.Domain.DTOs.Client;
+﻿using GestionComercial.Contract.ViewModels;
+using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
-using Reports.ViewModels;
 using System.Globalization;
 
 namespace GestionComercial.API.Helpers

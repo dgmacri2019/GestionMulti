@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reports.Reports.Invoices {
+namespace GestionComercial.ReportServiceHost.Reports.Invoices {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace Reports.Reports.Invoices {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class Factura_A : ReportClass {
+    public class MiPyMEs_A : ReportClass {
         
-        public Factura_A() {
+        public MiPyMEs_A() {
         }
         
         public override string ResourceName {
             get {
-                return "Factura A.rpt";
+                return "MiPyMEs A.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Reports.Reports.Invoices {
         
         public override string FullResourceName {
             get {
-                return "Reports.Reports.Invoices.Factura A.rpt";
+                return "GestionComercial.ReportServiceHost.Reports.Invoices.MiPyMEs A.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace Reports.Reports.Invoices {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedFactura_A : Component, ICachedReport {
+    public class CachedMiPyMEs_A : Component, ICachedReport {
         
-        public CachedFactura_A() {
+        public CachedMiPyMEs_A() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace Reports.Reports.Invoices {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            Factura_A rpt = new Factura_A();
+            MiPyMEs_A rpt = new MiPyMEs_A();
             rpt.Site = this.Site;
             return rpt;
         }

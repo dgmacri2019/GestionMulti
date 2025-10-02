@@ -1,21 +1,21 @@
 ﻿using Afip.PublicServices.Interfaces;
+using Azure.Core;
 using GestionComercial.API.Helpers;
+using GestionComercial.API.NamedPipe;
 using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
+using GestionComercial.Contract.Responses;
+using GestionComercial.Contract.ViewModels;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
-using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Reports.PublicServices.Interfaces;
-using Reports.Responses;
-using Reports.ViewModels;
 using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.API.Controllers.Sales
@@ -33,14 +33,12 @@ namespace GestionComercial.API.Controllers.Sales
         private readonly ISalesNotifier _notifierSales;
         private readonly IArticlesNotifier _notifierArticles;
         private readonly IClientsNotifier _notifierClients;
-        private readonly IInvoiceReport _invoiceReport;
         private readonly IWSFEHomologacionService _wSFEHomologacion;
 
 
         public SalesController(ISalesService saleService, IMasterService masterService,
             ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients,
-            IMasterClassService masterClassService, IClientService clientService, IWSFEHomologacionService wSFEHomologacion,
-            IInvoiceReport invoiceReport)
+            IMasterClassService masterClassService, IClientService clientService, IWSFEHomologacionService wSFEHomologacion)
         {
             _saleService = saleService;
             _masterService = masterService;
@@ -50,7 +48,6 @@ namespace GestionComercial.API.Controllers.Sales
             _masterClassService = masterClassService;
             _clientService = clientService;
             _wSFEHomologacion = wSFEHomologacion;
-            _invoiceReport = invoiceReport;
         }
 
         [HttpPost("AddAsync")]
@@ -230,7 +227,9 @@ namespace GestionComercial.API.Controllers.Sales
                                     PtoVenta = invoice.PtoVenta,
                                     LogoByte = commerceData.LogoByteArray,
                                 };
-                                ReportResponse reportResponse = await _invoiceReport.GenerateInvoicePDFAsync(model, factura);
+                                ReportClient reportClient = new();
+
+                                ReportResponse reportResponse = await reportClient.GenerateInvoicePdfAsync(model, factura);
 
                                 return reportResponse.Success ?
                                     Ok(new SaleResponse

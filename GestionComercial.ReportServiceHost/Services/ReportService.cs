@@ -1,8 +1,8 @@
 ﻿using CrystalDecisions.CrystalReports.Engine;
-using Reports.Helpers;
-using Reports.PublicServices.Interfaces;
-using Reports.Responses;
-using Reports.ViewModels;
+using GestionComercial.Contract.Responses;
+using GestionComercial.Contract.ViewModels;
+using GestionComercial.ReportServiceHost.Helpers;
+using GestionComercial.Contract.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -11,19 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Reports.PublicServices.Services
+namespace GestionComercial.ReportServiceHost.Services
 {
-    public class InvoiceReport : IInvoiceReport
+    public class ReportService : IReportService
     {
-
-        public InvoiceReport()
-        {
-
-        }
-
-
-
-
         public async Task<ReportResponse> GenerateInvoicePDFAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura)
         {
             ReportResponse response = new ReportResponse { Success = false };
@@ -111,7 +102,7 @@ namespace Reports.PublicServices.Services
                     RawKind = 9,
                 };
 
-               var query = (from r in model.ToList()
+                var query = (from r in model.ToList()
                              select new
                              {
                                  r.CAE,
@@ -160,7 +151,7 @@ namespace Reports.PublicServices.Services
                                  r.DiscountText,
                                  QrBytes = qrCode,
                                  factura.LogoByte,
-                             }).ToList();               
+                             }).ToList();
 
                 // 📌 Generar reporte
                 using (var reportDocument = new ReportDocument())
@@ -175,13 +166,13 @@ namespace Reports.PublicServices.Services
                         response.Bytes = ms.ToArray();
                     }
                 }
-
-                response.Success = true;                
+                response.Success = true;
             }
             catch (Exception ex)
             {
                 response.Message = ex.Message;
             }
+
             return response;
 
         }

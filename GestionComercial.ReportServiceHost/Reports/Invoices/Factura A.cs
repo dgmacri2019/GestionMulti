@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reports.Reports.Stock {
+namespace GestionComercial.ReportServiceHost.Reports.Invoices {
     using System;
     using System.ComponentModel;
     using CrystalDecisions.Shared;
@@ -16,14 +16,14 @@ namespace Reports.Reports.Stock {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class StockControl : ReportClass {
+    public class Factura_A : ReportClass {
         
-        public StockControl() {
+        public Factura_A() {
         }
         
         public override string ResourceName {
             get {
-                return "StockControl.rpt";
+                return "Factura A.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Reports.Reports.Stock {
         
         public override string FullResourceName {
             get {
-                return "Reports.Reports.Stock.StockControl.rpt";
+                return "GestionComercial.ReportServiceHost.Reports.Invoices.Factura A.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace Reports.Reports.Stock {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedStockControl : Component, ICachedReport {
+    public class CachedFactura_A : Component, ICachedReport {
         
-        public CachedStockControl() {
+        public CachedFactura_A() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace Reports.Reports.Stock {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            StockControl rpt = new StockControl();
+            Factura_A rpt = new Factura_A();
             rpt.Site = this.Site;
             return rpt;
         }

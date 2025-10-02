@@ -1,6 +1,6 @@
-﻿namespace Reports.ViewModels
+﻿namespace GestionComercial.Contract.ViewModels
 {
-    internal class QrDataViewModel
+    public class QrDataViewModel
     {
         public int ver { get; set; }
 
