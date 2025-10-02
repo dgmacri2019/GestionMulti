@@ -1,20 +1,30 @@
-﻿using System.ServiceProcess;
+﻿using System;
+using System.ServiceProcess;
 
 namespace GestionComercial.ReportServiceHost
 {
     internal static class Program
     {
-        /// <summary>
-        /// Punto de entrada principal para la aplicación.
-        /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+            if (Environment.UserInteractive) // Si estoy en debug o consola
             {
-                new ReportWindowsService()
-            };
-            ServiceBase.Run(ServicesToRun);
+                var service = new ReportWindowsService();
+                service.StartDebug(args); // Modo consola
+                Console.WriteLine("Servicio escuchando... Presione ENTER para salir");
+                Console.ReadLine();
+                service.Stop();
+            }
+            else
+            {
+                // Modo real: como servicio de Windows
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[]
+                {
+                    new ReportWindowsService()
+                };
+                ServiceBase.Run(ServicesToRun);
+            }
         }
     }
 }
