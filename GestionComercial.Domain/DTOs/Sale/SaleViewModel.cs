@@ -86,6 +86,13 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         public decimal TotalIVA27 { get; set; }
 
+        public decimal TotalIVA25 { get; set; }
+        public decimal TotalIVA5 { get; set; }
+
+        public decimal BaseImp25 { get; set; }
+        public decimal BaseImp5 { get; set; }
+        public decimal BaseImp0 { get; set; }
+
         public decimal BaseImp21 { get; set; }
 
         public decimal BaseImp105 { get; set; }
@@ -134,8 +141,7 @@ namespace GestionComercial.Domain.DTOs.Sale
 
         // public ObservableCollection<ArticleItem> ArticleItems { get; set; } = [];
         public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];
-
-
+       
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

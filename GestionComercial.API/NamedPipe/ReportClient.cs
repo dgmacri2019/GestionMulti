@@ -9,15 +9,22 @@ namespace GestionComercial.API.NamedPipe
     public class ReportClient
     {
         private readonly string _pipeAddress = "net.pipe://localhost/GestionComercial/ReportService";
-        //private readonly string _pipeAddress = "net.pipe://localhost/GestionComercial";
+        private readonly string _tcpAddress = "net.tcp://192.168.254.150:9000/GestionComercial/ReportService";
 
         public async Task<ReportResponse> GenerateInvoicePdfAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura)
         {
-            NetNamedPipeBinding binding = new()
+            //NetNamedPipeBinding binding = new()
+            //{
+            //    MaxReceivedMessageSize = 10_000_000
+            //};
+            //EndpointAddress endpoint = new(_pipeAddress);
+
+            var binding = new NetTcpBinding
             {
                 MaxReceivedMessageSize = 10_000_000
             };
-            EndpointAddress endpoint = new(_pipeAddress);
+            var endpoint = new EndpointAddress(_tcpAddress);
+
 
             // ChannelFactory genera un proxy del servicio WCF
             var factory = new ChannelFactory<IReportService>(binding, endpoint);

@@ -39,6 +39,11 @@ namespace GestionComercial.Domain.Entities.Sales
         public decimal BaseImp105 { get; set; }
 
         public decimal BaseImp27 { get; set; }
+        public decimal BaseImp0 { get; set; }
+        public decimal BaseImp5 { get; set; }
+        public decimal BaseImp25 { get; set; }
+        public decimal TotalIVA5 { get; set; }
+        public decimal TotalIVA25 { get; set; }
 
         [Display(Name = "Saldo Pendiente")]
         public decimal Sold { get; set; }

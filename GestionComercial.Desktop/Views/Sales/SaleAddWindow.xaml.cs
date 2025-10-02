@@ -1284,15 +1284,20 @@ namespace GestionComercial.Desktop.Views.Sales
             }
 
             DateTime saleDate = (DateTime)dpDate.SelectedDate;
-
+            decimal baseimp0 = saleDetails.Where(sd => sd.TaxId == 1).Sum(sd => sd.TotalItem) / 1m;
             decimal baseimp105 = saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem) / 1.105m;
             decimal baseimp21 = saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem) / 1.21m;
             decimal baseimp27 = saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem) / 1.27m;
+            decimal baseimp5 = saleDetails.Where(sd => sd.TaxId == 5).Sum(sd => sd.TotalItem) / 1.05m;
+            decimal baseimp25 = saleDetails.Where(sd => sd.TaxId == 6).Sum(sd => sd.TotalItem) / 1.025m;
+            decimal iva0 = 0m;
             decimal iva105 = saleDetails.Any(sd => sd.TaxId == 2) ? saleDetails.Where(sd => sd.TaxId == 2).Sum(sd => sd.TotalItem / 1.105m) * 10.5m / 100 : 0;
             decimal iva21 = saleDetails.Any(sd => sd.TaxId == 3) ? saleDetails.Where(sd => sd.TaxId == 3).Sum(sd => sd.TotalItem / 1.21m) * 21m / 100 : 0;
             decimal iva27 = saleDetails.Any(sd => sd.TaxId == 4) ? saleDetails.Where(sd => sd.TaxId == 4).Sum(sd => sd.TotalItem / 1.27m) * 27m / 100 : 0;
+            decimal iva5 = saleDetails.Any(sd => sd.TaxId == 5) ? saleDetails.Where(sd => sd.TaxId == 5).Sum(sd => sd.TotalItem / 1.05m) * 5m / 100 : 0;
+            decimal iva25 = saleDetails.Any(sd => sd.TaxId == 6) ? saleDetails.Where(sd => sd.TaxId == 6).Sum(sd => sd.TotalItem / 1.025m) * 2.5m / 100 : 0;
 
-            decimal subTotal = baseimp105 + baseimp21 + baseimp27;
+            decimal subTotal = baseimp105 + baseimp21 + baseimp27 + baseimp0 + baseimp25 + baseimp5;
 
             return new Sale
             {
@@ -1310,12 +1315,18 @@ namespace GestionComercial.Desktop.Views.Sales
                 SubTotal = subTotal,
                 Total = subTotal + iva105 + iva21 + iva27 - (subTotal * saleViewModel.GeneralDiscount / 100),
                 //SaleCondition = saleViewModel.SaleCondition,
+                BaseImp0 = baseimp0,
                 BaseImp105 = baseimp105 - (baseimp105 * saleViewModel.GeneralDiscount / 100),
                 BaseImp21 = baseimp21 - (baseimp21 * saleViewModel.GeneralDiscount / 100),
                 BaseImp27 = baseimp27 - (baseimp27 * saleViewModel.GeneralDiscount / 100),
+                BaseImp5 = baseimp5 - (baseimp5 * saleViewModel.GeneralDiscount / 100),
+                BaseImp25 = baseimp25 - (baseimp25 * saleViewModel.GeneralDiscount / 100),
                 TotalIVA105 = iva105 - (iva105 * saleViewModel.GeneralDiscount / 100),
                 TotalIVA21 = iva21 - (iva21 * saleViewModel.GeneralDiscount / 100),
                 TotalIVA27 = iva27 - (iva27 * saleViewModel.GeneralDiscount / 100),
+                TotalIVA5 = iva5 - (iva5 * saleViewModel.GeneralDiscount / 100),
+                TotalIVA25 = iva25 - (iva25 * saleViewModel.GeneralDiscount / 100),
+
                 SaleDetails = saleDetails,
 
             };

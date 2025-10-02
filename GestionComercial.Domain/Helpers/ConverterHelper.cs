@@ -682,6 +682,9 @@ namespace GestionComercial.Domain.Helpers
                 BaseImp105 = sale.BaseImp105,
                 BaseImp21 = sale.BaseImp21,
                 BaseImp27 = sale.BaseImp27,
+                BaseImp25 = sale.BaseImp25,
+                BaseImp5 = sale.BaseImp5,
+                BaseImp0 = sale.BaseImp0,
                 ClientId = sale.ClientId,
                 GeneralDiscount = sale.GeneralDiscount,
                 InternalTax = sale.InternalTax,
@@ -698,7 +701,9 @@ namespace GestionComercial.Domain.Helpers
                 Total = sale.Total,
                 TotalIVA105 = sale.TotalIVA105,
                 TotalIVA21 = sale.TotalIVA21,
-                TotalIVA27 = sale.TotalIVA27
+                TotalIVA27 = sale.TotalIVA27,
+                TotalIVA25 = sale.TotalIVA25,
+                TotalIVA5 = sale.TotalIVA5,
                 //SaleConditionId = sale.SaleConditionId,
                 //Clients = clients,
                 //SaleConditions = saleConditions,
@@ -740,6 +745,11 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA105 = saleViewModel.TotalIVA105,
                 TotalIVA21 = saleViewModel.TotalIVA21,
                 TotalIVA27 = saleViewModel.TotalIVA27,
+                BaseImp0 = saleViewModel.BaseImp0,
+                BaseImp25 = saleViewModel.BaseImp25,
+                BaseImp5 = saleViewModel.BaseImp5,
+                TotalIVA25 = saleViewModel.TotalIVA25,
+                TotalIVA5 = saleViewModel.TotalIVA5,
             };
         }
 

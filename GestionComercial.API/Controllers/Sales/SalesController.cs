@@ -139,7 +139,7 @@ namespace GestionComercial.API.Controllers.Sales
                             PtoVenta = sale.SalePoint,
                             ImpTotal = Convert.ToDouble(sale.Total),
                             ImpNeto = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? Convert.ToDouble(sale.Total) : Convert.ToDouble(sale.SubTotal),
-                            ImpTotalIVA = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? 0 : Convert.ToDouble(sale.TotalIVA21 + sale.TotalIVA105 + sale.TotalIVA27),
+                            ImpTotalIVA = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? 0 : Convert.ToDouble(sale.TotalIVA21 + sale.TotalIVA105 + sale.TotalIVA27 + sale.TotalIVA25 + sale.TotalIVA5),
                             ImpTotalConc = Convert.ToDouble(0),
                             CompTypeId = compTypeId,
                             ClientDocNro = Convert.ToInt64(client.DocumentNumber),
@@ -156,6 +156,16 @@ namespace GestionComercial.API.Controllers.Sales
                             IvaConditionId = commerceData.IvaConditionId,
                             InvoiceDetails = commerceData.IvaConditionId == 2 || commerceData.IvaConditionId == 3 ? null :
                             [
+                                new InvoiceDetail
+                                {
+                                    CreateDate = sale.CreateDate,
+                                    CreateUser = sale.CreateUser,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    IvaId = 3,
+                                    BaseImpIva = Convert.ToDouble(sale.BaseImp0),
+                                    ImporteIva = Convert.ToDouble(0),
+                                },
                                 new InvoiceDetail
                                 {
                                     CreateDate = sale.CreateDate,
@@ -185,8 +195,28 @@ namespace GestionComercial.API.Controllers.Sales
                                     IvaId = 6,
                                     BaseImpIva = Convert.ToDouble(sale.BaseImp27),
                                     ImporteIva = Convert.ToDouble(sale.TotalIVA27),
+                                },
+                                new InvoiceDetail
+                                {
+                                    CreateDate = sale.CreateDate,
+                                    CreateUser = sale.CreateUser,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    IvaId = 8,
+                                    BaseImpIva = Convert.ToDouble(sale.BaseImp5),
+                                    ImporteIva = Convert.ToDouble(sale.TotalIVA5),
+                                },
+                                new InvoiceDetail
+                                {
+                                    CreateDate = sale.CreateDate,
+                                    CreateUser = sale.CreateUser,
+                                    IsDeleted = false,
+                                    IsEnabled = true,
+                                    IvaId = 9,
+                                    BaseImpIva = Convert.ToDouble(sale.BaseImp25),
+                                    ImporteIva = Convert.ToDouble(sale.TotalIVA25),
                                 }
-                                ],
+                            ],
                         };
 
 
