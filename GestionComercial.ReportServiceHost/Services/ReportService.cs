@@ -45,53 +45,78 @@ namespace GestionComercial.ReportServiceHost.Services
 
                 switch (factura.CompTypeId)
                 {
-                    case 1:
-                    case 2:
-                    case 3:
+                    case 1:                        
+                    case 2:                        
+                    case 3:                       
                     case 5:
+                        letraCbe = "A";
+                        cbeRptName = "Factura A.rpt";
+                        break;
+                    case 4:
+                        letraCbe = "A";
+                        cbeRptName = "Recibo A.rpt";
+                        break;
+                   
+                   
+                    case 6:                       
+                    case 7:                       
+                    case 8:                        
+                    case 10:
+                        letraCbe = "B";
+                        cbeRptName = "Factura B.rpt";
+                        break;
+                    case 9:
+                        letraCbe = "B";
+                        cbeRptName = "Recibo B.rpt";
+                        break;
+                    
+
+
+                    case 11:                       
+                    case 12:                        
+                    case 13:
+                        letraCbe = "C";
+                        cbeRptName = "Factura B.rpt";
+                        break;
+                    case 15:
+                        letraCbe = "C";
+                        cbeRptName = "Recibo B.rpt";
+                        break;
+
                     case 51:
                     case 52:
                     case 53:
                     case 54:
+                        letraCbe = "M";
+                        cbeRptName = "Factura A.rpt";
+                        break;
+
                     case 201:
                     case 202:
                     case 203:
-                        cbeRptName = "Factura A.rpt";
+                        letraCbe = "A";
+                        cbeRptName = "MiPyMEs A.rpt";
                         break;
 
-                    case 4:
-                        cbeRptName = "Recibo A.rpt";
-                        break;
-
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 10:
                     case 206:
                     case 207:
                     case 208:
-                        cbeRptName = "Factura B.rpt";
+                        letraCbe = "B";
+                        cbeRptName = "MiPyMEs B.rpt";
                         break;
 
-                    case 9:
-                        cbeRptName = "Recibo B.rpt";
-                        break;
 
-                    case 11:
-                    case 12:
-                    case 13:
                     case 211:
                     case 212:
                     case 213:
-                        cbeRptName = "Factura B.rpt";
+                        letraCbe = "C";
+                        cbeRptName = "MiPyMEs B.rpt";
                         break;
-
-                    case 15:
-                        cbeRptName = "Recibo B.rpt";
-                        break;
+                    
 
                     default:
-                        cbeRptName = "Factura A.rpt";
+                        letraCbe = "B";
+                        cbeRptName = "Factura B.rpt";
                         break;
                 }
 
