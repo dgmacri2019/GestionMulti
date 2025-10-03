@@ -11,6 +11,7 @@
                 "Articles" => "Articulos",
                 "Purchases" => "Compras",
                 "Sales" => "Ventas",
+                "Invoices" => "Ventas",
                 "Banks" => "Bancos",
                 "Reports" => "Reportes",
                 "Parameters" => "Parametros",

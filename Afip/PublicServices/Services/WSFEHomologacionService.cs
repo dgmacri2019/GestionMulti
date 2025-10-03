@@ -14,6 +14,7 @@ namespace Afip.PublicServices.Services
 
         private readonly ILoginCMSHomologacionService _loginCMS;
         private readonly ISalesService _salesService;
+        private readonly IInvoiceService _invoicesService;
 
         private readonly ServiceSoapClient _serviceSoapClient;
 
@@ -31,11 +32,12 @@ namespace Afip.PublicServices.Services
 
 
         #region Contructor
-        public WSFEHomologacionService(ILoginCMSHomologacionService loginCMS, ISalesService salesService)
+        public WSFEHomologacionService(ILoginCMSHomologacionService loginCMS, ISalesService salesService, IInvoiceService invoicesService)
         {
             _loginCMS = loginCMS;
             _salesService = salesService;
             _serviceSoapClient = new ServiceSoapClient(EndpointConfiguration.ServiceSoap);
+            _invoicesService = invoicesService;
         }
 
         #endregion
@@ -281,8 +283,10 @@ namespace Afip.PublicServices.Services
                             Message = "Debe informar la factura que desea anular",
                             ErrorCode = 101,
                         };
-                    Invoice? invoiceAnular = await _salesService.FindInvoiceAsync(invoiceAnularId);
-                    if (invoiceAnular == null)
+                    InvoiceResponse invoiceAnular = await _invoicesService.FindByIdAsync(invoiceAnularId);
+                    if (!invoiceAnular.Success)
+                        return invoiceAnular;
+                    if (invoiceAnular.Invoice == null)
                         return new InvoiceResponse
                         {
                             Success = false,

@@ -107,6 +107,7 @@ builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<IMasterService, MasterService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IParameterService, ParameterService>();
 builder.Services.AddScoped<IMasterClassService, MasterClassService>();
 builder.Services.AddScoped<IWSFEHomologacionService, WSFEHomologacionService>();
@@ -120,6 +121,7 @@ builder.Services.AddScoped<IArticlesNotifier, SignalRArticlesNotifier>();
 builder.Services.AddScoped<IBoxAndBanksNotifier, SignalRBoxAndBanksNotifier>();
 builder.Services.AddScoped<IBankParametersNotifier, SignalRBankParametersNotifier>();
 builder.Services.AddScoped<ISalesNotifier, SignalRSalesNotifier>();
+builder.Services.AddScoped<IInvoicesNotifier, SignalRInvoicesNotifier>();
 builder.Services.AddScoped<IParametersNotifier, SignalRParametersNotifier>();
 builder.Services.AddScoped<IMasterClassNotifier, SignalRMasterClassNotifier>();
 builder.Services.AddScoped<IUsersNotifier, SignalRUsersNotifier>();
@@ -188,6 +190,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapHub<GeneralParametersHub>("/hubs/generalparameter");
     endpoints.MapHub<MasterClassHub>("/hubs/masterclass");
     endpoints.MapHub<UsersHub>("/hubs/users");
+    endpoints.MapHub<InvoiceHub>("/hubs/invoices");
 });
 using (var scope = app.Services.CreateScope())
 {

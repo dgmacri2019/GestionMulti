@@ -22,7 +22,6 @@ using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
 using GestionComercial.Domain.DTOs.Menu;
 using System.Windows;
-using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Desktop.Views
 {
@@ -203,58 +202,62 @@ namespace GestionComercial.Desktop.Views
 
             //if (AutorizeOperationHelper.ValidateModule(ModuleType.Users))
             //{
-                GlobalProgressHelper.ReportIndeterminate("Cargando Lista de usuarios");
-                UserListViewModel userViewModel = new(superToken);
-                while (!UserCache.Instance.HasData)
-                    await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Lista de usuarios");
+            UserListViewModel userViewModel = new(superToken);
+            while (!UserCache.Instance.HasData)
+                await Task.Delay(10);
             //}
             //if (AutorizeOperationHelper.ValidateModule(ModuleType.PriceLists))
             //{
-                GlobalProgressHelper.ReportIndeterminate("Cargando Lista de precios");
-                PriceListListViewModel priceListViewModel = new(superToken);
-                while (!PriceListCache.Instance.HasData)
-                    await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Lista de precios");
+            PriceListListViewModel priceListViewModel = new(superToken);
+            while (!PriceListCache.Instance.HasData)
+                await Task.Delay(10);
             //}
             //if (AutorizeOperationHelper.ValidateModule(ModuleType.Parameters))
-           // {
-                GlobalProgressHelper.ReportIndeterminate("Cargando clase maestra");
-                MasterClassListViewModel masterClassListViewModel = new(superToken);
-                while (!MasterCache.Instance.HasData)
-                    await Task.Delay(10);
+            // {
+            GlobalProgressHelper.ReportIndeterminate("Cargando clase maestra");
+            MasterClassListViewModel masterClassListViewModel = new(superToken);
+            while (!MasterCache.Instance.HasData)
+                await Task.Delay(10);
 
-                GlobalProgressHelper.ReportIndeterminate("Cargando Rubros");
-                CategoryListViewModel categoryListViewModel = new(superToken);
-                while (!CategoryCache.Instance.HasData)
-                    await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Rubros");
+            CategoryListViewModel categoryListViewModel = new(superToken);
+            while (!CategoryCache.Instance.HasData)
+                await Task.Delay(10);
 
-                GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
-                PcParameterListViewModel parameterListViewModel = new(superToken);
-                while (!ParameterCache.Instance.HasDataPCParameters && !ParameterCache.Instance.HasDataPcPrinterParameter &&
-                    !ParameterCache.Instance.HasDataGeneralParameter && !ParameterCache.Instance.HasDataEmailParameter &&
-                    !ParameterCache.Instance.HasDataPcPrinterParameters && !ParameterCache.ReadingOk)
-                    await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Parametros");
+            PcParameterListViewModel parameterListViewModel = new(superToken);
+            while (!ParameterCache.Instance.HasDataPCParameters && !ParameterCache.Instance.HasDataPcPrinterParameter &&
+                !ParameterCache.Instance.HasDataGeneralParameter && !ParameterCache.Instance.HasDataEmailParameter &&
+                !ParameterCache.Instance.HasDataPcPrinterParameters && !ParameterCache.ReadingOk)
+                await Task.Delay(10);
             //}
             //if (AutorizeOperationHelper.ValidateModule(ModuleType.Clients))
             //{
-                GlobalProgressHelper.ReportIndeterminate("Cargando Clientes");
-                ClientListViewModel clientListViewModel = new(superToken);
-                while (!ClientCache.Instance.HasData && !ClientCache.ReadingOk)
-                    await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Clientes");
+            ClientListViewModel clientListViewModel = new(superToken);
+            while (!ClientCache.Instance.HasData && !ClientCache.ReadingOk)
+                await Task.Delay(10);
             //}
             //if (AutorizeOperationHelper.ValidateModule(ModuleType.Articles))
             //{
-                GlobalProgressHelper.ReportIndeterminate("Cargando Articulos");
-                ArticleListViewModel articleListViewModel = new(superToken);
-                while (!ArticleCache.Instance.HasData && !ArticleCache.ReadingOk)
-                    await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Articulos");
+            ArticleListViewModel articleListViewModel = new(superToken);
+            while (!ArticleCache.Instance.HasData && !ArticleCache.ReadingOk)
+                await Task.Delay(10);
             //}
             //if (AutorizeOperationHelper.ValidateModule(ModuleType.Sales))
             //{
-                GlobalProgressHelper.ReportIndeterminate("Cargando Ventas");
-                SaleListViewModel saleListViewModel = new(superToken);
-                while (!SaleCache.Instance.HasData && !SaleCache.ReadingOk)
-                    await Task.Delay(10);
-                await GlobalProgressHelper.CompleteAsync();
+            GlobalProgressHelper.ReportIndeterminate("Cargando Ventas");
+            SaleListViewModel saleListViewModel = new(superToken);
+            while (!SaleCache.Instance.HasData && !SaleCache.ReadingOk)
+                await Task.Delay(10);
+            GlobalProgressHelper.ReportIndeterminate("Cargando Facturas");
+            InvoiceListViewModel invoiceListViewModel = new(superToken);
+            while (!InvoiceCache.Instance.HasData && !InvoiceCache.ReadingOk)
+                await Task.Delay(10);
+            await GlobalProgressHelper.CompleteAsync();
 
         }
     }

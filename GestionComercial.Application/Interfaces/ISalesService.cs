@@ -6,8 +6,6 @@ namespace GestionComercial.Applications.Interfaces
     public interface ISalesService
     {
         Task<SaleResponse> AddAsync(Sale sale);
-        Task<Invoice?> FindInvoiceAsync(int invoiceAnularId);
-        Task<Invoice?> FindInvoiceBySaleIdAsync(int saleId, int compTypeId);
         Task<SaleResponse> GetAllAsync(int page, int pageSize);
         Task<SaleResponse> GetAllBySalePointAsync(int salePoint, DateTime saleDate, int page, int pageSize);
         Task<SaleResponse> GetByIdAsync(int id);

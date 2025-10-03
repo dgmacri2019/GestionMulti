@@ -219,7 +219,7 @@
                       CanUserSortColumns="False"
                       HeadersVisibility="Column" 
                       Margin="5"
-                      Height="300"
+                      Height="280"
                       Visibility="Hidden"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"

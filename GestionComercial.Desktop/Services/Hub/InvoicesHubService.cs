@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using static GestionComercial.Domain.Notifications.SaleChangeNotification;
+using static GestionComercial.Domain.Notifications.InvoiceChangeNotification;
 
 namespace GestionComercial.Desktop.Services.Hub
 {
-    internal class SalesHubService
+    internal class InvoicesHubService
     {
         private readonly HubConnection _connection;
 
         // Evento que levantamos cuando llega una notificación
-        public event Action<VentaChangeNotification> VentaCambiado;
-        public event Action<string>? SalesChanged;
+        public event Action<FacturaChangeNotification> FacturaCambiado;
+        public event Action<string>? InvoicesChanged;
 
-        public SalesHubService(string hubUrl)
+        public InvoicesHubService(string hubUrl)
         {
             _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
@@ -27,32 +27,32 @@ namespace GestionComercial.Desktop.Services.Hub
 
             _connection.Reconnecting += ex =>
             {
-                Debug.WriteLine("[SalesHub] Reconnecting: " + ex?.Message);
+                Debug.WriteLine("[InvoicesHub] Reconnecting: " + ex?.Message);
                 return Task.CompletedTask;
             };
 
             _connection.Reconnected += id =>
             {
-                Debug.WriteLine("[SalesHub] Reconnected: " + id);
+                Debug.WriteLine("[InvoicesHub] Reconnected: " + id);
                 return Task.CompletedTask;
             };
 
             _connection.Closed += ex =>
             {
-                Debug.WriteLine("[SalesHub] Closed. Ex: " + ex?.Message);
+                Debug.WriteLine("[InvoicesHub] Closed. Ex: " + ex?.Message);
                 return Task.CompletedTask;
             };
 
-            _connection.On<VentaChangeNotification>("VentasActualizados", (notification) =>
+            _connection.On<FacturaChangeNotification>("FacturasActualizados", (notification) =>
             {
-                Debug.WriteLine("[SalesHub] VentasActualizados received: " + (notification == null ? "NULL" : notification.ToString()));
+                Debug.WriteLine("[InvoicesHub] FacturasActualizados received: " + (notification == null ? "NULL" : notification.ToString()));
                 try
                 {
-                    VentaCambiado?.Invoke(notification);
+                    FacturaCambiado?.Invoke(notification);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("[SalesHub] Handler VentaCambiado threw: " + ex);
+                    Debug.WriteLine("[InvoicesHub] Handler FacturaCambiado threw: " + ex);
                 }
             });
         }
@@ -64,11 +64,11 @@ namespace GestionComercial.Desktop.Services.Hub
                 try
                 {
                     await _connection.StartAsync();
-                    Debug.WriteLine("[SalesHub] Connected");
+                    Debug.WriteLine("[InvoicesHub] Connected");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("[SalesHub] StartAsync failed: " + ex);
+                    Debug.WriteLine("[InvoicesHub] StartAsync failed: " + ex);
                     throw;
                 }
             }

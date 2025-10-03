@@ -43,6 +43,7 @@ namespace GestionComercial.Desktop.Views.Sales
         }
 
         private readonly SalesApiService _salesApiService;
+        private readonly InvoicesApiService _invoicesApiService;
         private readonly int SaleId;
         private SaleViewModel SaleViewModel;
         private bool UsePostMethod;
@@ -76,6 +77,7 @@ namespace GestionComercial.Desktop.Views.Sales
             InitializeComponent();
 
             _salesApiService = new SalesApiService();
+            _invoicesApiService = new InvoicesApiService();
             DataContext = this;
             SaleId = saleId;
             ArticleItems = [];
@@ -1140,15 +1142,26 @@ namespace GestionComercial.Desktop.Views.Sales
                             sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
 
 
-                            SaleResponse resultAdd = await _salesApiService.AddAsync(sale, generateInvoice);
-                            if (resultAdd.Success)
+                            SaleResponse resultAddSale = await _salesApiService.AddAsync(sale);
+                            if (resultAddSale.Success)
                             {
                                 if (generateInvoice)
                                 {
-                                    Print(resultAdd.Bytes, true);
+                                    InvoiceResponse resultAddInvoice = await _invoicesApiService.AddAsync(resultAddSale.SaleId);
+                                    if (!resultAddInvoice.Success)
+                                    {
+                                        lblError.Text = resultAddInvoice.Message;
+                                        return;
+                                    }
+                                    Print(resultAddInvoice.Bytes, true);
+                                }
+                                else
+                                {
+                                    //TODO: imprimir venta proforma
+
                                 }
 
-                                ClearClient();
+                                    ClearClient();
                                 ArticleItems.Clear();
                                 txtClientCode.Focus();
                                 txtClientCode.Text = string.Empty;
@@ -1156,7 +1169,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                 await LoadSaleAsync();
                             }
                             else
-                                lblError.Text = resultAdd.Message;
+                                lblError.Text = resultAddSale.Message;
                         }
                     }
                     else

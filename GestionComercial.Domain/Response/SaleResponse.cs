@@ -10,6 +10,5 @@ namespace GestionComercial.Domain.Response
 
         public int LastSaleNumber { get; set; }
         public int SaleId { get; set; }
-        public byte[] Bytes { get; set; }
     }
 }

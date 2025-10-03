@@ -231,30 +231,7 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        #region Invoice
-
-        public async Task<Invoice?> FindInvoiceBySaleIdAsync(int saleId, int compTypeId)
-        {
-            return await _context.Invoices
-                .AsNoTracking()
-                .Include(iv => iv.InvoiceDetails)
-                .FirstOrDefaultAsync(i => i.SaleId == saleId && i.CompTypeId == compTypeId);
-        }
-
-
-        public async Task<Invoice?> FindInvoiceAsync(int invoiceAnularId)
-        {
-            return await _context.Invoices
-                .AsNoTracking()
-                .Include(id => id.InvoiceDetails)
-                .Include(s => s.Sale)
-                .Where(i => i.Id == invoiceAnularId)
-                .FirstOrDefaultAsync();
-        }
-
-
-        #endregion
-
+        
 
         private List<SaleViewModel> ToSaleViewModelsList(List<Sale> sales)
         {
