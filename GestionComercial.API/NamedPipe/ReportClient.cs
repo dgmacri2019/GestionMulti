@@ -1,30 +1,37 @@
 ﻿using GestionComercial.Contract.Interfaces;
 using GestionComercial.Contract.Responses;
 using GestionComercial.Contract.ViewModels;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace GestionComercial.API.NamedPipe
 {
     public class ReportClient
     {
+        // Dirección local por NamedPipe
         private readonly string _pipeAddress = "net.pipe://localhost/GestionComercial/ReportService";
+
+        // Dirección por TCP en la red
         private readonly string _tcpAddress = "net.tcp://192.168.254.150:9000/GestionComercial/ReportService";
 
         public async Task<ReportResponse> GenerateInvoicePdfAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura)
         {
-            //NetNamedPipeBinding binding = new()
-            //{
-            //    MaxReceivedMessageSize = 10_000_000
-            //};
-            //EndpointAddress endpoint = new(_pipeAddress);
-
+            // Configuración del binding para TCP
             var binding = new NetTcpBinding
             {
-                MaxReceivedMessageSize = 10_000_000
+                MaxReceivedMessageSize = 10_000_000,
+                Security = { Mode = SecurityMode.None } // 🔑 Desactivar autenticación
             };
-            var endpoint = new EndpointAddress(_tcpAddress);
 
+            // También podrías usar NamedPipe si solo fuera local
+            // var binding = new NetNamedPipeBinding
+            // {
+            //     MaxReceivedMessageSize = 10_000_000,
+            //     Security = { Mode = NetNamedPipeSecurityMode.None }
+            // };
+            // var endpoint = new EndpointAddress(_pipeAddress);
+
+            var endpoint = new EndpointAddress(_tcpAddress);
 
             // ChannelFactory genera un proxy del servicio WCF
             var factory = new ChannelFactory<IReportService>(binding, endpoint);
@@ -34,10 +41,7 @@ namespace GestionComercial.API.NamedPipe
             {
                 // Llamada al servicio Windows Service
                 ReportResponse response = await proxy.GenerateInvoicePDFAsync(model, factura);
-                if (response.Success)
-                { }
-                else
-                { }
+
                 return response;
             }
             catch (Exception ex)
@@ -50,7 +54,7 @@ namespace GestionComercial.API.NamedPipe
             }
             finally
             {
-                // Cerramos el proxy
+                // Cerramos el proxy correctamente
                 if (proxy is IClientChannel channel)
                 {
                     try { channel.Close(); } catch { channel.Abort(); }
