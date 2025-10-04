@@ -102,9 +102,10 @@ namespace GestionComercial.API.Controllers.Sales
                     InvoiceResponse invoiceResponse = await _invoiceService.FindBySaleIdAsync(sale.Id, compTypeId);
                     if (!invoiceResponse.Success)
                         return BadRequest(new InvoiceResponse { Success = false, Message = invoiceResponse.Message });
+                    Invoice invoice;
                     if (invoiceResponse.Invoice == null)
                     {
-                        invoiceResponse.Invoice = new()
+                        invoice = new()
                         {
                             CreateDate = sale.CreateDate,
                             CreateUser = sale.CreateUser,
@@ -196,15 +197,15 @@ namespace GestionComercial.API.Controllers.Sales
                             ],
                         };
 
-
-                        GeneralResponse invoiceAddResponse = await _masterService.AddAsync(invoiceResponse.Invoice);
+                        GeneralResponse invoiceAddResponse = await _masterService.AddAsync(invoice);
 
                         if (!invoiceAddResponse.Success)
                             return BadRequest(new InvoiceResponse { Success = false, Message = invoiceAddResponse.Message });
 
-                        await _notifierInvoices.NotifyAsync(invoiceResponse.Invoice.Id, "Factura Creada", ChangeType.Created);
+                        await _notifierInvoices.NotifyAsync(invoice.Id, "Factura Creada", ChangeType.Created);
                     }
-
+                    else
+                        invoice = invoiceResponse.Invoice;
                     //InvoiceResponse resultAfip = billing.UseHomologacion ?
                     //    await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0)
                     //    :
@@ -212,19 +213,19 @@ namespace GestionComercial.API.Controllers.Sales
 
                     if (string.IsNullOrEmpty(invoiceResponse.CAE))
                     {
-                        InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoiceResponse.Invoice, 0);
+                        InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0);
 
                         if (resultAfip.Success)
                         {
-                            invoiceResponse.CAE = resultAfip.CAE;
-                            invoiceResponse.CompNro = resultAfip.CompNro;
-                            invoiceResponse.FechaVtoCAE = resultAfip.FechaVtoCAE;
-                            invoiceResponse.FechaProceso = resultAfip.FechaProceso;
+                            invoice.CAE = resultAfip.CAE;
+                            invoice.CompNro = resultAfip.CompNro;
+                            invoice.FechaVtoCAE = resultAfip.FechaVtoCAE;
+                            invoice.FechaProceso = resultAfip.FechaProceso;
 
-                            GeneralResponse resultUpdateInvoice = await _masterService.UpdateAsync(invoiceResponse);
+                            GeneralResponse resultUpdateInvoice = await _masterService.UpdateAsync(invoice);
                             if (!resultUpdateInvoice.Success)
                                 return BadRequest(new InvoiceResponse { Success = false, Message = resultUpdateInvoice.Message });
-                            await _notifierInvoices.NotifyAsync(invoiceResponse.Invoice.Id, "Factura Actualizada", ChangeType.Updated);
+                            await _notifierInvoices.NotifyAsync(invoice.Id, "Factura Actualizada", ChangeType.Updated);
                         }
                         else
                             return BadRequest(new InvoiceResponse
@@ -237,18 +238,18 @@ namespace GestionComercial.API.Controllers.Sales
                     IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
 
                     List<InvoiceReportViewModel> model = ToReportConverterHelper
-                        .ToInvoiceReport(sale, invoiceResponse.Invoice, commerceData, client, saleConditions.ToList(), ivaConditions.ToList());
+                        .ToInvoiceReport(sale, invoice, commerceData, client, saleConditions.ToList(), ivaConditions.ToList());
                     FacturaViewModel factura = new()
                     {
-                        CAE = invoiceResponse.Invoice.CAE,
-                        CompNro = invoiceResponse.Invoice.CompNro,
-                        CompTypeId = invoiceResponse.Invoice.CompTypeId,
-                        Cuit = invoiceResponse.Invoice.Cuit,
-                        DocNro = invoiceResponse.Invoice.ClientDocNro,
-                        DocType = invoiceResponse.Invoice.ClientDocType,
-                        ImpTotal = invoiceResponse.Invoice.ImpTotal,
-                        InvoiceDate = invoiceResponse.Invoice.InvoiceDate,
-                        PtoVenta = invoiceResponse.Invoice.PtoVenta,
+                        CAE = invoice.CAE,
+                        CompNro = invoice.CompNro,
+                        CompTypeId = invoice.CompTypeId,
+                        Cuit = invoice.Cuit,
+                        DocNro = invoice.ClientDocNro,
+                        DocType = invoice.ClientDocType,
+                        ImpTotal = invoice.ImpTotal,
+                        InvoiceDate = invoice.InvoiceDate,
+                        PtoVenta = invoice.PtoVenta,
                         LogoByte = commerceData.LogoByteArray,
                     };
                     ReportClient reportClient = new();

@@ -1081,9 +1081,9 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 LogOut();
             }
-            else if (e.Key == Key.F10)
+            else if (e.Key == Key.F8)
             {
-                // F10 → Proforma
+                // F8 → Proforma
                 await GenerateSaleAsync(false);
             }
             else if (e.Key == Key.F12)
@@ -1126,35 +1126,48 @@ namespace GestionComercial.Desktop.Views.Sales
                             sale.PaidOut = sale.Total == totalpay;
                             sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
 
+                            SaleViewModel? saleCheck = SaleCache.Instance.GetAllSales().Where(s => s.SalePoint == sale.SalePoint && s.SaleNumber == sale.SaleNumber).FirstOrDefault();
 
-                            SaleResponse resultAddSale = await _salesApiService.AddAsync(sale);
-                            if (resultAddSale.Success)
+                            if (saleCheck == null)
                             {
-                                if (generateInvoice)
+                                SaleResponse resultAddSale = await _salesApiService.AddAsync(sale);
+                                if (resultAddSale.Success)
                                 {
-                                    InvoiceResponse resultAddInvoice = await _invoicesApiService.AddAsync(resultAddSale.SaleId);
-                                    if (!resultAddInvoice.Success)
+                                    if (generateInvoice)
                                     {
-                                        lblError.Text = resultAddInvoice.Message;
-                                        return;
+                                        InvoiceResponse resultAddInvoice = await _invoicesApiService.AddAsync(resultAddSale.SaleId);
+                                        if (!resultAddInvoice.Success)
+                                        {
+                                            lblError.Text = resultAddInvoice.Message;
+                                            return;
+                                        }
+                                        Print(resultAddInvoice.Bytes, true);
                                     }
-                                    Print(resultAddInvoice.Bytes, true);
-                                }
-                                else
-                                {
-                                    Print(resultAddSale.Bytes, false);
+                                    else
+                                    {
+                                        Print(resultAddSale.Bytes, false);
 
-                                }
+                                    }
 
                                     ClearClient();
+                                    ArticleItems.Clear();
+                                    txtClientCode.Focus();
+                                    txtClientCode.Text = string.Empty;
+                                    SaleNumber++;
+                                    await LoadSaleAsync();
+                                }
+                                else
+                                    lblError.Text = resultAddSale.Message;
+                            }
+                            else
+                            {
+                                ClearClient();
                                 ArticleItems.Clear();
                                 txtClientCode.Focus();
                                 txtClientCode.Text = string.Empty;
                                 SaleNumber++;
                                 await LoadSaleAsync();
                             }
-                            else
-                                lblError.Text = resultAddSale.Message;
                         }
                     }
                     else
@@ -1177,6 +1190,24 @@ namespace GestionComercial.Desktop.Views.Sales
             if (isInvoice && ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintInvoice)
             {
                 string printerName = ParameterCache.Instance.GetPrinterParameter().InvoicePrinter;
+
+                using (var ms = new MemoryStream(bytes))
+                using (var document = PdfiumViewer.PdfDocument.Load(ms))
+                {
+                    using (var printDocument = document.CreatePrintDocument())
+                    {
+                        printDocument.PrinterSettings = new PrinterSettings
+                        {
+                            PrinterName = printerName
+                        };
+
+                        printDocument.Print();
+                    }
+                }
+            }
+            else if (ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintSale)
+            {
+                string printerName = ParameterCache.Instance.GetPrinterParameter().SalePrinter;
 
                 using (var ms = new MemoryStream(bytes))
                 using (var document = PdfiumViewer.PdfDocument.Load(ms))
@@ -1364,7 +1395,7 @@ namespace GestionComercial.Desktop.Views.Sales
             }
         }
 
-       
+
     }
 
 }

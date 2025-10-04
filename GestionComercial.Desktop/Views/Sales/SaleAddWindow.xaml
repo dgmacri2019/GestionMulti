@@ -48,7 +48,7 @@
 
                 <!-- Proforma -->
                 <Button x:Name="btnAdd" Width="40" Height="40" Margin="0,10"
-                        ToolTip="Proforma (F10)"
+                        ToolTip="Proforma (F8)"
                         Click="BtnAdd_Click">
                     <Image Source="/Images/Sale Order 24.png" Width="24" Height="24"/>
                 </Button>

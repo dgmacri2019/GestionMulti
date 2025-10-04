@@ -108,17 +108,24 @@ namespace GestionComercial.Applications.Services
         {
             try
             {
-                List<Invoice> invoices = await _context.Invoices
-                                                 .AsNoTracking()
-                                                 .Include(id => id.InvoiceDetails)
-                                                 .Include(s => s.Sale)
-                                                 .Include(c => c.Client)
-                                                 .Include(ic => ic.IvaCondition)
-                                                 .Where(i => i.PtoVenta == salePoint && DateTime.ParseExact(i.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date == saleDate.Date)
-                                                 .OrderBy(i => i.PtoVenta).ThenBy(i => i.CompNro)
-                                                 .Skip((page - 1) * pageSize)
-                                                 .Take(pageSize)
-                                                 .ToListAsync();
+                // 1️ Ejecuta en SQL todo lo posible (filtros, include, orden, paginación)
+                var partialInvoices = await _context.Invoices
+                    .AsNoTracking()
+                    .Include(id => id.InvoiceDetails)
+                    .Include(s => s.Sale)
+                    .Include(c => c.Client)
+                    .Include(ic => ic.IvaCondition)
+                    .Where(i => i.PtoVenta == salePoint)
+                    .OrderBy(i => i.PtoVenta)
+                    .ThenBy(i => i.CompNro)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync(); // ✅ hasta acá todo se ejecuta en SQL
+
+                // 2 Filtra en memoria usando ParseExact
+                List<Invoice> invoices = partialInvoices
+                    .Where(i => DateTime.ParseExact(i.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date == saleDate.Date)
+                    .ToList();
 
                 return new InvoiceResponse
                 {

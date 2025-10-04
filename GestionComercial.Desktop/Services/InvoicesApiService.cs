@@ -214,7 +214,7 @@ namespace GestionComercial.Desktop.Services
         {
             try
             {
-                HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("AddInvoiceAsync", new
+                HttpResponseMessage responseAddInvoice = await _httpClient.PostAsJsonAsync("AddAsync", new
                 {
                     Id = saleId,
                 });

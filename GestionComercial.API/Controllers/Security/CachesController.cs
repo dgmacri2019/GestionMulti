@@ -1,5 +1,4 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Applications.Services;
 using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.Master.Configurations.PcParameters;
@@ -12,7 +11,6 @@ using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComercial.API.Controllers.Security
@@ -30,10 +28,11 @@ namespace GestionComercial.API.Controllers.Security
         private readonly IArticleService _artcicleService;
         private readonly ISalesService _saleService;
         private readonly IParameterService _parameterService;
+        private readonly IInvoiceService _invoiceService;
 
-        public CachesController(IClientService clientService, IUserService userService, 
-            IMasterClassService masterClassService, IArticleService artcicleService, 
-            ISalesService saleService, IParameterService parameterService)
+        public CachesController(IClientService clientService, IUserService userService,
+            IMasterClassService masterClassService, IArticleService artcicleService,
+            ISalesService saleService, IParameterService parameterService, IInvoiceService invoiceService)
         {
             _clienService = clientService;
             _userService = userService;
@@ -41,6 +40,7 @@ namespace GestionComercial.API.Controllers.Security
             _artcicleService = artcicleService;
             _saleService = saleService;
             _parameterService = parameterService;
+            _invoiceService = invoiceService;
         }
 
 
@@ -100,7 +100,7 @@ namespace GestionComercial.API.Controllers.Security
         {
             return Ok(await _masterClassService.GetAllTaxesAsync(filter.IsEnabled, filter.IsDeleted));
         }
-        
+
         [HttpPost("masterclass/GetAllCategoriesAsync")]
         public async Task<IActionResult> GetAllCategoriesAsync([FromBody] PriceListFilterDto filter)
         {
@@ -189,6 +189,17 @@ namespace GestionComercial.API.Controllers.Security
             return Ok(pcParameters);
         }
 
-       
+        [HttpPost("invoices/GetAllBySalePointAsync")]
+        public async Task<IActionResult> GetAllInvoicesBySalePointAsync([FromBody] SaleFilterDto filter)
+        {
+            InvoiceResponse invoiceResponse = await _invoiceService.GetAllBySalePointAsync(filter.SalePoint, (DateTime)filter.SaleDate, filter.Page, filter.PageSize);
+            if (!invoiceResponse.Success)
+                return BadRequest(invoiceResponse.Message);
+            return Ok(new InvoiceResponse
+            {
+                Success = true,
+                Invoices = invoiceResponse.Invoices,
+            });
+        }
     }
 }
