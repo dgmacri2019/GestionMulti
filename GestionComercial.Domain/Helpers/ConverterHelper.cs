@@ -704,6 +704,8 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = sale.TotalIVA27,
                 TotalIVA25 = sale.TotalIVA25,
                 TotalIVA5 = sale.TotalIVA5,
+                 Client = sale.Client,
+                   
                 //SaleConditionId = sale.SaleConditionId,
                 //Clients = clients,
                 //SaleConditions = saleConditions,
