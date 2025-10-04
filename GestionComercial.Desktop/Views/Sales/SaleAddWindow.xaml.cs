@@ -848,27 +848,12 @@ namespace GestionComercial.Desktop.Views.Sales
 
         private async void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-
+            await GenerateSaleAsync(false);
         }
 
-
-        private void BtnUpdate_Click(object sender, RoutedEventArgs e)
+        private async void BtnInvoice_Click(object sender, RoutedEventArgs e)
         {
-            // Actualizar venta (implementar según tu API)
-        }
-
-
-        private void BtnBuscar_Click(object sender, RoutedEventArgs e)
-        {
-            // lógica buscar
-            MsgBoxAlertHelper.MsgAlertError("Buscar...");
-        }
-
-
-        private void BtnImprimir_Click(object sender, RoutedEventArgs e)
-        {
-            // lógica imprimir
-            MsgBoxAlertHelper.MsgAlertError("Imprimiendo...");
+            await GenerateSaleAsync(true);
         }
 
 
@@ -1096,9 +1081,9 @@ namespace GestionComercial.Desktop.Views.Sales
             {
                 LogOut();
             }
-            else if (e.Key == Key.F2)
+            else if (e.Key == Key.F10)
             {
-                // F2 → Proforma
+                // F10 → Proforma
                 await GenerateSaleAsync(false);
             }
             else if (e.Key == Key.F12)
@@ -1157,7 +1142,7 @@ namespace GestionComercial.Desktop.Views.Sales
                                 }
                                 else
                                 {
-                                    //TODO: imprimir venta proforma
+                                    Print(resultAddSale.Bytes, false);
 
                                 }
 
@@ -1378,6 +1363,8 @@ namespace GestionComercial.Desktop.Views.Sales
                 lblError.Text = ex.Message;
             }
         }
+
+       
     }
 
 }

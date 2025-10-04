@@ -72,6 +72,7 @@ namespace GestionComercial.API.Helpers
                 FechaEmision = string.Format("{0:dd/MM/yyyy}", DateTime.ParseExact(invoice.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None)),
                 CAE = invoice.CAE,
                 FechaVtoCAE = string.Format("{0:dd/MM/yyyy}", DateTime.ParseExact(invoice.FechaVtoCAE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None)),
+                Leyenda = client.LegendInvoices,
             });
 
 
@@ -407,6 +408,133 @@ namespace GestionComercial.API.Helpers
                         });
                     }
                 }
+
+            return response.ToList();
+        }
+
+        internal static List<InvoiceReportViewModel> ToSaleReport(Sale sale, CommerceData commerceData,
+            ClientViewModel client, List<SaleCondition> saleConditions, List<IvaCondition> ivaConditions)
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("es-AR");
+            var response = new List<InvoiceReportViewModel>();
+            string nombreCbe = "Proforma", discountText = "Bonif.:";
+            decimal discountValue = 0m;
+
+            if (sale.GeneralDiscount != 0)
+            {
+                discountText += string.Format(" {0:N0}%", sale.GeneralDiscount);
+                discountValue = sale.SubTotal * sale.GeneralDiscount;
+            }
+
+            response.Add(new InvoiceReportViewModel
+            {
+                DiscountText = discountText,
+                DiscountValue = string.Format("{0:C2}", discountValue),
+                CuitE = commerceData.CUIT.ToString(),
+                RazonSocialE = commerceData.BusinessName,
+                IIBB = commerceData.IIBB,
+                EmailE = commerceData.Email,
+                DireccionE = commerceData.Address,
+                CondicionIvaE = ivaConditions.FirstOrDefault(iv => iv.Id == commerceData.IvaConditionId).Description,
+                FechaInicio = string.Format("{0:dd/MM/yyyy}", commerceData.ActivityStartDate),
+                TelefonoE = commerceData.Phone,
+                RazonSocialR = client.BusinessName,
+                CuitR = client.DocumentNumber.ToString(),
+                DireccionR = client.Address,
+                TelefonoR = client.Phone,
+                CondicionIvaR = ivaConditions.FirstOrDefault(iv => iv.Id == client.IvaConditionId).Description,
+                EmailR = client.Email,
+                CondicionVenta = sale.PaidOut ? "Contado" : "Cuenta Corriente",
+                PtoVenta = sale.SalePoint.ToString(),
+                NroCbe = sale.SaleNumber.ToString(),
+                SubTotal = string.Format("{0:C2}", sale.SubTotal),
+                Total = string.Format("{0:C2}", sale.Total),
+                CdoCbe = 999.ToString(),
+                NombreCbe = nombreCbe,
+                FechaEmision = string.Format("{0:dd/MM/yyyy}", sale.SaleDate),
+                Leyenda = client.LegendBudget,
+            });
+
+
+
+            // Detalle de los items
+
+
+            foreach (var itemDetail in sale.SaleDetails)
+            {
+                response.Add(new InvoiceReportViewModel
+                {
+                    DiscountText = discountText,
+                    DiscountValue = string.Format("{0:C2}", discountValue),
+                    Cantidad = itemDetail.Quantity.ToString(),
+                    Descripcion = itemDetail.Description,
+                    PrecioUni = string.Format("{0:C2}", itemDetail.Price),
+                    SubTotalItem = string.Format("{0:C2}", itemDetail.SubTotal),
+                    RazonSocialE = commerceData.BusinessName,
+                    IIBB = commerceData.IIBB,
+                    EmailE = commerceData.Email,
+                    DireccionE = commerceData.Address,
+                    FechaInicio = string.Format("{0:dd/MM/yyyy}", commerceData.ActivityStartDate),
+                    TelefonoE = commerceData.Phone,
+                    RazonSocialR = client.BusinessName,
+                    DireccionR = client.Address,
+                    TelefonoR = client.Phone,
+                    EmailR = client.Email,
+                    CondicionVenta = sale.PaidOut ? "Contado" : "Cuenta Corriente",
+                    SubTotal = string.Format("{0:C2}", sale.SubTotal),
+                    NombreCbe = nombreCbe,
+                    FechaEmision = string.Format("{0:dd/MM/yyyy}", sale.SaleDate),
+                    CondicionIvaR = ivaConditions.FirstOrDefault(iv => iv.Id == client.IvaConditionId).Description,
+                    Total = string.Format("{0:C2}", sale.Total),
+                    CdoCbe = 999.ToString(),
+                    CuitE = commerceData.CUIT.ToString(),
+                    CuitR = client.DocumentNumber.ToString(),
+                    PtoVenta = sale.SalePoint.ToString(),
+                    NroCbe = sale.SaleNumber.ToString(),
+                    Leyenda = client.LegendBudget,
+
+                });
+                if (itemDetail.Discount != 0)
+                {
+                    string dicount = string.Format("{0:C2}", ((itemDetail.Quantity * itemDetail.Price) + (itemDetail.Quantity * itemDetail.Price * itemDetail.Tax.Rate) / 100) * itemDetail.Discount / 100);
+                    string text = "Descuento";
+                    string value = string.Format("{0}: {1}%", text, itemDetail.Discount * -1);
+
+                    response.Add(new InvoiceReportViewModel
+                    {
+                        DiscountText = discountText,
+                        DiscountValue = string.Format("{0:C2}", discountValue),
+                        Cantidad = "1",
+                        Descripcion = value,
+                        PrecioUni = dicount,    //,string.Format("{0:C2}", itemDetail.Price),
+                        SubTotalItem = dicount, //string.Format("{0:C2}", itemDetail.SubTotal),
+                        RazonSocialE = commerceData.BusinessName,
+                        IIBB = commerceData.IIBB,
+                        EmailE = commerceData.Email,
+                        DireccionE = commerceData.Address,
+                        FechaInicio = string.Format("{0:dd/MM/yyyy}", commerceData.ActivityStartDate),
+                        TelefonoE = commerceData.Phone,
+                        RazonSocialR = client.BusinessName,
+                        DireccionR = client.Address,
+                        TelefonoR = client.Phone,
+                        EmailR = client.Email,
+                        CondicionVenta = sale.PaidOut ? "Contado" : "Cuenta Corriente",
+                        SubTotal = string.Format("{0:C2}", sale.SubTotal),
+                        NombreCbe = nombreCbe,
+                        FechaEmision = string.Format("{0:dd/MM/yyyy}", sale.SaleDate),
+                        CondicionIvaR = ivaConditions.FirstOrDefault(iv => iv.Id == client.IvaConditionId).Description,
+                        Total = string.Format("{0:C2}", sale.Total),
+                        CdoCbe = 999.ToString(),
+                        CuitE = commerceData.CUIT.ToString(),
+                        CuitR = client.DocumentNumber.ToString(),
+                        PtoVenta = sale.SalePoint.ToString(),
+                        NroCbe = sale.SaleNumber.ToString(),
+                        Leyenda = client.LegendBudget,
+                    });
+                }
+            }
+
+
 
             return response.ToList();
         }

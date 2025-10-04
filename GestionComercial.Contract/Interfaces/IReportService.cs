@@ -11,5 +11,8 @@ namespace GestionComercial.Contract.Interfaces
     {
         [OperationContract]
         Task<ReportResponse> GenerateInvoicePDFAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura);
+        
+        [OperationContract] 
+        Task<ReportResponse> GenerateSalePDFAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura);
     }
 }

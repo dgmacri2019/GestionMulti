@@ -7,7 +7,7 @@
         MinHeight="800"
         MinWidth="1024"
         Width="1024"
-        Height="900"
+        Height="850"
         Loaded="miUserControl_Loaded" 
         KeyDown="Window_KeyDown"
         Background="LightGray"
@@ -40,25 +40,35 @@
                 </Button>
 
                 <!-- Buscar -->
-                <Button x:Name="btnBuscar" Width="40" Height="40" Margin="0,10"
+                <!--<Button x:Name="btnBuscar" Width="40" Height="40" Margin="0,10"
                         ToolTip="Buscar"
                         Click="BtnBuscar_Click">
                     <Image Source="/Images/search 24.png" Width="24" Height="24"/>
-                </Button>
+                </Button>-->
 
-                <!-- Guardar -->
-                <Button x:Name="btnGuardar" Width="40" Height="40" Margin="0,10"
-                        ToolTip="Guardar (F2)"
+                <!-- Proforma -->
+                <Button x:Name="btnAdd" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Proforma (F10)"
                         Click="BtnAdd_Click">
-                    <Image Source="/Images/Save File 24.png" Width="24" Height="24"/>
+                    <Image Source="/Images/Sale Order 24.png" Width="24" Height="24"/>
                 </Button>
 
+                
+                <!-- Proforma -->
+                <Button x:Name="btnInvoice" Width="40" Height="40" Margin="0,10"
+                        ToolTip="Factura (F12)"
+                        Click="BtnInvoice_Click">
+                    <Image Source="/Images/Arca.png" Width="24" Height="24"/>
+                </Button>
+
+                
+                
                 <!-- Imprimir -->
-                <Button x:Name="btnImprimir" Width="40" Height="40" Margin="0,10"
+                <!--<Button x:Name="btnImprimir" Width="40" Height="40" Margin="0,10"
                         ToolTip="Imprimir"
                         Click="BtnImprimir_Click">
                     <Image Source="/Images/Print 24.png" Width="24" Height="24"/>
-                </Button>
+                </Button>-->
 
                 <!-- Cancelar -->
                 <!--

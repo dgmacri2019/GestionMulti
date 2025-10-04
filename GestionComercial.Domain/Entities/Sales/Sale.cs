@@ -1,7 +1,7 @@
 ﻿using GestionComercial.Domain.Entities.BoxAndBank;
 using GestionComercial.Domain.Entities.Masters;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestionComercial.Domain.Entities.Sales
 {
@@ -62,8 +62,8 @@ namespace GestionComercial.Domain.Entities.Sales
 
         public string SaleNumberString => string.Format("{0:00000}-{1:00000000}", SalePoint, SaleNumber);
 
-
-
+        [NotMapped]
+        public bool GenerateInvoice { get; set; }
 
 
         //[JsonIgnore]

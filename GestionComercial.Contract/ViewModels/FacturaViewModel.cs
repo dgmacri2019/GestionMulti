@@ -25,5 +25,7 @@ namespace GestionComercial.Contract.ViewModels
         public long DocNro { get; set; }
         [DataMember] 
         public string CAE { get; set; }
+        [DataMember] 
+        public string Leyenda { get; set; }
     }
 }

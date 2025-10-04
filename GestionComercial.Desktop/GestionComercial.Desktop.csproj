@@ -52,6 +52,7 @@
     <None Remove="Images\Add User 32.png" />
     <None Remove="Images\Add User 48.png" />
     <None Remove="Images\ala_tiendas.png" />
+    <None Remove="Images\Arca.png" />
     <None Remove="Images\Back 128.png" />
     <None Remove="Images\Back 16.png" />
     <None Remove="Images\Back 24.png" />
@@ -458,6 +459,13 @@
     <None Remove="Images\Sale List 32.png" />
     <None Remove="Images\Sale List 512.png" />
     <None Remove="Images\Sale List 64.png" />
+    <None Remove="Images\Sale Order 128.png" />
+    <None Remove="Images\Sale Order 16.png" />
+    <None Remove="Images\Sale Order 24.png" />
+    <None Remove="Images\Sale Order 256.png" />
+    <None Remove="Images\Sale Order 32.png" />
+    <None Remove="Images\Sale Order 512.png" />
+    <None Remove="Images\Sale Order 64.png" />
     <None Remove="Images\Sales 16.png" />
     <None Remove="Images\Sales 20.png" />
     <None Remove="Images\Sales 24.png" />
@@ -666,6 +674,7 @@
     <Resource Include="Images\Add User 32.png" />
     <Resource Include="Images\Add User 48.png" />
     <Resource Include="Images\ala_tiendas.png" />
+    <Resource Include="Images\Arca.png" />
     <Resource Include="Images\Back 128.png" />
     <Resource Include="Images\Back 16.png" />
     <Resource Include="Images\Back 24.png" />
@@ -1072,6 +1081,13 @@
     <Resource Include="Images\Sale List 32.png" />
     <Resource Include="Images\Sale List 512.png" />
     <Resource Include="Images\Sale List 64.png" />
+    <Resource Include="Images\Sale Order 128.png" />
+    <Resource Include="Images\Sale Order 16.png" />
+    <Resource Include="Images\Sale Order 24.png" />
+    <Resource Include="Images\Sale Order 256.png" />
+    <Resource Include="Images\Sale Order 32.png" />
+    <Resource Include="Images\Sale Order 512.png" />
+    <Resource Include="Images\Sale Order 64.png" />
     <Resource Include="Images\Sales 16.png" />
     <Resource Include="Images\Sales 20.png" />
     <Resource Include="Images\Sales 24.png" />

@@ -176,6 +176,97 @@ namespace GestionComercial.ReportServiceHost.Services
                                  r.DiscountText,
                                  QrBytes = qrCode,
                                  factura.LogoByte,
+                                 factura.Leyenda,
+                             }).ToList();
+
+                // 📌 Generar reporte
+                using (var reportDocument = new ReportDocument())
+                {
+                    reportDocument.Load(reportName);
+                    reportDocument.SetDataSource(query);
+
+                    using (var stream = reportDocument.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat))
+                    using (var ms = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(ms);
+                        response.Bytes = ms.ToArray();
+                    }
+                }
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+
+        }
+    
+        public async Task<ReportResponse> GenerateSalePDFAsync(List<InvoiceReportViewModel> model, FacturaViewModel factura)
+        {
+            ReportResponse response = new ReportResponse { Success = false };
+            try
+            {
+                string cbeRptName = "Proforma.rpt", letraCbe = "X", pdfPath = string.Empty, name = string.Empty, reportName = string.Empty;
+      
+               
+                reportName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports", "Invoices", cbeRptName);
+                PaperSize _paperSize = new PaperSize
+                {
+                    PaperName = "Custom",
+                    RawKind = 9,
+                };
+
+                var query = (from r in model.ToList()
+                             select new
+                             {
+                                 r.CAE,
+                                 r.Cantidad,
+                                 r.CdoCbe,
+                                 r.CondicionIvaR,
+                                 r.CondicionVenta,
+                                 r.CuitE,
+                                 r.CuitR,
+                                 r.Descripcion,
+                                 r.DireccionE,
+                                 r.DireccionR,
+                                 r.EmailE,
+                                 r.EmailR,
+                                 r.FechaDesde,
+                                 r.FechaEmision,
+                                 r.FechaHasta,
+                                 r.FechaInicio,
+                                 r.FechaVtoCAE,
+                                 r.FechaVtoPago,
+                                 r.IIBB,
+                                 r.Iva0,
+                                 r.Iva105,
+                                 r.Iva21,
+                                 r.Iva25,
+                                 r.Iva27,
+                                 r.Iva5,
+                                 r.NombreCbe,
+                                 r.NroCbe,
+                                 r.PrecioUni,
+                                 r.PtoVenta,
+                                 r.RazonSocialE,
+                                 r.RazonSocialR,
+                                 r.SubTotal,
+                                 r.SubTotalItem,
+                                 r.TelefonoE,
+                                 r.TelefonoR,
+                                 r.Total,
+                                 r.CBU,
+                                 r.Alias,
+                                 r.Ajuste,
+                                 r.CondicionIvaE,
+                                 r.IvaTotal,
+                                 LetraCbe = letraCbe,
+                                 r.DiscountValue,
+                                 r.DiscountText,
+                                 factura.LogoByte,
+                                 factura.Leyenda,
                              }).ToList();
 
                 // 📌 Generar reporte

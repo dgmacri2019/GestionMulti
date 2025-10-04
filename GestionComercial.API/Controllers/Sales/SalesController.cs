@@ -1,7 +1,16 @@
-﻿using GestionComercial.API.Security;
+﻿using GestionComercial.API.Helpers;
+using GestionComercial.API.NamedPipe;
+using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
+using GestionComercial.Applications.Services;
+using GestionComercial.Contract.Responses;
+using GestionComercial.Contract.ViewModels;
+using GestionComercial.Domain.DTOs.Client;
+using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.Sale;
+using GestionComercial.Domain.Entities.Afip;
+using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -20,17 +29,22 @@ namespace GestionComercial.API.Controllers.Sales
         private readonly IMasterService _masterService;
         private readonly ISalesNotifier _notifierSales;
         private readonly IArticlesNotifier _notifierArticles;
-        private readonly IClientsNotifier _notifierClients;
+        private readonly IClientsNotifier _notifierClients; 
+        private readonly IMasterClassService _masterClassService;
+        private readonly IClientService _clientService;
 
 
         public SalesController(ISalesService saleService, IMasterService masterService,
-            ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients)
+            ISalesNotifier notifierSales, IArticlesNotifier notifierArticles, IClientsNotifier notifierClients, 
+            IMasterClassService masterClassService, IClientService clientService)
         {
             _saleService = saleService;
             _masterService = masterService;
             _notifierSales = notifierSales;
             _notifierArticles = notifierArticles;
             _notifierClients = notifierClients;
+            _masterClassService = masterClassService;
+            _clientService = clientService;
         }
 
 
@@ -50,6 +64,48 @@ namespace GestionComercial.API.Controllers.Sales
                     articlesId.Add(saleDetail.ArticleId);
                 if (articlesId.Count > 0)
                     await _notifierArticles.NotifyAsync(articlesId, "Venta Creada", ChangeType.Updated);
+
+
+                if(!sale.GenerateInvoice)
+                {
+                    CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
+                    if (commerceData == null)
+                        return BadRequest(new InvoiceResponse { Success = false, Message = "No se puede emitir la proforma porque los datos del comercio no se pueden leer" });
+                    ClientViewModel? client = await _clientService.GetByIdAsync(sale.ClientId);
+                    if (client == null)
+                        return BadRequest(new InvoiceResponse { Success = false, Message = "No se puede emitir la proforma porque los datos del cliente no se pueden leer" });
+                   IEnumerable<IvaCondition> ivaConditions = await _masterClassService.GetAllIvaConditionsAsync(true, false);
+                    if (ivaConditions == null || ivaConditions.Count() == 0)
+                        return BadRequest(new InvoiceResponse { Success = false, Message = "No se puede emitir la proforma porque los datos de condiciones de IVA no se pueden leer" });
+                    IvaCondition? ivaCondition = ivaConditions.Where(ic => ic.Id == client.IvaConditionId).FirstOrDefault();
+                    if (ivaCondition == null)
+                        return BadRequest(new InvoiceResponse { Success = false, Message = "No se puede emitir la proforma porque los datos de condicion de IVA no se pueden leer" });
+                   
+
+                    IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
+                    List<InvoiceReportViewModel> model = ToReportConverterHelper
+                        .ToSaleReport(sale, commerceData, client, saleConditions.ToList(), ivaConditions.ToList());
+                    FacturaViewModel factura = new()
+                    {
+                        //CAE = invoiceResponse.Invoice.CAE,
+                        //CompNro = invoiceResponse.Invoice.CompNro,
+                        //CompTypeId = invoiceResponse.Invoice.CompTypeId,
+                        //Cuit = invoiceResponse.Invoice.Cuit,
+                        //DocNro = invoiceResponse.Invoice.ClientDocNro,
+                        //DocType = invoiceResponse.Invoice.ClientDocType,
+                        //ImpTotal = invoiceResponse.Invoice.ImpTotal,
+                        //InvoiceDate = invoiceResponse.Invoice.InvoiceDate,
+                        //PtoVenta = invoiceResponse.Invoice.PtoVenta,
+                        LogoByte = commerceData.LogoByteArray,
+                    };
+                    ReportClient reportClient = new();
+
+                    ReportResponse reportResponse = await reportClient.GenerateSalePdfAsync(model, factura);
+                }
+
+
+
+
 
                 return
                     Ok(resultAdd);
