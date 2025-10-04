@@ -101,20 +101,14 @@ namespace GestionComercial.API.Controllers.Sales
                     ReportClient reportClient = new();
 
                     ReportResponse reportResponse = await reportClient.GenerateSalePdfAsync(model, factura);
-                    return reportResponse.Success ?
-                      Ok(new SaleResponse
-                      {
-                          Success = true,
-                          Message = "Proforma generada correctamente",
-                          Bytes = reportResponse.Bytes
-                      })
-                      :
+                    if(!reportResponse.Success)
+                    return 
                       BadRequest(new SaleResponse
                       {
                           Success = false,
                           Message = reportResponse.Message,
                       });
-
+                    resultAdd.Bytes = reportResponse.Bytes;
                 }
                 return
                     Ok(resultAdd);

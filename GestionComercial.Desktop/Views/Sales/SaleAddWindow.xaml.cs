@@ -1127,7 +1127,7 @@ namespace GestionComercial.Desktop.Views.Sales
                             sale.PartialPay = totalpay > 0 && totalpay < sale.Total;
 
                             SaleViewModel? saleCheck = SaleCache.Instance.GetAllSales().Where(s => s.SalePoint == sale.SalePoint && s.SaleNumber == sale.SaleNumber).FirstOrDefault();
-
+                            sale.GenerateInvoice = generateInvoice;
                             if (saleCheck == null)
                             {
                                 SaleResponse resultAddSale = await _salesApiService.AddAsync(sale);
