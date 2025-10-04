@@ -211,7 +211,7 @@ namespace GestionComercial.ReportServiceHost.Services
                 string cbeRptName = "Proforma.rpt", letraCbe = "X", pdfPath = string.Empty, name = string.Empty, reportName = string.Empty;
       
                
-                reportName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports", "Invoices", cbeRptName);
+                reportName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports", "Sales", cbeRptName);
                 PaperSize _paperSize = new PaperSize
                 {
                     PaperName = "Custom",
