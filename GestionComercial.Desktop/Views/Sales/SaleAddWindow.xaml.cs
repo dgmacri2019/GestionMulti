@@ -1139,6 +1139,13 @@ namespace GestionComercial.Desktop.Views.Sales
                                         if (!resultAddInvoice.Success)
                                         {
                                             lblError.Text = resultAddInvoice.Message;
+                                            MsgBoxAlertHelper.MsgAlertError(resultAddInvoice.Message);
+                                            ClearClient();
+                                            ArticleItems.Clear();
+                                            txtClientCode.Focus();
+                                            txtClientCode.Text = string.Empty;
+                                            SaleNumber++;
+                                            await LoadSaleAsync();
                                             return;
                                         }
                                         Print(resultAddInvoice.Bytes, true);
@@ -1232,6 +1239,7 @@ namespace GestionComercial.Desktop.Views.Sales
             txtEmail.Text = string.Empty;
             chSendEmail.IsChecked = false;
             cbPriceLists.SelectedValue = 0;
+            lblError.Text = string.Empty;
             //cbSaleConditions.SelectedValue = 0;
         }
 

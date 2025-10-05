@@ -250,7 +250,7 @@ namespace Afip.PublicServices.Services
                 long cbteDesdeHasta = resultLastCbte.LastCbte + 1;
                 if (invoice.InvoiceDetails != null)
                     foreach (InvoiceDetail invoiceDetail in invoice.InvoiceDetails)
-                        if (invoiceDetail.ImporteIva > 0)
+                        if (invoiceDetail.ImporteIva > 0 || invoiceDetail.IvaId == 3)
                         {
                             alicIvas.Add(new AlicIva
                             {
