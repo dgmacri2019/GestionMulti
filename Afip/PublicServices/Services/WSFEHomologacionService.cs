@@ -250,7 +250,7 @@ namespace Afip.PublicServices.Services
                 long cbteDesdeHasta = resultLastCbte.LastCbte + 1;
                 if (invoice.InvoiceDetails != null)
                     foreach (InvoiceDetail invoiceDetail in invoice.InvoiceDetails)
-                        if (invoiceDetail.ImporteIva > 0 || invoiceDetail.IvaId == 3)
+                        if (invoiceDetail.ImporteIva > 0 || (invoiceDetail.IvaId == 3 && invoiceDetail.BaseImpIva > 0))
                         {
                             alicIvas.Add(new AlicIva
                             {
@@ -327,7 +327,7 @@ namespace Afip.PublicServices.Services
                             MonId = "PES",
                             MonCotiz = 1,
                             Tributos = null,
-                            Iva = alicIvas.ToArray(),
+                            Iva = invoice.CompTypeId == 211 ? null : alicIvas.ToArray(),
                             CbtesAsoc = cbteAsoc,
                             CondicionIVAReceptorId = invoice.ReceptorIvaId,
                         };
