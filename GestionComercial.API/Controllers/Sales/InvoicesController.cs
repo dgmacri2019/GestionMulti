@@ -83,7 +83,7 @@ namespace GestionComercial.API.Controllers.Sales
 
                     if (!billing.UseWSDL)
                         return BadRequest(new InvoiceResponse { Success = false, Message = "El servicio de facturación electrónica no se encuentra habilitado.\n Debe habilitarlo desde la sección Configuracion - Datos Fiscales" });
-
+                    IEnumerable<Tax> taxes = await _masterClassService.GetAllTaxesAsync(true, false);
                     int compTypeId;
                     if (commerceData.IvaConditionId == 1)
                     {
@@ -238,7 +238,7 @@ namespace GestionComercial.API.Controllers.Sales
                     IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
 
                     List<InvoiceReportViewModel> model = ToReportConverterHelper
-                        .ToInvoiceReport(sale, invoice, commerceData, client, saleConditions.ToList(), ivaConditions.ToList());
+                        .ToInvoiceReport(sale, invoice, commerceData, client, saleConditions.ToList(), ivaConditions.ToList(), taxes.ToList());
                     FacturaViewModel factura = new()
                     {
                         CAE = invoice.CAE,
@@ -251,6 +251,7 @@ namespace GestionComercial.API.Controllers.Sales
                         InvoiceDate = invoice.InvoiceDate,
                         PtoVenta = invoice.PtoVenta,
                         LogoByte = commerceData.LogoByteArray,
+                        Leyenda = client.LegendInvoices,
                     };
                     ReportClient reportClient = new();
 

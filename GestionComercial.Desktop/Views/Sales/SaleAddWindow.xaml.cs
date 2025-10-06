@@ -6,6 +6,7 @@ using GestionComercial.Domain.DTOs.Client;
 using GestionComercial.Domain.DTOs.PriceLists;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.DTOs.Stock;
+using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Helpers;
@@ -1292,6 +1293,12 @@ namespace GestionComercial.Desktop.Views.Sales
         private Sale ToSale(SaleViewModel saleViewModel, ObservableCollection<ArticleItem> articleItems)
         {
             List<SaleDetail> saleDetails = [];
+
+            ClientViewModel client = ClientCache.Instance.FindByOptionalCode(txtClientCode.Text);
+            CommerceData commerceData = MasterCache.Instance.GetCommerceData();
+            List<Tax> taxes = MasterCache.Instance.GetTaxes();
+            //bool usePrice = commerceData.IvaConditionId == 1 && (client.IvaConditionId == 1 || client.IvaConditionId == 2);
+
             foreach (ArticleItem item in articleItems.Where(ai => !string.IsNullOrEmpty(ai.Code)))
             {
                 ArticleViewModel article = ArticleCache.Instance.FindByCodeOrBarCode(item.Code);
@@ -1307,9 +1314,9 @@ namespace GestionComercial.Desktop.Views.Sales
                         Discount = item.Bonification,
                         IsDeleted = false,
                         IsEnabled = true,
-                        Price = item.Price,
+                        Price = /*usePrice ?*/ item.Price /*: item.FinalPrice*/,
                         Quantity = item.Quantity,
-                        SubTotal = item.Subtotal,
+                        SubTotal = /*usePrice ?*/ item.Subtotal /*: item.Subtotal + (item.Subtotal * taxes.Where(t => t.Id == article.TaxId).FirstOrDefault().Rate / 100)*/,
                         TotalItem = item.Total,
                         TaxId = article.TaxId,
                         List = item.PriceListId,
@@ -1334,11 +1341,16 @@ namespace GestionComercial.Desktop.Views.Sales
             decimal iva5 = saleDetails.Any(sd => sd.TaxId == 5) ? saleDetails.Where(sd => sd.TaxId == 5).Sum(sd => sd.TotalItem / 1.05m) * 5m / 100 : 0;
             decimal iva25 = saleDetails.Any(sd => sd.TaxId == 6) ? saleDetails.Where(sd => sd.TaxId == 6).Sum(sd => sd.TotalItem / 1.025m) * 2.5m / 100 : 0;
 
-            decimal subTotal = baseimp105 + baseimp21 + baseimp27 + baseimp0 + baseimp25 + baseimp5;
+            decimal subTotal = /*usePrice ?*/ baseimp105 + baseimp21 + baseimp27 + baseimp0 + baseimp25 + baseimp5;
+            //: baseimp105 + baseimp21 + baseimp27 + baseimp0 + baseimp25 + baseimp5 + iva105 + iva21 + iva27 + iva0 + iva25 + iva5;
+            decimal total = /*usePrice ?*/ subTotal + iva105 + iva21 + iva27 + iva0 + iva25 + iva5; /*- (subTotal * saleViewModel.GeneralDiscount / 100)*/
+                //: subTotal /*- (subTotal * saleViewModel.GeneralDiscount / 100)*/;
+            total -= total * SaleViewModel.GeneralDiscount / 100;
+
 
             return new Sale
             {
-                ClientId = ClientCache.Instance.FindByOptionalCode(txtClientCode.Text).Id,
+                ClientId = client.Id,
                 CreateDate = DateTime.Now,
                 CreateUser = LoginUserCache.UserName,
                 IsDeleted = false,
@@ -1350,7 +1362,7 @@ namespace GestionComercial.Desktop.Views.Sales
                 SalePoint = saleViewModel.SalePoint,
                 SaleNumber = saleViewModel.SaleNumber,
                 SubTotal = subTotal,
-                Total = subTotal + iva105 + iva21 + iva27 - (subTotal * saleViewModel.GeneralDiscount / 100),
+                Total = total,
                 //SaleCondition = saleViewModel.SaleCondition,
                 BaseImp0 = baseimp0,
                 BaseImp105 = baseimp105 - (baseimp105 * saleViewModel.GeneralDiscount / 100),
