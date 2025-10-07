@@ -26,7 +26,7 @@ namespace GestionComercial.Desktop.Controls.Sales
             InitializeComponent();
             btnAdd.Visibility = AutorizeOperationHelper.ValidateOperation(ModuleType.Sales, "Ventas-Agregar") ? Visibility.Visible : Visibility.Collapsed;
             _salesApiService = new SalesApiService();
-            _invoicesApiService = new InvoicesApiService(); 
+            _invoicesApiService = new InvoicesApiService();
             DataContext = new SaleListViewModel();
         }
 
@@ -73,48 +73,55 @@ namespace GestionComercial.Desktop.Controls.Sales
                 if (saleResponse.Success)
                     Print(saleResponse.Bytes, false);
             }
-            
+
         }
 
 
 
         private void Print(byte[] bytes, bool isInvoice)
         {
-            if (isInvoice && ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintInvoice)
+            try
             {
-                string printerName = ParameterCache.Instance.GetPrinterParameter().InvoicePrinter;
-
-                using (var ms = new MemoryStream(bytes))
-                using (var document = PdfiumViewer.PdfDocument.Load(ms))
+                if (isInvoice && ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintInvoice)
                 {
-                    using (var printDocument = document.CreatePrintDocument())
-                    {
-                        printDocument.PrinterSettings = new PrinterSettings
-                        {
-                            PrinterName = printerName
-                        };
+                    string printerName = ParameterCache.Instance.GetPrinterParameter().InvoicePrinter;
 
-                        printDocument.Print();
+                    using (var ms = new MemoryStream(bytes))
+                    using (var document = PdfiumViewer.PdfDocument.Load(ms))
+                    {
+                        using (var printDocument = document.CreatePrintDocument())
+                        {
+                            printDocument.PrinterSettings = new PrinterSettings
+                            {
+                                PrinterName = printerName
+                            };
+
+                            printDocument.Print();
+                        }
+                    }
+                }
+                else if (ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintSale)
+                {
+                    string printerName = ParameterCache.Instance.GetPrinterParameter().SalePrinter;
+
+                    using (var ms = new MemoryStream(bytes))
+                    using (var document = PdfiumViewer.PdfDocument.Load(ms))
+                    {
+                        using (var printDocument = document.CreatePrintDocument())
+                        {
+                            printDocument.PrinterSettings = new PrinterSettings
+                            {
+                                PrinterName = printerName
+                            };
+
+                            printDocument.Print();
+                        }
                     }
                 }
             }
-            else if (ParameterCache.Instance.HasDataPcPrinterParameter && ParameterCache.Instance.GetPrinterParameter().EnablePrintSale)
+            catch (Exception ex)
             {
-                string printerName = ParameterCache.Instance.GetPrinterParameter().SalePrinter;
-
-                using (var ms = new MemoryStream(bytes))
-                using (var document = PdfiumViewer.PdfDocument.Load(ms))
-                {
-                    using (var printDocument = document.CreatePrintDocument())
-                    {
-                        printDocument.PrinterSettings = new PrinterSettings
-                        {
-                            PrinterName = printerName
-                        };
-
-                        printDocument.Print();
-                    }
-                }
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
             }
         }
 
