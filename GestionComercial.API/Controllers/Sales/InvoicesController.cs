@@ -211,7 +211,7 @@ namespace GestionComercial.API.Controllers.Sales
                     //    :
                     //    await _wSFEProduccion.SolicitarCAEAsync(invoice, 0);
 
-                    if (string.IsNullOrEmpty(invoiceResponse.CAE))
+                    if (string.IsNullOrEmpty(invoice.CAE))
                     {
                         InvoiceResponse resultAfip = await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0);
 
