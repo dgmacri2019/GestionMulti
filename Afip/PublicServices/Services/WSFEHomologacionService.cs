@@ -298,11 +298,11 @@ namespace Afip.PublicServices.Services
                     [
                         new CbteAsoc
                         {
-                            CbteFch = invoice.InvoiceDate,
-                            Cuit = invoice.Cuit.ToString(),
-                            Nro = invoice.CompNro,
-                            PtoVta = invoice.PtoVenta,
-                            Tipo = invoice.CompTypeId
+                            CbteFch = invoiceAnular.Invoice.InvoiceDate,
+                            Cuit = invoiceAnular.Invoice.Cuit.ToString(),
+                            Nro = invoiceAnular.Invoice.CompNro,
+                            PtoVta = invoiceAnular.Invoice.PtoVenta,
+                            Tipo = invoiceAnular.Invoice.CompTypeId
                         },
                     ];
                     if (invoice.CompTypeId == 201 || invoice.CompTypeId == 206 || invoice.CompTypeId == 211)

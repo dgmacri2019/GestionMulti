@@ -12,6 +12,7 @@ using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
+using GestionComercial.Domain.Helpers;
 using GestionComercial.Domain.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -108,8 +109,66 @@ namespace GestionComercial.API.Controllers.Sales
             else return BadRequest(resultAdd);
         }
 
+        [HttpPost("PrintAsync")]
+        public async Task<IActionResult> PrintAsync([FromBody] SaleFilterDto filter)
+        {
+            if (filter.Id == 0)
+                return BadRequest(new SaleResponse { Success = false, Message = "Debe informar la venta" });
+            SaleResponse response = new() { Success = false };
+            try
+            {
+                SaleResponse saleResponse = await _saleService.GetByIdAsync(filter.Id);
+                if (!saleResponse.Success)
+                    return BadRequest(saleResponse);
+                if(saleResponse.SaleViewModel == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se encontro la venta" });
+
+                Sale sale = ConverterHelper.ToSale(saleResponse.SaleViewModel, false);
 
 
+                CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
+                if (commerceData == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos del comercio no se pueden leer" });
+                ClientViewModel? client = await _clientService.GetByIdAsync(sale.ClientId);
+                if (client == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos del cliente no se pueden leer" });
+                IEnumerable<IvaCondition> ivaConditions = await _masterClassService.GetAllIvaConditionsAsync(true, false);
+                if (ivaConditions == null || ivaConditions.Count() == 0)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos de condiciones de IVA no se pueden leer" });
+                IvaCondition? ivaCondition = ivaConditions.Where(ic => ic.Id == client.IvaConditionId).FirstOrDefault();
+                if (ivaCondition == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos de condicion de IVA no se pueden leer" });
+                IEnumerable<Tax> taxes = await _masterClassService.GetAllTaxesAsync(true, false);
+
+                IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
+                List<InvoiceReportViewModel> model = ToReportConverterHelper
+                    .ToSaleReport(sale, commerceData, client, saleConditions.ToList(), ivaConditions.ToList(), taxes.ToList());
+                FacturaViewModel factura = new()
+                {
+                    LogoByte = commerceData.LogoByteArray,
+                    Leyenda = client.LegendBudget,
+                };
+                ReportClient reportClient = new();
+
+                ReportResponse reportResponse = await reportClient.GenerateSalePdfAsync(model, factura);
+                if (!reportResponse.Success)
+                    return
+                      BadRequest(new SaleResponse
+                      {
+                          Success = false,
+                          Message = reportResponse.Message,
+                      });
+                response.Bytes = reportResponse.Bytes;
+                response.Success = true;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                return BadRequest(response);
+            }
+            
+        }
         [HttpPost("UpdateAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] Sale sale)
         {

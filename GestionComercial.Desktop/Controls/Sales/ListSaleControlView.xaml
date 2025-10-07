@@ -138,7 +138,24 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
+                <DataGridTemplateColumn Header="Acciones" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                <Button Content="Imprimir" 
+                        Style="{StaticResource BtnDisables}" 
+                        Padding="5,0"
+                        Tag="{Binding Id}" 
+                        Click="BtnPrint_Click"/>
+                                <Button Content="Facturar" 
+                        Style="{StaticResource BtnDisables}" 
+                        Padding="5,0"
+                        Tag="{Binding Id}" 
+                        Click="BtnConvertInvoice_Click"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 

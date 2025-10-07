@@ -278,12 +278,12 @@ namespace GestionComercial.API.Controllers.Sales
                     // else
                     //     return BadRequest(new SaleResponse { Success = false, Message = "Ya se genero esa factura" });
                 }
-                else return BadRequest(new SaleResponse { Success = false, Message = $"No se encontro la venta que desea facturar el error fue:\n{saleResponse.Message}" });
+                else return BadRequest(new InvoiceResponse { Success = false, Message = $"No se encontro la venta que desea facturar el error fue:\n{saleResponse.Message}" });
 
             }
             catch (Exception ex)
             {
-                return BadRequest(new SaleResponse
+                return BadRequest(new InvoiceResponse
                 {
                     Success = false,
                     Message = ex.Message,

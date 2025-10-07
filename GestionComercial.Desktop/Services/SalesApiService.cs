@@ -241,5 +241,27 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
+        internal async Task<SaleResponse> PrintAsync(int saleId)
+        {
+            try
+            {
+
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("PrintAsync", new
+                {
+                    Id = saleId,
+                });
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);
+
+            }
+            catch (Exception ex)
+            {
+                return new SaleResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
+        }
     }
 }
