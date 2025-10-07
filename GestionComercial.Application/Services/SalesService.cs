@@ -8,6 +8,7 @@ using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
 using GestionComercial.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace GestionComercial.Applications.Services
 {
@@ -121,11 +122,16 @@ namespace GestionComercial.Applications.Services
                        .Take(pageSize)
                        .ToListAsync();
 
+                // 👇 Traigo las facturas asociadas a las ventas que obtuve
+                List<int>? saleIds = sales.Select(s => s.Id).ToList();
+                List<Invoice>? invoices = await _context.Invoices
+                    .Where(i => saleIds.Contains(i.SaleId))
+                    .ToListAsync();
 
                 return new SaleResponse
                 {
                     Success = true,
-                    SaleViewModels = ToSaleViewModelsList(sales),
+                    SaleViewModels = ToSaleViewModelsList(sales, invoices),
                 };
             }
             catch (Exception ex)
@@ -156,11 +162,18 @@ namespace GestionComercial.Applications.Services
                        .Take(pageSize)
                        .ToListAsync();
 
+                // 👇 Traigo las facturas asociadas a las ventas que obtuve
+                List<int>? saleIds = sales.Select(s => s.Id).ToList();
+                List<Invoice>? invoices = await _context.Invoices
+                    .Where(i => saleIds.Contains(i.SaleId))
+                    .ToListAsync();
+
+
 
                 return new SaleResponse
                 {
                     Success = true,
-                    SaleViewModels = ToSaleViewModelsList(sales),
+                    SaleViewModels = ToSaleViewModelsList(sales, invoices),
                 };
             }
             catch (Exception ex)
@@ -231,56 +244,72 @@ namespace GestionComercial.Applications.Services
         }
 
 
-        
 
-        private List<SaleViewModel> ToSaleViewModelsList(List<Sale> sales)
+
+        private List<SaleViewModel> ToSaleViewModelsList(List<Sale> sales, List<Invoice> invoices)
         {
-            return sales.Select(sale => new SaleViewModel
+            List<SaleViewModel> saleViewModels = sales.Select(sale =>
             {
-                Id = sale.Id,
-                CreateDate = sale.CreateDate,
-                CreateUser = sale.CreateUser,
-                IsDeleted = sale.IsDeleted,
-                IsEnabled = sale.IsEnabled,
-                UpdateDate = sale.UpdateDate,
-                UpdateUser = sale.UpdateUser,
-                Acreditations = sale.Acreditations,
-                AutorizationCode = sale.AutorizationCode,
-                BaseImp105 = sale.BaseImp105,
-                BaseImp21 = sale.BaseImp21,
-                BaseImp27 = sale.BaseImp27,
-                ClientId = sale.ClientId,
-                GeneralDiscount = sale.GeneralDiscount,
-                InternalTax = sale.InternalTax,
-                IsFinished = sale.IsFinished,
-                PaidOut = sale.PaidOut,
-                PartialPay = sale.PartialPay,
-                SaleDate = sale.SaleDate,
-                SaleDetails = sale.SaleDetails,
-                SaleNumber = sale.SaleNumber,
-                SalePayMetodDetails = sale.SalePayMetodDetails,
-                SalePoint = sale.SalePoint,
-                Sold = sale.Sold,
-                SubTotal = sale.SubTotal,
-                Total = sale.Total,
-                TotalIVA105 = sale.TotalIVA105,
-                TotalIVA21 = sale.TotalIVA21,
-                TotalIVA27 = sale.TotalIVA27,
-                Client = sale.Client,
-                Date = sale.SaleDate,
-                TotalIVA25 = sale.TotalIVA25,
-                BaseImp5 = sale.BaseImp5,
-                BaseImp0 = sale.BaseImp0,
-                BaseImp25 = sale.BaseImp25,
-                TotalIVA5 = sale.TotalIVA5,
-                //Clients = clients,
-                //SaleConditions = saleConditions,
-                //PriceLists = priceLists,
-                //SaleCondition = sale.SaleCondition,
-                //SaleConditionId = sale.SaleConditionId,
+                Invoice? invoice = invoices.FirstOrDefault(i => i.SaleId == sale.Id);
+                DateTime? invoiceDate = null;
+                if (invoice != null)
+                    invoiceDate = DateTime.ParseExact(invoice?.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date;
+
+                return new SaleViewModel
+                {
+                    Id = sale.Id,
+                    CreateDate = sale.CreateDate,
+                    CreateUser = sale.CreateUser,
+                    IsDeleted = sale.IsDeleted,
+                    IsEnabled = sale.IsEnabled,
+                    UpdateDate = sale.UpdateDate,
+                    UpdateUser = sale.UpdateUser,
+                    Acreditations = sale.Acreditations,
+                    AutorizationCode = sale.AutorizationCode,
+                    BaseImp105 = sale.BaseImp105,
+                    BaseImp21 = sale.BaseImp21,
+                    BaseImp27 = sale.BaseImp27,
+                    ClientId = sale.ClientId,
+                    GeneralDiscount = sale.GeneralDiscount,
+                    InternalTax = sale.InternalTax,
+                    IsFinished = sale.IsFinished,
+                    PaidOut = sale.PaidOut,
+                    PartialPay = sale.PartialPay,
+                    SaleDate = sale.SaleDate,
+                    SaleDetails = sale.SaleDetails,
+                    SaleNumber = sale.SaleNumber,
+                    SalePayMetodDetails = sale.SalePayMetodDetails,
+                    SalePoint = sale.SalePoint,
+                    Sold = sale.Sold,
+                    SubTotal = sale.SubTotal,
+                    Total = sale.Total,
+                    TotalIVA105 = sale.TotalIVA105,
+                    TotalIVA21 = sale.TotalIVA21,
+                    TotalIVA27 = sale.TotalIVA27,
+                    Client = sale.Client,
+                    Date = sale.SaleDate,
+                    TotalIVA25 = sale.TotalIVA25,
+                    BaseImp5 = sale.BaseImp5,
+                    BaseImp0 = sale.BaseImp0,
+                    BaseImp25 = sale.BaseImp25,
+                    TotalIVA5 = sale.TotalIVA5,
+                    InvoiceNumber = invoice?.NumberString,
+                    InvoiceDate = invoiceDate,
+                    HasCAE = invoice?.CAE != string.Empty,
+                    //Clients = clients,
+                    //SaleConditions = saleConditions,
+                    //PriceLists = priceLists,
+                    //SaleCondition = sale.SaleCondition,
+                    //SaleConditionId = sale.SaleConditionId,
 
 
-            }).OrderBy(s => s.SalePoint).ThenBy(s => s.SaleNumber).ToList();
+                };
+            })
+                .OrderBy(s => s.SalePoint)
+                .ThenBy(s => s.SaleNumber)
+                .ToList();
+
+            return saleViewModels;
         }
 
 

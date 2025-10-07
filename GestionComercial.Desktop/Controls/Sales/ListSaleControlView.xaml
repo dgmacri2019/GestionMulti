@@ -142,16 +142,39 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                                <Button Content="Imprimir" 
-                        Style="{StaticResource BtnDisables}" 
-                        Padding="5,0"
-                        Tag="{Binding Id}" 
-                        Click="BtnPrint_Click"/>
+                                <Button Padding="5,0"
+                                        Tag="{Binding Id}" 
+                                        Click="BtnPrint_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource BtnDisables}">
+                                            <Setter Property="Content" Value="Imprimir Factura"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasCAE}" Value="">
+                                                    <Setter Property="Content" Value="Imprimir Venta"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HasCAE}" Value="{x:Null}">
+                                                    <Setter Property="Content" Value="Imprimir Venta"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
                                 <Button Content="Facturar" 
-                        Style="{StaticResource BtnDisables}" 
-                        Padding="5,0"
-                        Tag="{Binding Id}" 
-                        Click="BtnConvertInvoice_Click"/>
+                                        Padding="5,0"
+                                        Tag="{Binding Id}" 
+                                        Click="BtnConvertInvoice_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource BtnDisables}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasCAE}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

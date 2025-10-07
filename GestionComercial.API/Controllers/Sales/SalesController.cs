@@ -109,6 +109,8 @@ namespace GestionComercial.API.Controllers.Sales
             else return BadRequest(resultAdd);
         }
 
+
+
         [HttpPost("PrintAsync")]
         public async Task<IActionResult> PrintAsync([FromBody] SaleFilterDto filter)
         {
@@ -169,6 +171,9 @@ namespace GestionComercial.API.Controllers.Sales
             }
             
         }
+            
+
+
         [HttpPost("UpdateAsync")]
         public async Task<IActionResult> UpdateAsync([FromBody] Sale sale)
         {

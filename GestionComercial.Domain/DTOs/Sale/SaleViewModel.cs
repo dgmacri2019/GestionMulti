@@ -77,6 +77,9 @@ namespace GestionComercial.Domain.DTOs.Sale
         public decimal SubTotal { get; set; }
 
 
+        public string? InvoiceNumber { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public bool HasCAE { get; set; }
 
         public decimal InternalTax { get; set; }
 
@@ -142,6 +145,7 @@ namespace GestionComercial.Domain.DTOs.Sale
         // public ObservableCollection<ArticleItem> ArticleItems { get; set; } = [];
         public ObservableCollection<SaleCondition> SaleConditions { get; set; } = [];
        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
