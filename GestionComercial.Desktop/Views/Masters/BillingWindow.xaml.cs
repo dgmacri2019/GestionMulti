@@ -38,7 +38,7 @@ namespace GestionComercial.Desktop.Views.Masters
                 };
                 return;
             }
-           
+
             _apiService = new MasterClassApiService();
 
             BillingViewModel = MasterCache.Instance.GetBilling();
@@ -67,6 +67,8 @@ namespace GestionComercial.Desktop.Views.Masters
                 rbProduct.IsChecked = BillingViewModel.Concept == 1;
                 rbService.IsChecked = BillingViewModel.Concept == 2;
                 rbProductAndService.IsChecked = BillingViewModel.Concept == 3;
+                rbHomo.IsChecked = BillingViewModel.UseHomologacion;
+                rbProduction.IsChecked = !BillingViewModel.UseHomologacion;
             }
             DataContext = BillingViewModel;
         }
@@ -107,6 +109,7 @@ namespace GestionComercial.Desktop.Views.Masters
                         if (certificateByteArray != null && certificateByteArray.Length > 0)
                         {
                             BillingViewModel.CertificateByteArray = certificateByteArray;
+                            BillingViewModel.HasCertificate = true;
                         }
                     }
 
@@ -137,7 +140,8 @@ namespace GestionComercial.Desktop.Views.Masters
                 msgError("Debe seleccionar el concepto de las facturas");
                 result = false;
             }
-            if ((chbUseWSDL.IsChecked == true || chbUsePadron.IsChecked == true) && string.IsNullOrEmpty(txtPassword.Text))
+            if ((chbUseWSDL.IsChecked == true || chbUsePadron.IsChecked == true) 
+                && !string.IsNullOrEmpty(txtCertificate.Text) && string.IsNullOrEmpty(txtPassword.Text))
             {
                 msgError("Debe ingresar el Password del certificado");
                 result = false;

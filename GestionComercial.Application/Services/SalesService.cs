@@ -295,7 +295,7 @@ namespace GestionComercial.Applications.Services
                     TotalIVA5 = sale.TotalIVA5,
                     InvoiceNumber = invoice?.NumberString,
                     InvoiceDate = invoiceDate,
-                    HasCAE = invoice?.CAE != string.Empty,
+                    HasCAE = invoice != null && invoice?.CAE != string.Empty,
                     //Clients = clients,
                     //SaleConditions = saleConditions,
                     //PriceLists = priceLists,

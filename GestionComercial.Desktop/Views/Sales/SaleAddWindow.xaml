@@ -53,7 +53,7 @@
                     <Image Source="/Images/Sale Order 24.png" Width="24" Height="24"/>
                 </Button>
 
-                
+
                 <!-- Proforma -->
                 <Button x:Name="btnInvoice" Width="40" Height="40" Margin="0,10"
                         ToolTip="Factura (F12)"
@@ -61,8 +61,8 @@
                     <Image Source="/Images/Arca.png" Width="24" Height="24"/>
                 </Button>
 
-                
-                
+
+
                 <!-- Imprimir -->
                 <!--<Button x:Name="btnImprimir" Width="40" Height="40" Margin="0,10"
                         ToolTip="Imprimir"
@@ -106,7 +106,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Fecha" 
-                       VerticalAlignment="Center" 
+                           VerticalAlignment="Center" 
                            Grid.Column="0"
                        Style="{StaticResource BlueBold10}"/>
                 <DatePicker x:Name="dpDate" 
@@ -181,9 +181,11 @@
                              Text="{Binding Email}"/>
                     <CheckBox x:Name="chSendEmail" Grid.Column="1"
                               Style="{StaticResource CheckBox}"
-                              VerticalAlignment="Center" Margin="5,0"/>
+                              VerticalAlignment="Center" Margin="5,0"
+                              IsEnabled="False"/>
                     <TextBlock Text="Enviar Comprobante por mail" Grid.Column="2"
                                VerticalAlignment="Center"
+                               IsEnabled="False"
                                Style="{StaticResource BlackNormal12}" Margin="5,0"/>
                 </Grid>
             </Grid>

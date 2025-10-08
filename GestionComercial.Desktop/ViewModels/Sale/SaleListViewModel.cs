@@ -123,7 +123,7 @@ namespace GestionComercial.Desktop.ViewModels.Sale
             await LoadSalesAsync();
         }
 
-        // 🔹 Carga clientes aplicando filtros
+        // 🔹 Carga ventas aplicando filtros
         public async Task LoadSalesAsync()
         {
             try

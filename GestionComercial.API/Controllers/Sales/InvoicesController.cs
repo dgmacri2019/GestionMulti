@@ -28,6 +28,7 @@ namespace GestionComercial.API.Controllers.Sales
     {
         private readonly IWSFEHomologacionService _wSFEHomologacion;
         private readonly IInvoicesNotifier _notifierInvoices;
+        private readonly ISalesNotifier _notifierSales;
         private readonly IInvoiceService _invoiceService;
         private readonly IMasterService _masterService;
         private readonly IMasterClassService _masterClassService;
@@ -37,7 +38,7 @@ namespace GestionComercial.API.Controllers.Sales
 
         public InvoicesController(IWSFEHomologacionService wSFEHomologacionService, IInvoicesNotifier notifierInvoices,
             IInvoiceService invoiceService, IMasterService masterService, IMasterClassService masterClassService,
-            IClientService clientService, ISalesService saleService)
+            IClientService clientService, ISalesService saleService, ISalesNotifier notifierSales)
         {
             _wSFEHomologacion = wSFEHomologacionService;
             _notifierInvoices = notifierInvoices;
@@ -46,6 +47,7 @@ namespace GestionComercial.API.Controllers.Sales
             _masterClassService = masterClassService;
             _clientService = clientService;
             _saleService = saleService;
+            _notifierSales = notifierSales;
         }
 
         [HttpPost("AddAsync")]
@@ -256,7 +258,8 @@ namespace GestionComercial.API.Controllers.Sales
                     ReportClient reportClient = new();
 
                     ReportResponse reportResponse = await reportClient.GenerateInvoicePdfAsync(model, factura);
-
+                    await _notifierSales.NotifyAsync(sale.Id, "Venta Actualizada", ChangeType.Updated);
+                    await _notifierInvoices.NotifyAsync(invoice.Id, "Factura Actualizada", ChangeType.Created);
                     return reportResponse.Success ?
                         Ok(new InvoiceResponse
                         {

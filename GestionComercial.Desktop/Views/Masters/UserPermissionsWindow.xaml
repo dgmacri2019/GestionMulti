@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionComercial.Desktop.Views.Masters"
         MinHeight="600"
-        MinWidth="720"
+        MinWidth="750"
         Height="600"
-        Width="720"
+        Width="750"
         WindowStartupLocation="CenterScreen"
         Title="Permisos de usuario">
     <Grid>
