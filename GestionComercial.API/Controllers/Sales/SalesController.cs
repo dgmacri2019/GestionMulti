@@ -3,11 +3,9 @@ using GestionComercial.API.NamedPipe;
 using GestionComercial.API.Security;
 using GestionComercial.Applications.Interfaces;
 using GestionComercial.Applications.Notifications;
-using GestionComercial.Applications.Services;
 using GestionComercial.Contract.Responses;
 using GestionComercial.Contract.ViewModels;
 using GestionComercial.Domain.DTOs.Client;
-using GestionComercial.Domain.DTOs.Master.Configurations.Commerce;
 using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
@@ -122,7 +120,7 @@ namespace GestionComercial.API.Controllers.Sales
                 SaleResponse saleResponse = await _saleService.GetByIdAsync(filter.Id);
                 if (!saleResponse.Success)
                     return BadRequest(saleResponse);
-                if(saleResponse.SaleViewModel == null)
+                if (saleResponse.SaleViewModel == null)
                     return BadRequest(new SaleResponse { Success = false, Message = "No se encontro la venta" });
 
                 Sale sale = ConverterHelper.ToSale(saleResponse.SaleViewModel, false);
@@ -169,9 +167,90 @@ namespace GestionComercial.API.Controllers.Sales
                 response.Message = ex.Message;
                 return BadRequest(response);
             }
-            
+
         }
-            
+
+
+
+        [HttpPost("AnullAsync")]
+        public async Task<IActionResult> AnullAsync([FromBody] SaleFilterDto filter)
+        {
+            if (filter.Id == 0)
+                return BadRequest(new SaleResponse { Success = false, Message = "Debe informar la venta" });
+            SaleResponse response = new() { Success = false };
+            try
+            {
+                SaleResponse saleResponse = await _saleService.GetByIdAsync(filter.Id);
+                if (!saleResponse.Success)
+                    return BadRequest(saleResponse);
+                if (saleResponse.SaleViewModel == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se encontro la venta" });
+
+                Sale sale = ConverterHelper.ToSale(saleResponse.SaleViewModel, false);
+
+
+                CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
+                if (commerceData == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos del comercio no se pueden leer" });
+                ClientViewModel? client = await _clientService.GetByIdAsync(sale.ClientId);
+                if (client == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos del cliente no se pueden leer" });
+                IEnumerable<IvaCondition> ivaConditions = await _masterClassService.GetAllIvaConditionsAsync(true, false);
+                if (ivaConditions == null || ivaConditions.Count() == 0)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos de condiciones de IVA no se pueden leer" });
+                IvaCondition? ivaCondition = ivaConditions.Where(ic => ic.Id == client.IvaConditionId).FirstOrDefault();
+                if (ivaCondition == null)
+                    return BadRequest(new SaleResponse { Success = false, Message = "No se puede emitir la proforma porque los datos de condicion de IVA no se pueden leer" });
+                IEnumerable<Tax> taxes = await _masterClassService.GetAllTaxesAsync(true, false);
+
+                IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
+
+
+                SaleResponse resultAnull = await _saleService.AnullAsync(sale, filter.UserName);
+
+                if (!resultAnull.Success)
+                    return BadRequest(resultAnull);
+
+                List<int> articlesId = [];
+
+                await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
+                await _notifierClients.NotifyAsync([sale.ClientId], "Venta Creada", ChangeType.Updated);
+                foreach (var saleDetail in sale.SaleDetails)
+                    articlesId.Add(saleDetail.ArticleId);
+                if (articlesId.Count > 0)
+                    await _notifierArticles.NotifyAsync(articlesId, "Venta Creada", ChangeType.Updated);
+
+
+                List<InvoiceReportViewModel> model = ToReportConverterHelper
+                    .ToSaleReport(sale, commerceData, client, saleConditions.ToList(), ivaConditions.ToList(), taxes.ToList(),
+                    "Nota de Crédito Proforma");
+                FacturaViewModel factura = new()
+                {
+                    LogoByte = commerceData.LogoByteArray,
+                    Leyenda = client.LegendBudget,
+                };
+                ReportClient reportClient = new();
+
+                ReportResponse reportResponse = await reportClient.GenerateSalePdfAsync(model, factura);
+                if (!reportResponse.Success)
+                    return
+                      BadRequest(new SaleResponse
+                      {
+                          Success = false,
+                          Message = reportResponse.Message,
+                      });
+                response.Bytes = reportResponse.Bytes;
+                response.Success = true;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                return BadRequest(response);
+            }
+
+        }
+
 
 
         [HttpPost("UpdateAsync")]

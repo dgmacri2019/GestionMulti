@@ -15,6 +15,7 @@ using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Masters.Configuration;
 using GestionComercial.Domain.Entities.Sales;
 using GestionComercial.Domain.Entities.Stock;
+using System.Globalization;
 
 namespace GestionComercial.Domain.Helpers
 {
@@ -666,8 +667,12 @@ namespace GestionComercial.Domain.Helpers
         #endregion
 
         #region Sales
-        public static SaleViewModel? ToSaleViewModel(Sale sale)
+        public static SaleViewModel? ToSaleViewModel(Sale sale, Invoice invoice)
         {
+            DateTime? invoiceDate = null;
+            if (invoice != null)
+                invoiceDate = DateTime.ParseExact(invoice?.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date;
+
             return new SaleViewModel
             {
                 Id = sale.Id,
@@ -704,12 +709,16 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA27 = sale.TotalIVA27,
                 TotalIVA25 = sale.TotalIVA25,
                 TotalIVA5 = sale.TotalIVA5,
-                 Client = sale.Client,
-                   
+                Client = sale.Client,
+                InvoiceNumber = invoice?.NumberString,
+                InvoiceDate = invoiceDate,
+                HasCAE = invoice != null && invoice?.CAE != string.Empty,
+                Date = sale.SaleDate,
+
                 //SaleConditionId = sale.SaleConditionId,
                 //Clients = clients,
                 //SaleConditions = saleConditions,
-                //PriceLists = priceLists,
+                //PriceLists = priceLists, 
             };
         }
 
@@ -751,7 +760,7 @@ namespace GestionComercial.Domain.Helpers
                 BaseImp25 = saleViewModel.BaseImp25,
                 BaseImp5 = saleViewModel.BaseImp5,
                 TotalIVA25 = saleViewModel.TotalIVA25,
-                TotalIVA5 = saleViewModel.TotalIVA5,
+                TotalIVA5 = saleViewModel.TotalIVA5,                
             };
         }
 

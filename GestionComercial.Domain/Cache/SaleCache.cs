@@ -123,6 +123,11 @@ namespace GestionComercial.Domain.Cache
             return _sales.FirstOrDefault(s => s.SalePoint == salePoint && s.SaleNumber == saleNumber);
         }
 
+        public SaleViewModel? Find(int saleId)
+        {
+            return _sales.FirstOrDefault(s => s.Id == saleId);
+        }
+
         public bool HasData => _sales != null && _sales.Any() && !Reading;
     }
 }

@@ -3,6 +3,7 @@ using GestionComercial.Desktop.Services;
 using GestionComercial.Desktop.ViewModels.Sale;
 using GestionComercial.Desktop.Views.Sales;
 using GestionComercial.Domain.Cache;
+using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Response;
 using System.Drawing.Printing;
 using System.IO;
@@ -76,7 +77,43 @@ namespace GestionComercial.Desktop.Controls.Sales
 
         }
 
+        private async void BtnAnull_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is int saleId)
+            {
+                SaleViewModel? sale = SaleCache.Instance.Find(saleId);
 
+                if (sale != null)
+                {
+                    if (!sale.HasCAE)
+                    {
+                        if (MessageBox.Show("Confirma la anulación de la proforma " + sale.SaleNumberString, "Anular Comprobante", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        {
+                            SaleResponse resultAnular = await _salesApiService.AnullAsync(saleId);
+                            if (resultAnular.Success)
+                                Print(resultAnular.Bytes, false);
+                            else
+                                MsgBoxAlertHelper.MsgAlertError(resultAnular.Message);
+                        }
+                    }
+                    else
+                    {
+                        if (MessageBox.Show("Confirma la anulación de la factura " + sale.InvoiceNumber, "Anular Comprobante", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                        {
+                            InvoiceResponse resultAnular = await _invoicesApiService.AnullAsync(saleId);
+                            if (resultAnular.Success)
+                                Print(resultAnular.Bytes, true);
+                            else
+                                MsgBoxAlertHelper.MsgAlertError(resultAnular.Message);
+                        }
+                    }
+                }
+
+
+
+            }
+
+        }
 
         private void Print(byte[] bytes, bool isInvoice)
         {
@@ -124,6 +161,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                 MsgBoxAlertHelper.MsgAlertError(ex.Message);
             }
         }
+
 
     }
 }

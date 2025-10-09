@@ -6,6 +6,7 @@ namespace GestionComercial.Applications.Interfaces
     {
         Task<InvoiceResponse> FindByIdAsync(int id);
         Task<InvoiceResponse> FindBySaleIdAsync(int saleId, int compTypeId);
+        Task<InvoiceResponse> FindBySaleIdAsync(int saleId);
         Task<InvoiceResponse> GetAllAsync(int page, int pageSize);
         Task<InvoiceResponse> GetAllBySalePointAsync(int salePoint, DateTime saleDate, int page, int pageSize);
        

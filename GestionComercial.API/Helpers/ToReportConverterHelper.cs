@@ -4,6 +4,7 @@ using GestionComercial.Domain.DTOs.Sale;
 using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Entities.Masters;
 using GestionComercial.Domain.Entities.Sales;
+using Microsoft.Extensions.Primitives;
 using System.Globalization;
 
 namespace GestionComercial.API.Helpers
@@ -248,11 +249,11 @@ namespace GestionComercial.API.Helpers
 
         internal static List<InvoiceReportViewModel> ToSaleReport(Sale sale, CommerceData commerceData,
             ClientViewModel client, List<SaleCondition> saleConditions, List<IvaCondition> ivaConditions,
-            List<Tax> taxes)
+            List<Tax> taxes, string NombreCbe = "Proforma")
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("es-AR");
             var response = new List<InvoiceReportViewModel>();
-            string nombreCbe = "Proforma", discountText = "Bonif.:";
+            string discountText = "Bonif.:";
             decimal discountValue = 0m;
 
             sale.SubTotal = sale.SaleDetails.Sum(s => s.TotalItem);
@@ -287,7 +288,7 @@ namespace GestionComercial.API.Helpers
                 SubTotal = string.Format("{0:C2}", sale.SubTotal),
                 Total = string.Format("{0:C2}", sale.Total),
                 CdoCbe = 999.ToString(),
-                NombreCbe = nombreCbe,
+                NombreCbe = NombreCbe,
                 FechaEmision = string.Format("{0:dd/MM/yyyy}", sale.SaleDate),
                 Leyenda = client.LegendBudget,
             });
@@ -326,7 +327,7 @@ namespace GestionComercial.API.Helpers
                     EmailR = client.Email,
                     CondicionVenta = sale.PaidOut ? "Contado" : "Cuenta Corriente",
                     SubTotal = string.Format("{0:C2}", sale.SubTotal),
-                    NombreCbe = nombreCbe,
+                    NombreCbe = NombreCbe,
                     FechaEmision = string.Format("{0:dd/MM/yyyy}", sale.SaleDate),
                     CondicionIvaR = ivaConditions.FirstOrDefault(iv => iv.Id == client.IvaConditionId).Description,
                     Total = string.Format("{0:C2}", sale.Total),
@@ -364,7 +365,7 @@ namespace GestionComercial.API.Helpers
                         EmailR = client.Email,
                         CondicionVenta = sale.PaidOut ? "Contado" : "Cuenta Corriente",
                         SubTotal = string.Format("{0:C2}", sale.SubTotal),
-                        NombreCbe = nombreCbe,
+                        NombreCbe = NombreCbe,
                         FechaEmision = string.Format("{0:dd/MM/yyyy}", sale.SaleDate),
                         CondicionIvaR = ivaConditions.FirstOrDefault(iv => iv.Id == client.IvaConditionId).Description,
                         Total = string.Format("{0:C2}", sale.Total),

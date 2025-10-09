@@ -87,7 +87,10 @@ namespace GestionComercial.Applications.Services
                         return new SaleResponse { Success = true, SaleId = sale.Id };
                     }
                     else
+                    {
+                        transacction.Rollback();
                         return new SaleResponse { Success = false, Message = resultSave.Message };
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -102,6 +105,377 @@ namespace GestionComercial.Applications.Services
                 {
                     StaticCommon.ContextInUse = false;
 
+                }
+            }
+        }
+
+        public async Task<SaleResponse> AnullAsync(Sale sale, string userName)
+        {
+            while (StaticCommon.ContextInUse)
+                await Task.Delay(100);
+
+            using (var transacction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    StaticCommon.ContextInUse = true;
+
+                    if (sale != null)
+                    {
+                        Client? client = await _context.Clients.FindAsync(sale.ClientId);
+                        if (client == null)
+                        {
+                            transacction.Rollback();
+                            return new SaleResponse
+                            {
+                                Message = "No se reconoce el cliente.",
+                                Success = false,
+                            };
+                        }
+                        if (sale.SaleDetails.Count <= 0)
+                        {
+                            transacction.Rollback();
+                            return new SaleResponse
+                            {
+                                Message = "No hay artículos cargados.",
+                                Success = false,
+                            };
+
+                        }
+
+                        Sale newSale = new()
+                        {
+                            AutorizationCode = sale.AutorizationCode,
+                            BaseImp105 = sale.BaseImp105 * -1,
+                            BaseImp21 = sale.BaseImp21 * -1,
+                            BaseImp27 = sale.BaseImp27 * -1,
+                            Client = sale.Client,
+                            ClientId = sale.ClientId,
+                            CreateDate = DateTime.Now,
+                            CreateUser = userName,
+                            GeneralDiscount = sale.GeneralDiscount * -1,
+                            InternalTax = sale.InternalTax * -1,
+                            IsDeleted = sale.IsDeleted,
+                            IsEnabled = sale.IsEnabled,
+                            IsFinished = sale.IsFinished,
+                            PaidOut = sale.PaidOut,
+                            SaleDate = sale.SaleDate,
+                            SaleNumber = sale.SaleNumber,
+                            SalePoint = sale.SalePoint,
+                            SubTotal = sale.SubTotal * -1,
+                            Total = sale.Total * -1,
+                            TotalIVA105 = sale.TotalIVA105 * -1,
+                            TotalIVA21 = sale.TotalIVA21 * -1,
+                            TotalIVA27 = sale.TotalIVA27 * -1,
+                            BaseImp0 = sale.BaseImp0 * -1,
+                            BaseImp25 = sale.BaseImp25 * -1,
+                            BaseImp5 = sale.BaseImp5 * -1,
+                            PartialPay = sale.PartialPay,
+                            Sold = sale.Sold,
+                            TotalIVA25 = sale.TotalIVA25 * -1,
+                            TotalIVA5 = sale.TotalIVA5 * -1,
+
+
+
+                            //SaleCondition = sale.SaleCondition,
+
+                        };
+                        await _context.AddAsync(newSale);
+                        GeneralResponse resultAdd = await _dBHelper.SaveChangesAsync(_context);
+                        if (resultAdd.Success)
+                        {
+                            List<SaleDetail> saleDetails = [];
+                            foreach (SaleDetail saleDetail in sale.SaleDetails)
+                            {
+                                Article article = await _context.Articles.FindAsync(saleDetail.ArticleId);
+                                await _context.AddAsync(new SaleDetail
+                                {
+                                    Code = saleDetail.Code,
+                                    CreateDate = DateTime.Now,
+                                    CreateUser = userName,
+                                    Description = saleDetail.Description,
+                                    Discount = saleDetail.Discount,
+                                    IsDeleted = saleDetail.IsDeleted,
+                                    IsEnabled = saleDetail.IsEnabled,
+                                    List = saleDetail.List,
+                                    Price = saleDetail.Price,
+                                    PriceDiscount = saleDetail.PriceDiscount,
+                                    ArticleId = saleDetail.ArticleId,
+                                    Quantity = saleDetail.Quantity,
+                                    Sale = newSale,
+                                    SaleId = newSale.Id,
+                                    SubTotal = saleDetail.SubTotal,
+                                    Tax = saleDetail.Tax,
+                                    TaxId = saleDetail.TaxId,
+                                    TotalItem = saleDetail.TotalItem,
+                                    Article = article,
+                                });
+
+                                if (article.StockCheck)
+                                {
+                                    article.Stock += saleDetail.Quantity;
+                                    _context.Update(article);
+                                }
+                            }
+
+                            /*
+                            foreach (SalePayMetodDetail salePayMetod in sale.SalePayMetodDetails)
+                            {
+                                salePayMetod.IsDeleted = true;
+                                salePayMetod.IsEnabled = false;
+                                salePayMetod.UpdateDate = DateTime.Now;
+                                salePayMetod.UpdateUser = UserCache.UserName;
+                                await _generalGestor.UpdateAsync(salePayMetod);
+                                switch (salePayMetod.SaleCondition)
+                                {
+                                    case SaleCondition.EfectivoPeso:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == salePayMetod.SaleCondition).FirstOrDefault();
+                                            box.Sold -= salePayMetod.Value;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoDolar:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == salePayMetod.SaleCondition).FirstOrDefault();
+                                            box.Sold -= salePayMetod.Value;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoReal:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == salePayMetod.SaleCondition).FirstOrDefault();
+                                            box.Sold -= salePayMetod.Value;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoEuro:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == salePayMetod.SaleCondition).FirstOrDefault();
+                                            box.Sold -= salePayMetod.Value;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoOtro:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == salePayMetod.SaleCondition).FirstOrDefault();
+                                            box.Sold -= salePayMetod.Value;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.CtaCte:
+                                        {
+                                            break;
+                                        }
+                                    case SaleCondition.Cheque:
+                                        {
+                                            break;
+                                        }
+                                    case SaleCondition.MercadoPagoTransf:
+                                        {
+                                            BankParameter bankParameter = StaticBoxAndBank.BankParameters.Where(bp => bp.SaleCondition == salePayMetod.SaleCondition).First();
+                                            Bank bank = StaticBoxAndBank.FindBank(bankParameter.BankId);
+                                            decimal fromAcredit = salePayMetod.Value - (salePayMetod.Value * bankParameter.Rate / 100);
+                                            bank.Sold -= fromAcredit;
+                                            bank.UpdateDate = DateTime.Now;
+                                            bank.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(bank);
+                                            break;
+                                        }
+                                    case SaleCondition.Deposito:
+                                        {
+                                            BankParameter bankParameter = StaticBoxAndBank.BankParameters.Where(bp => bp.SaleCondition == salePayMetod.SaleCondition).First();
+                                            Bank bank = StaticBoxAndBank.FindBank(bankParameter.BankId);
+                                            decimal fromAcredit = salePayMetod.Value - (salePayMetod.Value * bankParameter.Rate / 100);
+                                            bank.Sold -= fromAcredit;
+                                            bank.UpdateDate = DateTime.Now;
+                                            bank.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(bank);
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            BankParameter bankParameter = StaticBoxAndBank.BankParameters.Where(bp => bp.SaleCondition == salePayMetod.SaleCondition).First();
+                                            Bank bank = StaticBoxAndBank.FindBank(bankParameter.BankId);
+
+                                            Acreditation acreditation = StaticAcreditation.FindFromSaleId(sale.Id);
+                                            if (acreditation != null)
+                                            {
+                                                acreditation.IsEnabled = false;
+                                                acreditation.IsDeleted = false;
+                                                acreditation.UpdateDate = DateTime.Now;
+                                                acreditation.UpdateUser = UserCache.UserName;
+
+                                                await _generalGestor.UpdateAsync(acreditation);
+                                                if (acreditation.IsAcredited)
+                                                    bank.Sold -= acreditation.FromAcredit;
+                                                else
+                                                    bank.FromCredit -= acreditation.FromAcredit;
+                                                bank.UpdateDate = DateTime.Now;
+                                                bank.UpdateUser = UserCache.UserName;
+                                                await _generalGestor.UpdateAsync(bank);
+                                            }
+                                            break;
+                                        }
+                                }
+                            }
+                            if (sale.SalePayMetodDetails == null)
+                                switch (sale.SaleCondition)
+                                {
+                                    case SaleCondition.EfectivoPeso:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == sale.SaleCondition).FirstOrDefault();
+                                            box.Sold -= sale.Total;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoDolar:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == sale.SaleCondition).FirstOrDefault();
+                                            box.Sold -= sale.Total;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoReal:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == sale.SaleCondition).FirstOrDefault();
+                                            box.Sold -= sale.Total;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoEuro:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == sale.SaleCondition).FirstOrDefault();
+                                            box.Sold -= sale.Total;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.EfectivoOtro:
+                                        {
+                                            Box box = StaticBoxAndBank.Boxes.Where(b => b.SaleCondition == sale.SaleCondition).FirstOrDefault();
+                                            box.Sold -= sale.Total;
+                                            box.UpdateDate = DateTime.Now;
+                                            box.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(box);
+                                            break;
+                                        }
+                                    case SaleCondition.CtaCte:
+                                        {
+                                            break;
+                                        }
+                                    case SaleCondition.Cheque:
+                                        {
+                                            break;
+                                        }
+                                    case SaleCondition.MercadoPagoTransf:
+                                        {
+                                            BankParameter bankParameter = StaticBoxAndBank.BankParameters.Where(bp => bp.SaleCondition == sale.SaleCondition).First();
+                                            Bank bank = StaticBoxAndBank.FindBank(bankParameter.BankId);
+                                            decimal fromAcredit = sale.Total - (sale.Total * bankParameter.Rate / 100);
+                                            bank.Sold -= fromAcredit;
+                                            bank.UpdateDate = DateTime.Now;
+                                            bank.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(bank);
+                                            break;
+                                        }
+                                    case SaleCondition.Deposito:
+                                        {
+                                            BankParameter bankParameter = StaticBoxAndBank.BankParameters.Where(bp => bp.SaleCondition == sale.SaleCondition).First();
+                                            Bank bank = StaticBoxAndBank.FindBank(bankParameter.BankId);
+                                            decimal fromAcredit = sale.Total - (sale.Total * bankParameter.Rate / 100);
+                                            bank.Sold -= fromAcredit;
+                                            bank.UpdateDate = DateTime.Now;
+                                            bank.UpdateUser = UserCache.UserName;
+                                            await _generalGestor.UpdateAsync(bank);
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            BankParameter bankParameter = StaticBoxAndBank.BankParameters.Where(bp => bp.SaleCondition == sale.SaleCondition).First();
+                                            Bank bank = StaticBoxAndBank.FindBank(bankParameter.BankId);
+
+                                            Acreditation acreditation = StaticAcreditation.FindFromSaleId(sale.Id);
+                                            if (acreditation != null)
+                                            {
+                                                acreditation.IsEnabled = false;
+                                                acreditation.IsDeleted = false;
+                                                acreditation.UpdateDate = DateTime.Now;
+                                                acreditation.UpdateUser = UserCache.UserName;
+
+                                                await _generalGestor.UpdateAsync(acreditation);
+
+                                                if (acreditation.IsAcredited)
+                                                    bank.Sold -= acreditation.FromAcredit;
+                                                else
+                                                    bank.FromCredit -= acreditation.FromAcredit;
+                                                bank.UpdateDate = DateTime.Now;
+                                                bank.UpdateUser = UserCache.UserName;
+                                                await _generalGestor.UpdateAsync(bank);
+                                            }
+                                            break;
+                                        }
+                                }
+                            */
+
+                            client.Sold -= sale.Total;
+                            _context.Update(client);
+
+                            GeneralResponse resultSave = await _dBHelper.SaveChangesAsync(_context);
+                            if (resultSave.Success)
+                            {
+                                StaticCommon.ContextInUse = true;
+                                transacction.Commit();
+                                StaticCommon.ContextInUse = false;
+                                return new SaleResponse { Success = true, SaleId = newSale.Id };
+                            }
+                            else
+                            {
+                                transacction.Rollback();
+                                return new SaleResponse { Success = false, Message = resultSave.Message };
+                            }
+                        }
+                        else
+                        {
+                            transacction.Rollback();
+                            return new SaleResponse { Success = false, Message = resultAdd.Message };
+                        }
+                    }
+                    else
+                    {
+                        transacction.Rollback();
+                        return new SaleResponse { Success = false, Message = "No se localiza el comprobante a anular" };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transacction.Rollback();
+                    return new SaleResponse
+                    {
+                        Message = ex.Message,
+                        Success = false,
+                    };
+                }
+                finally
+                {
+                    StaticCommon.ContextInUse = false;
                 }
             }
         }
@@ -201,10 +575,24 @@ namespace GestionComercial.Applications.Services
                         .Where(s => s.Id == id)
                         .FirstOrDefaultAsync();
 
+
+                if (id == 0 || sale == null)
+                    return new SaleResponse
+                    {
+                        Success = true,
+                        SaleViewModel = new SaleViewModel(),
+                    };
+
+                // 👇 Traigo la factura asociada a las venta que obtuve
+                Invoice? invoice = await _context.Invoices
+                     .Where(i => i.SaleId == sale.Id)
+                     .FirstAsync();
+
+
                 return new SaleResponse
                 {
                     Success = true,
-                    SaleViewModel = id == 0 || sale == null ? new SaleViewModel() : ConverterHelper.ToSaleViewModel(sale),
+                    SaleViewModel = ConverterHelper.ToSaleViewModel(sale, invoice),
                 };
             }
             catch (Exception ex)

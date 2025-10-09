@@ -73,6 +73,32 @@ namespace GestionComercial.Applications.Services
             }
         }
 
+        public async Task<InvoiceResponse> FindBySaleIdAsync(int saleId)
+        {
+            try
+            {
+                return new InvoiceResponse
+                {
+                    Success = true,
+                    Invoice = await _context.Invoices
+                                        .AsNoTracking()
+                                        .Include(id => id.InvoiceDetails)
+                                        .Include(s => s.Sale)
+                                        .Include(c => c.Client)
+                                        .Include(ic => ic.IvaCondition)
+                                        .FirstOrDefaultAsync(i => i.SaleId == saleId)
+                };
+            }
+            catch (Exception ex)
+            {
+                return new InvoiceResponse
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
+        }
+
         public async Task<InvoiceResponse> GetAllAsync(int page, int pageSize)
         {
             try

@@ -138,7 +138,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Acciones" Width="auto">
+                <DataGridTemplateColumn Header="Impresión" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
@@ -168,6 +168,28 @@
                                                 <DataTrigger Binding="{Binding HasCAE}" Value="false">
                                                     <Setter Property="Visibility" Value="Visible"/>
                                                 </DataTrigger>                                                
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+        <DataGridTemplateColumn Header="Acciones" Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                <Button Padding="5,0"
+                                        Tag="{Binding Id}" 
+                                        Click="BtnAnull_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource BtnRed}">
+                                            <Setter Property="Content" Value="Anular Factura"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasCAE}" Value="false">
+                                                    <Setter Property="Content" Value="Anular Proforma"/>
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>

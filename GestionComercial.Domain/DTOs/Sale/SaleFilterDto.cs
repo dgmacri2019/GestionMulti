@@ -10,5 +10,7 @@
 
         public int Page { get; set; } = 1;       // página por defecto
         public int PageSize { get; set; } = 100; // tamaño por defecto
+
+        public string? UserName { get; set; }
     }
 }
