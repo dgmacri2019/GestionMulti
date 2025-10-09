@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionComercial.ReportServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionComercial.Contract", "GestionComercial.Contract\GestionComercial.Contract.csproj", "{23FB547C-AE66-45B5-9B93-E00346EA5A5F}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GestionComercial.SetupReport", "GestionComercial.SetupReport\GestionComercial.SetupReport.vdproj", "{E7469168-9583-DECB-A511-3D9A4FE3806A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,8 @@ Global
 		{23FB547C-AE66-45B5-9B93-E00346EA5A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23FB547C-AE66-45B5-9B93-E00346EA5A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23FB547C-AE66-45B5-9B93-E00346EA5A5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7469168-9583-DECB-A511-3D9A4FE3806A}.Debug|Any CPU.ActiveCfg = Debug
+		{E7469168-9583-DECB-A511-3D9A4FE3806A}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

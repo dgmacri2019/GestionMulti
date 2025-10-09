@@ -164,6 +164,24 @@
       <Name>GestionComercial.Contract</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Images\facebook_cover_photo_1.png" />
+    <Content Include="Images\facebook_cover_photo_2.png" />
+    <Content Include="Images\facebook_profile_image.png" />
+    <Content Include="Images\favicon.ico" />
+    <Content Include="Images\favicon.png" />
+    <Content Include="Images\instagram_profile_image.png" />
+    <Content Include="Images\linkedin_banner_image_1.png" />
+    <Content Include="Images\linkedin_banner_image_2.png" />
+    <Content Include="Images\linkedin_profile_image.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\logo_transparent.png" />
+    <Content Include="Images\pinterest_board_photo.png" />
+    <Content Include="Images\pinterest_profile_image.png" />
+    <Content Include="Images\twitter_header_photo_1.png" />
+    <Content Include="Images\twitter_header_photo_2.png" />
+    <Content Include="Images\twitter_profile_image.png" />
+    <Content Include="Images\youtube_profile_image.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
