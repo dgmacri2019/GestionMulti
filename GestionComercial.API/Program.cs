@@ -57,8 +57,12 @@ builder.Services.AddSwaggerGen();
 
 // Agregar la configuración de la base de datos
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    #if DEBUG
+    options.EnableSensitiveDataLogging(); // 👈 agrega esto para ver los IDs conflictivos
+    #endif
+});
 // Configuración de Identity
 builder.Services
     .AddIdentity<User, IdentityRole>(options =>

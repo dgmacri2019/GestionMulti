@@ -22,6 +22,8 @@ namespace GestionComercial.Desktop.Controls.Sales
         private readonly SalesApiService _salesApiService;
         private readonly InvoicesApiService _invoicesApiService;
 
+        private bool _isLoaded = false;
+
         public ListSaleControlView()
         {
             InitializeComponent();
@@ -29,6 +31,9 @@ namespace GestionComercial.Desktop.Controls.Sales
             _salesApiService = new SalesApiService();
             _invoicesApiService = new InvoicesApiService();
             DataContext = new SaleListViewModel();
+            dpDate.DisplayDateEnd = DateTime.Now;
+            dpDate.SelectedDate = DateTime.Now;
+            _isLoaded = true;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -55,6 +60,13 @@ namespace GestionComercial.Desktop.Controls.Sales
         {
 
         }
+        private void dpDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dpDate.SelectedDate.HasValue && _isLoaded)
+            {
+               
+            }
+        }
 
         private async void BtnConvertInvoice_Click(object sender, RoutedEventArgs e)
         {
@@ -63,6 +75,8 @@ namespace GestionComercial.Desktop.Controls.Sales
                 InvoiceResponse invoiceResponse = await _invoicesApiService.AddAsync(saleId);
                 if (invoiceResponse.Success)
                     Print(invoiceResponse.Bytes, true);
+                else
+                    MsgBoxAlertHelper.MsgAlertError(invoiceResponse.Message);
             }
         }
 
@@ -73,6 +87,8 @@ namespace GestionComercial.Desktop.Controls.Sales
                 SaleResponse saleResponse = await _salesApiService.PrintAsync(saleId);
                 if (saleResponse.Success)
                     Print(saleResponse.Bytes, false);
+                else
+                    MsgBoxAlertHelper.MsgAlertError(saleResponse.Message);
             }
 
         }
@@ -81,7 +97,7 @@ namespace GestionComercial.Desktop.Controls.Sales
         {
             if (sender is Button btn && btn.Tag is int saleId)
             {
-                SaleViewModel? sale = SaleCache.Instance.Find(saleId);
+                SaleViewModel? sale = SaleCache.Instance.FindById(saleId);
 
                 if (sale != null)
                 {
@@ -89,7 +105,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                     {
                         if (MessageBox.Show("Confirma la anulación de la proforma " + sale.SaleNumberString, "Anular Comprobante", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
-                            SaleResponse resultAnular = await _salesApiService.AnullAsync(saleId);
+                            SaleResponse resultAnular = await _salesApiService.AnullAsync(saleId, ParameterCache.Instance.GetPcParameter().SalePoint);
                             if (resultAnular.Success)
                                 Print(resultAnular.Bytes, false);
                             else
@@ -100,7 +116,7 @@ namespace GestionComercial.Desktop.Controls.Sales
                     {
                         if (MessageBox.Show("Confirma la anulación de la factura " + sale.InvoiceNumber, "Anular Comprobante", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                         {
-                            InvoiceResponse resultAnular = await _invoicesApiService.AnullAsync(saleId);
+                            InvoiceResponse resultAnular = await _invoicesApiService.AnullAsync(saleId, ParameterCache.Instance.GetPcParameter().SalePoint);
                             if (resultAnular.Success)
                                 Print(resultAnular.Bytes, true);
                             else
@@ -162,6 +178,6 @@ namespace GestionComercial.Desktop.Controls.Sales
             }
         }
 
-
+        
     }
 }

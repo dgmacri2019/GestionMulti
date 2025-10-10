@@ -41,11 +41,11 @@ namespace GestionComercial.Applications.Services
             try
             {
                 List<PriceList> priceLists = await _context.PriceLists
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                     .ToListAsync();
                 List<Article> articles = await _context.Articles
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Include(p => p.Tax)
                     .Include(m => m.Measure)
                     .Include(c => c.Category)
@@ -60,7 +60,7 @@ namespace GestionComercial.Applications.Services
                     .ToList();
 
 
-                var totalRegisters = await _context.Articles.AsNoTracking().CountAsync();
+                var totalRegisters = await _context.Articles.AsNoTrackingWithIdentityResolution().CountAsync();
 
                 return new ArticleResponse
                 {
@@ -82,11 +82,11 @@ namespace GestionComercial.Applications.Services
         public async Task<ArticleViewModel?> GetByIdAsync(int id)
         {
             List<PriceList> priceLists = await _context.PriceLists
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Where(pl => pl.IsEnabled && !pl.IsDeleted)
                 .ToListAsync();
             Article? article = await _context.Articles
-               .AsNoTracking()
+               .AsNoTrackingWithIdentityResolution()
                .Include(c => c.Category)
                .Include(t => t.Tax)
                .Include(m => m.Measure)

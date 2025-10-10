@@ -35,7 +35,7 @@ namespace GestionComercial.Applications.Services
         public async Task<ClientViewModel?> GetByIdAsync(int id)
         {
             Client? client = await _context.Clients
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Include(p => p.PriceList)
                 .Include(s => s.State)
                 .Include(dt => dt.DocumentType)
@@ -58,7 +58,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 List<Client> clients = await _context.Clients
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Include(c => c.PriceList)
                     .Include(c => c.State)
                     .Include(c => c.IvaCondition)
@@ -71,7 +71,7 @@ namespace GestionComercial.Applications.Services
                     .Take(pageSize)
                     .ToListAsync();
 
-                var totalRegisters = await _context.Clients.AsNoTracking().CountAsync();
+                var totalRegisters = await _context.Clients.AsNoTrackingWithIdentityResolution().CountAsync();
 
                 return new ClientResponse
                 {

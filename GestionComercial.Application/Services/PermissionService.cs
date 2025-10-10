@@ -24,7 +24,7 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<Permission>> GetAllPermissionsAsync()
         {
             return await _context.Permissions
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Include(p => p.UserPermissions)
                 .Include(p => p.RolePermissions)
                 .ToListAsync();
@@ -32,12 +32,12 @@ namespace GestionComercial.Applications.Services
 
         public async Task<IEnumerable<RolePermission>> GetAllRolePermisionAsync(bool isEnabled, bool isDeleted)
         {
-            return await _context.RolePermissions.AsNoTracking().Where(rp => rp.IsEnabled == isEnabled && rp.IsDeleted == isDeleted).ToListAsync();
+            return await _context.RolePermissions.AsNoTrackingWithIdentityResolution().Where(rp => rp.IsEnabled == isEnabled && rp.IsDeleted == isDeleted).ToListAsync();
         }
 
         public async Task<IEnumerable<UserPermission>> GetAllUserPermisionAsync(bool isEnabled, bool isDeleted)
         {
-            return await _context.UserPermissions.AsNoTracking().Where(up => up.IsEnabled == isEnabled && up.IsDeleted == isDeleted).ToListAsync();
+            return await _context.UserPermissions.AsNoTrackingWithIdentityResolution().Where(up => up.IsEnabled == isEnabled && up.IsDeleted == isDeleted).ToListAsync();
         }
 
         public async Task<PermissionResponse> GetAllUserPermisionFromUserAsync(string userId)
@@ -47,7 +47,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 response.UserPermissions = await _context.UserPermissions
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Include(p => p.Permission)
                     .Where(p => p.UserId == userId)
                     .ToListAsync();

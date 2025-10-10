@@ -30,7 +30,15 @@ namespace GestionComercial.API.Security
 
             if (!result.Succeeded)
             {
-                context.Result = new UnauthorizedResult();
+                //context.Result = new UnauthorizedResult();
+                context.Result = new JsonResult(new
+                {
+                    message = "No está autorizado para realizar esta acción.",
+                    permiso = permiso
+                })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
             }
         }
     }

@@ -26,7 +26,7 @@ namespace GestionComercial.Domain.Entities.Masters
         //[JsonIgnore]
         public virtual BankParameter? BankParameter { get; set; }
         public virtual Box? Box { get; set; }
-        public virtual ICollection<Client>? Clients { get; set; }
+        //public virtual ICollection<Client>? Clients { get; set; }
         public virtual ICollection<Provider>? Providers { get; set; }
         public virtual ICollection<SalePayMetodDetail>? SalePayMetodDetails { get; set; }
     }

@@ -21,7 +21,7 @@ namespace GestionComercial.Applications.Services
         public async Task<GeneralParameter?> GetGeneralParameterAsync()
         {
             return await _context.GeneralParameters
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefaultAsync();
         }
 
@@ -35,7 +35,7 @@ namespace GestionComercial.Applications.Services
         public async Task<EmailParameter?> GetEmailParameterAsync()
         {
             return await _context.EmailParameters
-               .AsNoTracking()
+               .AsNoTrackingWithIdentityResolution()
                .FirstOrDefaultAsync();
         }
 
@@ -49,7 +49,7 @@ namespace GestionComercial.Applications.Services
             List<PcParameter> pcParameters = await _context.PcParameters.ToListAsync();
 
             PcParameter? pcParameter = await _context.PcParameters
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                  .Where(gp => gp.IsEnabled && !gp.IsDeleted && gp.PCName == pcName)
                  .FirstOrDefaultAsync();
             if (pcParameter == null)
@@ -81,7 +81,7 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<PcSalePointsListViewModel>> GetAllPcParametersAsync()
         {
             ICollection<PcParameter> pcParameters = await _context.PcParameters
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Where(pp => pp.IsEnabled && !pp.IsDeleted)
                 .ToListAsync();
 
@@ -91,7 +91,7 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<PcPrinterParametersListViewModel>> GetAllPcPrinterParametersAsync()
         {
             ICollection<PrinterParameter> printerParameters = await _context.PrinterParameters
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .ToListAsync();
 
             return ToPcPrinterParametersList(printerParameters);
@@ -105,7 +105,7 @@ namespace GestionComercial.Applications.Services
                 return null;
 
             return ToPcPrinterParameterList(await _context.PrinterParameters
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefaultAsync(ppp => ppp.ComputerName == pcName));
         }
 

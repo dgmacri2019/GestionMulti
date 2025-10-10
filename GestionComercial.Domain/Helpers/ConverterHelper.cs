@@ -670,8 +670,50 @@ namespace GestionComercial.Domain.Helpers
         public static SaleViewModel? ToSaleViewModel(Sale sale, Invoice invoice)
         {
             DateTime? invoiceDate = null;
+            string invoiceNumber = string.Empty;
             if (invoice != null)
+            {
                 invoiceDate = DateTime.ParseExact(invoice?.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date;
+                switch (invoice.CompTypeId)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 63:
+                    case 201:
+                    case 202:
+                    case 203:
+                        invoiceNumber = $"A {invoice.NumberString}";
+                        break;
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 64:
+                    case 206:
+                    case 207:
+                    case 208:
+                        invoiceNumber = $"B {invoice.NumberString}";
+                        break;
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 211:
+                    case 212:
+                    case 213:
+                        invoiceNumber = $"C {invoice.NumberString}";
+                        break;
+                    case 51:
+                    case 52:
+                    case 53:
+                    case 54:
+                        invoiceNumber = $"M {invoice.NumberString}";
+                        break;
+                }
+            }
 
             return new SaleViewModel
             {
@@ -710,9 +752,9 @@ namespace GestionComercial.Domain.Helpers
                 TotalIVA25 = sale.TotalIVA25,
                 TotalIVA5 = sale.TotalIVA5,
                 Client = sale.Client,
-                InvoiceNumber = invoice?.NumberString,
+                InvoiceNumber = invoiceNumber,
                 InvoiceDate = invoiceDate,
-                HasCAE = invoice != null && invoice?.CAE != string.Empty,
+                HasCAE = invoice != null && !string.IsNullOrEmpty(invoice?.CAE),
                 Date = sale.SaleDate,
 
                 //SaleConditionId = sale.SaleConditionId,

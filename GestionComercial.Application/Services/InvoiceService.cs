@@ -28,7 +28,7 @@ namespace GestionComercial.Applications.Services
                 {
                     Success = true,
                     Invoice = await _context.Invoices
-                                    .AsNoTracking()
+                                    .AsNoTrackingWithIdentityResolution()
                                     .Include(id => id.InvoiceDetails)
                                     .Include(s => s.Sale)
                                     .Include(c => c.Client)
@@ -55,7 +55,7 @@ namespace GestionComercial.Applications.Services
                 {
                     Success = true,
                     Invoice = await _context.Invoices
-                                        .AsNoTracking()
+                                        .AsNoTrackingWithIdentityResolution()
                                         .Include(id => id.InvoiceDetails)
                                         .Include(s => s.Sale)
                                         .Include(c => c.Client)
@@ -81,7 +81,7 @@ namespace GestionComercial.Applications.Services
                 {
                     Success = true,
                     Invoice = await _context.Invoices
-                                        .AsNoTracking()
+                                        .AsNoTrackingWithIdentityResolution()
                                         .Include(id => id.InvoiceDetails)
                                         .Include(s => s.Sale)
                                         .Include(c => c.Client)
@@ -104,7 +104,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 List<Invoice> invoices = await _context.Invoices
-                                                .AsNoTracking()
+                                                .AsNoTrackingWithIdentityResolution()
                                                 .Include(id => id.InvoiceDetails)
                                                 .Include(s => s.Sale)
                                                 .Include(c => c.Client)
@@ -136,7 +136,7 @@ namespace GestionComercial.Applications.Services
             {
                 // 1️ Ejecuta en SQL todo lo posible (filtros, include, orden, paginación)
                 var partialInvoices = await _context.Invoices
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Include(id => id.InvoiceDetails)
                     .Include(s => s.Sale)
                     .Include(c => c.Client)

@@ -162,7 +162,7 @@ namespace GestionComercial.Desktop.Views.Sales
             }
             else
             {
-                var result = await _salesApiService.GetByIdAsync(SaleId, Environment.MachineName);
+                var result = await _salesApiService.GetByIdAsync(SaleId);
 
                 if (result.Success)
                     SaleViewModel = result.SaleViewModel;

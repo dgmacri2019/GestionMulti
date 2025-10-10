@@ -5,7 +5,7 @@ using static GestionComercial.Domain.Notifications.SaleChangeNotification;
 
 namespace GestionComercial.Desktop.Services.Hub
 {
-    internal class SalesHubService
+    internal class SalesHubService : IHub
     {
         private readonly HubConnection _connection;
 
@@ -15,6 +15,7 @@ namespace GestionComercial.Desktop.Services.Hub
 
         public SalesHubService(string hubUrl)
         {
+            HubManager.Register(this);
             _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
                 .WithAutomaticReconnect()

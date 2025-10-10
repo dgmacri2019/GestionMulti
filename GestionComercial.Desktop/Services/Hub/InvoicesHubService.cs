@@ -5,7 +5,7 @@ using static GestionComercial.Domain.Notifications.InvoiceChangeNotification;
 
 namespace GestionComercial.Desktop.Services.Hub
 {
-    internal class InvoicesHubService
+    internal class InvoicesHubService : IHub
     {
         private readonly HubConnection _connection;
 
@@ -15,6 +15,7 @@ namespace GestionComercial.Desktop.Services.Hub
 
         public InvoicesHubService(string hubUrl)
         {
+            HubManager.Register(this);
             _connection = new HubConnectionBuilder()
                 .WithUrl(hubUrl)
                 .WithAutomaticReconnect()

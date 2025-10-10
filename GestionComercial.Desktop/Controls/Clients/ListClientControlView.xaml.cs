@@ -1,4 +1,5 @@
-﻿using GestionComercial.Desktop.ViewModels.Client;
+﻿using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.ViewModels.Client;
 using GestionComercial.Domain.DTOs.Client;
 using System.Diagnostics;
 using System.Windows;
@@ -16,9 +17,7 @@ namespace GestionComercial.Desktop.Controls.Clients
 
         public ListClientControlView()
         {
-            InitializeComponent();
-            //btnEnables.Visibility = Visibility.Hidden;
-            //btnDisables.Visibility = Visibility.Visible;
+            InitializeComponent();            
             DataContext = new ClientListViewModel();
         }
 
@@ -92,11 +91,18 @@ namespace GestionComercial.Desktop.Controls.Clients
 
         private void WebSite_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo($"{e.Uri}")
+            try
             {
-                UseShellExecute = true
-            });
-            e.Handled = true;
+                Process.Start(new ProcessStartInfo($"{e.Uri}")
+                {
+                    UseShellExecute = true
+                });
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                MsgBoxAlertHelper.MsgAlertError(ex.Message);
+            }
         }
     }
 }

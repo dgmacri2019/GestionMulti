@@ -65,7 +65,6 @@ namespace GestionComercial.API.Controllers.Sales
                 if (saleResponse.Success)
                 {
                     SaleViewModel sale = saleResponse.SaleViewModel;
-
                     CommerceData? commerceData = await _masterClassService.GetCommerceDataAsync();
                     if (commerceData == null)
                         return BadRequest(new InvoiceResponse { Success = false, Message = "No se puede emitir la factura porque los datos del comercio no se pueden leer" });
@@ -211,8 +210,9 @@ namespace GestionComercial.API.Controllers.Sales
 
                         await _notifierInvoices.NotifyAsync(invoice.Id, "Factura Creada", ChangeType.Created);
                     }
-                    else
-                        invoice = invoiceResponse.Invoice;
+                    else                    
+                        invoice = invoiceResponse.Invoice;                       
+                    
                     //InvoiceResponse resultAfip = billing.UseHomologacion ?
                     //    await _wSFEHomologacion.SolicitarCAEAsync(invoice, 0)
                     //    :
@@ -224,6 +224,8 @@ namespace GestionComercial.API.Controllers.Sales
 
                         if (resultAfip.Success)
                         {
+                            invoice.UpdateUser = filter.UserName;
+                            invoice.UpdateDate = DateTime.Now;
                             invoice.CAE = resultAfip.CAE;
                             invoice.CompNro = resultAfip.CompNro;
                             invoice.FechaVtoCAE = resultAfip.FechaVtoCAE;
@@ -484,7 +486,7 @@ namespace GestionComercial.API.Controllers.Sales
                                 return BadRequest(new InvoiceResponse { Success = false, Message = resultUpdateInvoice.Message });
                             await _notifierInvoices.NotifyAsync(invoice.Id, "Factura Actualizada", ChangeType.Updated);
 
-                            SaleResponse resultAnullSale = await _saleService.AnullAsync(ConverterHelper.ToSale(sale, false), filter.UserName);
+                            SaleResponse resultAnullSale = await _saleService.AnullAsync(ConverterHelper.ToSale(sale, false), filter.UserName, filter.SalePoint);
                             if (!resultAnullSale.Success)
                                 return BadRequest(new InvoiceResponse { Success = false, Message = resultAnullSale.Message });
 

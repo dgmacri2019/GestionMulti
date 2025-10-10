@@ -37,7 +37,7 @@
 
             action = action.ToLowerInvariant();
 
-            if (action.Contains("add"))
+            if (action.Contains("add") || action.Contains("anull"))
                 return "Agregar";
 
             if (action.Contains("edit") || action.Contains("update"))

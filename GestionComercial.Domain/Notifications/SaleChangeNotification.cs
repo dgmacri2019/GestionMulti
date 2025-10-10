@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using static GestionComercial.Domain.Constant.Enumeration;
 
 namespace GestionComercial.Domain.Notifications
 {
@@ -9,15 +10,15 @@ namespace GestionComercial.Domain.Notifications
         [JsonDerivedType(typeof(SaleActualizado), "updated")]
         [JsonDerivedType(typeof(SaleEliminado), "deleted")]
 
-        public abstract record VentaChangeNotification(int SaleId, DateTimeOffset ServerTime);
+        public abstract record VentaChangeNotification(int SaleId, DateTimeOffset ServerTime, ChangeType action);
 
-        public record SaleCreado(int SaleId, DateTimeOffset ServerTime, string Nombre)
-        : VentaChangeNotification(SaleId, ServerTime);
+        public record SaleCreado(int SaleId, DateTimeOffset ServerTime, string Nombre, ChangeType action)
+        : VentaChangeNotification(SaleId, ServerTime, action);
 
-        public record SaleActualizado(int SaleId, DateTimeOffset ServerTime, string Nombre)
-            : VentaChangeNotification(SaleId, ServerTime);
+        public record SaleActualizado(int SaleId, DateTimeOffset ServerTime, string Nombre, ChangeType action)
+            : VentaChangeNotification(SaleId, ServerTime, action);
 
-        public record SaleEliminado(int SaleId, DateTimeOffset ServerTime)
-            : VentaChangeNotification(SaleId, ServerTime);
+        public record SaleEliminado(int SaleId, DateTimeOffset ServerTime, ChangeType action)
+            : VentaChangeNotification(SaleId, ServerTime, action);
     }
 }

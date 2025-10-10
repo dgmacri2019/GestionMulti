@@ -206,14 +206,15 @@ namespace GestionComercial.API.Controllers.Sales
                 IEnumerable<SaleCondition> saleConditions = await _masterClassService.GetAllSaleConditionsAsync(true, false);
 
 
-                SaleResponse resultAnull = await _saleService.AnullAsync(sale, filter.UserName);
+                SaleResponse resultAnull = await _saleService.AnullAsync(sale, filter.UserName, filter.SalePoint);
 
                 if (!resultAnull.Success)
                     return BadRequest(resultAnull);
 
                 List<int> articlesId = [];
 
-                await _notifierSales.NotifyAsync(sale.Id, "Venta Creada", ChangeType.Created);
+                await _notifierSales.NotifyAsync(resultAnull.SaleId, "Venta Creada", ChangeType.Created);
+                await _notifierSales.NotifyAsync(sale.Id, "Venta Actualizada", ChangeType.Updated);
                 await _notifierClients.NotifyAsync([sale.ClientId], "Venta Creada", ChangeType.Updated);
                 foreach (var saleDetail in sale.SaleDetails)
                     articlesId.Add(saleDetail.ArticleId);

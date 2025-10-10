@@ -83,7 +83,6 @@
              VerticalAlignment="Center"                     
              ToolTip="Ingresa nombre, razón social o cuit"
                      Text="{Binding NameFilter, UpdateSourceTrigger=PropertyChanged}" />
-            <!--TextChanged="SearchBox_TextChanged"/>-->
         </StackPanel>
 
         <DataGrid x:Name="DgArticles" Background="Gray" Grid.Row="2" 
@@ -196,10 +195,11 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Style="{StaticResource LeftAlignedTextStyle}">
-                            <Hyperlink NavigateUri="{Binding WebSite}" RequestNavigate="WebSite_RequestNavigate">
-                                <TextBlock Text="{Binding WebSite}" />
-                            </Hyperlink>
-                        </TextBlock>
+                                    <Hyperlink NavigateUri="{Binding WebSite, TargetNullValue=''}"
+                                               RequestNavigate="WebSite_RequestNavigate">
+                                        <TextBlock Text="{Binding WebSite}" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -243,19 +243,6 @@
         </DataGrid>
 
 
-        <!-- Antes: -->
-        <!-- <ContentControl x:Name="PanelEdicion" Grid.Row="1" Style="{StaticResource Test }"/> -->
-
-        <!-- Reemplazar por: -->
-        <!--
-        <ScrollViewer Grid.Row="2"
-              VerticalScrollBarVisibility="Auto"
-              HorizontalScrollBarVisibility="Auto"
-              CanContentScroll="False">
-            <ContentControl x:Name="PanelEdicion"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"/>
-        </ScrollViewer>-->
 
         <ContentControl x:Name="PanelEdicion" Grid.Row="2" Margin="0,-60,0,0" Visibility="Hidden">
             <ContentControl.Template>

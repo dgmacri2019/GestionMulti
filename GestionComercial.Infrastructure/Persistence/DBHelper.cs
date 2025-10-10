@@ -10,7 +10,7 @@ namespace GestionComercial.Infrastructure.Persistence
 
         }
 
-       public async Task<GeneralResponse> SaveChangesAsync(AppDbContext _context)
+        public async Task<GeneralResponse> SaveChangesAsync(AppDbContext _context)
         {
             while (StaticCommon.ContextInUse)
                 await Task.Delay(100);

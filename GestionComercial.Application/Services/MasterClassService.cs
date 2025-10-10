@@ -26,14 +26,14 @@ namespace GestionComercial.Applications.Services
         public async Task<CommerceData?> GetCommerceDataAsync()
         {
             return await _context.CommerceDatas
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Include(b => b.Billings)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<BillingViewModel?> GetBillingAsync()
         {
-            return ConverterHelper.ToBillingViewModel(await _context.Billings.AsNoTracking().FirstOrDefaultAsync());
+            return ConverterHelper.ToBillingViewModel(await _context.Billings.AsNoTrackingWithIdentityResolution().FirstOrDefaultAsync());
         }
 
 
@@ -41,7 +41,7 @@ namespace GestionComercial.Applications.Services
         public async Task<List<int>> GetAllArticlesId()
         {
             return await _context.Articles
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Select(a => a.Id)
                 .ToListAsync();
         }
@@ -50,14 +50,14 @@ namespace GestionComercial.Applications.Services
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             return await _context.Categories
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Include(a => a.Articles)
                 .ToListAsync();
         }
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories
-                .AsNoTracking()
+                .AsNoTrackingWithIdentityResolution()
                 .Where(c => c.Id == id)
                 .Include(a => a.Articles)
                 .FirstOrDefaultAsync();
@@ -68,7 +68,7 @@ namespace GestionComercial.Applications.Services
 
         public async Task<IEnumerable<PriceList>> GetAllPriceListAsync()
         {
-            return await _context.PriceLists.AsNoTracking().ToListAsync();
+            return await _context.PriceLists.AsNoTrackingWithIdentityResolution().ToListAsync();
         }
         public async Task<PriceList?> GetPriceListByIdAsync(int id)
         {

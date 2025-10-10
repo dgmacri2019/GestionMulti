@@ -89,7 +89,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<SaleResponse> GetAllBySalePointAsync(int salePoint, int pageSize = 100)
+        internal async Task<SaleResponse> GetAllBySalePointAsync(int salePoint, DateTime? date, int pageSize = 100)
         {
             // Llama al endpoint y deserializa la respuesta
             List<SaleViewModel> allSales = [];
@@ -106,9 +106,9 @@ namespace GestionComercial.Desktop.Services
                     HttpResponseMessage response = await _httpClient.PostAsJsonAsync("GetAllBySalePointAsync", new
                     {
                         SalePoint = salePoint,
-                        SaleDate = DateTime.Now.Date,
                         Page = page,
-                        PageSize = pageSize
+                        PageSize = pageSize,
+                        SaleDate = date,
                     });
 
                     if (response.IsSuccessStatusCode)
@@ -152,7 +152,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<SaleResponse> GetByIdAsync(int saleId, string pcName)
+        internal async Task<SaleResponse> GetByIdAsync(int saleId)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace GestionComercial.Desktop.Services
                 var response = await _httpClient.PostAsJsonAsync("GetByIdAsync", new
                 {
                     Id = saleId,
-                    PcName = pcName
+                    //PcName = pcName
                     //IsDeleted = isDeleted,
                     //IsEnabled = isEnabled,
                 });
@@ -264,7 +264,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<SaleResponse> AnullAsync(int saleId)
+        internal async Task<SaleResponse> AnullAsync(int saleId, int salePoint)
         {
             try
             {
@@ -273,6 +273,8 @@ namespace GestionComercial.Desktop.Services
                 {
                     Id = saleId,
                     UserName = LoginUserCache.UserName,
+                    SalePoint = salePoint,
+
                 });
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<SaleResponse>(jsonResponse, options);

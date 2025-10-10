@@ -10,6 +10,7 @@ using GestionComercial.Desktop.Controls.Sales;
 using GestionComercial.Desktop.Controls.Users;
 using GestionComercial.Desktop.Dictionary;
 using GestionComercial.Desktop.Helpers;
+using GestionComercial.Desktop.Services.Hub;
 using GestionComercial.Desktop.ViewModels;
 using GestionComercial.Desktop.ViewModels.Client;
 using GestionComercial.Desktop.ViewModels.Master;
@@ -90,7 +91,7 @@ namespace GestionComercial.Desktop.Views
                 Children = children
             };
         }
-        private void NavigationTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private async void NavigationTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (!(e.NewValue is MenuItemModel selected) || string.IsNullOrEmpty(selected.Tag))
                 return;
@@ -160,7 +161,7 @@ namespace GestionComercial.Desktop.Views
                     _currentWindow = null;
                     break;
                 case "LogOut":
-                    LogOut();
+                    await LogOutAsync();
                     break;
                 case "Close":
                     if (MessageBox.Show("Confirma que desea cerrar el programa", "Aviso al operador", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
@@ -169,16 +170,9 @@ namespace GestionComercial.Desktop.Views
             }
         }
 
-        private void LogOut()
+        private async Task LogOutAsync()
         {
-            // Limpiar sesión
-            LoginUserCache.AuthToken = string.Empty;
-            LoginUserCache.UserName = string.Empty;
-            LoginUserCache.UserRole = string.Empty;
-            LoginUserCache.Password = string.Empty;
-            LoginUserCache.UserId = string.Empty;
-            LoginUserCache.Permisions.Clear();
-            CacheManager.ClearAll();
+            await ClearDataAsync();
             LoginWindow loginView = new LoginWindow();
             loginView.Show();
             // Importante: cerrar la ventana actual correctamente
@@ -251,14 +245,34 @@ namespace GestionComercial.Desktop.Views
             //{
             GlobalProgressHelper.ReportIndeterminate("Cargando Ventas");
             SaleListViewModel saleListViewModel = new(superToken);
-            while (!SaleCache.Instance.HasData && !SaleCache.ReadingOk)
+            while (!SaleCache.Instance.HasData(DateTime.Today.Date) && !SaleCache.ReadingOk)
                 await Task.Delay(10);
+
             GlobalProgressHelper.ReportIndeterminate("Cargando Facturas");
             InvoiceListViewModel invoiceListViewModel = new(superToken);
             while (!InvoiceCache.Instance.HasData && !InvoiceCache.ReadingOk)
                 await Task.Delay(10);
             await GlobalProgressHelper.CompleteAsync();
 
+        }
+
+        private async Task ClearDataAsync()
+        {
+            // Limpiar sesión
+            LoginUserCache.AuthToken = string.Empty;
+            LoginUserCache.UserName = string.Empty;
+            LoginUserCache.UserRole = string.Empty;
+            LoginUserCache.Password = string.Empty;
+            LoginUserCache.UserId = string.Empty;
+            LoginUserCache.Permisions.Clear();
+            CacheManager.ClearAll();
+            await HubManager.CloseAll();
+        }
+
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await ClearDataAsync();
         }
     }
 }

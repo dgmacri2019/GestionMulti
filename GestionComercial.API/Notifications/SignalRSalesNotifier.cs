@@ -21,9 +21,9 @@ namespace GestionComercial.API.Notifications
             // Difunde a todas las terminales. Si querés segmentar por sucursal, usá Groups.
             VentaChangeNotification notification = accion switch
             {
-                ChangeType.Created => new SaleCreado(saleId, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Updated => new SaleActualizado(saleId, DateTimeOffset.UtcNow, nombre),
-                ChangeType.Deleted => new SaleEliminado(saleId, DateTimeOffset.UtcNow),
+                ChangeType.Created => new SaleCreado(saleId, DateTimeOffset.UtcNow, nombre, accion),
+                ChangeType.Updated => new SaleActualizado(saleId, DateTimeOffset.UtcNow, nombre, accion),
+                ChangeType.Deleted => new SaleEliminado(saleId, DateTimeOffset.UtcNow, accion),
                 _ => throw new ArgumentException("Acción inválida")
             };
             //await _hub.Clients.All.ClientesActualizados(notification);

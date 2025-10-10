@@ -232,7 +232,7 @@ namespace GestionComercial.Desktop.Services
             }
         }
 
-        internal async Task<InvoiceResponse> AnullAsync(int saleId)
+        internal async Task<InvoiceResponse> AnullAsync(int saleId, int salePoint)
         {
             try
             {
@@ -240,6 +240,7 @@ namespace GestionComercial.Desktop.Services
                 {
                     Id = saleId,
                     UserName = LoginUserCache.UserName,
+                    SalePoint = salePoint,
                 });
 
                 string jsonResponseAddInvoice = await responseAddInvoice.Content.ReadAsStringAsync();

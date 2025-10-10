@@ -109,7 +109,7 @@ namespace GestionComercial.Applications.Services
             }
         }
 
-        public async Task<SaleResponse> AnullAsync(Sale sale, string userName)
+        public async Task<SaleResponse> AnullAsync(Sale sale, string userName, int salePoint)
         {
             while (StaticCommon.ContextInUse)
                 await Task.Delay(100);
@@ -143,6 +143,13 @@ namespace GestionComercial.Applications.Services
 
                         }
 
+                        SaleResponse resultGetSaleNumber = await GetLastSaleNumber(salePoint);
+                        if (!resultGetSaleNumber.Success)
+                        {
+                            transacction.Rollback();
+                            return resultGetSaleNumber;
+                        }
+
                         Sale newSale = new()
                         {
                             AutorizationCode = sale.AutorizationCode,
@@ -160,8 +167,8 @@ namespace GestionComercial.Applications.Services
                             IsFinished = sale.IsFinished,
                             PaidOut = sale.PaidOut,
                             SaleDate = sale.SaleDate,
-                            SaleNumber = sale.SaleNumber,
-                            SalePoint = sale.SalePoint,
+                            SaleNumber = resultGetSaleNumber.LastSaleNumber + 1,
+                            SalePoint = salePoint,
                             SubTotal = sale.SubTotal * -1,
                             Total = sale.Total * -1,
                             TotalIVA105 = sale.TotalIVA105 * -1,
@@ -180,10 +187,16 @@ namespace GestionComercial.Applications.Services
                             //SaleCondition = sale.SaleCondition,
 
                         };
+                        sale.IsDeleted = true;
+                        sale.UpdateDate = DateTime.Now;
+                        sale.UpdateUser = userName;
+                        _context.Update(sale);
                         await _context.AddAsync(newSale);
+                        StaticCommon.ContextInUse = false;
                         GeneralResponse resultAdd = await _dBHelper.SaveChangesAsync(_context);
                         if (resultAdd.Success)
                         {
+                            StaticCommon.ContextInUse = true;
                             List<SaleDetail> saleDetails = [];
                             foreach (SaleDetail saleDetail in sale.SaleDetails)
                             {
@@ -198,16 +211,16 @@ namespace GestionComercial.Applications.Services
                                     IsDeleted = saleDetail.IsDeleted,
                                     IsEnabled = saleDetail.IsEnabled,
                                     List = saleDetail.List,
-                                    Price = saleDetail.Price,
-                                    PriceDiscount = saleDetail.PriceDiscount,
+                                    Price = saleDetail.Price * -1,
+                                    PriceDiscount = saleDetail.PriceDiscount * -1,
                                     ArticleId = saleDetail.ArticleId,
                                     Quantity = saleDetail.Quantity,
                                     Sale = newSale,
                                     SaleId = newSale.Id,
-                                    SubTotal = saleDetail.SubTotal,
+                                    SubTotal = saleDetail.SubTotal * -1,
                                     Tax = saleDetail.Tax,
                                     TaxId = saleDetail.TaxId,
-                                    TotalItem = saleDetail.TotalItem,
+                                    TotalItem = saleDetail.TotalItem * -1,
                                     Article = article,
                                 });
 
@@ -437,7 +450,7 @@ namespace GestionComercial.Applications.Services
 
                             client.Sold -= sale.Total;
                             _context.Update(client);
-
+                            StaticCommon.ContextInUse = false;
                             GeneralResponse resultSave = await _dBHelper.SaveChangesAsync(_context);
                             if (resultSave.Success)
                             {
@@ -485,7 +498,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 List<Sale> sales = await _context.Sales
-                       .AsNoTracking()
+                       .AsNoTrackingWithIdentityResolution()
                        .Include(c => c.Client)
                        //.Include(sc => sc.SaleCondition)
                        .Include(sd => sd.SaleDetails)
@@ -524,7 +537,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 List<Sale> sales = await _context.Sales
-                       .AsNoTracking()
+                       .AsNoTrackingWithIdentityResolution()
                        .Include(c => c.Client)
                        //.Include(sc => sc.SaleCondition)
                        .Include(sd => sd.SaleDetails)
@@ -566,7 +579,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 Sale? sale = await _context.Sales
-                        .AsNoTracking()
+                        .AsNoTrackingWithIdentityResolution()
                         .Include(c => c.Client)
                         //.Include(sc => sc.SaleCondition)
                         .Include(sd => sd.SaleDetails)
@@ -586,7 +599,7 @@ namespace GestionComercial.Applications.Services
                 // 👇 Traigo la factura asociada a las venta que obtuve
                 Invoice? invoice = await _context.Invoices
                      .Where(i => i.SaleId == sale.Id)
-                     .FirstAsync();
+                     .FirstOrDefaultAsync();
 
 
                 return new SaleResponse
@@ -610,7 +623,7 @@ namespace GestionComercial.Applications.Services
             try
             {
                 int? lastSaleNumber = await _context.Sales
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Where(s => s.SalePoint == salePoint)
                     .Select(s => (int?)s.SaleNumber) // usamos nullable para manejar el caso de que no haya registros
                     .MaxAsync();
@@ -640,9 +653,51 @@ namespace GestionComercial.Applications.Services
             {
                 Invoice? invoice = invoices.FirstOrDefault(i => i.SaleId == sale.Id);
                 DateTime? invoiceDate = null;
-                if (invoice != null)
-                    invoiceDate = DateTime.ParseExact(invoice?.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date;
+                string invoiceNumber = string.Empty;
 
+                if (invoice != null)
+                {
+                    invoiceDate = DateTime.ParseExact(invoice?.InvoiceDate, "yyyyMMdd", CultureInfo.InvariantCulture).Date;
+                    switch (invoice.CompTypeId)
+                    {
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 63:
+                        case 201:
+                        case 202:
+                        case 203:
+                            invoiceNumber = $"A {invoice.NumberString}";
+                            break;
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9:
+                        case 10:
+                        case 64:
+                        case 206:
+                        case 207:
+                        case 208:
+                            invoiceNumber = $"B {invoice.NumberString}";
+                            break;
+                        case 11:
+                        case 12:
+                        case 13:
+                        case 211:
+                        case 212:
+                        case 213:
+                            invoiceNumber = $"C {invoice.NumberString}";
+                            break;
+                        case 51:
+                        case 52:
+                        case 53:
+                        case 54:
+                            invoiceNumber = $"M {invoice.NumberString}";
+                            break;
+                    }
+                }
                 return new SaleViewModel
                 {
                     Id = sale.Id,
@@ -681,9 +736,9 @@ namespace GestionComercial.Applications.Services
                     BaseImp0 = sale.BaseImp0,
                     BaseImp25 = sale.BaseImp25,
                     TotalIVA5 = sale.TotalIVA5,
-                    InvoiceNumber = invoice?.NumberString,
+                    InvoiceNumber = invoiceNumber,
                     InvoiceDate = invoiceDate,
-                    HasCAE = invoice != null && invoice?.CAE != string.Empty,
+                    HasCAE = invoice != null && !string.IsNullOrEmpty(invoice?.CAE),
                     //Clients = clients,
                     //SaleConditions = saleConditions,
                     //PriceLists = priceLists,

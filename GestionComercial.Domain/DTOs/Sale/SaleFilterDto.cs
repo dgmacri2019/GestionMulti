@@ -6,6 +6,7 @@
         public bool IsDeleted { get; set; } = false;
         public int Id { get; set; } = 0;
         public int SalePoint { get; set; }
+        public int SaleNumber { get; set; }
         public DateTime? SaleDate { get; set; }
 
         public int Page { get; set; } = 1;       // página por defecto

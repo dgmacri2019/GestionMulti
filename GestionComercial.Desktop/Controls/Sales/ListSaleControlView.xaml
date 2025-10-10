@@ -57,7 +57,17 @@
                         Margin="0,5,0,0"
                         Style="{StaticResource BtnArticles}" 
                         Click="btnAdd_Click" 
-                        Grid.RowSpan="3" Height="20" VerticalAlignment="Top"/>
+                        Grid.RowSpan="3" 
+                        Height="20" 
+                        VerticalAlignment="Top"/>
+
+                <DatePicker x:Name="dpDate" 
+                            Grid.Row="1" 
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" SelectedDateChanged="dpDate_SelectedDateChanged"
+                            SelectedDate="{Binding DateFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
             </Grid>
         </StackPanel>
 
@@ -72,6 +82,13 @@
                    ColumnHeaderStyle="{StaticResource CenterBoldHeaderStyle}"
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Foreground"
+                            Value="{Binding Total, Converter={StaticResource NegativoAFondoConverter1}}"/>
+                </Style>
+            </DataGrid.RowStyle>
+
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Número Venta" Width="auto" MinWidth="100" SortMemberPath="SaleNumberString">
                     <DataGridTemplateColumn.CellTemplate>
@@ -89,6 +106,28 @@
                         <DataTemplate>
                             <Border>
                                 <TextBlock Text="{Binding SaleDate, StringFormat={}{0:dd/MM/yyyy}}" 
+                               Style="{StaticResource CenteredTextStyle}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Número Factura" Width="auto" MinWidth="100" SortMemberPath="InvoiceNumber">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding InvoiceNumber}" 
+                                           Style="{StaticResource CenteredTextStyle}"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <DataGridTemplateColumn Header="Fecha&#x0a;Factura" Width="auto" SortMemberPath="InvoiceDate">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <TextBlock Text="{Binding InvoiceDate, StringFormat={}{0:dd/MM/yyyy}}" 
                                Style="{StaticResource CenteredTextStyle}"/>
                             </Border>
                         </DataTemplate>
@@ -155,23 +194,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
-                                </Button>
-
-                                <Button Content="Facturar" 
-                                        Padding="5,0"
-                                        Tag="{Binding Id}" 
-                                        Click="BtnConvertInvoice_Click">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource BtnDisables}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding HasCAE}" Value="false">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>                                                
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                </Button>                               
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -189,11 +212,45 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding HasCAE}" Value="false">
                                                     <Setter Property="Content" Value="Anular Proforma"/>
-                                                </DataTrigger>
+                                                </DataTrigger>        
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
+                                    <!-- 👇 Esta parte controla la visibilidad -->
+                                    <Button.Visibility>
+                                        <MultiBinding Converter="{StaticResource NegativoAVisibleConverter}">
+                                            <Binding Path="HasCAE"/>
+                                            <Binding Path="Total"/>
+                                            <Binding Path="IsDeleted"/>
+                                        </MultiBinding>
+                                    </Button.Visibility>
                                 </Button>
+
+                                <Button Content="Facturar" 
+                                        Padding="5,0"
+                                        Tag="{Binding Id}" 
+                                        Click="BtnConvertInvoice_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource BtnDisables}">
+                                            <!--<Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasCAE}" Value="false">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>                                               
+                                            </Style.Triggers>-->
+                                        </Style>
+                                    </Button.Style>
+                                    <!-- 👇 Esta parte controla la visibilidad -->
+                                    <Button.Visibility>
+                                        <MultiBinding Converter="{StaticResource NegativoAVisibleConverter}">
+                                            <Binding Path="HasCAE"/>
+                                            <Binding Path="Total"/>
+                                            <Binding Path="IsDeleted"/>
+                                            <Binding Path="InvoiceNumber"/>
+                                        </MultiBinding>
+                                    </Button.Visibility>
+                                </Button>
+
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

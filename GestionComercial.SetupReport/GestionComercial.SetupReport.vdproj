@@ -27,12 +27,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0988F497AA06453F910BCC9B42F1997E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0B2221610FE64F4288F1F9019BEEF426"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -69,7 +63,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2785730EBBC65B4FDCC28B3B1611A30A"
+        "MsmKey" = "8:_3507CDC1DA42EE66389EA258B9F1027C"
+        "OwnerKey" = "8:_6102CA9BC73A457ABC0DA548AD47D481"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_37ECDD19D3184B0BA85BB64DCFCD52CD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_39C26D47B41D8201EEA059B33EA46DA5"
         "OwnerKey" = "8:_6102CA9BC73A457ABC0DA548AD47D481"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,14 +201,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_AB778BA21E4EE627949D252D2ED6AA55"
-        "OwnerKey" = "8:_6102CA9BC73A457ABC0DA548AD47D481"
+        "MsmKey" = "8:_AD99C6009E0A4FD280ECA5D927B33A59"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AD99C6009E0A4FD280ECA5D927B33A59"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_AE896AFF1433431F94C51CB7F9B643C8"
+        "OwnerKey" = "8:_6102CA9BC73A457ABC0DA548AD47D481"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -225,12 +231,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C9B05906A8D2623484B7CD6E651D5DB5"
-        "OwnerKey" = "8:_6102CA9BC73A457ABC0DA548AD47D481"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_CB50B40FADE24D5490E1685F5F8D1710"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -249,13 +249,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D3F09753A1C24B49AA8725C3B14B2172"
+        "MsmKey" = "8:_D4F7D61C651847B78E903B2055406CDD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D4F7D61C651847B78E903B2055406CDD"
+        "MsmKey" = "8:_D6CF165EE1D1435F9C13F61122D41897"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -268,7 +268,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A352D3D0BBA0EEB34BB182BC79B7074A"
+        "OwnerKey" = "8:_89AB5F9EE02D4DF1C5CE0C9BE3BDF3DA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AE896AFF1433431F94C51CB7F9B643C8"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -280,25 +286,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AB778BA21E4EE627949D252D2ED6AA55"
+        "OwnerKey" = "8:_39C26D47B41D8201EEA059B33EA46DA5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2785730EBBC65B4FDCC28B3B1611A30A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C9B05906A8D2623484B7CD6E651D5DB5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_89AB5F9EE02D4DF1C5CE0C9BE3BDF3DA"
+        "OwnerKey" = "8:_3507CDC1DA42EE66389EA258B9F1027C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -311,6 +305,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_D2896630E605C6ABA38166298BCB3E0E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A352D3D0BBA0EEB34BB182BC79B7074A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -331,6 +331,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -347,6 +363,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -458,26 +490,6 @@
             "TargetName" = "8:twitter_profile_image.png"
             "Tag" = "8:"
             "Folder" = "8:_345F3293BA204BE8A7EF33893A6977E3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0988F497AA06453F910BCC9B42F1997E"
-            {
-            "SourcePath" = "8:D:\\Nube\\OneDrive\\Programas\\Programacion\\Crystal Report para Visual 2022\\RunTime\\CR13SP38MSI64_0-80007712.MSI"
-            "TargetName" = "8:CR13SP38MSI64_0-80007712.MSI"
-            "Tag" = "8:"
-            "Folder" = "8:_B35898C54E68420F97B264699B33594C"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -612,20 +624,71 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2785730EBBC65B4FDCC28B3B1611A30A"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3507CDC1DA42EE66389EA258B9F1027C"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_2785730EBBC65B4FDCC28B3B1611A30A"
+                    "_3507CDC1DA42EE66389EA258B9F1027C"
                     {
                     "Name" = "8:Newtonsoft.Json.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_61A070836946498B949896DF1BCB8BCE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_37ECDD19D3184B0BA85BB64DCFCD52CD"
+            {
+            "SourcePath" = "8:E:\\Nube\\OneDrive\\Programas\\Programacion\\Crystal Report para Visual 2022\\RunTime\\CR13SP38MSI32_0-80007712.MSI"
+            "TargetName" = "8:CR13SP38MSI32_0-80007712.MSI"
+            "Tag" = "8:"
+            "Folder" = "8:_B35898C54E68420F97B264699B33594C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_39C26D47B41D8201EEA059B33EA46DA5"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_39C26D47B41D8201EEA059B33EA46DA5"
+                    {
+                    "Name" = "8:Gma.QrCodeNet.Encoding.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Gma.QrCodeNet.Encoding.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_61A070836946498B949896DF1BCB8BCE"
@@ -1056,37 +1119,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AB778BA21E4EE627949D252D2ED6AA55"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_AB778BA21E4EE627949D252D2ED6AA55"
-                    {
-                    "Name" = "8:Gma.QrCodeNet.Encoding.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Gma.QrCodeNet.Encoding.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_61A070836946498B949896DF1BCB8BCE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AD99C6009E0A4FD280ECA5D927B33A59"
             {
             "SourcePath" = "8:..\\gestioncomercial.reportservicehost\\reports\\invoices\\Factura B.cs"
@@ -1105,6 +1137,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AE896AFF1433431F94C51CB7F9B643C8"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:GestionComercial.Contract, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_AE896AFF1433431F94C51CB7F9B643C8"
+                    {
+                    "Name" = "8:GestionComercial.Contract.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:GestionComercial.Contract.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_61A070836946498B949896DF1BCB8BCE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C1A77F8A91B5449887E99C632CEB729D"
@@ -1165,37 +1228,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C9B05906A8D2623484B7CD6E651D5DB5"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GestionComercial.Contract, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_C9B05906A8D2623484B7CD6E651D5DB5"
-                    {
-                    "Name" = "8:GestionComercial.Contract.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:GestionComercial.Contract.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_61A070836946498B949896DF1BCB8BCE"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CB50B40FADE24D5490E1685F5F8D1710"
@@ -1269,12 +1301,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D3F09753A1C24B49AA8725C3B14B2172"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D4F7D61C651847B78E903B2055406CDD"
             {
-            "SourcePath" = "8:D:\\Nube\\OneDrive\\Programas\\Programacion\\Crystal Report para Visual 2022\\RunTime\\CR13SP38MSI32_0-80007712.MSI"
-            "TargetName" = "8:CR13SP38MSI32_0-80007712.MSI"
+            "SourcePath" = "8:..\\gestioncomercial.reportservicehost\\images\\\\facebook_cover_photo_1.png"
+            "TargetName" = "8:facebook_cover_photo_1.png"
             "Tag" = "8:"
-            "Folder" = "8:_B35898C54E68420F97B264699B33594C"
+            "Folder" = "8:_345F3293BA204BE8A7EF33893A6977E3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1289,12 +1321,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D4F7D61C651847B78E903B2055406CDD"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D6CF165EE1D1435F9C13F61122D41897"
             {
-            "SourcePath" = "8:..\\gestioncomercial.reportservicehost\\images\\\\facebook_cover_photo_1.png"
-            "TargetName" = "8:facebook_cover_photo_1.png"
+            "SourcePath" = "8:E:\\Nube\\OneDrive\\Programas\\Programacion\\Crystal Report para Visual 2022\\RunTime\\CR13SP38MSI64_0-80007712.MSI"
+            "TargetName" = "8:CR13SP38MSI64_0-80007712.MSI"
             "Tag" = "8:"
-            "Folder" = "8:_345F3293BA204BE8A7EF33893A6977E3"
+            "Folder" = "8:_B35898C54E68420F97B264699B33594C"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1337,7 +1369,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_61A070836946498B949896DF1BCB8BCE"
             {
-            "DefaultLocation" = "8:C:\\[ProductName]"
+            "DefaultLocation" = "8:C:\\Control de Gestion\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -1461,10 +1493,10 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Reportes Gestion Comercial"
-        "ProductCode" = "8:{A954EF04-81FC-480E-95D3-754C6283A077}"
-        "PackageCode" = "8:{43276295-08B6-4619-9C21-ED074FE8823E}"
-        "UpgradeCode" = "8:{DED02C6F-AC09-4079-87B5-879F4C2C9B09}"
+        "ProductName" = "8:Reportes Gestión Comercial"
+        "ProductCode" = "8:{C00E5DAF-2BCB-4C46-A6AE-E8DB05A84D19}"
+        "PackageCode" = "8:{7C652E4B-6B7C-4634-AB6D-E7CC07A5CF9B}"
+        "UpgradeCode" = "8:{2A4BA63A-B021-4627-AE80-C7348F09D09C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -1984,7 +2016,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6102CA9BC73A457ABC0DA548AD47D481"
             {
-            "SourcePath" = "8:..\\GestionComercial.ReportServiceHost\\obj\\Debug\\GestionComercial.ReportServiceHost.exe"
+            "SourcePath" = "8:..\\GestionComercial.ReportServiceHost\\obj\\Release\\GestionComercial.ReportServiceHost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_61A070836946498B949896DF1BCB8BCE"
@@ -1993,7 +2025,7 @@
             "Vital" = "11:TRUE"
             "ReadOnly" = "11:FALSE"
             "Hidden" = "11:FALSE"
-            "System" = "11:TRUE"
+            "System" = "11:FALSE"
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"

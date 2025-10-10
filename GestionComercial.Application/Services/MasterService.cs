@@ -1,5 +1,4 @@
 ﻿using GestionComercial.Applications.Interfaces;
-using GestionComercial.Domain.Entities.Afip;
 using GestionComercial.Domain.Response;
 using GestionComercial.Domain.Statics;
 using GestionComercial.Infrastructure.Persistence;
@@ -27,127 +26,165 @@ namespace GestionComercial.Applications.Services
             while (StaticCommon.ContextInUse)
                 await Task.Delay(100);
 
-            using (var transacction = _context.Database.BeginTransaction())
+            // usar métodos async para transacciones
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                try
-                {
-                    await _context.AddAsync(model);
+                await _context.AddAsync(model);
 
-                    GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
-                    if (result.Success)
-                    {
-
-                        transacction.Commit();
-                        return result;
-                    }
-                    else
-                    {
-                        transacction.Rollback();
-                        return result;
-                    }
-
-                }
-                catch (Exception ex)
+                GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
+                if (result.Success)
                 {
-                    transacction.Rollback();
-                    return new GeneralResponse
-                    {
-                        Message = ex.Message,
-                        Success = false,
-                    };
+                    await transaction.CommitAsync();
+                    return result;
                 }
-                finally
+                else
                 {
-                    StaticCommon.ContextInUse = false;
+                    await transaction.RollbackAsync();
+                    return result;
                 }
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new GeneralResponse
+                {
+                    Message = ex.Message,
+                    Success = false,
+                };
+            }
+            finally
+            {
+                StaticCommon.ContextInUse = false;
             }
         }
+
 
         public async Task<GeneralResponse> DeleteAsync<T>(T model)
         {
             while (StaticCommon.ContextInUse)
                 await Task.Delay(100);
 
-            using (var transacction = _context.Database.BeginTransaction())
+            // usar métodos async para transacciones
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                try
-                {
-                    _context.Remove(model);
+                _context.Remove(model);
 
-                    GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
-                    if (result.Success)
-                    {
-
-                        transacction.Commit();
-                        return result;
-                    }
-                    else
-                    {
-                        transacction.Rollback();
-                        return result;
-                    }
-
-                }
-                catch (Exception ex)
+                GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
+                if (result.Success)
                 {
-                    transacction.Rollback();
-                    return new GeneralResponse
-                    {
-                        Message = ex.Message,
-                        Success = false,
-                    };
+                    await transaction.CommitAsync();
+                    return result;
                 }
-                finally
+                else
                 {
-                    StaticCommon.ContextInUse = false;
+                    await transaction.RollbackAsync();
+                    return result;
                 }
+
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new GeneralResponse
+                {
+                    Message = ex.Message,
+                    Success = false,
+                };
+            }
+            finally
+            {
+                StaticCommon.ContextInUse = false;
             }
         }
-               
-        public async Task<GeneralResponse> UpdateAsync<T>(T model)
+
+
+        public async Task<GeneralResponse> UpdateAsync<T>(T model) where T : class
         {
             while (StaticCommon.ContextInUse)
                 await Task.Delay(100);
 
-            using (var transacction = _context.Database.BeginTransaction())
+            // usar métodos async para transacciones
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                try
+                var entityType = _context.Model.FindEntityType(typeof(T));
+                var key = entityType.FindPrimaryKey();
+                var keyValues = key.Properties.Select(p => p.PropertyInfo.GetValue(model)).ToArray();
+
+                // 1) Buscar si ya está rastreada
+                var trackedEntry = _context.ChangeTracker.Entries()
+                    .FirstOrDefault(e => e.Entity.GetType() == typeof(T) &&
+                        key.Properties.Select(p => p.PropertyInfo.GetValue(e.Entity))
+                                      .SequenceEqual(keyValues));
+
+                object dbEntity = null;
+
+                if (trackedEntry != null)
                 {
-                     _context.Update(model);
-
-                    GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
-                    if (result.Success)
-                    {
-
-                        transacction.Commit();
-                        return result;
-                    }
-                    else
-                    {
-                        transacction.Rollback();
-                        return result;
-                    }
-
+                    dbEntity = trackedEntry.Entity;
                 }
-                catch (Exception ex)
+                else
                 {
-                    transacction.Rollback();
-                    return new GeneralResponse
-                    {
-                        Message = ex.Message,
-                        Success = false,
-                    };
+                    // 2) Intentar cargarla desde la DB (la carga la pone en el ChangeTracker)
+                    dbEntity = await _context.Set<T>().FindAsync(keyValues);
                 }
-                finally
+
+                if (dbEntity != null)
                 {
-                    StaticCommon.ContextInUse = false;
+                    // 3) Actualizar SOLO propiedades escalar/columnas (NO colecciones navegacionales)
+                    var dbEntry = _context.Entry(dbEntity);
+                    var entityProperties = entityType.GetProperties() // EF Core metadata properties (scalars)
+                                                .Where(p => !p.IsPrimaryKey()) // no tocar PK
+                                                .ToList();
+
+                    foreach (var p in entityProperties)
+                    {
+                        var propName = p.Name;
+                        var value = p.PropertyInfo.GetValue(model);
+                        // Asignar el valor y marcar la propiedad como modificada
+                        dbEntry.Property(propName).CurrentValue = value;
+                        dbEntry.Property(propName).IsModified = true;
+                    }
+
+                    // NOTA: No tocamos colecciones navegacionales (GetNavigations) aquí.
+                }
+                else
+                {
+                    // 4) Si no existe en DB -> agregar como nuevo (o cambiar a Attach si preferís)
+                    _context.Set<T>().Add(model);
+                }
+
+                GeneralResponse result = await _dBHelper.SaveChangesAsync(_context);
+
+                if (result.Success)
+                {
+                    await transaction.CommitAsync();
+                    return result;
+                }
+                else
+                {
+                    await transaction.RollbackAsync();
+                    return result;
                 }
             }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return new GeneralResponse
+                {
+                    Message = ex.Message,
+                    Success = false,
+                };
+            }
+            finally
+            {
+                StaticCommon.ContextInUse = false;
+            }
         }
-
-
-       
-
 
 
     }

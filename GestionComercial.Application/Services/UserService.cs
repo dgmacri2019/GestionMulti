@@ -45,6 +45,11 @@ namespace GestionComercial.Applications.Services
             try
             {
                 User? user = await _userManager.FindByNameAsync(username);
+                if (user == null)
+                {
+                    return new LoginResponse { Success = false, Token = null, Message = "Usuario o contraseña inválidos" };
+                }
+
                 if (!user.Enabled)
                     return new LoginResponse { Success = false, Token = null, Message = "Usuario Inhabilitado" };
                 if (user == null || !(await _userManager.CheckPasswordAsync(user, password)))
@@ -301,7 +306,7 @@ namespace GestionComercial.Applications.Services
             {
 
                 List<User> users = await _context.Users
-                    .AsNoTracking()
+                    .AsNoTrackingWithIdentityResolution()
                     .Include(up => up.UserPermissions)
                     .OrderBy(u => u.FirstName)
                     .ThenBy(u => u.LastName)
@@ -309,7 +314,7 @@ namespace GestionComercial.Applications.Services
                     .Take(pageSize)
                     .ToListAsync();
 
-                var totalRegisters = await _context.Users.AsNoTracking().CountAsync();
+                var totalRegisters = await _context.Users.AsNoTrackingWithIdentityResolution().CountAsync();
 
                 return new UserResponse
                 {
